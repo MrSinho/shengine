@@ -1,0 +1,9 @@
+[submodule "Externals/EZ-ECS"]
+	path = Externals/EZ-ECS
+	url = https://github.com/MrSinho/EZ-ECS.git
+[submodule "Externals/glm"]
+	path = Externals/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "Externals/glfw"]
+	path = Externals/glfw
+	url = https://github.com/glfw/glfw.git
