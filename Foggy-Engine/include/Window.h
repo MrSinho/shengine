@@ -5,13 +5,12 @@
 #include <stdint.h>
 
 struct Window {
-	Window(uint32_t _width, uint32_t _height, const char* title);
-	void InitGLFW();
+	
+	void InitGLFW(uint32_t _width, uint32_t _height, const char* title);
 	bool IsActive();
-	~Window();
+	void Clear();
 
 	GLFWwindow* window;
-
 	uint32_t width, height;
 	const char* title;
 };

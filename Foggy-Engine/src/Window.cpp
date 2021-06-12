@@ -1,13 +1,10 @@
 #include "Window.h"
 #include <stdexcept>
 
-Window::Window(uint32_t _width, uint32_t _height, const char *_title) {
-	width = _width; height = _height; title = _title;
-	InitGLFW();
-}
-
-void Window::InitGLFW() {
+void Window::InitGLFW(uint32_t _width, uint32_t _height, const char* _title) {
 	
+	width = _width; height = _height; title = _title;
+
 	if (!glfwInit()) {
 		throw std::runtime_error("Error intializing gflfw!");
 	}
@@ -22,7 +19,7 @@ bool Window::IsActive() {
 	return !glfwWindowShouldClose(window);
 }
 
-Window::~Window() {
+void Window::Clear() {
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

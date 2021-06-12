@@ -472,3 +472,8 @@ build/.vs/Foggy-Engine/v16/.suo
 bin/Debug/Foggy-Engine.pdb
 bin/Debug/Editor.pdb
 bin/Debug/Editor.ilk
+build/.vs/Foggy-Engine/v16/ipch/AutoPCH/40bfbd6f2e45ad73/WINDOW.ipch
+build/.vs/Foggy-Engine/v16/ipch/AutoPCH/514425b8c6e8c20e/CONTEXT.ipch
+build/.vs/Foggy-Engine/v16/ipch/AutoPCH/adf3b8db419044e6/VULKANHANDLER.ipch
+build/.vs/Foggy-Engine/v16/ipch/AutoPCH/c10ebfb79651859b/VULKAN.ipch
+build/.vs/Foggy-Engine/v16/ipch/AutoPCH/f5655f6ff7145264/VULKANHANDLER.ipch
