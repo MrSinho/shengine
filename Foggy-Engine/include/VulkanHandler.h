@@ -3,14 +3,7 @@
 
 #include <vulkan/vulkan.h>
 #include <vector>
-
-#ifndef NDEBUG
-	#define REQUIRED_VALIDATION_LAYERS { "VK_LAYER_KHRONOS_validation" }
-	#define REQUIRED_VALIDATION_LAYERS_SIZE 1
-#endif
-
-#define REQUIRED_QUEUE_FLAGS { VK_QUEUE_GRAPHICS_BIT }
-#define REQUIRED_QUEUE_FLAGS_SIZE 1
+#include <array>
 
 struct VulkanHandler {
 
@@ -23,20 +16,25 @@ struct VulkanHandler {
 	void CreateInstance();
 	void SetPhysicalDevice();
 	bool CheckQueueFamiliesSupport(const VkPhysicalDevice& pDevice);
+	bool CheckPhysicalDeviceExtensions(const VkPhysicalDevice &pDevice);
+	VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex);
 	void SetLogicalDevice();
-	
+
 	int PhysicalDeviceScore(const VkPhysicalDevice& pDevice);
 	static const char* TranslateVkResult(const VkResult &vkResult);
 	static const char* TranslateQueueFlags(const VkQueueFlags &queueFlag);
+
+	void Cleanup();
 
 	VkInstance instance;
 	VkPhysicalDevice physicalDevice;
 	VkDevice device;
 #ifndef NDEBUG
-	const char* requiredValidationLayers[REQUIRED_VALIDATION_LAYERS_SIZE] = REQUIRED_VALIDATION_LAYERS;
+	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 #endif
-	VkQueueFlags requiredQueueFlags[REQUIRED_QUEUE_FLAGS_SIZE] = REQUIRED_QUEUE_FLAGS;
-	std::vector<VkDeviceQueueCreateInfo> deviceQueueCreateInfos;
+	std::array<const char*, 1> requiredExtensionsNames = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	std::array<VkQueueFlags, 1> requiredQueueFlags = { VK_QUEUE_GRAPHICS_BIT };
+	std::vector<uint32_t> queueFamiliesIndices;
 };
 
 #endif

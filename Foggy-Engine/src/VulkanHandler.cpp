@@ -31,7 +31,7 @@ void VulkanHandler::CreateInstance() {
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
 #ifndef NDEBUG
-	createInfo.enabledLayerCount = static_cast<uint32_t>(REQUIRED_VALIDATION_LAYERS_SIZE);
+	createInfo.enabledLayerCount = static_cast<uint32_t>(requiredValidationLayers.size());
 	createInfo.ppEnabledLayerNames = &requiredValidationLayers[0];
 	//createInfo.enabledExtensionCount = ;
 #endif
@@ -83,14 +83,14 @@ void VulkanHandler::EnableValidationLayers() {
 	std::vector<VkLayerProperties> availableLayers(layerCount);
 	vkEnumerateInstanceLayerProperties(&layerCount, &availableLayers[0]);
 
-	size_t requestedLayers = REQUIRED_VALIDATION_LAYERS_SIZE;
+	size_t requestedLayers = requiredValidationLayers.size();
 
 	std::cout << "Installed validation layers: " << std::endl;
-	for (uint32_t i = 0; i < REQUIRED_VALIDATION_LAYERS_SIZE; i++) {
+	for (uint32_t i = 0; i < static_cast<uint32_t>(requiredValidationLayers.size()); i++) {
 		for (const VkLayerProperties& properties : availableLayers) {
 			std::cout << properties.layerName << " - VERSION " << properties.implementationVersion <<
 				": " << properties.description << std::endl;
-			if (!strcmp(properties.layerName, requiredValidationLayers[i])) {
+			if (strcmp(properties.layerName, requiredValidationLayers[i]) == 0) {
 				requestedLayers -= 1;
 			}
 		}
@@ -109,7 +109,7 @@ void VulkanHandler::EnableValidationLayers() {
 
 void VulkanHandler::SetPhysicalDevice() {
 
-	uint32_t pDeviceCount;
+	uint32_t pDeviceCount = 0;
 	vkEnumeratePhysicalDevices(instance, &pDeviceCount, nullptr);
 
 	std::vector<VkPhysicalDevice> pDevices(pDeviceCount);
@@ -136,7 +136,7 @@ void VulkanHandler::SetPhysicalDevice() {
 
 	int highScore = -1;
 	if (scores.size() > 1) {
-		for (uint32_t i = 1; i < scores.size(); i++) {
+		for (uint32_t i = 1; i < static_cast<uint32_t>(scores.size()); i++) {
 			if (scores[i] > scores[i - 1]) { physicalDevice = pDevices[i]; highScore = scores[i]; }
 			else { physicalDevice = pDevices[i - 1];  highScore = scores[i - 1]; }
 		}
@@ -146,7 +146,7 @@ void VulkanHandler::SetPhysicalDevice() {
 	}
 	
 	if (highScore < 0) {
-		throw std::runtime_error("No gpu with requested vulkan features has been found");
+		throw std::runtime_error("No gpu with requested vulkan features/extensions has been found");
 	}
 
 #ifndef NDEBUG
@@ -163,19 +163,41 @@ int VulkanHandler::PhysicalDeviceScore(const VkPhysicalDevice &pDevice) {
 	
 	int score = -1;
 
-	if (!CheckQueueFamiliesSupport(pDevice)) {
-		return score;
+	if (CheckQueueFamiliesSupport(pDevice) && CheckPhysicalDeviceExtensions(pDevice)) {
+		VkPhysicalDeviceFeatures pFeatures;
+		vkGetPhysicalDeviceFeatures(pDevice, &pFeatures);
+
+		//RAW SCORE SYSTEM
+		score += pFeatures.variableMultisampleRate * 16;
+		score += pFeatures.shaderClipDistance;
+		score += pFeatures.geometryShader * 20;
 	}
-
-	VkPhysicalDeviceFeatures pFeatures;
-	vkGetPhysicalDeviceFeatures(pDevice, &pFeatures);
-
-	//RAW SCORE SYSTEM
-	score += pFeatures.variableMultisampleRate * 16;
-	score += pFeatures.shaderClipDistance;
-	score += pFeatures.geometryShader * 20;
-
 	return score;
+}
+
+bool VulkanHandler::CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevice) {
+	uint32_t extensionCount = 0;
+	vkEnumerateDeviceExtensionProperties(pDevice, nullptr, &extensionCount, nullptr);
+	
+	std::vector<VkExtensionProperties> pDeviceExtensions(extensionCount);
+	vkEnumerateDeviceExtensionProperties(pDevice, nullptr, &extensionCount, &pDeviceExtensions[0]);
+
+#ifndef NDEBUG
+	std::cout << "Enumerating device extensions" << std::endl;
+#endif
+	uint32_t requiredExtensionsCount = static_cast<uint32_t>(requiredExtensionsNames.size());
+	for (const VkExtensionProperties& extensionProperties : pDeviceExtensions) {
+#ifndef NDEBUG
+		std::cout << extensionProperties.extensionName << " | " << extensionProperties.specVersion << std::endl;
+#endif
+		for (const char* requiredName : requiredExtensionsNames) {
+			if (strcmp(requiredName, extensionProperties.extensionName) == 0) {
+				requiredExtensionsCount += -1;
+			}
+		}
+	}
+	
+	return requiredExtensionsCount == 0;
 }
 
 bool VulkanHandler::CheckQueueFamiliesSupport(const VkPhysicalDevice &pDevice) {
@@ -185,7 +207,6 @@ bool VulkanHandler::CheckQueueFamiliesSupport(const VkPhysicalDevice &pDevice) {
 	std::vector<VkQueueFamilyProperties> queueFamiliesProperties(queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, &queueFamiliesProperties[0]);
 
-
 #ifndef NDEBUG
 	{
 		VkPhysicalDeviceProperties pDeviceProperties;
@@ -193,29 +214,18 @@ bool VulkanHandler::CheckQueueFamiliesSupport(const VkPhysicalDevice &pDevice) {
 		std::cout << "Enumerating queue families for " << pDeviceProperties.deviceName << std::endl;
 	}
 #endif
-	std::vector<uint32_t> queueFamilyIndices;
-	uint32_t requiredQueueFlagsCount = REQUIRED_QUEUE_FLAGS_SIZE;
-	for (const VkQueueFlags &queueFlag : requiredQueueFlags) {
-		for (uint32_t j = 0; j < queueFamiliesProperties.size(); j++) {
+	size_t requiredQueueFlagsCount = requiredQueueFlags.size();
+	for (uint32_t i = 0; i < static_cast<uint32_t>(queueFamiliesProperties.size()); i++) {
 #ifndef NDEBUG
-			{
-				const char* queueFlagName = TranslateQueueFlags(queueFamiliesProperties[j].queueFlags);
-				std::cout << queueFlagName << std::endl;
-			}
+		{
+			const char* queueFlagName = TranslateQueueFlags(queueFamiliesProperties[i].queueFlags);
+			std::cout << queueFlagName << std::endl;
+		}
 #endif
-			if (queueFamiliesProperties[j].queueFlags & queueFlag) {
-
-				queueFamilyIndices.push_back(j); //set the the index of the required queue to the gpu one
-			
-				VkDeviceQueueCreateInfo queueCreateInfo{};
-				queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-				queueCreateInfo.queueCount = REQUIRED_QUEUE_FLAGS_SIZE;
-				queueCreateInfo.queueFamilyIndex = j;
-				float queuePriority = 1.0f;
-				queueCreateInfo.pQueuePriorities = &queuePriority;
-				deviceQueueCreateInfos.push_back(queueCreateInfo);
-
+		for (const VkQueueFlags &queueFlag : requiredQueueFlags) {
+			if (queueFamiliesProperties[i].queueFlags & queueFlag) {
 				requiredQueueFlagsCount += -1;
+				queueFamiliesIndices.push_back(i);
 			}
 		}
 	}
@@ -224,31 +234,50 @@ bool VulkanHandler::CheckQueueFamiliesSupport(const VkPhysicalDevice &pDevice) {
 }
 
 const char* VulkanHandler::TranslateQueueFlags(const VkQueueFlags& queueFlag) {
-		if(queueFlag & VK_QUEUE_GRAPHICS_BIT)			{ return "VK_QUEUE_GRAPHICS_BIT";		}
-		if(queueFlag & VK_QUEUE_COMPUTE_BIT)			{ return "VK_QUEUE_COMPUTE_BIT";		}
-		if(queueFlag & VK_QUEUE_TRANSFER_BIT)			{ return "VK_QUEUE_TRANSFER_BIT";		}
-		if(queueFlag & VK_QUEUE_SPARSE_BINDING_BIT)	{ return "VK_QUEUE_SPARSE_BINDING_BIT";	}
-		if(queueFlag & VK_QUEUE_PROTECTED_BIT)			{ return "VK_QUEUE_PROTECTED_BIT";		}
+		if(queueFlag & VK_QUEUE_GRAPHICS_BIT)			{ return "VK_QUEUE_GRAPHICS_BIT";			}
+		if(queueFlag & VK_QUEUE_COMPUTE_BIT)			{ return "VK_QUEUE_COMPUTE_BIT";			}
+		if(queueFlag & VK_QUEUE_TRANSFER_BIT)			{ return "VK_QUEUE_TRANSFER_BIT";			}
+		if(queueFlag & VK_QUEUE_SPARSE_BINDING_BIT)		{ return "VK_QUEUE_SPARSE_BINDING_BIT";		}
+		if(queueFlag & VK_QUEUE_PROTECTED_BIT)			{ return "VK_QUEUE_PROTECTED_BIT";			}
 #ifdef VK_ENABLE_BETA_EXTENSIONS
-		if (queueFlags & VK_QUEUE_VIDEO_DECODE_BIT_KHR) { return "VK_QUEUE_VIDEO_DECODE_BIT_KHR"; }
+		if (queueFlags & VK_QUEUE_VIDEO_DECODE_BIT_KHR) { return "VK_QUEUE_VIDEO_DECODE_BIT_KHR";	}
 #endif											
 #ifdef VK_ENABLE_BETA_EXTENSIONS				
-		if (queueFlags & VK_QUEUE_VIDEO_ENCODE_BIT_KHR) { return "VK_QUEUE_VIDEO_ENCODE_BIT_KHR"; }
+		if (queueFlags & VK_QUEUE_VIDEO_ENCODE_BIT_KHR) { return "VK_QUEUE_VIDEO_ENCODE_BIT_KHR";	}
 #endif											
-		if (queueFlag & VK_QUEUE_FLAG_BITS_MAX_ENUM)	{ return "VK_QUEUE_FLAG_BITS_MAX_ENUM"; }
+		if (queueFlag & VK_QUEUE_FLAG_BITS_MAX_ENUM)	{ return "VK_QUEUE_FLAG_BITS_MAX_ENUM";		}
 	return "unknown flag";
+}
+
+VkDeviceQueueCreateInfo VulkanHandler::CreateQueue(uint32_t queueFamilyIndex) {
+	float queuePriority = 1.0f;
+	VkDeviceQueueCreateInfo queueCreateInfo{};
+	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	queueCreateInfo.pQueuePriorities = &queuePriority;
+	queueCreateInfo.queueCount = 1;
+	queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
+	return queueCreateInfo;
 }
 
 void VulkanHandler::SetLogicalDevice() {
 	
+	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+	for (const uint32_t& index : queueFamiliesIndices) {
+		queueCreateInfos.push_back(CreateQueue(index));
+	}
+
 	VkDeviceCreateInfo deviceCreateInfo{};
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 #ifndef NDEBUG
-	deviceCreateInfo.enabledLayerCount = REQUIRED_VALIDATION_LAYERS_SIZE;
+	deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(requiredValidationLayers.size());
 	deviceCreateInfo.ppEnabledLayerNames = &requiredValidationLayers[0];
 #endif
-	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(deviceQueueCreateInfos.size());
-	deviceCreateInfo.pQueueCreateInfos = &deviceQueueCreateInfos[0];
+	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+	deviceCreateInfo.pQueueCreateInfos = &queueCreateInfos[0];
+	VkPhysicalDeviceFeatures pDeviceFeatures{};
+	deviceCreateInfo.pEnabledFeatures = &pDeviceFeatures;
+	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensionsNames.size());
+	deviceCreateInfo.ppEnabledExtensionNames = &requiredExtensionsNames[0];
 
 	VkResult result = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
 	if (result != VK_SUCCESS) {
@@ -259,4 +288,10 @@ void VulkanHandler::SetLogicalDevice() {
 	}
 
 
+}
+
+
+void VulkanHandler::Cleanup() {
+	vkDestroyInstance(instance, nullptr);
+	vkDestroyDevice(device, nullptr);
 }
