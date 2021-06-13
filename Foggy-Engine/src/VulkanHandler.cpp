@@ -1,5 +1,4 @@
 #include <stdexcept>
-#include <vector>
 #include <string>
 
 #ifndef NDEBUG
@@ -32,7 +31,7 @@ void VulkanHandler::CreateInstance() {
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
 #ifndef NDEBUG
-	createInfo.enabledLayerCount = static_cast<uint32_t>(requiredValidationLayers.size());
+	createInfo.enabledLayerCount = static_cast<uint32_t>(REQUIRED_VALIDATION_LAYERS_SIZE);
 	createInfo.ppEnabledLayerNames = &requiredValidationLayers[0];
 	//createInfo.enabledExtensionCount = ;
 #endif
@@ -72,6 +71,7 @@ const char* VulkanHandler::TranslateVkResult(const VkResult& vkResult) {
 		case VK_ERROR_VALIDATION_FAILED_EXT		:return "VK_ERROR_VALIDATION_FAILED_EXT";
 		case VK_RESULT_MAX_ENUM					:return "VK_RESULT_MAX_ENUM";
 	}
+	return "unknown vkresult";
 }
 
 #ifndef NDEBUG
@@ -83,10 +83,10 @@ void VulkanHandler::EnableValidationLayers() {
 	std::vector<VkLayerProperties> availableLayers(layerCount);
 	vkEnumerateInstanceLayerProperties(&layerCount, &availableLayers[0]);
 
-	size_t requestedLayers = requiredValidationLayers.size();
+	size_t requestedLayers = REQUIRED_VALIDATION_LAYERS_SIZE;
 
 	std::cout << "Installed validation layers: " << std::endl;
-	for (uint32_t i = 0; i < requiredValidationLayers.size(); i++) {
+	for (uint32_t i = 0; i < REQUIRED_VALIDATION_LAYERS_SIZE; i++) {
 		for (const VkLayerProperties& properties : availableLayers) {
 			std::cout << properties.layerName << " - VERSION " << properties.implementationVersion <<
 				": " << properties.description << std::endl;
@@ -95,6 +95,11 @@ void VulkanHandler::EnableValidationLayers() {
 			}
 		}
 	}
+	std::cout << "Required validation layers: " << std::endl;
+	for (const char* requiredLayer : requiredValidationLayers) {
+		std::cout << requiredLayer << std::endl;
+	}
+
 	if (requestedLayers > 0) {
 		throw std::runtime_error("Not all the required validation layers have been found");
 	}
@@ -180,6 +185,7 @@ bool VulkanHandler::CheckQueueFamiliesSupport(const VkPhysicalDevice &pDevice) {
 	std::vector<VkQueueFamilyProperties> queueFamiliesProperties(queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, &queueFamiliesProperties[0]);
 
+
 #ifndef NDEBUG
 	{
 		VkPhysicalDeviceProperties pDeviceProperties;
@@ -187,33 +193,49 @@ bool VulkanHandler::CheckQueueFamiliesSupport(const VkPhysicalDevice &pDevice) {
 		std::cout << "Enumerating queue families for " << pDeviceProperties.deviceName << std::endl;
 	}
 #endif
-	for (const VkQueueFamilyProperties &queueProperties : queueFamiliesProperties) {
+	std::vector<uint32_t> queueFamilyIndices;
+	uint32_t requiredQueueFlagsCount = REQUIRED_QUEUE_FLAGS_SIZE;
+	for (const VkQueueFlags &queueFlag : requiredQueueFlags) {
+		for (uint32_t j = 0; j < queueFamiliesProperties.size(); j++) {
 #ifndef NDEBUG
-		{
-			const char* queueFlagName = TranslateQueueFlags(queueProperties.queueFlags);
-			std::cout << queueFlagName << std::endl;
-		}
+			{
+				const char* queueFlagName = TranslateQueueFlags(queueFamiliesProperties[j].queueFlags);
+				std::cout << queueFlagName << std::endl;
+			}
 #endif
-		if (queueProperties.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-			return 1;
+			if (queueFamiliesProperties[j].queueFlags & queueFlag) {
+
+				queueFamilyIndices.push_back(j); //set the the index of the required queue to the gpu one
+			
+				VkDeviceQueueCreateInfo queueCreateInfo{};
+				queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+				queueCreateInfo.queueCount = REQUIRED_QUEUE_FLAGS_SIZE;
+				queueCreateInfo.queueFamilyIndex = j;
+				float queuePriority = 1.0f;
+				queueCreateInfo.pQueuePriorities = &queuePriority;
+				deviceQueueCreateInfos.push_back(queueCreateInfo);
+
+				requiredQueueFlagsCount += -1;
+			}
 		}
 	}
-	return 0;
+	
+	return requiredQueueFlagsCount == 0;
 }
 
-const char* VulkanHandler::TranslateQueueFlags(const VkQueueFlags& queueFlags) {
-		if(queueFlags & VK_QUEUE_GRAPHICS_BIT)			{ return "VK_QUEUE_GRAPHICS_BIT";		}
-		if(queueFlags & VK_QUEUE_COMPUTE_BIT)			{ return "VK_QUEUE_COMPUTE_BIT";		}
-		if(queueFlags & VK_QUEUE_TRANSFER_BIT)			{ return "VK_QUEUE_TRANSFER_BIT";		}
-		if(queueFlags & VK_QUEUE_SPARSE_BINDING_BIT)	{ return "VK_QUEUE_SPARSE_BINDING_BIT";	}
-		if(queueFlags & VK_QUEUE_PROTECTED_BIT)			{ return "VK_QUEUE_PROTECTED_BIT";		}
+const char* VulkanHandler::TranslateQueueFlags(const VkQueueFlags& queueFlag) {
+		if(queueFlag & VK_QUEUE_GRAPHICS_BIT)			{ return "VK_QUEUE_GRAPHICS_BIT";		}
+		if(queueFlag & VK_QUEUE_COMPUTE_BIT)			{ return "VK_QUEUE_COMPUTE_BIT";		}
+		if(queueFlag & VK_QUEUE_TRANSFER_BIT)			{ return "VK_QUEUE_TRANSFER_BIT";		}
+		if(queueFlag & VK_QUEUE_SPARSE_BINDING_BIT)	{ return "VK_QUEUE_SPARSE_BINDING_BIT";	}
+		if(queueFlag & VK_QUEUE_PROTECTED_BIT)			{ return "VK_QUEUE_PROTECTED_BIT";		}
 #ifdef VK_ENABLE_BETA_EXTENSIONS
 		if (queueFlags & VK_QUEUE_VIDEO_DECODE_BIT_KHR) { return "VK_QUEUE_VIDEO_DECODE_BIT_KHR"; }
 #endif											
 #ifdef VK_ENABLE_BETA_EXTENSIONS				
 		if (queueFlags & VK_QUEUE_VIDEO_ENCODE_BIT_KHR) { return "VK_QUEUE_VIDEO_ENCODE_BIT_KHR"; }
 #endif											
-		if (queueFlags & VK_QUEUE_FLAG_BITS_MAX_ENUM)	{ return "VK_QUEUE_FLAG_BITS_MAX_ENUM"; }
+		if (queueFlag & VK_QUEUE_FLAG_BITS_MAX_ENUM)	{ return "VK_QUEUE_FLAG_BITS_MAX_ENUM"; }
 	return "unknown flag";
 }
 
@@ -221,11 +243,20 @@ void VulkanHandler::SetLogicalDevice() {
 	
 	VkDeviceCreateInfo deviceCreateInfo{};
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(requiredValidationLayers.size());
+#ifndef NDEBUG
+	deviceCreateInfo.enabledLayerCount = REQUIRED_VALIDATION_LAYERS_SIZE;
 	deviceCreateInfo.ppEnabledLayerNames = &requiredValidationLayers[0];
-	//deviceCreateInfo.queueCreateInfoCount = ;
-	//deviceCreateInfo.pQueueCreateInfos = ;
+#endif
+	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(deviceQueueCreateInfos.size());
+	deviceCreateInfo.pQueueCreateInfos = &deviceQueueCreateInfos[0];
 
-	vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
+	VkResult result = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
+	if (result != VK_SUCCESS) {
+#ifndef NDEBUG
+		std::cout << "error creating logical device : " << TranslateVkResult(result) << std::endl;
+#endif
+		throw std::runtime_error("error creating logical device");
+	}
+
 
 }

@@ -2,7 +2,15 @@
 #define VULKAN_HANDLER_H
 
 #include <vulkan/vulkan.h>
-#include <array>
+#include <vector>
+
+#ifndef NDEBUG
+	#define REQUIRED_VALIDATION_LAYERS { "VK_LAYER_KHRONOS_validation" }
+	#define REQUIRED_VALIDATION_LAYERS_SIZE 1
+#endif
+
+#define REQUIRED_QUEUE_FLAGS { VK_QUEUE_GRAPHICS_BIT }
+#define REQUIRED_QUEUE_FLAGS_SIZE 1
 
 struct VulkanHandler {
 
@@ -14,20 +22,21 @@ struct VulkanHandler {
 
 	void CreateInstance();
 	void SetPhysicalDevice();
+	bool CheckQueueFamiliesSupport(const VkPhysicalDevice& pDevice);
 	void SetLogicalDevice();
 	
-	static int PhysicalDeviceScore(const VkPhysicalDevice &pDevice);
-	static bool CheckQueueFamiliesSupport(const VkPhysicalDevice& pDevice);
+	int PhysicalDeviceScore(const VkPhysicalDevice& pDevice);
 	static const char* TranslateVkResult(const VkResult &vkResult);
-	static const char* TranslateQueueFlags(const VkQueueFlags &queueFamilyProperties);
+	static const char* TranslateQueueFlags(const VkQueueFlags &queueFlag);
 
 	VkInstance instance;
 	VkPhysicalDevice physicalDevice;
 	VkDevice device;
-
-	std::array<const char*, 1> requiredValidationLayers = {
-		"VK_LAYER_KHRONOS_validation",
-	};
+#ifndef NDEBUG
+	const char* requiredValidationLayers[REQUIRED_VALIDATION_LAYERS_SIZE] = REQUIRED_VALIDATION_LAYERS;
+#endif
+	VkQueueFlags requiredQueueFlags[REQUIRED_QUEUE_FLAGS_SIZE] = REQUIRED_QUEUE_FLAGS;
+	std::vector<VkDeviceQueueCreateInfo> deviceQueueCreateInfos;
 };
 
 #endif
