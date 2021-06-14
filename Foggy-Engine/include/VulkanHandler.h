@@ -32,6 +32,7 @@ struct VulkanHandler {
 	VkInstance instance;
 	VkPhysicalDevice physicalDevice;
 	VkDevice device;
+	
 #ifndef NDEBUG
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 #endif
