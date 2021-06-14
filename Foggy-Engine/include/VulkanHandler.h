@@ -5,6 +5,8 @@
 #include <vector>
 #include <array>
 
+#include "Window.h"
+
 struct VulkanHandler {
 
 	void InitVulkan();

@@ -33,14 +33,22 @@ void VulkanHandler::CreateInstance() {
 #ifndef NDEBUG
 	createInfo.enabledLayerCount = static_cast<uint32_t>(requiredValidationLayers.size());
 	createInfo.ppEnabledLayerNames = &requiredValidationLayers[0];
-	//createInfo.enabledExtensionCount = ;
 #endif
+	uint32_t glfwExtensionsCount = 0;
+	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionsCount);
+	createInfo.enabledExtensionCount = glfwExtensionsCount;
+	createInfo.ppEnabledExtensionNames = glfwExtensions;
+
+#ifndef NDEBUG
+	std::cout << "creating vkinstance" << std::endl;
+#endif
+
 	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 	if (result != VK_SUCCESS) {
 #ifndef NDEBUG
-		std::cout << "" << std::endl;
+		std::cout << "Error creating vkinstance: " << TranslateVkResult(result) << std::endl;
 #endif	
-		throw std::runtime_error((std::string("Error creating vkinstance: ") + std::string(TranslateVkResult(result))).c_str());
+		throw std::runtime_error("Error creating vkinstance");
 	}
 }
 
@@ -187,11 +195,11 @@ bool VulkanHandler::CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevic
 #endif
 	uint32_t requiredExtensionsCount = static_cast<uint32_t>(requiredExtensionsNames.size());
 	for (const VkExtensionProperties& extensionProperties : pDeviceExtensions) {
-#ifndef NDEBUG
-		std::cout << extensionProperties.extensionName << " | " << extensionProperties.specVersion << std::endl;
-#endif
 		for (const char* requiredName : requiredExtensionsNames) {
 			if (strcmp(requiredName, extensionProperties.extensionName) == 0) {
+#ifndef NDEBUG
+				std::cout << "Required and found " << requiredName << " | " << extensionProperties.specVersion << std::endl;
+#endif
 				requiredExtensionsCount += -1;
 			}
 		}
@@ -279,6 +287,9 @@ void VulkanHandler::SetLogicalDevice() {
 	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensionsNames.size());
 	deviceCreateInfo.ppEnabledExtensionNames = &requiredExtensionsNames[0];
 
+#ifndef NDEBUG
+	std::cout << "Creating logical device" << std::endl;
+#endif
 	VkResult result = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
 	if (result != VK_SUCCESS) {
 #ifndef NDEBUG
