@@ -21,6 +21,7 @@ struct VulkanHandler {
 	bool CheckPhysicalDeviceExtensions(const VkPhysicalDevice &pDevice);
 	VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex);
 	void SetLogicalDevice();
+	VkCommandPool CreateCommandPool(uint32_t queueFamilyIndex);
 
 	int PhysicalDeviceScore(const VkPhysicalDevice& pDevice);
 	static const char* TranslateVkResult(const VkResult &vkResult);
@@ -37,6 +38,7 @@ struct VulkanHandler {
 	std::array<const char*, 1> requiredExtensionsNames = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	std::array<VkQueueFlags, 1> requiredQueueFlags = { VK_QUEUE_GRAPHICS_BIT };
 	std::vector<uint32_t> queueFamiliesIndices;
+	std::vector<VkCommandPool> cmdPools;
 };
 
 #endif

@@ -264,6 +264,7 @@ VkDeviceQueueCreateInfo VulkanHandler::CreateQueue(uint32_t queueFamilyIndex) {
 	queueCreateInfo.pQueuePriorities = &queuePriority;
 	queueCreateInfo.queueCount = 1;
 	queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
+
 	return queueCreateInfo;
 }
 
@@ -298,11 +299,40 @@ void VulkanHandler::SetLogicalDevice() {
 		throw std::runtime_error("error creating logical device");
 	}
 
+	for (const uint32_t& index : queueFamiliesIndices) {
+		cmdPools.push_back(CreateCommandPool(index));
+	}
+}
 
+VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
+
+	VkCommandPoolCreateInfo cmdPoolCreateInfo;
+	cmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	cmdPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
+	cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+	cmdPoolCreateInfo.pNext = VK_NULL_HANDLE;
+
+#ifndef NDEBUG
+	std::cout << "Creating " << TranslateQueueFlags(requiredQueueFlags[queueFamilyIndex]) << " command pool" << std::endl;
+#endif
+	VkCommandPool cmdPool = VK_NULL_HANDLE;
+	VkResult result = vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &cmdPool);
+
+	if (result != VK_SUCCESS) {
+#ifndef NDEBUG
+		std::cout << "error creating command pool: " << TranslateVkResult(result) << std::endl;
+#endif
+		throw std::runtime_error("error creating command pool");
+	}
+
+	return cmdPool;
 }
 
 
 void VulkanHandler::Cleanup() {
 	vkDestroyInstance(instance, nullptr);
 	vkDestroyDevice(device, nullptr);
+	for (const VkCommandPool& cmdPool : cmdPools) {
+		vkDestroyCommandPool(device, cmdPool, nullptr);
+	}
 }
