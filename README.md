@@ -1,4 +1,4 @@
-# Foggy-Engine
+# Foggy-Engine (WORK IN PROGRESS)
 
 A c++ engine based on Vulkan written for developing quick cross-platform 3d applications and videogames. I intentioally decided to use no gui in the editor for a faster developing session.
 
@@ -21,4 +21,4 @@ cmake ..
 
 # Quick Tutorial
 
-Open the Editor executable and press `CTRL-N` for creating a new scene. The commands creates a raw `scene.json` at `appInfo/scenes/scene.json`. Then open `appInfo/settings/settings.json` and set the `default scene path` as the path relative to the executable path: `"../../appInfo/scenes/scene.json"`
+Open the Editor executable and press `CTRL-N` for creating a new scene. The commands creates a raw `scene.json` at `appInfo/scenes/scene.json`. Then open `appInfo/settings/settings.json` and set the `default scene path` as the path relative to the executable path: `"../../appInfo/scenes/scene.json"`. 
