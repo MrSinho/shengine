@@ -337,7 +337,7 @@ void VulkanHandler::CreateCmdBuffer(const VkCommandPool &cmdPool) {
 	cmdBufferAllocateInfo.commandBufferCount = 1;
 	cmdBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	
-	CheckVkResult(vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdPool));
+	//CheckVkResult(vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdPool));
 }
 
 void VulkanHandler::Cleanup() {
