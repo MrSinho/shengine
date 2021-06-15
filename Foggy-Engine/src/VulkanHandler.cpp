@@ -8,6 +8,15 @@
 #include "VulkanHandler.h"
 #pragma warning ( disable : 26812 )
 
+void VulkanHandler::CheckVkResult(VkResult result, const char* errormsg) {
+	if (result != VK_SUCCESS) {
+#ifndef NDEBUG
+		std::cout << errormsg << ": " << TranslateVkResult(result) << std::endl;
+#endif	
+		throw std::runtime_error(errormsg);
+	}
+}
+
 void VulkanHandler::InitVulkan() {
 #ifndef NDEBUG
 	EnableValidationLayers();
@@ -44,13 +53,7 @@ void VulkanHandler::CreateInstance() {
 	std::cout << "creating vkinstance" << std::endl;
 #endif
 
-	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-	if (result != VK_SUCCESS) {
-#ifndef NDEBUG
-		std::cout << "Error creating vkinstance: " << TranslateVkResult(result) << std::endl;
-#endif	
-		throw std::runtime_error("Error creating vkinstance");
-	}
+	CheckVkResult(vkCreateInstance(&createInfo, nullptr, &instance), "Error creating vkinstance");
 }
 
 const char* VulkanHandler::TranslateVkResult(const VkResult& vkResult) {
@@ -180,6 +183,12 @@ int VulkanHandler::PhysicalDeviceScore(const VkPhysicalDevice &pDevice) {
 		score += pFeatures.variableMultisampleRate * 16;
 		score += pFeatures.shaderClipDistance;
 		score += pFeatures.geometryShader * 20;
+
+		VkPhysicalDeviceMemoryProperties pMemProperties;
+		vkGetPhysicalDeviceMemoryProperties(pDevice, &pMemProperties);
+
+		score += pMemProperties.memoryTypeCount;
+		score += pMemProperties.memoryHeapCount;
 	}
 	return score;
 }
@@ -292,16 +301,13 @@ void VulkanHandler::SetLogicalDevice() {
 #ifndef NDEBUG
 	std::cout << "Creating logical device" << std::endl;
 #endif
-	VkResult result = vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
-	if (result != VK_SUCCESS) {
-#ifndef NDEBUG
-		std::cout << "error creating logical device : " << TranslateVkResult(result) << std::endl;
-#endif
-		throw std::runtime_error("error creating logical device");
-	}
+
+	CheckVkResult(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device), "Error creating logical device");
 
 	for (const uint32_t& index : queueFamiliesIndices) {
-		cmdPools.push_back(CreateCommandPool(index));
+		VkCommandPool cmdPool = CreateCommandPool(index);
+		CreateCmdBuffer(cmdPool);
+		cmdPools.push_back(cmdPool);
 	}
 }
 
@@ -317,18 +323,22 @@ VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
 	std::cout << "Creating " << TranslateQueueFlags(requiredQueueFlags[queueFamilyIndex]) << " command pool" << std::endl;
 #endif
 	VkCommandPool cmdPool = VK_NULL_HANDLE;
-	VkResult result = vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &cmdPool);
-
-	if (result != VK_SUCCESS) {
-#ifndef NDEBUG
-		std::cout << "error creating command pool: " << TranslateVkResult(result) << std::endl;
-#endif
-		throw std::runtime_error("error creating command pool");
-	}
+	
+	CheckVkResult(vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &cmdPool), "Error creating command pool");
 
 	return cmdPool;
 }
 
+void VulkanHandler::CreateCmdBuffer(const VkCommandPool &cmdPool) {
+	VkCommandBufferAllocateInfo cmdBufferAllocateInfo{};
+	cmdBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	cmdBufferAllocateInfo.pNext = VK_NULL_HANDLE;
+	cmdBufferAllocateInfo.commandPool = cmdPool;
+	cmdBufferAllocateInfo.commandBufferCount = 1;
+	cmdBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	
+	CheckVkResult(vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdPool));
+}
 
 void VulkanHandler::Cleanup() {
 	vkDestroyInstance(instance, nullptr);

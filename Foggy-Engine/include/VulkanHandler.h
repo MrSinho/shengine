@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <array>
+#include <stdint.h>
 
 #include "Window.h"
 
@@ -22,10 +23,13 @@ struct VulkanHandler {
 	VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex);
 	void SetLogicalDevice();
 	VkCommandPool CreateCommandPool(uint32_t queueFamilyIndex);
+	void CreateCmdBuffer(const VkCommandPool &cmdPool);
 
 	int PhysicalDeviceScore(const VkPhysicalDevice& pDevice);
 	static const char* TranslateVkResult(const VkResult &vkResult);
 	static const char* TranslateQueueFlags(const VkQueueFlags &queueFlag);
+	static void CheckVkResult(VkResult result, const char *errormsg);
+	uint32_t GetMemoryType(const uint32_t &typeFilter, const VkMemoryPropertyFlags &memProperties);
 
 	void Cleanup();
 
