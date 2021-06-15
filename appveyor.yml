@@ -6,4 +6,10 @@ install:
   - cmd: cmake .
 
 build:
-  project: Foggy-Engine.sln  
+  project: Foggy-Engine.sln
+
+deploy:
+  - provider: GitHub
+  - artifact: main
+  - on:
+    branch: main  
