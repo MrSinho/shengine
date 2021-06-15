@@ -1,10 +1,6 @@
 #version
 version: 1.0.{build}
 
-brancher:
-  only:
-    - main
-
 install:
   - cmd: mkdir build 
   - cmd: cd build
