@@ -6,4 +6,4 @@ install:
   - cmd: cmake .
 
 build:
-  - cmd: cmake --build .
+  project: Foggy-Engine.sln  
