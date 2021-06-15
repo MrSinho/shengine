@@ -4,4 +4,6 @@ version: 1.0.{build}
 install:
   - cmd: git submodule update --init --recursive
   - cmd: cmake .
+
+build:
   - cmd: cmake --build .
