@@ -5,6 +5,8 @@ jobs:
     steps:
       - checkout:
       - run:
+          name: 'generating projects'
           command: 'cmake .'
       - run: 
+          name: 'building'
           command: 'cmake --build .'
