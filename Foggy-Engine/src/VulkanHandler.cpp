@@ -6,6 +6,7 @@
 #endif
 
 #include "VulkanHandler.h"
+#pragma warning ( disable : 26812 )
 
 void VulkanHandler::InitVulkan() {
 #ifndef NDEBUG
