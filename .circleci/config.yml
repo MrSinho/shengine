@@ -16,7 +16,7 @@ jobs:
           command: 'sudo apt-get update && sudo apt-get -y install g++'
       - run:
           name: 'generate projects'
-          command: 'cmake -H. -Bbuild'
-      - run: 
-          name: 'build'
-          command: 'cmake --build .'
+          command: 'dir'
+      #- run: 
+      #    name: 'build'
+      #    command: 'cmake --build .'
