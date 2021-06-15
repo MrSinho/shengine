@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: 'ubuntu'
+      - image: 'debian'
     steps:
       - run:
           name: 'install sudo'
