@@ -10,6 +10,5 @@ build:
 
 deploy:
   - provider: GitHub
-  - artifact: main
   - on:
     branch: main  
