@@ -61,6 +61,7 @@ void VulkanHandler::InitVulkan(uint32_t width, uint32_t height, const char* titl
 	CreateWindowSurface();
 	SetPhysicalDevice();
 	SetLogicalDevice();
+	CreateSwapchain();
 }
 
 void VulkanHandler::CreateInstance() {
@@ -293,7 +294,7 @@ bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::array<uint32_t, R
 bool VulkanHandler::CheckPresentSupport(const VkPhysicalDevice& pDevice, uint32_t queueFamilyIndex) {
 	VkBool32 supported = 0;
 	vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, queueFamilyIndex, surface, &supported);
-	return supported;
+	return static_cast<bool>(supported);
 }
 
 const char* VulkanHandler::TranslateQueueFlags(const VkQueueFlags& queueFlag) {
@@ -367,9 +368,8 @@ VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
 #ifndef NDEBUG
 	std::cout << "Creating " << TranslateQueueFlags(requiredQueueFlags[queueFamilyIndex]) << " command pool" << std::endl;
 #endif
+
 	VkCommandPool cmdPool = VK_NULL_HANDLE;
-	
-	//Create command buffer given the command pool
 	CheckVkResult(vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &cmdPool), "Error creating command pool");
 
 	return cmdPool;
@@ -388,6 +388,17 @@ void VulkanHandler::CreateCmdBuffer(const VkCommandPool &cmdPool) {
 #endif
 	VkCommandBuffer cmdBuffer;
 	CheckVkResult(vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdBuffer), "Error creating command buffer");
+}
+
+void VulkanHandler::CreateSwapchain() {
+
+	VkSwapchainCreateInfoKHR swapchainCreateInfo{};
+	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+	swapchainCreateInfo.pNext = VK_NULL_HANDLE;
+	swapchainCreateInfo.surface = surface;
+	swapchainCreateInfo.imageFormat = VK_FORMAT_B8G8R8A8_UNORM; //standard format?
+	CheckVkResult(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities), "error getting surface capabilities");
+	swapchainCreateInfo.minImageCount = surfaceCapabilities.minImageCount;
 }
 
 void VulkanHandler::Cleanup() {

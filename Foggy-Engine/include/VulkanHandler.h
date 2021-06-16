@@ -93,6 +93,11 @@ struct VulkanHandler {
 	*/
 	void CreateCmdBuffer(const VkCommandPool &cmdPool);
 
+	/*
+	*	Creates an ez swapchain
+	*/
+	void CreateSwapchain();
+
 // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 	/*
@@ -132,6 +137,11 @@ struct VulkanHandler {
 	void PushAllQueueFamilyIndices(const std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t &pDeviceIndex);
 
 	/*
+	*	
+	*/
+	VkSurfaceCapabilitiesKHR GetSurfaceCapabilities();
+
+	/*
 	*	Does a nice cleanup
 	*/
 	void Cleanup();
@@ -144,6 +154,7 @@ struct VulkanHandler {
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
 	VkSurfaceKHR surface;
+	VkSurfaceCapabilitiesKHR surfaceCapabilities;
 
 	uint32_t physicalDeviceIndex;
 
