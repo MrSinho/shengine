@@ -154,7 +154,6 @@ struct VulkanHandler {
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
 	VkSurfaceKHR surface;
-	VkSurfaceCapabilitiesKHR surfaceCapabilities;
 
 	uint32_t physicalDeviceIndex;
 

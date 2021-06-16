@@ -392,13 +392,51 @@ void VulkanHandler::CreateCmdBuffer(const VkCommandPool &cmdPool) {
 
 void VulkanHandler::CreateSwapchain() {
 
+	VkSurfaceCapabilitiesKHR surfaceCapabilities;
+	CheckVkResult(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities), "error getting surface capabilities");
+#ifndef NDEBUG
+	std::cout << "Surface capabilities: " << std::endl;
+	std::cout << "current extent: " << surfaceCapabilities.currentExtent.width << ", " << surfaceCapabilities.currentExtent.height << std::endl;
+	std::cout << "current transform: " << surfaceCapabilities.currentTransform << std::endl;
+	std::cout << "max image array layers: " << surfaceCapabilities.maxImageArrayLayers << std::endl;
+	std::cout << "max image count: " << surfaceCapabilities.maxImageCount << std::endl;
+	std::cout << "min image count: " << surfaceCapabilities.minImageCount << std::endl;
+	std::cout << "supported composite alpha: " << surfaceCapabilities.supportedCompositeAlpha << std::endl;
+	std::cout << "supported transforms: " << surfaceCapabilities.supportedTransforms << std::endl;
+	std::cout << "supported usage flags: " << surfaceCapabilities.supportedUsageFlags << std::endl;
+#endif
+
+	uint32_t surfaceFormatsCount;
+	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatsCount, nullptr);
+	std::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatsCount);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatsCount, &surfaceFormats[0]);
+#ifndef NDEBUG
+	std::cout << "Surface formats: " << std::endl;
+	for (uint32_t i = 0; i < surfaceFormatsCount; i++) {
+		std::cout << i << ": " << std::endl;
+		std::cout << "color space: " << surfaceFormats[i].colorSpace << std::endl;
+		std::cout << "format: " << surfaceFormats[i].format << std::endl;
+	}
+#endif
+
+	uint32_t presentModeCount;
+	vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);
+	std::vector<VkPresentModeKHR> presentModes(presentModeCount);
+	vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, &presentModes[0]);
+#ifndef NDEBUG
+	std::cout << "Present modes: " << std::endl;
+	for (uint32_t i = 0; i < presentModeCount; i++) {
+		std::cout << presentModes[i] << std::endl;
+	}
+#endif
+
+
+
 	VkSwapchainCreateInfoKHR swapchainCreateInfo{};
 	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 	swapchainCreateInfo.pNext = VK_NULL_HANDLE;
 	swapchainCreateInfo.surface = surface;
 	swapchainCreateInfo.imageFormat = VK_FORMAT_B8G8R8A8_UNORM; //standard format?
-	CheckVkResult(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities), "error getting surface capabilities");
-	swapchainCreateInfo.minImageCount = surfaceCapabilities.minImageCount;
 }
 
 void VulkanHandler::Cleanup() {
