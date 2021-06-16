@@ -2,6 +2,7 @@ version: 2.1
 
 jobs:
   build:
+    working_directory: ~/Foggy-Engine
     docker:
       - image: 'debian'
     steps:
