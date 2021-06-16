@@ -11,7 +11,7 @@ pipeline {
 				sh 'cmake --build .'
 			}
 		}
-		stage('Test') {
+		stage('Tst') {
 			steps {
 				sh 'cd bin/Debug'
 				sh './Editor'
