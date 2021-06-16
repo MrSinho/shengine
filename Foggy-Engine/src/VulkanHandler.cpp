@@ -6,7 +6,41 @@
 #endif
 
 #include "VulkanHandler.h"
+
 #pragma warning ( disable : 26812 )
+
+#ifndef NDEBUG
+
+void VulkanHandler::EnableValidationLayers() {
+	uint32_t layerCount;
+	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+	std::vector<VkLayerProperties> availableLayers(layerCount);
+	vkEnumerateInstanceLayerProperties(&layerCount, &availableLayers[0]);
+
+	size_t requestedLayers = requiredValidationLayers.size();
+
+	std::cout << "Installed validation layers: " << std::endl;
+	for (uint32_t i = 0; i < static_cast<uint32_t>(requiredValidationLayers.size()); i++) {
+		for (const VkLayerProperties& properties : availableLayers) {
+			std::cout << properties.layerName << " - VERSION " << properties.implementationVersion <<
+				": " << properties.description << std::endl;
+			if (strcmp(properties.layerName, requiredValidationLayers[i]) == 0) {
+				requestedLayers -= 1;
+			}
+		}
+	}
+	std::cout << "Required validation layers: " << std::endl;
+	for (const char* requiredLayer : requiredValidationLayers) {
+		std::cout << requiredLayer << std::endl;
+	}
+
+	if (requestedLayers > 0) {
+		throw std::runtime_error("Not all the required validation layers have been found");
+	}
+}
+
+#endif
 
 void VulkanHandler::CheckVkResult(VkResult result, const char* errormsg) {
 	if (result != VK_SUCCESS) {
@@ -17,11 +51,14 @@ void VulkanHandler::CheckVkResult(VkResult result, const char* errormsg) {
 	}
 }
 
-void VulkanHandler::InitVulkan() {
+void VulkanHandler::InitVulkan(uint32_t width, uint32_t height, const char* title) {
+	window = Window();
+	window.InitGLFW(width, height, title);
 #ifndef NDEBUG
 	EnableValidationLayers();
 #endif
 	CreateInstance();
+	CreateWindowSurface();
 	SetPhysicalDevice();
 	SetLogicalDevice();
 }
@@ -46,6 +83,12 @@ void VulkanHandler::CreateInstance() {
 #endif
 	uint32_t glfwExtensionsCount = 0;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionsCount);
+#ifndef NDEBUG
+	std::cout << "Required instance extensions: " << std::endl;
+	for (uint32_t i = 0; i < glfwExtensionsCount; i++) {
+		std::cout << glfwExtensions[i] << std::endl;
+	}
+#endif
 	createInfo.enabledExtensionCount = glfwExtensionsCount;
 	createInfo.ppEnabledExtensionNames = glfwExtensions;
 
@@ -54,6 +97,18 @@ void VulkanHandler::CreateInstance() {
 #endif
 
 	CheckVkResult(vkCreateInstance(&createInfo, nullptr, &instance), "Error creating vkinstance");
+}
+
+void VulkanHandler::CreateWindowSurface() {
+#ifdef WIN32
+	VkWin32SurfaceCreateInfoKHR win32SurfaceCreateInfo{};
+	win32SurfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+	win32SurfaceCreateInfo.pNext = VK_NULL_HANDLE;
+	win32SurfaceCreateInfo.hwnd = glfwGetWin32Window(window.window);
+	win32SurfaceCreateInfo.hinstance = GetModuleHandle(nullptr);
+#endif
+
+	CheckVkResult(vkCreateWin32SurfaceKHR(instance, &win32SurfaceCreateInfo, nullptr, &surface), "error creating window surface");
 }
 
 const char* VulkanHandler::TranslateVkResult(const VkResult& vkResult) {
@@ -86,45 +141,13 @@ const char* VulkanHandler::TranslateVkResult(const VkResult& vkResult) {
 	return "unknown vkresult";
 }
 
-#ifndef NDEBUG
-
-void VulkanHandler::EnableValidationLayers() {
-	uint32_t layerCount;
-	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-	
-	std::vector<VkLayerProperties> availableLayers(layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, &availableLayers[0]);
-
-	size_t requestedLayers = requiredValidationLayers.size();
-
-	std::cout << "Installed validation layers: " << std::endl;
-	for (uint32_t i = 0; i < static_cast<uint32_t>(requiredValidationLayers.size()); i++) {
-		for (const VkLayerProperties& properties : availableLayers) {
-			std::cout << properties.layerName << " - VERSION " << properties.implementationVersion <<
-				": " << properties.description << std::endl;
-			if (strcmp(properties.layerName, requiredValidationLayers[i]) == 0) {
-				requestedLayers -= 1;
-			}
-		}
-	}
-	std::cout << "Required validation layers: " << std::endl;
-	for (const char* requiredLayer : requiredValidationLayers) {
-		std::cout << requiredLayer << std::endl;
-	}
-
-	if (requestedLayers > 0) {
-		throw std::runtime_error("Not all the required validation layers have been found");
-	}
-}
-
-#endif
-
 void VulkanHandler::SetPhysicalDevice() {
 
 	uint32_t pDeviceCount = 0;
 	vkEnumeratePhysicalDevices(instance, &pDeviceCount, nullptr);
 
 	std::vector<VkPhysicalDevice> pDevices(pDeviceCount);
+	std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices(pDeviceCount);
 	vkEnumeratePhysicalDevices(instance, &pDeviceCount, &pDevices[0]);
 
 	if (pDeviceCount == 0) {
@@ -136,27 +159,35 @@ void VulkanHandler::SetPhysicalDevice() {
 #endif
 
 	std::vector<int> scores;
-	for (const VkPhysicalDevice& pDevice : pDevices) {
+	for (uint32_t i = 0; i < pDevices.size(); i++) {
 #ifndef NDEBUG
 		VkPhysicalDeviceProperties pProperties;
-		vkGetPhysicalDeviceProperties(pDevice, &pProperties);
+		vkGetPhysicalDeviceProperties(pDevices[i], &pProperties);
 		std::cout << "Found " << pProperties.deviceName << std::endl;
 #endif
-
-		scores.push_back(PhysicalDeviceScore(pDevice));
+		scores.push_back(PhysicalDeviceScore(_queueFamilyIndices, i, pDevices[i]));
 	}
 
 	int highScore = -1;
 	if (scores.size() > 1) {
 		for (uint32_t i = 1; i < static_cast<uint32_t>(scores.size()); i++) {
-			if (scores[i] > scores[i - 1]) { physicalDevice = pDevices[i]; highScore = scores[i]; }
-			else { physicalDevice = pDevices[i - 1];  highScore = scores[i - 1]; }
+			if (scores[i] > scores[i - 1]) { 
+				physicalDevice = pDevices[i]; 
+				highScore = scores[i]; 
+				PushAllQueueFamilyIndices(_queueFamilyIndices, i);
+			}
+			else { 
+				physicalDevice = pDevices[i - 1];  
+				highScore = scores[i - 1]; 
+				PushAllQueueFamilyIndices(_queueFamilyIndices, i-1);
+			}
 		}
 	}
 	else {
-		highScore = scores[0]; physicalDevice = pDevices[0];
+		highScore = scores[0]; 
+		physicalDevice = pDevices[0];
+		PushAllQueueFamilyIndices(_queueFamilyIndices, 0);
 	}
-	
 	if (highScore < 0) {
 		throw std::runtime_error("No gpu with requested vulkan features/extensions has been found");
 	}
@@ -171,11 +202,15 @@ void VulkanHandler::SetPhysicalDevice() {
 
 }
 
-int VulkanHandler::PhysicalDeviceScore(const VkPhysicalDevice &pDevice) {
+void VulkanHandler::PushAllQueueFamilyIndices(const std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex) {
+	queueFamiliesIndices = _queueFamilyIndices[pDeviceIndex];
+}
+
+int VulkanHandler::PhysicalDeviceScore(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
 	
 	int score = -1;
 
-	if (CheckQueueFamiliesSupport(pDevice) && CheckPhysicalDeviceExtensions(pDevice)) {
+	if (CheckQueueFamiliesSupport(_queueFamilyIndices, pDeviceIndex, pDevice) && CheckPhysicalDeviceExtensions(pDevice)) {
 		VkPhysicalDeviceFeatures pFeatures;
 		vkGetPhysicalDeviceFeatures(pDevice, &pFeatures);
 
@@ -203,9 +238,9 @@ bool VulkanHandler::CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevic
 #ifndef NDEBUG
 	std::cout << "Enumerating device extensions" << std::endl;
 #endif
-	uint32_t requiredExtensionsCount = static_cast<uint32_t>(requiredExtensionsNames.size());
+	uint32_t requiredExtensionsCount = static_cast<uint32_t>(requiredDeviceExtensionsNames.size());
 	for (const VkExtensionProperties& extensionProperties : pDeviceExtensions) {
-		for (const char* requiredName : requiredExtensionsNames) {
+		for (const char* requiredName : requiredDeviceExtensionsNames) {
 			if (strcmp(requiredName, extensionProperties.extensionName) == 0) {
 #ifndef NDEBUG
 				std::cout << "Required and found " << requiredName << " | " << extensionProperties.specVersion << std::endl;
@@ -218,7 +253,7 @@ bool VulkanHandler::CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevic
 	return requiredExtensionsCount == 0;
 }
 
-bool VulkanHandler::CheckQueueFamiliesSupport(const VkPhysicalDevice &pDevice) {
+bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
 	uint32_t queueFamilyCount;
 	vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, nullptr);
 
@@ -233,6 +268,7 @@ bool VulkanHandler::CheckQueueFamiliesSupport(const VkPhysicalDevice &pDevice) {
 	}
 #endif
 	size_t requiredQueueFlagsCount = requiredQueueFlags.size();
+	uint32_t _queueFamilyIndicesCount = 0;
 	for (uint32_t i = 0; i < static_cast<uint32_t>(queueFamiliesProperties.size()); i++) {
 #ifndef NDEBUG
 		{
@@ -242,13 +278,22 @@ bool VulkanHandler::CheckQueueFamiliesSupport(const VkPhysicalDevice &pDevice) {
 #endif
 		for (const VkQueueFlags &queueFlag : requiredQueueFlags) {
 			if (queueFamiliesProperties[i].queueFlags & queueFlag) {
-				requiredQueueFlagsCount += -1;
-				queueFamiliesIndices.push_back(i);
+				if (CheckPresentSupport(pDevice, i)) {
+					requiredQueueFlagsCount += -1;
+					_queueFamilyIndices[pDeviceIndex][_queueFamilyIndicesCount] = i;
+					_queueFamilyIndicesCount++;
+				}
 			}
 		}
 	}
 	
 	return requiredQueueFlagsCount == 0;
+}
+
+bool VulkanHandler::CheckPresentSupport(const VkPhysicalDevice& pDevice, uint32_t queueFamilyIndex) {
+	VkBool32 supported = 0;
+	vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, queueFamilyIndex, surface, &supported);
+	return supported;
 }
 
 const char* VulkanHandler::TranslateQueueFlags(const VkQueueFlags& queueFlag) {
@@ -295,8 +340,8 @@ void VulkanHandler::SetLogicalDevice() {
 	deviceCreateInfo.pQueueCreateInfos = &queueCreateInfos[0];
 	VkPhysicalDeviceFeatures pDeviceFeatures{};
 	deviceCreateInfo.pEnabledFeatures = &pDeviceFeatures;
-	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensionsNames.size());
-	deviceCreateInfo.ppEnabledExtensionNames = &requiredExtensionsNames[0];
+	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredDeviceExtensionsNames.size());
+	deviceCreateInfo.ppEnabledExtensionNames = &requiredDeviceExtensionsNames[0];
 
 #ifndef NDEBUG
 	std::cout << "Creating logical device" << std::endl;
@@ -324,6 +369,7 @@ VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
 #endif
 	VkCommandPool cmdPool = VK_NULL_HANDLE;
 	
+	//Create command buffer given the command pool
 	CheckVkResult(vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &cmdPool), "Error creating command pool");
 
 	return cmdPool;
@@ -337,7 +383,11 @@ void VulkanHandler::CreateCmdBuffer(const VkCommandPool &cmdPool) {
 	cmdBufferAllocateInfo.commandBufferCount = 1;
 	cmdBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	
-	//CheckVkResult(vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdPool));
+#ifndef NDEBUG
+	std::cout << "Creating command buffer" << std::endl;
+#endif
+	VkCommandBuffer cmdBuffer;
+	CheckVkResult(vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdBuffer), "Error creating command buffer");
 }
 
 void VulkanHandler::Cleanup() {

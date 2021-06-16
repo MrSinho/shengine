@@ -2,13 +2,10 @@
 
 int main() {
 
-	Window window{};
-	window.InitGLFW(720, 480, "Foggy-Engine Editor");
+	VulkanHandler vulkanHandler{};
+	vulkanHandler.InitVulkan(720, 480, "Foggy-Engine Editor");
 
-	VulkanHandler vkHandler;
-	vkHandler.InitVulkan();
-
-	while (window.IsActive()) {
+	while (vulkanHandler.window.IsActive()) {
 		glfwPollEvents();
 	}
 
