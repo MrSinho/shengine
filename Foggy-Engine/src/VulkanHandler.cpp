@@ -148,7 +148,7 @@ void VulkanHandler::SetPhysicalDevice() {
 	vkEnumeratePhysicalDevices(instance, &pDeviceCount, nullptr);
 
 	std::vector<VkPhysicalDevice> pDevices(pDeviceCount);
-	std::vector<std::vector<uint32_t>> _queueFamilyIndices(pDeviceCount);
+	std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices(pDeviceCount);
 	vkEnumeratePhysicalDevices(instance, &pDeviceCount, &pDevices[0]);
 
 	if (pDeviceCount == 0) {
@@ -203,14 +203,11 @@ void VulkanHandler::SetPhysicalDevice() {
 
 }
 
-void VulkanHandler::PushAllQueueFamilyIndices(const std::vector<std::vector<uint32_t>> _queueFamilyIndices, const uint32_t& pDeviceIndex) {
-	size_t s = _queueFamilyIndices[pDeviceIndex].size();
-	for (const uint32_t &index : _queueFamilyIndices[pDeviceIndex]) {
-		queueFamilyIndices.insert(index);
-	}
+void VulkanHandler::PushAllQueueFamilyIndices(const std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex) {
+	queueFamilyIndices = _queueFamilyIndices[pDeviceIndex];
 }
 
-int VulkanHandler::PhysicalDeviceScore(std::vector<std::vector<uint32_t>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
+int VulkanHandler::PhysicalDeviceScore(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
 	
 	int score = -1;
 
@@ -257,7 +254,7 @@ bool VulkanHandler::CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevic
 	return requiredExtensionsCount == 0;
 }
 
-bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::vector<uint32_t>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
+bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
 	uint32_t queueFamilyCount;
 	vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, nullptr);
 
@@ -284,11 +281,11 @@ bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::vector<uint32_t>>
 		for (const VkQueueFlags &queueFlag : requiredQueueFlags) {
 			if (queueFamiliesProperties[i].queueFlags & queueFlag) {
 				requiredQueueFlagsCount += -1;
-				_queueFamilyIndices[pDeviceIndex].push_back(i);
+				_queueFamilyIndices[pDeviceIndex][_queueFamilyIndicesCount] = i;
 				_queueFamilyIndicesCount++;
 			}
 			if (CheckPresentSupport(pDevice, i)) {
-				_queueFamilyIndices[pDeviceIndex].push_back(i);
+				presentQueueFamilyIndex = i;
 				presentSupport = 1;
 			}
 		}
@@ -453,10 +450,10 @@ void VulkanHandler::CreateSwapchain() {
 	swapchainCreateInfo.clipped = 1;
 	swapchainCreateInfo.imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
 	swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	
-	swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	swapchainCreateInfo.queueFamilyIndexCount;
-	swapchainCreateInfo.pQueueFamilyIndices;
+	//if (queueFamilyIndices)
+	//swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	//swapchainCreateInfo.queueFamilyIndexCount;
+	//swapchainCreateInfo.pQueueFamilyIndices;
 }
 
 void VulkanHandler::Cleanup() {
