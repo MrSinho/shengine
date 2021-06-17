@@ -9,6 +9,7 @@
 #include <vector>
 #include <array>
 #include <stdint.h>
+#include <set>
 
 #define GLFW_INCLUDE_VULKAN
 #include "Window.h"
@@ -54,7 +55,7 @@ struct VulkanHandler {
 	*		   the current physical device
 	*	@return true or false, depending if the physical device satisfies the required queue families.
 	*/
-	bool CheckQueueFamiliesSupport(	std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices,
+	bool CheckQueueFamiliesSupport(	std::vector<std::vector<uint32_t>> _queueFamilyIndices,
 									const uint32_t &pDeviceIndex, 
 									const VkPhysicalDevice& pDevice);
 	/*
@@ -107,7 +108,7 @@ struct VulkanHandler {
 	*		   the current physical device
 	*	@return the gpu score
 	*/
-	int PhysicalDeviceScore(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices,
+	int PhysicalDeviceScore(std::vector<std::vector<uint32_t>> _queueFamilyIndices,
 							const uint32_t &pDeviceIndex,
 							const VkPhysicalDevice& pDevice);
 
@@ -134,7 +135,7 @@ struct VulkanHandler {
 	*	@param vector of arrays of queue family indices where the arrays count is equal to the physical devices count,
 	*		   the current physical device index,
 	*/
-	void PushAllQueueFamilyIndices(const std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t &pDeviceIndex);
+	void PushAllQueueFamilyIndices(const std::vector<std::vector<uint32_t>> _queueFamilyIndices, const uint32_t &pDeviceIndex);
 
 	/*
 	*	
@@ -155,15 +156,13 @@ struct VulkanHandler {
 	VkDevice device = VK_NULL_HANDLE;
 	VkSurfaceKHR surface;
 
-	uint32_t physicalDeviceIndex;
-
 #ifndef NDEBUG
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 #endif
 	std::array<const char*, 1> requiredDeviceExtensionsNames = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	const uint32_t requiredQueueFlagsCount = 1;
 	std::array<VkQueueFlags, REQUIRED_QUEUE_FLAGS_COUNT> requiredQueueFlags = REQUIRED_QUEUE_FLAGS;
-	std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT> queueFamiliesIndices;
+	std::set<uint32_t> queueFamilyIndices;
 	std::vector<VkCommandPool> cmdPools;
 };
 

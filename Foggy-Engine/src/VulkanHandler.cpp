@@ -148,7 +148,7 @@ void VulkanHandler::SetPhysicalDevice() {
 	vkEnumeratePhysicalDevices(instance, &pDeviceCount, nullptr);
 
 	std::vector<VkPhysicalDevice> pDevices(pDeviceCount);
-	std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices(pDeviceCount);
+	std::vector<std::vector<uint32_t>> _queueFamilyIndices(pDeviceCount);
 	vkEnumeratePhysicalDevices(instance, &pDeviceCount, &pDevices[0]);
 
 	if (pDeviceCount == 0) {
@@ -203,11 +203,14 @@ void VulkanHandler::SetPhysicalDevice() {
 
 }
 
-void VulkanHandler::PushAllQueueFamilyIndices(const std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex) {
-	queueFamiliesIndices = _queueFamilyIndices[pDeviceIndex];
+void VulkanHandler::PushAllQueueFamilyIndices(const std::vector<std::vector<uint32_t>> _queueFamilyIndices, const uint32_t& pDeviceIndex) {
+	size_t s = _queueFamilyIndices[pDeviceIndex].size();
+	for (const uint32_t &index : _queueFamilyIndices[pDeviceIndex]) {
+		queueFamilyIndices.insert(index);
+	}
 }
 
-int VulkanHandler::PhysicalDeviceScore(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
+int VulkanHandler::PhysicalDeviceScore(std::vector<std::vector<uint32_t>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
 	
 	int score = -1;
 
@@ -254,7 +257,7 @@ bool VulkanHandler::CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevic
 	return requiredExtensionsCount == 0;
 }
 
-bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
+bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::vector<uint32_t>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
 	uint32_t queueFamilyCount;
 	vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, nullptr);
 
@@ -270,6 +273,7 @@ bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::array<uint32_t, R
 #endif
 	size_t requiredQueueFlagsCount = requiredQueueFlags.size();
 	uint32_t _queueFamilyIndicesCount = 0;
+	bool presentSupport = 0;
 	for (uint32_t i = 0; i < static_cast<uint32_t>(queueFamiliesProperties.size()); i++) {
 #ifndef NDEBUG
 		{
@@ -279,16 +283,18 @@ bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::array<uint32_t, R
 #endif
 		for (const VkQueueFlags &queueFlag : requiredQueueFlags) {
 			if (queueFamiliesProperties[i].queueFlags & queueFlag) {
-				if (CheckPresentSupport(pDevice, i)) {
-					requiredQueueFlagsCount += -1;
-					_queueFamilyIndices[pDeviceIndex][_queueFamilyIndicesCount] = i;
-					_queueFamilyIndicesCount++;
-				}
+				requiredQueueFlagsCount += -1;
+				_queueFamilyIndices[pDeviceIndex].push_back(i);
+				_queueFamilyIndicesCount++;
+			}
+			if (CheckPresentSupport(pDevice, i)) {
+				_queueFamilyIndices[pDeviceIndex].push_back(i);
+				presentSupport = 1;
 			}
 		}
 	}
 	
-	return requiredQueueFlagsCount == 0;
+	return requiredQueueFlagsCount == 0 && presentSupport == 1;
 }
 
 bool VulkanHandler::CheckPresentSupport(const VkPhysicalDevice& pDevice, uint32_t queueFamilyIndex) {
@@ -327,7 +333,7 @@ VkDeviceQueueCreateInfo VulkanHandler::CreateQueue(uint32_t queueFamilyIndex) {
 void VulkanHandler::SetLogicalDevice() {
 	
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-	for (const uint32_t& index : queueFamiliesIndices) {
+	for (const uint32_t& index : queueFamilyIndices) {
 		queueCreateInfos.push_back(CreateQueue(index));
 	}
 
@@ -350,7 +356,7 @@ void VulkanHandler::SetLogicalDevice() {
 
 	CheckVkResult(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device), "Error creating logical device");
 
-	for (const uint32_t& index : queueFamiliesIndices) {
+	for (const uint32_t& index : queueFamilyIndices) {
 		VkCommandPool cmdPool = CreateCommandPool(index);
 		CreateCmdBuffer(cmdPool);
 		cmdPools.push_back(cmdPool);
@@ -436,7 +442,21 @@ void VulkanHandler::CreateSwapchain() {
 	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 	swapchainCreateInfo.pNext = VK_NULL_HANDLE;
 	swapchainCreateInfo.surface = surface;
-	swapchainCreateInfo.imageFormat = VK_FORMAT_B8G8R8A8_UNORM; //standard format?
+	swapchainCreateInfo.minImageCount = surfaceCapabilities.minImageCount;
+	swapchainCreateInfo.imageFormat;
+	swapchainCreateInfo.imageExtent.width = surfaceCapabilities.currentExtent.width;
+	swapchainCreateInfo.imageExtent.height = surfaceCapabilities.currentExtent.height;
+	swapchainCreateInfo.preTransform;
+	swapchainCreateInfo.compositeAlpha;
+	swapchainCreateInfo.imageArrayLayers = 1;
+	swapchainCreateInfo.presentMode = presentModes[0];
+	swapchainCreateInfo.clipped = 1;
+	swapchainCreateInfo.imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+	swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	
+	swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	swapchainCreateInfo.queueFamilyIndexCount;
+	swapchainCreateInfo.pQueueFamilyIndices;
 }
 
 void VulkanHandler::Cleanup() {
