@@ -13,10 +13,6 @@
 #define GLFW_INCLUDE_VULKAN
 #include "Window.h"
 
-
-#define REQUIRED_QUEUE_FLAGS { VK_QUEUE_GRAPHICS_BIT } // defines the required queue flags
-#define REQUIRED_QUEUE_FLAGS_COUNT 1 //the number of required queue flags
-
 struct VulkanHandler {
 
 	void InitVulkan(uint32_t width, uint32_t height, const char *title);
@@ -46,22 +42,6 @@ struct VulkanHandler {
 	*	sets the physical device and the queue family indices
 	*/
 	void SetPhysicalDevice();
-
-	/*
-	*	Checks if given gpu "has" the required queue families
-	*	@param vector of arrays of queue family indices where the arrays count is equal to the physical devices count,
-	*		   the current physical device index,
-	*		   the current physical device
-	*	@return true or false, depending if the physical device satisfies the required queue families.
-	*/
-	bool CheckQueueFamiliesSupport(	std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices,
-									const uint32_t &pDeviceIndex, 
-									const VkPhysicalDevice& pDevice);
-	/*
-	*	Checks if the physical device queue supports presenting
-	* 
-	*/
-	bool CheckPresentSupport(const VkPhysicalDevice &pDevice, uint32_t queueFamilyIndex);
 
 	/*
 	*	Checks if the given gpu supports the required extensions
@@ -101,17 +81,6 @@ struct VulkanHandler {
 // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 	/*
-	*	Sets a score for the gpu using a raw "scoring system"
-	*	@param vector of arrays of queue family indices where the arrays count is equal to the physical devices count,
-	*		   the current physical device index,
-	*		   the current physical device
-	*	@return the gpu score
-	*/
-	int PhysicalDeviceScore(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices,
-							const uint32_t &pDeviceIndex,
-							const VkPhysicalDevice& pDevice);
-
-	/*
 	*	@param the vkresult
 	*	@return the corresponding c string of the vkresult
 	*/
@@ -130,13 +99,6 @@ struct VulkanHandler {
 	static void CheckVkResult(VkResult result, const char *errormsg);
 
 	/*
-	*	Sets queueFamilyIndices array equal to the given array of the chosen gpu
-	*	@param vector of arrays of queue family indices where the arrays count is equal to the physical devices count,
-	*		   the current physical device index,
-	*/
-	void PushAllQueueFamilyIndices(const std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t &pDeviceIndex);
-
-	/*
 	*	
 	*/
 	VkSurfaceCapabilitiesKHR GetSurfaceCapabilities();
@@ -149,20 +111,25 @@ struct VulkanHandler {
 // -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 	Window window;
-
 	VkInstance instance = VK_NULL_HANDLE;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
-	VkSurfaceKHR surface;
+	VkSurfaceKHR surface = VK_NULL_HANDLE;
 
 #ifndef NDEBUG
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 #endif
+
 	std::array<const char*, 1> requiredDeviceExtensionsNames = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
 	const uint32_t requiredQueueFlagsCount = 1;
-	std::array<VkQueueFlags, REQUIRED_QUEUE_FLAGS_COUNT> requiredQueueFlags = REQUIRED_QUEUE_FLAGS;
-	std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT> queueFamilyIndices;
+
+	std::array<VkQueueFlags, 1> requiredQueueFlags = { VK_QUEUE_GRAPHICS_BIT };
+
+	std::vector<uint32_t> queueFamilyIndices;
+
 	uint32_t presentQueueFamilyIndex;
+
 	std::vector<VkCommandPool> cmdPools;
 };
 

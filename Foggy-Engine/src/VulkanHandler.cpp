@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <string>
+#include <set>
 
 #ifndef NDEBUG
 	#include <iostream>
@@ -60,8 +61,8 @@ void VulkanHandler::InitVulkan(uint32_t width, uint32_t height, const char* titl
 	CreateInstance();
 	CreateWindowSurface();
 	SetPhysicalDevice();
-	SetLogicalDevice();
-	CreateSwapchain();
+	//SetLogicalDevice();
+	//CreateSwapchain();
 }
 
 void VulkanHandler::CreateInstance() {
@@ -148,85 +149,50 @@ void VulkanHandler::SetPhysicalDevice() {
 	vkEnumeratePhysicalDevices(instance, &pDeviceCount, nullptr);
 
 	std::vector<VkPhysicalDevice> pDevices(pDeviceCount);
-	std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices(pDeviceCount);
 	vkEnumeratePhysicalDevices(instance, &pDeviceCount, &pDevices[0]);
 
 	if (pDeviceCount == 0) {
 		throw std::runtime_error("No Vulkan compatible gpu has been found");
 	}
 
-#ifndef NDEBUG
-	std::cout << "Enumerating physical devices" << std::endl;
-#endif
+	// GET IF DEVICE IS SUITABLE
+	std::vector<VkPhysicalDevice> suitableDevices;
+	std::vector<std::set<uint32_t>> suitableDevicesQueueFamilyIndices;
 
-	std::vector<int> scores;
-	for (uint32_t i = 0; i < pDevices.size(); i++) {
-#ifndef NDEBUG
-		VkPhysicalDeviceProperties pProperties;
-		vkGetPhysicalDeviceProperties(pDevices[i], &pProperties);
-		std::cout << "Found " << pProperties.deviceName << std::endl;
-#endif
-		scores.push_back(PhysicalDeviceScore(_queueFamilyIndices, i, pDevices[i]));
-	}
+	for (const VkPhysicalDevice &pDevice : pDevices) {
+		//Queue family properties
+		uint32_t queueFamilyPropertyCount = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyPropertyCount, nullptr);
+		std::vector<VkQueueFamilyProperties> pQueueFamilyProperties(queueFamilyPropertyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyPropertyCount, &pQueueFamilyProperties[0]);
+		
+		std::set<uint32_t> _queueFamilyIndices;
+		bool _surfaceSupport = 0;
 
-	int highScore = -1;
-	if (scores.size() > 1) {
-		for (uint32_t i = 1; i < static_cast<uint32_t>(scores.size()); i++) {
-			if (scores[i] > scores[i - 1]) { 
-				physicalDevice = pDevices[i]; 
-				highScore = scores[i]; 
-				PushAllQueueFamilyIndices(_queueFamilyIndices, i);
-			}
-			else { 
-				physicalDevice = pDevices[i - 1];  
-				highScore = scores[i - 1]; 
-				PushAllQueueFamilyIndices(_queueFamilyIndices, i-1);
+		for (const VkQueueFlags &queueFlag : requiredQueueFlags) {
+			for (uint32_t i = 0; i < queueFamilyPropertyCount; i++) {
+				if (pQueueFamilyProperties[i].queueFlags & queueFlag) {
+					_queueFamilyIndices.insert(i);
+				}
+				VkBool32 __surfaceSupport;
+				vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, i, surface, &__surfaceSupport);
+				if (static_cast<bool>(__surfaceSupport)) {
+					_surfaceSupport = 1;
+					_queueFamilyIndices.insert(i);
+				}
 			}
 		}
-	}
-	else {
-		highScore = scores[0]; 
-		physicalDevice = pDevices[0];
-		PushAllQueueFamilyIndices(_queueFamilyIndices, 0);
-	}
-	if (highScore < 0) {
-		throw std::runtime_error("No gpu with requested vulkan features/extensions has been found");
+		if (!_queueFamilyIndices.empty() && _surfaceSupport) { 
+			suitableDevices.push_back(pDevice);
+			suitableDevicesQueueFamilyIndices.push_back(_queueFamilyIndices);
+		}
 	}
 
-#ifndef NDEBUG
-	{
-		VkPhysicalDeviceProperties chosenDeviceProperties;
-		vkGetPhysicalDeviceProperties(physicalDevice, &chosenDeviceProperties);
-		std::cout << "Using " << chosenDeviceProperties.deviceName << std::endl;
+	if (suitableDevices.empty()) {
+		throw std::runtime_error("No suitable device has been found");
 	}
-#endif
 
-}
-
-void VulkanHandler::PushAllQueueFamilyIndices(const std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex) {
-	queueFamilyIndices = _queueFamilyIndices[pDeviceIndex];
-}
-
-int VulkanHandler::PhysicalDeviceScore(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
-	
-	int score = -1;
-
-	if (CheckQueueFamiliesSupport(_queueFamilyIndices, pDeviceIndex, pDevice) && CheckPhysicalDeviceExtensions(pDevice)) {
-		VkPhysicalDeviceFeatures pFeatures;
-		vkGetPhysicalDeviceFeatures(pDevice, &pFeatures);
-
-		//RAW SCORE SYSTEM
-		score += pFeatures.variableMultisampleRate * 16;
-		score += pFeatures.shaderClipDistance;
-		score += pFeatures.geometryShader * 20;
-
-		VkPhysicalDeviceMemoryProperties pMemProperties;
-		vkGetPhysicalDeviceMemoryProperties(pDevice, &pMemProperties);
-
-		score += pMemProperties.memoryTypeCount;
-		score += pMemProperties.memoryHeapCount;
-	}
-	return score;
+	//SCORE BETWEEN PHYSICAL DEVICES
 }
 
 bool VulkanHandler::CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevice) {
@@ -252,52 +218,6 @@ bool VulkanHandler::CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevic
 	}
 	
 	return requiredExtensionsCount == 0;
-}
-
-bool VulkanHandler::CheckQueueFamiliesSupport(std::vector<std::array<uint32_t, REQUIRED_QUEUE_FLAGS_COUNT>> _queueFamilyIndices, const uint32_t& pDeviceIndex, const VkPhysicalDevice &pDevice) {
-	uint32_t queueFamilyCount;
-	vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, nullptr);
-
-	std::vector<VkQueueFamilyProperties> queueFamiliesProperties(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyCount, &queueFamiliesProperties[0]);
-
-#ifndef NDEBUG
-	{
-		VkPhysicalDeviceProperties pDeviceProperties;
-		vkGetPhysicalDeviceProperties(pDevice, &pDeviceProperties);
-		std::cout << "Enumerating queue families for " << pDeviceProperties.deviceName << std::endl;
-	}
-#endif
-	size_t requiredQueueFlagsCount = requiredQueueFlags.size();
-	uint32_t _queueFamilyIndicesCount = 0;
-	bool presentSupport = 0;
-	for (uint32_t i = 0; i < static_cast<uint32_t>(queueFamiliesProperties.size()); i++) {
-#ifndef NDEBUG
-		{
-			const char* queueFlagName = TranslateQueueFlags(queueFamiliesProperties[i].queueFlags);
-			std::cout << queueFlagName << std::endl;
-		}
-#endif
-		for (const VkQueueFlags &queueFlag : requiredQueueFlags) {
-			if (queueFamiliesProperties[i].queueFlags & queueFlag) {
-				requiredQueueFlagsCount += -1;
-				_queueFamilyIndices[pDeviceIndex][_queueFamilyIndicesCount] = i;
-				_queueFamilyIndicesCount++;
-			}
-			if (CheckPresentSupport(pDevice, i)) {
-				presentQueueFamilyIndex = i;
-				presentSupport = 1;
-			}
-		}
-	}
-	
-	return requiredQueueFlagsCount == 0 && presentSupport == 1;
-}
-
-bool VulkanHandler::CheckPresentSupport(const VkPhysicalDevice& pDevice, uint32_t queueFamilyIndex) {
-	VkBool32 supported = 0;
-	vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, queueFamilyIndex, surface, &supported);
-	return static_cast<bool>(supported);
 }
 
 const char* VulkanHandler::TranslateQueueFlags(const VkQueueFlags& queueFlag) {
