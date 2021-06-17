@@ -8,6 +8,7 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <array>
+#include <set>
 #include <stdint.h>
 
 #define GLFW_INCLUDE_VULKAN
@@ -38,7 +39,7 @@ struct VulkanHandler {
 
 	/*
 	*	Gets the hardware installed physical deivices,
-	*	calls PhysicalDeviceScore to get the score for each device,
+	*	chekcs what devices are suitable and picks one using a raw score system,
 	*	sets the physical device and the queue family indices
 	*/
 	void SetPhysicalDevice();
@@ -99,11 +100,6 @@ struct VulkanHandler {
 	static void CheckVkResult(VkResult result, const char *errormsg);
 
 	/*
-	*	
-	*/
-	VkSurfaceCapabilitiesKHR GetSurfaceCapabilities();
-
-	/*
 	*	Does a nice cleanup
 	*/
 	void Cleanup();
@@ -126,7 +122,7 @@ struct VulkanHandler {
 
 	std::array<VkQueueFlags, 1> requiredQueueFlags = { VK_QUEUE_GRAPHICS_BIT };
 
-	std::vector<uint32_t> queueFamilyIndices;
+	std::set<uint32_t> queueFamilyIndices;
 
 	uint32_t presentQueueFamilyIndex;
 

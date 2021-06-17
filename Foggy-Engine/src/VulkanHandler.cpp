@@ -1,6 +1,5 @@
 #include <stdexcept>
 #include <string>
-#include <set>
 
 #ifndef NDEBUG
 	#include <iostream>
@@ -61,8 +60,8 @@ void VulkanHandler::InitVulkan(uint32_t width, uint32_t height, const char* titl
 	CreateInstance();
 	CreateWindowSurface();
 	SetPhysicalDevice();
-	//SetLogicalDevice();
-	//CreateSwapchain();
+	SetLogicalDevice();
+	CreateSwapchain();
 }
 
 void VulkanHandler::CreateInstance() {
@@ -160,6 +159,11 @@ void VulkanHandler::SetPhysicalDevice() {
 	std::vector<std::set<uint32_t>> suitableDevicesQueueFamilyIndices;
 
 	for (const VkPhysicalDevice &pDevice : pDevices) {
+#ifndef NDEBUG
+		VkPhysicalDeviceProperties pDeviceProperties;
+		vkGetPhysicalDeviceProperties(pDevice, &pDeviceProperties);
+		std::cout << "Found " << pDeviceProperties.deviceName << " | driver version: " << pDeviceProperties.driverVersion << std::endl;
+#endif
 		//Queue family properties
 		uint32_t queueFamilyPropertyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(pDevice, &queueFamilyPropertyCount, nullptr);
@@ -176,7 +180,7 @@ void VulkanHandler::SetPhysicalDevice() {
 				}
 				VkBool32 __surfaceSupport;
 				vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, i, surface, &__surfaceSupport);
-				if (static_cast<bool>(__surfaceSupport)) {
+				if (static_cast<bool>(__surfaceSupport) && !_surfaceSupport) {
 					_surfaceSupport = 1;
 					_queueFamilyIndices.insert(i);
 				}
@@ -192,7 +196,49 @@ void VulkanHandler::SetPhysicalDevice() {
 		throw std::runtime_error("No suitable device has been found");
 	}
 
-	//SCORE BETWEEN PHYSICAL DEVICES
+	//SUITABLE DEVICES SCORE 
+	std::vector<uint32_t> scores;
+	for (const VkPhysicalDevice& pDevice : suitableDevices) {
+
+		uint32_t score = 0;
+		
+		VkPhysicalDeviceProperties pDeviceProperties;
+		vkGetPhysicalDeviceProperties(pDevice, &pDeviceProperties);
+
+		VkPhysicalDeviceFeatures pDeviceFeatures;
+		vkGetPhysicalDeviceFeatures(pDevice, &pDeviceFeatures);
+
+		score += pDeviceFeatures.geometryShader * 1000;
+		score += pDeviceProperties.limits.maxClipDistances * 100;
+		score += pDeviceProperties.limits.maxImageDimension2D * 2;
+		score += pDeviceProperties.limits.maxViewports * 100;
+		
+		scores.push_back(score);
+	}
+	
+	//VERDETTO
+	if (suitableDevices.size() > 1) {
+		for (uint32_t i = 1; i < scores.size(); i++) {
+			if (scores[i] > scores[i - 1]) {
+				physicalDevice = suitableDevices[i];
+				queueFamilyIndices = suitableDevicesQueueFamilyIndices[i];
+			}
+			else {
+				physicalDevice = suitableDevices[i - 1];
+				queueFamilyIndices = suitableDevicesQueueFamilyIndices[i - 1];
+			}
+		}
+	}
+	else {
+		physicalDevice = suitableDevices[0];
+		queueFamilyIndices = suitableDevicesQueueFamilyIndices[0];
+	}
+
+#ifndef NDEBUG
+	VkPhysicalDeviceProperties pDeviceProperties;
+	vkGetPhysicalDeviceProperties(physicalDevice, &pDeviceProperties);
+	std::cout << "Using " << pDeviceProperties.deviceName << std::endl;
+#endif
 }
 
 bool VulkanHandler::CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevice) {
@@ -289,7 +335,11 @@ VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
 	cmdPoolCreateInfo.pNext = VK_NULL_HANDLE;
 
 #ifndef NDEBUG
-	std::cout << "Creating " << TranslateQueueFlags(requiredQueueFlags[queueFamilyIndex]) << " command pool" << std::endl;
+	uint32_t queueFamilyPropertiesCount = 0;
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyPropertiesCount, nullptr);
+	std::vector<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyPropertiesCount);
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyPropertiesCount, &queueFamilyProperties[0]);
+	std::cout << "Creating " << TranslateQueueFlags(queueFamilyProperties[queueFamilyIndex].queueFlags) << " command pool" << std::endl;
 #endif
 
 	VkCommandPool cmdPool = VK_NULL_HANDLE;
@@ -317,43 +367,16 @@ void VulkanHandler::CreateSwapchain() {
 
 	VkSurfaceCapabilitiesKHR surfaceCapabilities;
 	CheckVkResult(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities), "error getting surface capabilities");
-#ifndef NDEBUG
-	std::cout << "Surface capabilities: " << std::endl;
-	std::cout << "current extent: " << surfaceCapabilities.currentExtent.width << ", " << surfaceCapabilities.currentExtent.height << std::endl;
-	std::cout << "current transform: " << surfaceCapabilities.currentTransform << std::endl;
-	std::cout << "max image array layers: " << surfaceCapabilities.maxImageArrayLayers << std::endl;
-	std::cout << "max image count: " << surfaceCapabilities.maxImageCount << std::endl;
-	std::cout << "min image count: " << surfaceCapabilities.minImageCount << std::endl;
-	std::cout << "supported composite alpha: " << surfaceCapabilities.supportedCompositeAlpha << std::endl;
-	std::cout << "supported transforms: " << surfaceCapabilities.supportedTransforms << std::endl;
-	std::cout << "supported usage flags: " << surfaceCapabilities.supportedUsageFlags << std::endl;
-#endif
 
 	uint32_t surfaceFormatsCount;
 	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatsCount, nullptr);
 	std::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatsCount);
 	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatsCount, &surfaceFormats[0]);
-#ifndef NDEBUG
-	std::cout << "Surface formats: " << std::endl;
-	for (uint32_t i = 0; i < surfaceFormatsCount; i++) {
-		std::cout << i << ": " << std::endl;
-		std::cout << "color space: " << surfaceFormats[i].colorSpace << std::endl;
-		std::cout << "format: " << surfaceFormats[i].format << std::endl;
-	}
-#endif
 
 	uint32_t presentModeCount;
 	vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);
 	std::vector<VkPresentModeKHR> presentModes(presentModeCount);
 	vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, &presentModes[0]);
-#ifndef NDEBUG
-	std::cout << "Present modes: " << std::endl;
-	for (uint32_t i = 0; i < presentModeCount; i++) {
-		std::cout << presentModes[i] << std::endl;
-	}
-#endif
-
-
 
 	VkSwapchainCreateInfoKHR swapchainCreateInfo{};
 	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
