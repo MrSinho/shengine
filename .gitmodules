@@ -7,3 +7,6 @@
 [submodule "Externals/glfw"]
 	path = Externals/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "Externals/glew"]
+	path = Externals/glew
+	url = https://github.com/nigels-com/glew

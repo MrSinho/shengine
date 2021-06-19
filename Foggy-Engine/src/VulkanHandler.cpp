@@ -62,6 +62,7 @@ void VulkanHandler::InitVulkan(uint32_t width, uint32_t height, const char* titl
 	SetPhysicalDevice();
 	SetLogicalDevice();
 	CreateSwapchain();
+	CreateDepthBuffer();
 }
 
 void VulkanHandler::CreateInstance() {
@@ -221,17 +222,17 @@ void VulkanHandler::SetPhysicalDevice() {
 		for (uint32_t i = 1; i < scores.size(); i++) {
 			if (scores[i] > scores[i - 1]) {
 				physicalDevice = suitableDevices[i];
-				queueFamilyIndices = suitableDevicesQueueFamilyIndices[i];
+				queueFamilyIndices.assign(suitableDevicesQueueFamilyIndices[i].begin(), suitableDevicesQueueFamilyIndices[i].end());
 			}
 			else {
 				physicalDevice = suitableDevices[i - 1];
-				queueFamilyIndices = suitableDevicesQueueFamilyIndices[i - 1];
+				queueFamilyIndices.assign(suitableDevicesQueueFamilyIndices[i - 1].begin(), suitableDevicesQueueFamilyIndices[i - 1].end());
 			}
 		}
 	}
 	else {
 		physicalDevice = suitableDevices[0];
-		queueFamilyIndices = suitableDevicesQueueFamilyIndices[0];
+		queueFamilyIndices.assign(suitableDevicesQueueFamilyIndices[0].begin(), suitableDevicesQueueFamilyIndices[0].end());
 	}
 
 #ifndef NDEBUG
@@ -372,7 +373,7 @@ void VulkanHandler::CreateSwapchain() {
 	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatsCount, nullptr);
 	std::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatsCount);
 	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatsCount, &surfaceFormats[0]);
-
+	
 	uint32_t presentModeCount;
 	vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);
 	std::vector<VkPresentModeKHR> presentModes(presentModeCount);
@@ -382,27 +383,102 @@ void VulkanHandler::CreateSwapchain() {
 	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 	swapchainCreateInfo.pNext = VK_NULL_HANDLE;
 	swapchainCreateInfo.surface = surface;
+	
 	swapchainCreateInfo.minImageCount = surfaceCapabilities.minImageCount;
-	swapchainCreateInfo.imageFormat;
+	
+	if (surfaceFormatsCount == 1 && surfaceFormats[0].format == VK_FORMAT_UNDEFINED) {
+		swapchainCreateInfo.imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+	}
+	else if (surfaceFormatsCount > 1) {
+		swapchainCreateInfo.imageFormat = surfaceFormats[0].format;
+	}
+	else { throw std::runtime_error("no supported image format available"); }
+	
 	swapchainCreateInfo.imageExtent.width = surfaceCapabilities.currentExtent.width;
 	swapchainCreateInfo.imageExtent.height = surfaceCapabilities.currentExtent.height;
-	swapchainCreateInfo.preTransform;
-	swapchainCreateInfo.compositeAlpha;
+	
+	swapchainCreateInfo.preTransform = surfaceCapabilities.currentTransform;
+	if (surfaceCapabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) {
+		swapchainCreateInfo.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+	}
+
+	swapchainCreateInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 	swapchainCreateInfo.imageArrayLayers = 1;
-	swapchainCreateInfo.presentMode = presentModes[0];
+	swapchainCreateInfo.presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	swapchainCreateInfo.clipped = 1;
 	swapchainCreateInfo.imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
 	swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	//if (queueFamilyIndices)
-	//swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	//swapchainCreateInfo.queueFamilyIndexCount;
-	//swapchainCreateInfo.pQueueFamilyIndices;
+	swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+	if (queueFamilyIndices.size() == 1) {
+		swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	}
+	swapchainCreateInfo.queueFamilyIndexCount = static_cast<uint32_t>(queueFamilyIndices.size());
+	swapchainCreateInfo.pQueueFamilyIndices = &queueFamilyIndices[0];
+
+#ifndef NDEBUG
+	std::cout << "Creating swapchain" << std::endl;
+#endif
+
+	CheckVkResult(
+		vkCreateSwapchainKHR(device, &swapchainCreateInfo, nullptr, &swapchain),
+		"error creating swapchain"
+	);
+}
+
+void VulkanHandler::CreateDepthBuffer() {
+	VkSurfaceCapabilitiesKHR surfaceCapabilities;
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities);
+
+	VkImageCreateInfo imageCreateInfo{};
+	imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	imageCreateInfo.pNext = VK_NULL_HANDLE;
+	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+	imageCreateInfo.format = VK_FORMAT_D16_UNORM;
+
+	imageCreateInfo.extent.width = surfaceCapabilities.currentExtent.width;
+	imageCreateInfo.extent.height = surfaceCapabilities.currentExtent.height;
+
+	imageCreateInfo.extent.depth = 1;
+	imageCreateInfo.mipLevels = 8;
+	imageCreateInfo.arrayLayers = 1;
+	imageCreateInfo.samples = VK_SAMPLE_COUNT_16_BIT;
+	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	imageCreateInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+	imageCreateInfo.queueFamilyIndexCount = 0;
+	imageCreateInfo.pQueueFamilyIndices = VK_NULL_HANDLE;
+	imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	imageCreateInfo.flags = 0;
+
+	VkMemoryAllocateInfo memoryAllocateInfo{};
+	memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	memoryAllocateInfo.pNext = VK_NULL_HANDLE;
+	memoryAllocateInfo.allocationSize = 0;
+	memoryAllocateInfo.memoryTypeIndex = 0;
+
+	VkImageViewCreateInfo imageViewCreateInfo{};
+	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	imageViewCreateInfo.pNext = VK_NULL_HANDLE;
+
+	VkFormat depthFormat = VK_FORMAT_D16_UNORM;
+	VkFormatProperties depthFormatProperties;
+	vkGetPhysicalDeviceFormatProperties(physicalDevice, depthFormat, &depthFormatProperties);
+	if (depthFormatProperties.linearTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+		imageCreateInfo.tiling = VK_IMAGE_TILING_LINEAR;
+	}
+	else if (depthFormatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+		imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	}
+	else { throw std::runtime_error("VK_FORMAT_D16_UNORM is unsupported"); }
+
+
 }
 
 void VulkanHandler::Cleanup() {
-	vkDestroyInstance(instance, nullptr);
-	vkDestroyDevice(device, nullptr);
 	for (const VkCommandPool& cmdPool : cmdPools) {
 		vkDestroyCommandPool(device, cmdPool, nullptr);
 	}
+	vkDestroySwapchainKHR(device, swapchain, nullptr);
+	vkDestroyDevice(device, nullptr);
+	window.Clear();
+	vkDestroyInstance(instance, nullptr);
 }

@@ -9,9 +9,7 @@ project(${PROJECT_NAME} VERSION 0.1)
 
 #SUBDIRECTORIES
 add_subdirectory(Externals/glfw)
-
-#INSTALLED PACKAGES
-find_package(Vulkan REQUIRED FATAL_ERROR)
+add_subdirectory(Externals/glew);
 
 #ENGINE
 file(GLOB_RECURSE ENGINE_SRC Foggy-Engine/src/*.cpp)
