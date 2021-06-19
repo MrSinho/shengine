@@ -9,7 +9,9 @@ project(${PROJECT_NAME} VERSION 0.1)
 
 #SUBDIRECTORIES
 add_subdirectory(Externals/glfw)
-add_subdirectory(Externals/glew/build/cmake)
+
+#INSTALLED PACKAGES
+find_package(Vulkan)
 
 #ENGINE
 file(GLOB_RECURSE ENGINE_SRC Foggy-Engine/src/*.cpp)
@@ -18,10 +20,11 @@ target_include_directories(Foggy-Engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Foggy-Engine/include
     ${CMAKE_CURRENT_SOURCE_DIR}/Externals/glfw/include
     ${CMAKE_CURRENT_SOURCE_DIR}/Externals/glm
+    ${Vulkan_INCLUDE_DIRS}
 )
 target_link_libraries(Foggy-Engine PUBLIC
+    glfw
     ${Vulkan_LIBRARIES}      
-    glew
 )
 
 #EDITOR

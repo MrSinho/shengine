@@ -62,7 +62,8 @@ void VulkanHandler::InitVulkan(uint32_t width, uint32_t height, const char* titl
 	SetPhysicalDevice();
 	SetLogicalDevice();
 	CreateSwapchain();
-	CreateDepthBuffer();
+	GetSwapchainImages();
+	CreateSwapchainImageViews();
 }
 
 void VulkanHandler::CreateInstance() {
@@ -98,7 +99,10 @@ void VulkanHandler::CreateInstance() {
 	std::cout << "creating vkinstance" << std::endl;
 #endif
 
-	CheckVkResult(vkCreateInstance(&createInfo, nullptr, &instance), "Error creating vkinstance");
+	CheckVkResult(
+		vkCreateInstance(&createInfo, nullptr, &instance), 
+		"error creating vkinstance"
+	);
 }
 
 void VulkanHandler::CreateWindowSurface() {
@@ -110,7 +114,10 @@ void VulkanHandler::CreateWindowSurface() {
 	win32SurfaceCreateInfo.hinstance = GetModuleHandle(nullptr);
 #endif
 
-	CheckVkResult(vkCreateWin32SurfaceKHR(instance, &win32SurfaceCreateInfo, nullptr, &surface), "error creating window surface");
+	CheckVkResult(
+		vkCreateWin32SurfaceKHR(instance, &win32SurfaceCreateInfo, nullptr, &surface), 
+		"error creating window surface"
+	);
 }
 
 const char* VulkanHandler::TranslateVkResult(const VkResult& vkResult) {
@@ -318,7 +325,10 @@ void VulkanHandler::SetLogicalDevice() {
 	std::cout << "Creating logical device" << std::endl;
 #endif
 
-	CheckVkResult(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device), "Error creating logical device");
+	CheckVkResult(
+		vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device), 
+		"error creating logical device"
+	);
 
 	for (const uint32_t& index : queueFamilyIndices) {
 		VkCommandPool cmdPool = CreateCommandPool(index);
@@ -344,7 +354,10 @@ VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
 #endif
 
 	VkCommandPool cmdPool = VK_NULL_HANDLE;
-	CheckVkResult(vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &cmdPool), "Error creating command pool");
+	CheckVkResult(
+		vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &cmdPool), 
+		"error creating command pool"
+	);
 
 	return cmdPool;
 }
@@ -361,13 +374,19 @@ void VulkanHandler::CreateCmdBuffer(const VkCommandPool &cmdPool) {
 	std::cout << "Creating command buffer" << std::endl;
 #endif
 	VkCommandBuffer cmdBuffer;
-	CheckVkResult(vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdBuffer), "Error creating command buffer");
+	CheckVkResult(
+		vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdBuffer), 
+		"error creating command buffer"
+	);
 }
 
 void VulkanHandler::CreateSwapchain() {
 
 	VkSurfaceCapabilitiesKHR surfaceCapabilities;
-	CheckVkResult(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities), "error getting surface capabilities");
+	CheckVkResult(
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities), 
+		"error getting surface capabilities"
+	);
 
 	uint32_t surfaceFormatsCount;
 	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatsCount, nullptr);
@@ -387,13 +406,14 @@ void VulkanHandler::CreateSwapchain() {
 	swapchainCreateInfo.minImageCount = surfaceCapabilities.minImageCount;
 	
 	if (surfaceFormatsCount == 1 && surfaceFormats[0].format == VK_FORMAT_UNDEFINED) {
-		swapchainCreateInfo.imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+		swapchainImageFormat = VK_FORMAT_B8G8R8A8_UNORM;
 	}
 	else if (surfaceFormatsCount > 1) {
-		swapchainCreateInfo.imageFormat = surfaceFormats[0].format;
+		swapchainImageFormat = surfaceFormats[0].format;
 	}
 	else { throw std::runtime_error("no supported image format available"); }
-	
+	swapchainCreateInfo.imageFormat = swapchainImageFormat;
+
 	swapchainCreateInfo.imageExtent.width = surfaceCapabilities.currentExtent.width;
 	swapchainCreateInfo.imageExtent.height = surfaceCapabilities.currentExtent.height;
 	
@@ -425,55 +445,47 @@ void VulkanHandler::CreateSwapchain() {
 	);
 }
 
-void VulkanHandler::CreateDepthBuffer() {
-	VkSurfaceCapabilitiesKHR surfaceCapabilities;
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities);
+void VulkanHandler::GetSwapchainImages() {
+	uint32_t swapchainImageCount;
+	vkGetSwapchainImagesKHR(device, swapchain, &swapchainImageCount, nullptr);
+	swapchainImages.resize(swapchainImageCount);
+	vkGetSwapchainImagesKHR(device, swapchain, &swapchainImageCount, &swapchainImages[0]);
+}
 
-	VkImageCreateInfo imageCreateInfo{};
-	imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-	imageCreateInfo.pNext = VK_NULL_HANDLE;
-	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
-	imageCreateInfo.format = VK_FORMAT_D16_UNORM;
+void VulkanHandler::CreateSwapchainImageViews() {
+	swapchainImageViews.resize(swapchainImages.size());
+	for (uint32_t i = 0; i < swapchainImageViews.size(); i++) {
+		
+		VkImageViewCreateInfo imageViewCreateInfo{};
+		imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		imageViewCreateInfo.pNext = VK_NULL_HANDLE;
+		imageViewCreateInfo.image = swapchainImages[i];
 
-	imageCreateInfo.extent.width = surfaceCapabilities.currentExtent.width;
-	imageCreateInfo.extent.height = surfaceCapabilities.currentExtent.height;
+		imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		imageViewCreateInfo.format = swapchainImageFormat;
 
-	imageCreateInfo.extent.depth = 1;
-	imageCreateInfo.mipLevels = 8;
-	imageCreateInfo.arrayLayers = 1;
-	imageCreateInfo.samples = VK_SAMPLE_COUNT_16_BIT;
-	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	imageCreateInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-	imageCreateInfo.queueFamilyIndexCount = 0;
-	imageCreateInfo.pQueueFamilyIndices = VK_NULL_HANDLE;
-	imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	imageCreateInfo.flags = 0;
+		imageViewCreateInfo.components.r = VK_COMPONENT_SWIZZLE_R;
+		imageViewCreateInfo.components.g = VK_COMPONENT_SWIZZLE_G;
+		imageViewCreateInfo.components.b = VK_COMPONENT_SWIZZLE_B;
+		imageViewCreateInfo.components.a = VK_COMPONENT_SWIZZLE_A;
+		
+		imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		imageViewCreateInfo.subresourceRange.baseMipLevel = 0;
+		imageViewCreateInfo.subresourceRange.levelCount = 1;
+		imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+		imageViewCreateInfo.subresourceRange.layerCount = 1;
 
-	VkMemoryAllocateInfo memoryAllocateInfo{};
-	memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	memoryAllocateInfo.pNext = VK_NULL_HANDLE;
-	memoryAllocateInfo.allocationSize = 0;
-	memoryAllocateInfo.memoryTypeIndex = 0;
-
-	VkImageViewCreateInfo imageViewCreateInfo{};
-	imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-	imageViewCreateInfo.pNext = VK_NULL_HANDLE;
-
-	VkFormat depthFormat = VK_FORMAT_D16_UNORM;
-	VkFormatProperties depthFormatProperties;
-	vkGetPhysicalDeviceFormatProperties(physicalDevice, depthFormat, &depthFormatProperties);
-	if (depthFormatProperties.linearTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
-		imageCreateInfo.tiling = VK_IMAGE_TILING_LINEAR;
+		CheckVkResult(
+			vkCreateImageView(device, &imageViewCreateInfo, nullptr, &swapchainImageViews[i]),
+			"error creating swapchain image view")
+			;
 	}
-	else if (depthFormatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
-		imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-	}
-	else { throw std::runtime_error("VK_FORMAT_D16_UNORM is unsupported"); }
-
-
 }
 
 void VulkanHandler::Cleanup() {
+	for (const VkImageView &imageview : swapchainImageViews) {
+		vkDestroyImageView(device, imageview, nullptr);
+	}
 	for (const VkCommandPool& cmdPool : cmdPools) {
 		vkDestroyCommandPool(device, cmdPool, nullptr);
 	}

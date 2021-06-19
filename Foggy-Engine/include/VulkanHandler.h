@@ -1,32 +1,54 @@
 #ifndef VULKAN_HANDLER_H
 #define VULKAN_HANDLER_H
 
+#ifdef WIN32
+#define VK_USE_PLATFORM_WIN32_KHR
+#define GLFW_EXPOSE_NATIVE_WIN32
+#endif
+#include <vulkan/vulkan.h>
+#include <vector>
+#include <array>
+#include <set>
 #include <stdint.h>
 
-struct OpenGLHandler {
+#define GLFW_INCLUDE_VULKAN
+#include "Window.h"
 
-	void Init(uint32_t width, uint32_t height, const char *title);
+struct VulkanHandler {
+
+	void InitVulkan(uint32_t width, uint32_t height, const char* title);
+
+#ifndef NDEBUG
+	void EnableValidationLayers();
+#endif
 
 	void CreateInstance();
 	void CreateWindowSurface();
 	void SetPhysicalDevice();
-	bool CheckPhysicalDeviceExtensions(const VkPhysicalDevice &pDevice);
+	bool CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevice);
 	VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex);
 	void SetLogicalDevice();
 	VkCommandPool CreateCommandPool(uint32_t queueFamilyIndex);
-	void CreateCmdBuffer(const VkCommandPool &cmdPool);
+	void CreateCmdBuffer(const VkCommandPool& cmdPool);
 	void CreateSwapchain();
-	void CreateDepthBuffer();
+	void GetSwapchainImages();
+	void CreateSwapchainImageViews();
+
+	static const char* TranslateVkResult(const VkResult& vkResult);
+	static const char* TranslateQueueFlags(const VkQueueFlags& queueFlag);
+	static void CheckVkResult(VkResult result, const char* errormsg);
+	
 	void Cleanup();
 
-// -----------------------------------------------------------------------------------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 	Window window;
 	VkInstance instance = VK_NULL_HANDLE;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
 	VkSurfaceKHR surface = VK_NULL_HANDLE;
-	VkSwapchainKHR swapchain;
+	VkSwapchainKHR swapchain = VK_NULL_HANDLE;
+	VkFormat swapchainImageFormat;
 
 #ifndef NDEBUG
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
@@ -43,6 +65,9 @@ struct OpenGLHandler {
 	uint32_t presentQueueFamilyIndex;
 
 	std::vector<VkCommandPool> cmdPools;
+
+	std::vector<VkImage> swapchainImages;
+	std::vector<VkImageView> swapchainImageViews;
 };
 
 #endif
