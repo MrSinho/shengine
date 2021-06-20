@@ -25,6 +25,14 @@ target_include_directories(Foggy-Engine PUBLIC
 target_link_libraries(Foggy-Engine PUBLIC
     glfw
     ${Vulkan_LIBRARIES}      
+    Utilities
+)
+
+#UTILITIES
+file(GLOB_RECURSE UTILITIES_SRC Utilities/src/*.cpp)
+add_library(Utilities ${UTILITIES_SRC})
+target_include_directories(Utilities PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/include
 )
 
 #EDITOR
@@ -41,4 +49,5 @@ target_include_directories(Editor PUBLIC
 set_target_properties(Editor Foggy-Engine PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+    VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )

@@ -10,6 +10,7 @@
 #include <array>
 #include <set>
 #include <stdint.h>
+#include <string>
 
 #define GLFW_INCLUDE_VULKAN
 #include "Window.h"
@@ -33,11 +34,22 @@ struct VulkanHandler {
 	void CreateSwapchain();
 	void GetSwapchainImages();
 	void CreateSwapchainImageViews();
+	VkShaderModule CreateShaderModule(const char* input, const char* output);
+
+	void SetGraphicsPipeline();
+	void SetViewportState();
+	void CreateRasterizer();
+	void EnableMultisampleAntiAliasing();
+	void ColorBlendSettings();
+	void SetDynamicStates();
+	void SetPipelineLayout();
+
+	void CreateRenderPass();
 
 	static const char* TranslateVkResult(const VkResult& vkResult);
 	static const char* TranslateQueueFlags(const VkQueueFlags& queueFlag);
 	static void CheckVkResult(VkResult result, const char* errormsg);
-	
+	static void CompileShader(const char * input, const char* output);
 	void Cleanup();
 
 	// -----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -49,6 +61,7 @@ struct VulkanHandler {
 	VkSurfaceKHR surface = VK_NULL_HANDLE;
 	VkSwapchainKHR swapchain = VK_NULL_HANDLE;
 	VkFormat swapchainImageFormat;
+	VkPipelineLayout pipelineLayout;
 
 #ifndef NDEBUG
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
@@ -68,6 +81,13 @@ struct VulkanHandler {
 
 	std::vector<VkImage> swapchainImages;
 	std::vector<VkImageView> swapchainImageViews;
+
+	std::vector<VkShaderModule> shaderModules;
+
+	std::array<VkDynamicState, 2> dynamicStates = {
+		VK_DYNAMIC_STATE_VIEWPORT,
+		VK_DYNAMIC_STATE_LINE_WIDTH
+	};
 };
 
 #endif

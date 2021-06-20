@@ -1,11 +1,11 @@
 #include <stdexcept>
-#include <string>
 
 #ifndef NDEBUG
 	#include <iostream>
 #endif
 
 #include "VulkanHandler.h"
+#include "Utilities.h"
 
 #pragma warning ( disable : 26812 )
 
@@ -64,6 +64,9 @@ void VulkanHandler::InitVulkan(uint32_t width, uint32_t height, const char* titl
 	CreateSwapchain();
 	GetSwapchainImages();
 	CreateSwapchainImageViews();
+	SetGraphicsPipeline();
+	SetViewportState();
+	CreateRenderPass();
 }
 
 void VulkanHandler::CreateInstance() {
@@ -109,7 +112,7 @@ void VulkanHandler::CreateWindowSurface() {
 #ifdef WIN32
 	VkWin32SurfaceCreateInfoKHR win32SurfaceCreateInfo{};
 	win32SurfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-	win32SurfaceCreateInfo.pNext = VK_NULL_HANDLE;
+	win32SurfaceCreateInfo.pNext = nullptr;
 	win32SurfaceCreateInfo.hwnd = glfwGetWin32Window(window.window);
 	win32SurfaceCreateInfo.hinstance = GetModuleHandle(nullptr);
 #endif
@@ -343,7 +346,7 @@ VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
 	cmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	cmdPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
 	cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-	cmdPoolCreateInfo.pNext = VK_NULL_HANDLE;
+	cmdPoolCreateInfo.pNext = nullptr;
 
 #ifndef NDEBUG
 	uint32_t queueFamilyPropertiesCount = 0;
@@ -353,7 +356,7 @@ VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
 	std::cout << "Creating " << TranslateQueueFlags(queueFamilyProperties[queueFamilyIndex].queueFlags) << " command pool" << std::endl;
 #endif
 
-	VkCommandPool cmdPool = VK_NULL_HANDLE;
+	VkCommandPool cmdPool = nullptr;
 	CheckVkResult(
 		vkCreateCommandPool(device, &cmdPoolCreateInfo, nullptr, &cmdPool), 
 		"error creating command pool"
@@ -365,7 +368,7 @@ VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
 void VulkanHandler::CreateCmdBuffer(const VkCommandPool &cmdPool) {
 	VkCommandBufferAllocateInfo cmdBufferAllocateInfo{};
 	cmdBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	cmdBufferAllocateInfo.pNext = VK_NULL_HANDLE;
+	cmdBufferAllocateInfo.pNext = nullptr;
 	cmdBufferAllocateInfo.commandPool = cmdPool;
 	cmdBufferAllocateInfo.commandBufferCount = 1;
 	cmdBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -383,10 +386,7 @@ void VulkanHandler::CreateCmdBuffer(const VkCommandPool &cmdPool) {
 void VulkanHandler::CreateSwapchain() {
 
 	VkSurfaceCapabilitiesKHR surfaceCapabilities;
-	CheckVkResult(
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities), 
-		"error getting surface capabilities"
-	);
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities);
 
 	uint32_t surfaceFormatsCount;
 	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatsCount, nullptr);
@@ -400,7 +400,7 @@ void VulkanHandler::CreateSwapchain() {
 
 	VkSwapchainCreateInfoKHR swapchainCreateInfo{};
 	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	swapchainCreateInfo.pNext = VK_NULL_HANDLE;
+	swapchainCreateInfo.pNext = nullptr;
 	swapchainCreateInfo.surface = surface;
 	
 	swapchainCreateInfo.minImageCount = surfaceCapabilities.minImageCount;
@@ -458,7 +458,7 @@ void VulkanHandler::CreateSwapchainImageViews() {
 		
 		VkImageViewCreateInfo imageViewCreateInfo{};
 		imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		imageViewCreateInfo.pNext = VK_NULL_HANDLE;
+		imageViewCreateInfo.pNext = nullptr;
 		imageViewCreateInfo.image = swapchainImages[i];
 
 		imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
@@ -477,12 +477,193 @@ void VulkanHandler::CreateSwapchainImageViews() {
 
 		CheckVkResult(
 			vkCreateImageView(device, &imageViewCreateInfo, nullptr, &swapchainImageViews[i]),
-			"error creating swapchain image view")
-			;
+			"error creating swapchain image view"
+		);
 	}
 }
 
+void VulkanHandler::CompileShader(const char* input, const char *output) {
+	std::string cmd = std::string("glslc ") + input + " -o " + output;
+#ifndef NDEBUG	
+	std::cout << cmd << std::endl;
+#endif
+	system(cmd.c_str());
+}
+
+VkShaderModule VulkanHandler::CreateShaderModule(const char* input, const char* output) {
+
+	CompileShader(input, output);
+	std::string shaderBinaryCode = Utilities::ReadCodeBinary(output);
+	
+	VkShaderModuleCreateInfo shaderModuleCreateInfo{};
+	shaderModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+	shaderModuleCreateInfo.pNext = nullptr;
+	shaderModuleCreateInfo.codeSize = shaderBinaryCode.size();
+	shaderModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(&shaderBinaryCode[0]);
+
+#ifndef NDEBUG
+	std::cout << "creating shader module using binary at: "
+	<< output << std::endl;
+#endif
+
+	VkShaderModule shaderModule;
+	CheckVkResult(
+		vkCreateShaderModule(device, &shaderModuleCreateInfo, nullptr, &shaderModule),
+		"error creating shader module"
+	);
+
+	return shaderModule;
+}
+
+void VulkanHandler::SetGraphicsPipeline() {
+
+	VkShaderModule vertexShaderModule	= CreateShaderModule("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
+	VkShaderModule fragmentShaderModule = CreateShaderModule("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
+	
+	shaderModules.push_back(vertexShaderModule);
+	shaderModules.push_back(fragmentShaderModule);
+
+	VkPipelineShaderStageCreateInfo vertexShaderStageCreateInfo{};
+	vertexShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	vertexShaderStageCreateInfo.pNext = nullptr;
+	vertexShaderStageCreateInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+	vertexShaderStageCreateInfo.module = vertexShaderModule;
+	vertexShaderStageCreateInfo.pName = "main";
+	vertexShaderStageCreateInfo.pSpecializationInfo = nullptr;
+
+	VkPipelineShaderStageCreateInfo fragmentShaderStageCreateInfo{};
+	fragmentShaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	fragmentShaderStageCreateInfo.pNext = nullptr;
+	fragmentShaderStageCreateInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+	fragmentShaderStageCreateInfo.module = fragmentShaderModule;
+	fragmentShaderStageCreateInfo.pName = "main";
+	fragmentShaderStageCreateInfo.pSpecializationInfo = nullptr;
+
+	VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{};
+	vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+	vertexInputCreateInfo.pNext = nullptr;
+	vertexInputCreateInfo.vertexBindingDescriptionCount = 0;
+	vertexInputCreateInfo.pVertexBindingDescriptions = nullptr;
+	vertexInputCreateInfo.pVertexAttributeDescriptions = nullptr;
+
+	VkPipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo{};
+	inputAssemblyStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+	inputAssemblyStateCreateInfo.pNext = nullptr;
+	inputAssemblyStateCreateInfo.flags = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	inputAssemblyStateCreateInfo.primitiveRestartEnable = VK_FALSE;
+
+	SetViewportState();
+	CreateRasterizer();
+	EnableMultisampleAntiAliasing();
+	ColorBlendSettings();
+	SetDynamicStates();
+	SetPipelineLayout();
+}
+
+void VulkanHandler::SetViewportState() {
+
+	VkSurfaceCapabilitiesKHR surfaceCapabilities;
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities);
+
+	VkViewport viewport{};
+	viewport.x = 0.0f;
+	viewport.y = 0.0f;
+	viewport.width  = static_cast<float>(surfaceCapabilities.currentExtent.width);
+	viewport.height = static_cast<float>(surfaceCapabilities.currentExtent.height);
+	viewport.minDepth = 0.0f;
+	viewport.maxDepth = 1.0f;
+
+	VkRect2D scissor{};
+	scissor.offset = {0, 0};
+	scissor.extent = surfaceCapabilities.currentExtent;
+
+	VkPipelineViewportStateCreateInfo viewportStateCreateInfo{};
+	viewportStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	viewportStateCreateInfo.pNext = nullptr;
+	viewportStateCreateInfo.viewportCount = 1;
+	viewportStateCreateInfo.pViewports = &viewport;
+	viewportStateCreateInfo.scissorCount = 1;
+	viewportStateCreateInfo.pScissors = &scissor;
+}
+
+void VulkanHandler::CreateRasterizer() {
+
+	VkPipelineRasterizationStateCreateInfo rasterizationStateCreateInfo{};
+	rasterizationStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+	rasterizationStateCreateInfo.pNext = nullptr;
+	rasterizationStateCreateInfo.depthClampEnable = VK_FALSE;
+	rasterizationStateCreateInfo.polygonMode = VK_POLYGON_MODE_FILL;
+	rasterizationStateCreateInfo.lineWidth = 1.0f;
+	rasterizationStateCreateInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+	rasterizationStateCreateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+	rasterizationStateCreateInfo.depthBiasEnable = VK_FALSE;
+	rasterizationStateCreateInfo.depthBiasConstantFactor = 0.0f;
+	rasterizationStateCreateInfo.depthBiasClamp = 0.0f; 
+	rasterizationStateCreateInfo.depthBiasSlopeFactor = 0.0f;
+
+}
+
+void VulkanHandler::EnableMultisampleAntiAliasing() {
+	VkPipelineMultisampleStateCreateInfo MSAACreateInfo{};
+	MSAACreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+	MSAACreateInfo.pNext = nullptr;
+	MSAACreateInfo.sampleShadingEnable = VK_FALSE;
+	MSAACreateInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+}
+
+void VulkanHandler::ColorBlendSettings() {
+
+	VkPipelineColorBlendAttachmentState colorBlendAttachmentState{};
+	colorBlendAttachmentState.colorWriteMask =
+		VK_COLOR_COMPONENT_R_BIT |
+		VK_COLOR_COMPONENT_G_BIT |
+		VK_COLOR_COMPONENT_B_BIT |
+		VK_COLOR_COMPONENT_A_BIT;
+	colorBlendAttachmentState.blendEnable = VK_FALSE;
+
+	VkPipelineColorBlendStateCreateInfo colorBlendStateCreateInfo{};
+	colorBlendStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+	colorBlendStateCreateInfo.pNext = nullptr;
+	colorBlendStateCreateInfo.attachmentCount = 1;
+	colorBlendStateCreateInfo.pAttachments = &colorBlendAttachmentState;
+	colorBlendStateCreateInfo.logicOpEnable = VK_FALSE; //bitwise blending
+}
+
+void VulkanHandler::SetDynamicStates() {
+
+	VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo{};
+	dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	dynamicStateCreateInfo.pNext = nullptr;
+	dynamicStateCreateInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+	dynamicStateCreateInfo.pDynamicStates = &dynamicStates[0];
+}
+
+void VulkanHandler::SetPipelineLayout() {
+
+	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
+	pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipelineLayoutCreateInfo.pNext = nullptr;
+	
+#ifndef NDEBUG
+	std::cout << "setting up pipeline layout" << std::endl;
+#endif
+
+	CheckVkResult(
+		vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout),
+		"error creating pipeline layout"
+	);
+	
+}
+
+void VulkanHandler::CreateRenderPass() {
+
+}
+
 void VulkanHandler::Cleanup() {
+	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+	for (const VkShaderModule& shaderModule : shaderModules) {
+		vkDestroyShaderModule(device, shaderModule, nullptr);
+	}
 	for (const VkImageView &imageview : swapchainImageViews) {
 		vkDestroyImageView(device, imageview, nullptr);
 	}
