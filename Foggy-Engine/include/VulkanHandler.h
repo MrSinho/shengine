@@ -24,27 +24,34 @@ struct VulkanHandler {
 #endif
 
 	void CreateInstance();
+	
 	void CreateWindowSurface();
+	
 	void SetPhysicalDevice();
 	bool CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevice);
+	
 	VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex);
+	
 	void SetLogicalDevice();
+	
 	VkCommandPool CreateCommandPool(uint32_t queueFamilyIndex);
 	void CreateCmdBuffer(const VkCommandPool& cmdPool);
+	
 	void CreateSwapchain();
+	
 	void GetSwapchainImages();
 	void CreateSwapchainImageViews();
+	
 	VkShaderModule CreateShaderModule(const char* input, const char* output);
 
-	void SetGraphicsPipeline();
-	void SetViewportState();
-	void CreateRasterizer();
-	void EnableMultisampleAntiAliasing();
-	void ColorBlendSettings();
-	void SetDynamicStates();
-	void SetPipelineLayout();
-
-	void CreateRenderPass();
+	VkPipelineViewportStateCreateInfo SetViewportState();
+	VkPipelineRasterizationStateCreateInfo CreateRasterizer();
+	VkPipelineMultisampleStateCreateInfo EnableMSAA();
+	VkPipelineColorBlendStateCreateInfo ColorBlendSettings();
+	VkPipelineDynamicStateCreateInfo SetDynamicState();
+	VkPipelineLayout SetPipelineLayout();
+	VkRenderPass CreateRenderPass();
+	void CreateGraphicsPipeline();
 
 	static const char* TranslateVkResult(const VkResult& vkResult);
 	static const char* TranslateQueueFlags(const VkQueueFlags& queueFlag);
@@ -62,6 +69,7 @@ struct VulkanHandler {
 	VkSwapchainKHR swapchain = VK_NULL_HANDLE;
 	VkFormat swapchainImageFormat;
 	VkPipelineLayout pipelineLayout;
+	VkRenderPass renderPass;
 
 #ifndef NDEBUG
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
