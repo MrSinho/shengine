@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/Editor.dir/Editor/src/Editor.cpp.o -o ../bin/Editor  ../bin/libFoggy-Engine.a Externals/glfw/src/libglfw3.a -lpthread -lrt -lm -ldl -lVulkan_LIBRARY-NOTFOUND libUtilities.a 
