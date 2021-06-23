@@ -3,8 +3,12 @@
 For some computer graphics definitions check this [wikipedia link](https://en.wikipedia.org/wiki/Glossary_of_computer_graphics). 
 The best resource for reading about vulkan specific functions and structure definitions is [this](https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/).
 
-## VkApplicationInfo: obvious
+## VkApplicationInfo: 
+Defines stuff like your application name, the application version, the engine name with its version and the Vulkan API version.
+
 ## Validation layers and message callbacks
+Vulkan libraries have no debug tools by default, which could lead to unexpected errors and bugs for the developer. That's why you can use validation layers, which consist in some checks and conditions before a function is called. You can develop your own validation layer, or you can ask Vulkan to use some you've already installed with the Vulkan SDK. With `vkEnumerateInstanceLayerProperties` you get an array of the installed validation layers, which properties are stored in the `VkLayerProperties` structure. 
+
 ## VkInstance and instance extensions
 ## Create a native window surface
 ## Physical devices and queue families 
