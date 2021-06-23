@@ -9,14 +9,16 @@ Defines stuff like your application name, the application version, the engine na
 ## Validation layers and message callbacks
 Vulkan libraries have no debug tools by default, which could lead to unexpected errors and bugs for the developer. That's why you can use validation layers, which consist in some checks and conditions before a function is called. You can develop your own validation layer, or you can ask Vulkan to use some you've already installed with the Vulkan SDK,, such as `VK_LAYER_KHRONOS_validation`. With `vkEnumerateInstanceLayerProperties` you get an array of the installed validation layers, which properties are stored in the `VkLayerProperties` structure. 
 
-Validation layers work only when you're manipulating CPU data, that's why for GPU debugging you should setup a debug messenger callback: 
+Validation layers work only when you're manipulating CPU data, that's why for GPU debugging you should setup a debug messenger callback: --
 
 ## VkInstance and instance extensions
 
-A VkInstance is what is the intermediate component between yout program and Vulkan. To create an instance you first need to setup a `VkInstanceCreateInfo` structure which holds the `VkApplicationInfo`, the name and number of the validation layers you want to use, and the instance extensions. In the future you're going to create a swapchain, which you'll be able to use only by enabling  
+A VkInstance is what is the intermediate component between yout program and Vulkan. To create an instance you first need to setup a `VkInstanceCreateInfo` structure which holds the `VkApplicationInfo`, the name and number of the validation layers you want to use, and the instance extensions. In the future you're going to create a [swapchain](#Header), which you'll be able to use only by enabling  
 
 ## Create a native window surface
+
 ## Physical devices and queue families 
+
 enumerate physical devices and check for queue families support and store the `indices`
 
 ## Create queues, a logical device, command pools and command buffers
@@ -24,6 +26,10 @@ create a `queue` for each queue family index
 create a `logical` device and add swapchain extension
 create a `command pool` for each queue
 create  a `command buffer` for each command pool
+
+# Header
+
+s
 
 ## Create a swapchain
 
