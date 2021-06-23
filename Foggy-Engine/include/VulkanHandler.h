@@ -2,9 +2,13 @@
 #define VULKAN_HANDLER_H
 
 #ifdef WIN32
-#define VK_USE_PLATFORM_WIN32_KHR
-#define GLFW_EXPOSE_NATIVE_WIN32
+	#define VK_USE_PLATFORM_WIN32_KHR
 #endif
+
+#ifdef unix
+	#define VK_USE_PLATFORM_XLIB_KHR
+#endif
+
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <array>
@@ -12,7 +16,6 @@
 #include <stdint.h>
 #include <string>
 
-#define GLFW_INCLUDE_VULKAN
 #include "Window.h"
 
 struct VulkanHandler {
