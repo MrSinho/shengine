@@ -13,9 +13,11 @@ Validation layers work only when you're manipulating CPU data, that's why for GP
 
 ## VkInstance and instance extensions
 
-A VkInstance is what is the intermediate component between yout program and Vulkan. To create an instance you first need to setup a `VkInstanceCreateInfo` structure which holds the `VkApplicationInfo`, the name and number of the validation layers you want to use, and the instance extensions. In the future you're going to create a [swapchain](#Header), which you'll be able to use only by enabling  
+A VkInstance is what is the intermediate component between yout program and Vulkan. To create an instance you first need to setup a `VkInstanceCreateInfo` structure which holds the `VkApplicationInfo`, the name and number of the validation layers you want to use, and the instance extensions. In the future you're going to create a swapchain, which you'll be able to use only by enabling  
 
 ## Create a native window surface
+
+Cross platform window handlers are great. GLFW is one of them. It allows creating windows, handling events and inputs for every platform. GLFW was first meant to be linked with OpenGL, but later it supported many other APIs. Surfaces in Vulkan have to be platform spe
 
 ## Physical devices and queue families 
 
