@@ -7,29 +7,45 @@ The best resource for reading about vulkan specific functions and structure defi
 Defines stuff like your application name, the application version, the engine name with its version and the Vulkan API version.
 
 ## Validation layers and message callbacks
-Vulkan libraries have no debug tools by default, which could lead to unexpected errors and bugs for the developer. That's why you can use validation layers, which consist in some checks and conditions before a function is called. You can develop your own validation layer, or you can ask Vulkan to use some you've already installed with the Vulkan SDK,, such as `VK_LAYER_KHRONOS_validation`. With `vkEnumerateInstanceLayerProperties` you get an array of the installed validation layers, which properties are stored in the `VkLayerProperties` structure. 
+Vulkan libraries have no debug tools by default, which could lead to unexpected errors and bugs for the developer. That's why you can use validation layers, which consist in some checks and conditions before a function is called. You can develop your own validation layer, or you can ask Vulkan to use some you've already installed with the Vulkan SDK,, such as `"VK_LAYER_KHRONOS_validation"`. With `vkEnumerateInstanceLayerProperties` you get an array of the installed validation layers, which properties are stored in the `VkLayerProperties` structure. 
 
 Validation layers work only when you're manipulating CPU data, that's why for GPU debugging you should setup a debug messenger callback: --
 
 ## VkInstance and instance extensions
 
-A VkInstance is what is the intermediate component between yout program and Vulkan. To create an instance you first need to setup a `VkInstanceCreateInfo` structure which holds the `VkApplicationInfo`, the name and number of the validation layers you want to use, and the instance extensions. In the future you're going to create a [swapchain](#Header), which you'll be able to use only by enabling  
+A VkInstance is what is the intermediate component between yout program and Vulkan. To create an instance you first need to setup a `VkInstanceCreateInfo` structure which holds the `VkApplicationInfo`, the name and number of the validation layers you want to use, and the instance extensions. In the future you're going to create a swapchain, which you'll be able to use only by using the extension `"VK_KHR_swapchain"`
 
 ## Create a native window surface
 
 ## Physical devices and queue families 
 
-enumerate physical devices and check for queue families support and store the `indices`
+Vulkan needs to know wich graphics card it's going to use, so we need to check if the installed hardware does support specific features that we can find in queue families, and create a simple scoring system for choosing only one of the suitable devices.
 
-## Create queues, a logical device, command pools and command buffers
+So we need check for some specific queue families support and store the `indices`. 
+In your GPU there are different queue families, each one is made for a differente purpose, for instance in our case we want to know if our device does support graphics, which means we want to store the index of the queue family enumerated from the physical device. Then we want to check if the selected queue family is able to present images to the screen, if yes, than it's all fine, if not then we just need to find another queue family that is able to do that job, and add the index of that queue family.
+
+## Create a queue
+
+Before creating a logical device we need to create a queue for each queue family index. To do that you have to fill the `VkDeviceQueueCreateInfo`, which requires:
+* A `queueCount`, generally set to 1
+* A `queuePriorities`: the higher is the value, the higher is the priority.
+* A `queueFamilyIndex`: as I said before you have to create a queue for each required queue family, which ID in your gpu is the queue family index
+
+## Create a logical device
+
+In Vulkan a logical device is what allows you to comunicate directly to the gpu hardware. Every graphics settings will require a logical device. 
+Create a `VkDeviceCreateInfo` and fill the following items:
+* The `queueCreateInfoCount`: the number of `VkQueueCreateInfo` you've created.
+* The `pQueueCreateInfos`, that is the pointer of the array containing the `VkQueueCreateInfo`s.
+* The `enabledLayerCount`, something deprecated and 
+
+## Create command pools
+
+## Create a command buffer and command buffers
 create a `queue` for each queue family index
 create a `logical` device and add swapchain extension
 create a `command pool` for each queue
 create  a `command buffer` for each command pool
-
-# Header
-
-s
 
 ## Create a swapchain
 
