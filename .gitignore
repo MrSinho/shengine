@@ -478,3 +478,4 @@ build/.vs/Foggy-Engine/v16/ipch/AutoPCH/adf3b8db419044e6/VULKANHANDLER.ipch
 build/.vs/Foggy-Engine/v16/ipch/AutoPCH/c10ebfb79651859b/VULKAN.ipch
 build/.vs/Foggy-Engine/v16/ipch/AutoPCH/f5655f6ff7145264/VULKANHANDLER.ipch
 Externals/json/
+.vscode/settings.json

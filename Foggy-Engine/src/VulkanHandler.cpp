@@ -343,9 +343,9 @@ VkCommandPool VulkanHandler::CreateCommandPool(uint32_t queueFamilyIndex) {
 
 	VkCommandPoolCreateInfo cmdPoolCreateInfo;
 	cmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	cmdPoolCreateInfo.pNext = nullptr;
 	cmdPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
 	cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-	cmdPoolCreateInfo.pNext = nullptr;
 
 #ifndef NDEBUG
 	uint32_t queueFamilyPropertiesCount = 0;
