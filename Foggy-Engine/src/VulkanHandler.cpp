@@ -4,6 +4,8 @@
 	#include <iostream>
 #endif
 
+#include <string.h>
+
 #include "VulkanHandler.h"
 #include "Utilities.h"
 
