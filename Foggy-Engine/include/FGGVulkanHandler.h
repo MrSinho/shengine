@@ -1,14 +1,6 @@
 #ifndef VULKAN_HANDLER_H
 #define VULKAN_HANDLER_H
 
-#ifdef WIN32
-	#define VK_USE_PLATFORM_WIN32_KHR
-#endif
-
-#ifdef __linux__
-	#define VK_USE_PLATFORM_XCB_KHR
-#endif
-
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <array>
