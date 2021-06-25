@@ -6,7 +6,7 @@ sudo apt install -y libxcursor-dev
 sudo apt install -y libxi-dev
 sudo apt install -y libvulkan-dev
 
-wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
-sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-bionic.list http://packages.lunarg.com/vulkan/lunarg-vulkan-bionic.list
+sudo add-apt-repository ppa:oibaf/graphics-drivers
 sudo apt update
-sudo apt install -y vulkan-sdk
+sudo apt upgrade
+sudo apt install libvulkan1 mesa-vulkan-drivers vulkan-utils

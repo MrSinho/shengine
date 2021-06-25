@@ -70,30 +70,12 @@ void CreateInstance(FGGVulkanHandler* vulkanHandler) {
 }
 
 void CreateWindowSurface(const VkInstance& instance, const FGGWindow &window, VkSurfaceKHR* surface) {
-#ifdef WIN32
-	VkWin32SurfaceCreateInfoKHR win32SurfaceCreateInfo{};
-	win32SurfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-	win32SurfaceCreateInfo.pNext = nullptr;
-	win32SurfaceCreateInfo.hwnd = glfwGetWin32Window(window.window);
-	win32SurfaceCreateInfo.hinstance = GetModuleHandle(nullptr);
-
-	CheckVkResult(
-		vkCreateWin32SurfaceKHR(instance, &win32SurfaceCreateInfo, nullptr, surface),
-		"error creating win32 surface"
-	);
-#endif
-
-#ifdef __linux__
-	VkXlibSurfaceCreateInfoKHR xlibSurfaceCreateInfo{};
-	xlibSurfaceCreateInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
-	xlibSurfaceCreateInfo.pNext = nullptr;
-	xlibSurfaceCreateInfo.window = glfwGetX11Window(window.window);
 	
-	CheckVkResult(
-		vkCreateXlibSurfaceKHR(instance, &xlibSurfaceCreateInfo, nullptr, surface),
-		"error creating xlib surface"
-	);
+#ifndef NDEBUG
+	std::cout << "creating window surface" << std::endl;
 #endif
+	
+	glfwCreateWindowSurface(instance, window.window, nullptr, surface);
 }
 
 void SetPhysicalDevice(FGGVulkanHandler* vulkanHandler) {
