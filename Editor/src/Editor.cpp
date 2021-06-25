@@ -2,7 +2,7 @@
 
 int main() {
 
-	VulkanHandler vulkanHandler{};
+	FGGVulkanHandler vulkanHandler{};
 	vulkanHandler.window.width = 720;
 	vulkanHandler.window.height = 480;
 	vulkanHandler.window.title = "Foggy-Engine Editor";

@@ -6,5 +6,5 @@ CXX_DEFINES = -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 CXX_INCLUDES = -I/home/mrsinho/Desktop/Foggy-Engine/Utilities/include
 
-CXX_FLAGS = -std=gnu++17
+CXX_FLAGS = -fpermissive -std=gnu++17
 

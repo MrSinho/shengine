@@ -96,19 +96,13 @@ GLFW/glfw3native.h
 stdint.h
 -
 
-../Utilities/include/Utilities.h
-string
--
-
-/home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGVulkanHandler.cpp
-stdexcept
--
-iostream
--
-string.h
--
+../Foggy-Engine/include/Foggy-Engine.h
+FGGWindow.h
+../Foggy-Engine/include/FGGWindow.h
 FGGVulkanHandler.h
-/home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGVulkanHandler.h
-Utilities.h
-/home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/Utilities.h
+../Foggy-Engine/include/FGGVulkanHandler.h
+
+/home/mrsinho/Desktop/Foggy-Engine/Editor/src/Editor.cpp
+Foggy-Engine.h
+-
 

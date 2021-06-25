@@ -6,7 +6,7 @@
 
 #include <string.h>
 
-#include "VulkanHandler.h"
+#include "FGGVulkanHandler.h"
 #include "Utilities.h"
 
 #pragma warning ( disable : 26812 )
@@ -15,7 +15,7 @@
 * First setup
 */
 
-void InitVulkan(VulkanHandler *vulkanHandler) {
+void InitVulkan(FGGVulkanHandler *vulkanHandler) {
 	InitGLFW(&vulkanHandler->window);
 	CreateInstance(vulkanHandler);
 	CreateWindowSurface(vulkanHandler->instance, vulkanHandler->window, &vulkanHandler->surface);
@@ -28,7 +28,7 @@ void InitVulkan(VulkanHandler *vulkanHandler) {
 	CreateGraphicsPipeline(*vulkanHandler);
 }
 
-void CreateInstance(VulkanHandler* vulkanHandler) {
+void CreateInstance(FGGVulkanHandler* vulkanHandler) {
 
 	//APPLICATION
 	VkApplicationInfo appInfo{};
@@ -44,9 +44,10 @@ void CreateInstance(VulkanHandler* vulkanHandler) {
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
 #ifndef NDEBUG
-	CheckValidationLayers(*vulkanHandler);
-	createInfo.enabledLayerCount = static_cast<uint32_t>(vulkanHandler->requiredValidationLayers.size());
-	createInfo.ppEnabledLayerNames = &vulkanHandler->requiredValidationLayers[0];
+	if (CheckValidationLayers(*vulkanHandler)) {
+		createInfo.enabledLayerCount = static_cast<uint32_t>(vulkanHandler->requiredValidationLayers.size());
+		createInfo.ppEnabledLayerNames = &vulkanHandler->requiredValidationLayers[0];
+	}
 #endif
 	uint32_t glfwExtensionsCount = 0;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionsCount);
@@ -69,22 +70,34 @@ void CreateInstance(VulkanHandler* vulkanHandler) {
 	);
 }
 
-void CreateWindowSurface(const VkInstance& instance, const Window& window, VkSurfaceKHR* surface) {
+void CreateWindowSurface(const VkInstance& instance, const FGGWindow &window, VkSurfaceKHR* surface) {
 #ifdef WIN32
 	VkWin32SurfaceCreateInfoKHR win32SurfaceCreateInfo{};
 	win32SurfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
 	win32SurfaceCreateInfo.pNext = nullptr;
 	win32SurfaceCreateInfo.hwnd = glfwGetWin32Window(window.window);
 	win32SurfaceCreateInfo.hinstance = GetModuleHandle(nullptr);
-#endif
 
 	CheckVkResult(
 		vkCreateWin32SurfaceKHR(instance, &win32SurfaceCreateInfo, nullptr, surface),
-		"error creating window surface"
+		"error creating win32 surface"
 	);
+#endif
+
+#ifdef __linux__
+	VkXlibSurfaceCreateInfoKHR xlibSurfaceCreateInfo{};
+	xlibSurfaceCreateInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+	xlibSurfaceCreateInfo.pNext = nullptr;
+	xlibSurfaceCreateInfo.window = glfwGetX11Window(window.window);
+	
+	CheckVkResult(
+		vkCreateXlibSurfaceKHR(instance, &xlibSurfaceCreateInfo, nullptr, surface),
+		"error creating xlib surface"
+	);
+#endif
 }
 
-void SetPhysicalDevice(VulkanHandler* vulkanHandler) {
+void SetPhysicalDevice(FGGVulkanHandler* vulkanHandler) {
 
 	uint32_t pDeviceCount = 0;
 	vkEnumeratePhysicalDevices(vulkanHandler->instance, &pDeviceCount, nullptr);
@@ -183,7 +196,7 @@ void SetPhysicalDevice(VulkanHandler* vulkanHandler) {
 #endif
 }
 
-bool CheckPhysicalDeviceExtensions(const VulkanHandler &vulkanHandler, const VkPhysicalDevice& pDevice) {
+bool CheckPhysicalDeviceExtensions(const FGGVulkanHandler &vulkanHandler, const VkPhysicalDevice& pDevice) {
 	uint32_t extensionCount = 0;
 	vkEnumerateDeviceExtensionProperties(pDevice, nullptr, &extensionCount, nullptr);
 	
@@ -222,7 +235,7 @@ VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex, const float &prio
 	return queueCreateInfo;
 }
 
-void SetLogicalDevice(VulkanHandler *vulkanHandler) {
+void SetLogicalDevice(FGGVulkanHandler *vulkanHandler) {
 	
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	for (const uint32_t& index : vulkanHandler->queueFamilyIndices) {
@@ -301,7 +314,7 @@ void CreateCmdBuffer(const VkDevice &device, const VkCommandPool &cmdPool) {
 *	Swapchain creation + image views
 */
 
-void CreateSwapchain(VulkanHandler *vulkanHandler) {
+void CreateSwapchain(FGGVulkanHandler *vulkanHandler) {
 
 	VkSurfaceCapabilitiesKHR surfaceCapabilities;
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkanHandler->physicalDevice, vulkanHandler->surface, &surfaceCapabilities);
@@ -363,14 +376,14 @@ void CreateSwapchain(VulkanHandler *vulkanHandler) {
 	);
 }
 
-void GetSwapchainImages(VulkanHandler *vulkanHandler) {
+void GetSwapchainImages(FGGVulkanHandler *vulkanHandler) {
 	uint32_t swapchainImageCount;
 	vkGetSwapchainImagesKHR(vulkanHandler->device, vulkanHandler->swapchain, &swapchainImageCount, nullptr);
 	vulkanHandler->swapchainImages.resize(swapchainImageCount);
 	vkGetSwapchainImagesKHR(vulkanHandler->device, vulkanHandler->swapchain, &swapchainImageCount, &vulkanHandler->swapchainImages[0]);
 }
 
-void CreateSwapchainImageViews(VulkanHandler* vulkanHandler) {
+void CreateSwapchainImageViews(FGGVulkanHandler* vulkanHandler) {
 	vulkanHandler->swapchainImageViews.resize(vulkanHandler->swapchainImages.size());
 	for (uint32_t i = 0; i < vulkanHandler->swapchainImageViews.size(); i++) {
 
@@ -603,7 +616,7 @@ VkRenderPass CreateRenderPass(const VkFormat &swapchainImageFormat, const VkDevi
 	return *renderPass;
 }
 
-void CreateGraphicsPipeline(VulkanHandler &vulkanHandler) {
+void CreateGraphicsPipeline(FGGVulkanHandler &vulkanHandler) {
 
 	VkShaderModule vertexShaderModule = CreateShaderModule(vulkanHandler.device, "../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
 	VkShaderModule fragmentShaderModule = CreateShaderModule(vulkanHandler.device, "../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
@@ -665,7 +678,7 @@ void CreateGraphicsPipeline(VulkanHandler &vulkanHandler) {
 	graphicsPipelineCreateInfo.basePipelineIndex = -1;
 }
 
-void Cleanup(VulkanHandler* vulkanHandler) {
+void Cleanup(FGGVulkanHandler* vulkanHandler) {
 	vkDestroyPipelineLayout(vulkanHandler->device, vulkanHandler->pipelineLayout, nullptr);
 	vkDestroyRenderPass(vulkanHandler->device, vulkanHandler->renderPass, nullptr);
 	vkDestroyPipelineLayout(vulkanHandler->device, vulkanHandler->pipelineLayout, nullptr);
@@ -686,7 +699,7 @@ void Cleanup(VulkanHandler* vulkanHandler) {
 
 #ifndef NDEBUG
 
-void CheckValidationLayers(const VulkanHandler& vulkanHandler) {
+bool CheckValidationLayers(const FGGVulkanHandler& vulkanHandler) {
 	uint32_t layerCount;
 	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
@@ -711,8 +724,10 @@ void CheckValidationLayers(const VulkanHandler& vulkanHandler) {
 	}
 
 	if (requestedLayers > 0) {
-		throw std::runtime_error("Not all the required validation layers have been found");
+		return 0;
 	}
+
+	return 1;
 }
 
 #endif

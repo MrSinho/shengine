@@ -16,10 +16,9 @@
 #include <stdint.h>
 #include <string>
 
-#include "Window.h"
+#include "FGGWindow.h"
 
-typedef struct VulkanHandler {
-	Window window;
+struct FGGVulkanHandler {
 	VkInstance instance = VK_NULL_HANDLE;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
@@ -28,6 +27,8 @@ typedef struct VulkanHandler {
 	VkFormat swapchainImageFormat;
 	VkPipelineLayout pipelineLayout;
 	VkRenderPass renderPass;
+	FGGWindow window;
+
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 	std::array<const char*, 1> requiredDeviceExtensionsNames = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	std::array<VkQueueFlags, 1> requiredQueueFlags = { VK_QUEUE_GRAPHICS_BIT };
@@ -40,25 +41,24 @@ typedef struct VulkanHandler {
 		VK_DYNAMIC_STATE_VIEWPORT,
 		VK_DYNAMIC_STATE_LINE_WIDTH
 	};
-} VulkanHandler;
+};
 
 /*
 * First setup
 */
 
-void InitVulkan(VulkanHandler *vulkanHandler);
-extern void CheckValidationLayers(const VulkanHandler &vulkanHandler);
-extern void CreateInstance(VulkanHandler* vulkanHandler);
-extern void CreateWindowSurface(const VkInstance &instance, const Window &window, VkSurfaceKHR *surface);
-extern void SetPhysicalDevice(VulkanHandler* vulkanHandler);
-extern bool CheckPhysicalDeviceExtensions(const VulkanHandler& vulkanHandler, const VkPhysicalDevice& pDevice);
+void InitVulkan(FGGVulkanHandler *vulkanHandler);
+extern void CreateInstance(FGGVulkanHandler* vulkanHandler);
+extern void CreateWindowSurface(const VkInstance &instance, const FGGWindow &window, VkSurfaceKHR *surface);
+extern void SetPhysicalDevice(FGGVulkanHandler* vulkanHandler);
+extern bool CheckPhysicalDeviceExtensions(const FGGVulkanHandler& vulkanHandler, const VkPhysicalDevice& pDevice);
 
 /*
 *	Logical device creation + command buffers
 */
 
 extern VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex, const float &priority);
-extern void SetLogicalDevice(VulkanHandler* vulkanHandler);
+extern void SetLogicalDevice(FGGVulkanHandler* vulkanHandler);
 extern VkCommandPool CreateCommandPool(const VkDevice &device, uint32_t queueFamilyIndex);
 extern void CreateCmdBuffer(const VkDevice& device, const VkCommandPool& cmdPool);
 
@@ -66,9 +66,9 @@ extern void CreateCmdBuffer(const VkDevice& device, const VkCommandPool& cmdPool
 *	Swapchain creation + image views
 */
 
-extern void CreateSwapchain(VulkanHandler *vulkanHandler);
-extern void GetSwapchainImages(VulkanHandler* vulkanHandler);
-extern void CreateSwapchainImageViews(VulkanHandler* vulkanHandler);
+extern void CreateSwapchain(FGGVulkanHandler *vulkanHandler);
+extern void GetSwapchainImages(FGGVulkanHandler* vulkanHandler);
+extern void CreateSwapchainImageViews(FGGVulkanHandler* vulkanHandler);
 
 extern VkShaderModule CreateShaderModule(const VkDevice &device, const char* input, const char* output);
 
@@ -83,16 +83,17 @@ extern VkPipelineColorBlendStateCreateInfo ColorBlendSettings();
 extern VkPipelineDynamicStateCreateInfo SetDynamicState(const VkPipelineDynamicStateCreateInfo& dynamicStates);
 extern VkPipelineLayout SetPipelineLayout(const VkDevice& device);
 extern VkRenderPass CreateRenderPass(const VkFormat& swapchainImageFormat, const VkDevice device, VkRenderPass* renderPass);
-extern void CreateGraphicsPipeline(VulkanHandler& vulkanHandler);
+extern void CreateGraphicsPipeline(FGGVulkanHandler& vulkanHandler);
 
 /*
 *	Utilities
 */
 
+extern bool CheckValidationLayers(const FGGVulkanHandler &vulkanHandler);
 extern const char* TranslateVkResult(const VkResult& vkResult);
 extern const char* TranslateQueueFlags(const VkQueueFlags& queueFlag);
 extern void CheckVkResult(VkResult result, const char* errormsg);
 extern void Compile_glslc_Shader(const char* input, const char* output);
-extern void Cleanup(VulkanHandler *vulkanHandler);
+extern void Cleanup(FGGVulkanHandler *vulkanHandler);
 
 #endif

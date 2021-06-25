@@ -6,7 +6,7 @@ C_DEFINES = -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -D_GLFW_USE_CONFIG_H
 
 C_INCLUDES = -I/home/mrsinho/Desktop/Foggy-Engine/Externals/glfw/include -I/home/mrsinho/Desktop/Foggy-Engine/Externals/glfw/src -I/home/mrsinho/Desktop/Foggy-Engine/build/Externals/glfw/src
 
-C_FLAGS = -fPIC -Wall -std=c99
+C_FLAGS = -fPIC -fpermissive -Wall -std=c99
 
 # Custom flags: Externals/glfw/src/CMakeFiles/glfw.dir/context.c.o_FLAGS = -Wdeclaration-after-statement
 

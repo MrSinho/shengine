@@ -16,16 +16,16 @@
 #include <GLFW/glfw3native.h>
 #include <stdint.h>
 
-typedef struct Window {
+struct FGGWindow {
 
 	GLFWwindow* window;
 	uint32_t width, height;
 	const char* title;
 
-} Window;
+};
 
-extern void InitGLFW(Window *window);
-extern bool IsWindowActive(const Window &window);
-extern void ClearWindow(Window *window);
+extern void InitGLFW(FGGWindow *window);
+extern bool IsWindowActive(const FGGWindow &window);
+extern void ClearWindow(FGGWindow *window);
 
 #endif

@@ -76,42 +76,42 @@ include CMakeFiles/Foggy-Engine.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Foggy-Engine.dir/flags.make
 
-CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.o: CMakeFiles/Foggy-Engine.dir/flags.make
-CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.o: ../Foggy-Engine/src/VulkanHandler.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrsinho/Desktop/Foggy-Engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.o -c /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/VulkanHandler.cpp
+CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.o: CMakeFiles/Foggy-Engine.dir/flags.make
+CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.o: ../Foggy-Engine/src/FGGVulkanHandler.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrsinho/Desktop/Foggy-Engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.o -c /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGVulkanHandler.cpp
 
-CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/VulkanHandler.cpp > CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.i
+CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGVulkanHandler.cpp > CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.i
 
-CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/VulkanHandler.cpp -o CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.s
+CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGVulkanHandler.cpp -o CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.s
 
-CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.o: CMakeFiles/Foggy-Engine.dir/flags.make
-CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.o: ../Foggy-Engine/src/Window.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrsinho/Desktop/Foggy-Engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.o -c /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/Window.cpp
+CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.o: CMakeFiles/Foggy-Engine.dir/flags.make
+CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.o: ../Foggy-Engine/src/FGGWindow.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mrsinho/Desktop/Foggy-Engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.o -c /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGWindow.cpp
 
-CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/Window.cpp > CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.i
+CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGWindow.cpp > CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.i
 
-CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/Window.cpp -o CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.s
+CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGWindow.cpp -o CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.s
 
 # Object files for target Foggy-Engine
 Foggy__Engine_OBJECTS = \
-"CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.o" \
-"CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.o"
+"CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.o" \
+"CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.o"
 
 # External object files for target Foggy-Engine
 Foggy__Engine_EXTERNAL_OBJECTS =
 
-../bin/libFoggy-Engine.a: CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.o
-../bin/libFoggy-Engine.a: CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.o
+../bin/libFoggy-Engine.a: CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.o
+../bin/libFoggy-Engine.a: CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.o
 ../bin/libFoggy-Engine.a: CMakeFiles/Foggy-Engine.dir/build.make
 ../bin/libFoggy-Engine.a: CMakeFiles/Foggy-Engine.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/mrsinho/Desktop/Foggy-Engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library ../bin/libFoggy-Engine.a"

@@ -1,7 +1,7 @@
-#include "Window.h"
+#include "FGGWindow.h"
 #include <stdexcept>
 
-void InitGLFW(Window *window) {
+void InitGLFW(FGGWindow *window) {
 
 	if (!glfwInit()) {
 		throw std::runtime_error("Error intializing gflfw!");
@@ -13,11 +13,11 @@ void InitGLFW(Window *window) {
 	window->window = glfwCreateWindow(window->width, window->height, window->title, NULL, NULL);
 }
 
-bool IsWindowActive(const Window& window) {
+bool IsWindowActive(const FGGWindow& window) {
 	return !glfwWindowShouldClose(window.window);
 }
 
-void ClearWindow(Window *window) {
+void ClearWindow(FGGWindow *window) {
 	glfwDestroyWindow(window->window);
 	glfwTerminate();
 }

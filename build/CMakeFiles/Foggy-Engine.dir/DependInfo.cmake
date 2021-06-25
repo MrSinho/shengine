@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/VulkanHandler.cpp" "/home/mrsinho/Desktop/Foggy-Engine/build/CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VulkanHandler.cpp.o"
-  "/home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/Window.cpp" "/home/mrsinho/Desktop/Foggy-Engine/build/CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.cpp.o"
+  "/home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGVulkanHandler.cpp" "/home/mrsinho/Desktop/Foggy-Engine/build/CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGVulkanHandler.cpp.o"
+  "/home/mrsinho/Desktop/Foggy-Engine/Foggy-Engine/src/FGGWindow.cpp" "/home/mrsinho/Desktop/Foggy-Engine/build/CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/FGGWindow.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
