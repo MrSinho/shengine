@@ -19,6 +19,7 @@
 #include "FGGWindow.h"
 
 struct FGGVulkanHandler {
+	FGGWindow window;
 	VkInstance instance = VK_NULL_HANDLE;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
@@ -27,7 +28,7 @@ struct FGGVulkanHandler {
 	VkFormat swapchainImageFormat;
 	VkPipelineLayout pipelineLayout;
 	VkRenderPass renderPass;
-	FGGWindow window;
+	VkPipeline graphicsPipeline;
 
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 	std::array<const char*, 1> requiredDeviceExtensionsNames = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
@@ -41,6 +42,7 @@ struct FGGVulkanHandler {
 		VK_DYNAMIC_STATE_VIEWPORT,
 		VK_DYNAMIC_STATE_LINE_WIDTH
 	};
+	std::vector<VkFramebuffer> swapchainFramebuffers;
 };
 
 /*
@@ -82,8 +84,8 @@ extern VkPipelineMultisampleStateCreateInfo EnableMSAA();
 extern VkPipelineColorBlendStateCreateInfo ColorBlendSettings();
 extern VkPipelineDynamicStateCreateInfo SetDynamicState(const VkPipelineDynamicStateCreateInfo& dynamicStates);
 extern VkPipelineLayout SetPipelineLayout(const VkDevice& device);
-extern VkRenderPass CreateRenderPass(const VkFormat& swapchainImageFormat, const VkDevice device, VkRenderPass* renderPass);
-extern void CreateGraphicsPipeline(FGGVulkanHandler& vulkanHandler);
+extern VkRenderPass CreateRenderPass(const VkFormat& swapchainImageFormat, const VkDevice device);
+extern void CreateGraphicsPipeline(const FGGVulkanHandler& vulkanHandler, VkPipeline* graphicsPipeline);
 
 /*
 *	Utilities

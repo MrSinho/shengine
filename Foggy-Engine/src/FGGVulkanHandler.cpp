@@ -24,8 +24,7 @@ void InitVulkan(FGGVulkanHandler *vulkanHandler) {
 	CreateSwapchain(vulkanHandler);
 	GetSwapchainImages(vulkanHandler);
 	CreateSwapchainImageViews(vulkanHandler);
-	CreateRenderPass(vulkanHandler->swapchainImageFormat, vulkanHandler->device, &vulkanHandler->renderPass);
-	CreateGraphicsPipeline(*vulkanHandler);
+	CreateGraphicsPipeline(*vulkanHandler, &vulkanHandler->graphicsPipeline);
 }
 
 void CreateInstance(FGGVulkanHandler* vulkanHandler) {
@@ -569,7 +568,7 @@ VkPipelineLayout SetPipelineLayout(const VkDevice &device) {
 	return pipelineLayout;
 }
 
-VkRenderPass CreateRenderPass(const VkFormat &swapchainImageFormat, const VkDevice device, VkRenderPass *renderPass) {
+VkRenderPass CreateRenderPass(const VkFormat &swapchainImageFormat, const VkDevice device) {
 
 	VkAttachmentDescription colorAttachmentDescription{};
 	colorAttachmentDescription.format = swapchainImageFormat;
@@ -608,15 +607,16 @@ VkRenderPass CreateRenderPass(const VkFormat &swapchainImageFormat, const VkDevi
 	std::cout << "creating render pass" << std::endl;
 #endif
 
+	VkRenderPass renderPass;
 	CheckVkResult(
-		vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, renderPass),
+		vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &renderPass),
 		"error creating render pass"
 	);
 
-	return *renderPass;
+	return renderPass;
 }
 
-void CreateGraphicsPipeline(FGGVulkanHandler &vulkanHandler) {
+void CreateGraphicsPipeline(const FGGVulkanHandler &vulkanHandler, VkPipeline *graphicsPipeline) {
 
 	VkShaderModule vertexShaderModule = CreateShaderModule(vulkanHandler.device, "../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
 	VkShaderModule fragmentShaderModule = CreateShaderModule(vulkanHandler.device, "../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
@@ -653,7 +653,8 @@ void CreateGraphicsPipeline(FGGVulkanHandler &vulkanHandler) {
 	VkPipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo{};
 	inputAssemblyStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssemblyStateCreateInfo.pNext = nullptr;
-	inputAssemblyStateCreateInfo.flags = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	inputAssemblyStateCreateInfo.flags = 0;
+	inputAssemblyStateCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	inputAssemblyStateCreateInfo.primitiveRestartEnable = VK_FALSE;
 
 
@@ -672,13 +673,21 @@ void CreateGraphicsPipeline(FGGVulkanHandler &vulkanHandler) {
 	graphicsPipelineCreateInfo.pDepthStencilState = nullptr;
 	
 	graphicsPipelineCreateInfo.layout = SetPipelineLayout(vulkanHandler.device);
-	graphicsPipelineCreateInfo.renderPass = CreateRenderPass(vulkanHandler.swapchainImageFormat, vulkanHandler.device, &vulkanHandler.renderPass);
+	graphicsPipelineCreateInfo.renderPass = CreateRenderPass(vulkanHandler.swapchainImageFormat, vulkanHandler.device);
 	graphicsPipelineCreateInfo.subpass = 0;
-	graphicsPipelineCreateInfo.basePipelineHandle = nullptr;
-	graphicsPipelineCreateInfo.basePipelineIndex = -1;
+
+#ifndef NDEBUG
+	std::cout << "creating graphics pipeline" << std::endl;
+#endif
+
+	CheckVkResult(
+		vkCreateGraphicsPipelines(vulkanHandler.device, nullptr, 1, &graphicsPipelineCreateInfo, nullptr, graphicsPipeline),
+		"error creating graphics pipeline"
+	);
 }
 
 void Cleanup(FGGVulkanHandler* vulkanHandler) {
+	vkDestroyPipeline(vulkanHandler->device, vulkanHandler->graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(vulkanHandler->device, vulkanHandler->pipelineLayout, nullptr);
 	vkDestroyRenderPass(vulkanHandler->device, vulkanHandler->renderPass, nullptr);
 	vkDestroyPipelineLayout(vulkanHandler->device, vulkanHandler->pipelineLayout, nullptr);
