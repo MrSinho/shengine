@@ -647,11 +647,22 @@ void CreateGraphicsPipeline(const FGGVulkanHandler &vulkanHandler, VkPipeline *g
 	graphicsPipelineCreateInfo.pStages = &shaderStages[0];
 	graphicsPipelineCreateInfo.pVertexInputState = &vertexInputCreateInfo;
 	graphicsPipelineCreateInfo.pInputAssemblyState = &inputAssemblyStateCreateInfo;
-	graphicsPipelineCreateInfo.pViewportState = &SetViewportState(vulkanHandler.physicalDevice, vulkanHandler.surface);
-	graphicsPipelineCreateInfo.pColorBlendState = &ColorBlendSettings();
-	graphicsPipelineCreateInfo.pDynamicState = &SetDynamicState(&vulkanHandler.dynamicStates[0], vulkanHandler.dynamicStates.size());
-	graphicsPipelineCreateInfo.pMultisampleState = &EnableMSAA();
-	graphicsPipelineCreateInfo.pRasterizationState = &CreateRasterizer();
+
+	VkPipelineViewportStateCreateInfo viewportState = SetViewportState(vulkanHandler.physicalDevice, vulkanHandler.surface);
+	graphicsPipelineCreateInfo.pViewportState = &viewportState;
+
+	VkPipelineColorBlendStateCreateInfo blendState = ColorBlendSettings();
+	graphicsPipelineCreateInfo.pColorBlendState = &blendState;
+
+	VkPipelineDynamicStateCreateInfo dynamicState = SetDynamicState(&vulkanHandler.dynamicStates[0], vulkanHandler.dynamicStates.size());
+	graphicsPipelineCreateInfo.pDynamicState = &dynamicState;
+	
+	VkPipelineMultisampleStateCreateInfo multiSampleState = EnableMSAA();
+	graphicsPipelineCreateInfo.pMultisampleState = &multiSampleState;
+	
+	VkPipelineRasterizationStateCreateInfo rasterizationState = CreateRasterizer();
+	graphicsPipelineCreateInfo.pRasterizationState = &rasterizationState;
+	
 	graphicsPipelineCreateInfo.pDepthStencilState = nullptr;
 	
 	graphicsPipelineCreateInfo.layout = SetPipelineLayout(vulkanHandler.device);

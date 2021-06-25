@@ -6,10 +6,6 @@ add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 set(PROJECT_NAME Foggy-Engine)
 project(${PROJECT_NAME} VERSION 0.1)
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_compile_options(-fpermissive)
-endif()
-
 #SUBDIRECTORIES
 add_subdirectory(Externals/glfw)
 
