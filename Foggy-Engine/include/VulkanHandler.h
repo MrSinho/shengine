@@ -18,52 +18,7 @@
 
 #include "Window.h"
 
-struct VulkanHandler {
-
-	void InitVulkan(uint32_t width, uint32_t height, const char* title);
-
-#ifndef NDEBUG
-	void EnableValidationLayers();
-#endif
-
-	void CreateInstance();
-	
-	void CreateWindowSurface();
-	
-	void SetPhysicalDevice();
-	bool CheckPhysicalDeviceExtensions(const VkPhysicalDevice& pDevice);
-	
-	VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex);
-	
-	void SetLogicalDevice();
-	
-	VkCommandPool CreateCommandPool(uint32_t queueFamilyIndex);
-	void CreateCmdBuffer(const VkCommandPool& cmdPool);
-	
-	void CreateSwapchain();
-	
-	void GetSwapchainImages();
-	void CreateSwapchainImageViews();
-	
-	VkShaderModule CreateShaderModule(const char* input, const char* output);
-
-	VkPipelineViewportStateCreateInfo SetViewportState();
-	VkPipelineRasterizationStateCreateInfo CreateRasterizer();
-	VkPipelineMultisampleStateCreateInfo EnableMSAA();
-	VkPipelineColorBlendStateCreateInfo ColorBlendSettings();
-	VkPipelineDynamicStateCreateInfo SetDynamicState();
-	VkPipelineLayout SetPipelineLayout();
-	VkRenderPass CreateRenderPass();
-	void CreateGraphicsPipeline();
-
-	static const char* TranslateVkResult(const VkResult& vkResult);
-	static const char* TranslateQueueFlags(const VkQueueFlags& queueFlag);
-	static void CheckVkResult(VkResult result, const char* errormsg);
-	static void CompileShader(const char * input, const char* output);
-	void Cleanup();
-
-	// -----------------------------------------------------------------------------------------------------------------------------------------------------
-
+typedef struct VulkanHandler {
 	Window window;
 	VkInstance instance = VK_NULL_HANDLE;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -73,32 +28,71 @@ struct VulkanHandler {
 	VkFormat swapchainImageFormat;
 	VkPipelineLayout pipelineLayout;
 	VkRenderPass renderPass;
-
-#ifndef NDEBUG
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
-#endif
-
 	std::array<const char*, 1> requiredDeviceExtensionsNames = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-
-	const uint32_t requiredQueueFlagsCount = 1;
-
 	std::array<VkQueueFlags, 1> requiredQueueFlags = { VK_QUEUE_GRAPHICS_BIT };
-
 	std::vector<uint32_t> queueFamilyIndices;
-
-	uint32_t presentQueueFamilyIndex;
-
 	std::vector<VkCommandPool> cmdPools;
-
 	std::vector<VkImage> swapchainImages;
 	std::vector<VkImageView> swapchainImageViews;
-
 	std::vector<VkShaderModule> shaderModules;
-
 	std::array<VkDynamicState, 2> dynamicStates = {
 		VK_DYNAMIC_STATE_VIEWPORT,
 		VK_DYNAMIC_STATE_LINE_WIDTH
 	};
-};
+} VulkanHandler;
+
+/*
+* First setup
+*/
+
+void InitVulkan(VulkanHandler *vulkanHandler);
+extern void CheckValidationLayers(const VulkanHandler &vulkanHandler);
+extern void CreateInstance(VulkanHandler* vulkanHandler);
+extern void CreateWindowSurface(const VkInstance &instance, const Window &window, VkSurfaceKHR *surface);
+extern void SetPhysicalDevice(VulkanHandler* vulkanHandler);
+extern bool CheckPhysicalDeviceExtensions(const VulkanHandler& vulkanHandler, const VkPhysicalDevice& pDevice);
+
+/*
+*	Logical device creation + command buffers
+*/
+
+extern VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex, const float &priority);
+extern void SetLogicalDevice(VulkanHandler* vulkanHandler);
+extern VkCommandPool CreateCommandPool(const VkDevice &device, uint32_t queueFamilyIndex);
+extern void CreateCmdBuffer(const VkDevice& device, const VkCommandPool& cmdPool);
+
+/*
+*	Swapchain creation + image views
+*/
+
+extern void CreateSwapchain(VulkanHandler *vulkanHandler);
+extern void GetSwapchainImages(VulkanHandler* vulkanHandler);
+extern void CreateSwapchainImageViews(VulkanHandler* vulkanHandler);
+
+extern VkShaderModule CreateShaderModule(const VkDevice &device, const char* input, const char* output);
+
+/*
+*	Pipeline Stuff
+*/
+
+extern VkPipelineViewportStateCreateInfo SetViewportState(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface);
+extern VkPipelineRasterizationStateCreateInfo CreateRasterizer();
+extern VkPipelineMultisampleStateCreateInfo EnableMSAA();
+extern VkPipelineColorBlendStateCreateInfo ColorBlendSettings();
+extern VkPipelineDynamicStateCreateInfo SetDynamicState(const VkPipelineDynamicStateCreateInfo& dynamicStates);
+extern VkPipelineLayout SetPipelineLayout(const VkDevice& device);
+extern VkRenderPass CreateRenderPass(const VkFormat& swapchainImageFormat, const VkDevice device, VkRenderPass* renderPass);
+extern void CreateGraphicsPipeline(VulkanHandler& vulkanHandler);
+
+/*
+*	Utilities
+*/
+
+extern const char* TranslateVkResult(const VkResult& vkResult);
+extern const char* TranslateQueueFlags(const VkQueueFlags& queueFlag);
+extern void CheckVkResult(VkResult result, const char* errormsg);
+extern void Compile_glslc_Shader(const char* input, const char* output);
+extern void Cleanup(VulkanHandler *vulkanHandler);
 
 #endif

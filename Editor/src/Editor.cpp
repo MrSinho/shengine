@@ -3,9 +3,13 @@
 int main() {
 
 	VulkanHandler vulkanHandler{};
-	vulkanHandler.InitVulkan(720, 480, "Foggy-Engine Editor");
+	vulkanHandler.window.width = 720;
+	vulkanHandler.window.height = 480;
+	vulkanHandler.window.title = "Foggy-Engine Editor";
 
-	while (vulkanHandler.window.IsActive()) {
+	InitVulkan(&vulkanHandler);
+
+	while (IsWindowActive(vulkanHandler.window)) {
 		glfwPollEvents();
 	}
 
