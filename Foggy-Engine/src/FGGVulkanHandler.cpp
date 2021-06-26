@@ -35,6 +35,11 @@ void InitVulkan(FGGVulkanHandler *vulkanHandler) {
 	
 	RenderPassEnd(vulkanHandler->renderPass, &vulkanHandler->cmdBuffers[0], vulkanHandler->cmdBuffers.size());
 	CmdBufferRecordStop(&vulkanHandler->cmdBuffers[0], vulkanHandler->cmdBuffers.size());
+
+	CreateSemaphore(vulkanHandler->device, &vulkanHandler->imageAvailableSemaphore);
+	CreateSemaphore(vulkanHandler->device, &vulkanHandler->renderFinishedSemaphore);
+
+	PresentFrame(*vulkanHandler);
 }
 
 void CreateInstance(FGGVulkanHandler* vulkanHandler) {
@@ -103,6 +108,8 @@ void SetPhysicalDevice(FGGVulkanHandler* vulkanHandler) {
 	// GET IF DEVICE IS SUITABLE
 	std::vector<VkPhysicalDevice> suitableDevices;
 	std::vector<std::set<uint32_t>> suitableDevicesQueueFamilyIndices;
+	std::vector<uint32_t> suitableDevicesGraphicsQueueIndices;
+	std::vector<uint32_t> suitableDevicesPresentQueueIndices;
 
 	for (const VkPhysicalDevice &pDevice : pDevices) {
 #ifndef NDEBUG
@@ -119,22 +126,29 @@ void SetPhysicalDevice(FGGVulkanHandler* vulkanHandler) {
 		std::set<uint32_t> _queueFamilyIndices;
 		bool _surfaceSupport = 0;
 
+		uint32_t _graphicsQueueIndex;
+		uint32_t _presentQueueIndex;
+
 		for (const VkQueueFlags &queueFlag : vulkanHandler->requiredQueueFlags) {
 			for (uint32_t i = 0; i < queueFamilyPropertyCount; i++) {
 				if (pQueueFamilyProperties[i].queueFlags & queueFlag) {
 					_queueFamilyIndices.insert(i);
+					if (queueFlag & VK_QUEUE_GRAPHICS_BIT) { _graphicsQueueIndex = i; }
 				}
 				VkBool32 __surfaceSupport;
 				vkGetPhysicalDeviceSurfaceSupportKHR(pDevice, i, vulkanHandler->surface, &__surfaceSupport);
 				if (static_cast<bool>(__surfaceSupport) && !_surfaceSupport) {
 					_surfaceSupport = 1;
 					_queueFamilyIndices.insert(i);
+					_presentQueueIndex = i;
 				}
 			}
 		}
 		if (!_queueFamilyIndices.empty() && _surfaceSupport) { 
 			suitableDevices.push_back(pDevice);
 			suitableDevicesQueueFamilyIndices.push_back(_queueFamilyIndices);
+			suitableDevicesGraphicsQueueIndices.push_back(_graphicsQueueIndex);
+			suitableDevicesPresentQueueIndices.push_back(_presentQueueIndex);
 		}
 	}
 
@@ -168,16 +182,22 @@ void SetPhysicalDevice(FGGVulkanHandler* vulkanHandler) {
 			if (scores[i] > scores[i - 1]) {
 				vulkanHandler->physicalDevice = suitableDevices[i];
 				vulkanHandler->queueFamilyIndices.assign(suitableDevicesQueueFamilyIndices[i].begin(), suitableDevicesQueueFamilyIndices[i].end());
+				vulkanHandler->graphicsQueueIndex = suitableDevicesGraphicsQueueIndices[i];
+				vulkanHandler->presentQueueIndex  = suitableDevicesPresentQueueIndices[i];
 			}
 			else {
 				vulkanHandler->physicalDevice = suitableDevices[i - 1];
 				vulkanHandler->queueFamilyIndices.assign(suitableDevicesQueueFamilyIndices[i - 1].begin(), suitableDevicesQueueFamilyIndices[i - 1].end());
+				vulkanHandler->graphicsQueueIndex = suitableDevicesGraphicsQueueIndices[i - 1];
+				vulkanHandler->presentQueueIndex  = suitableDevicesPresentQueueIndices[i - 1];
 			}
 		}
 	}
 	else {
 		vulkanHandler->physicalDevice = suitableDevices[0];
 		vulkanHandler->queueFamilyIndices.assign(suitableDevicesQueueFamilyIndices[0].begin(), suitableDevicesQueueFamilyIndices[0].end());
+		vulkanHandler->graphicsQueueIndex = suitableDevicesGraphicsQueueIndices[0];
+		vulkanHandler->presentQueueIndex = suitableDevicesPresentQueueIndices[0];
 	}
 
 #ifndef NDEBUG
@@ -256,6 +276,11 @@ void SetLogicalDevice(FGGVulkanHandler *vulkanHandler) {
 	);
 
 	for (const uint32_t& index : vulkanHandler->queueFamilyIndices) {
+		
+		VkQueue queue;
+		vkGetDeviceQueue(vulkanHandler->device, index, 0, &queue);
+		vulkanHandler->queues.push_back(queue);
+
 		VkCommandPool cmdPool = CreateCommandPool(vulkanHandler->device, index);
 		VkCommandBuffer cmdBuffer = CreateCmdBuffer(vulkanHandler->device, cmdPool);
 		vulkanHandler->cmdPools.push_back(cmdPool);
@@ -791,10 +816,60 @@ void GraphicsPipelineDraw(const VkCommandBuffer *cmdBuffers, const size_t cmdBuf
 }
 
 /*
+*	Semaphores
+*/
+
+void CreateSemaphore(const VkDevice& device, VkSemaphore *semaphore) {
+	VkSemaphoreCreateInfo semaphoreCreateInfo{};
+	semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+	semaphoreCreateInfo.pNext = nullptr;
+	semaphoreCreateInfo.flags = 0;
+	
+	CheckVkResult(
+		vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, semaphore),
+		"error creating semaphore"
+	);
+}
+
+void PresentFrame(const FGGVulkanHandler &vulkanHandler) {
+
+	uint32_t imageIndex;
+	vkAcquireNextImageKHR(vulkanHandler.device, vulkanHandler.swapchain, UINT64_MAX, vulkanHandler.imageAvailableSemaphore, nullptr, &imageIndex);
+
+	VkSubmitInfo submitInfo{};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	
+	
+	// which semaphore to wait on before execution begins and which stages of the pipeline to wait (writing colors)
+	VkSemaphore waitSemaphores[] = {vulkanHandler.imageAvailableSemaphore};
+	VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+	submitInfo.waitSemaphoreCount = 1;
+	submitInfo.pWaitSemaphores = waitSemaphores;
+	submitInfo.pWaitDstStageMask = waitStages;
+
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &vulkanHandler.cmdBuffers[imageIndex];
+
+	// which semaphore to signal once the cmd buffers have finished execution
+	VkSemaphore signalSemaphores[] = { vulkanHandler.renderFinishedSemaphore };
+	submitInfo.signalSemaphoreCount = 1;
+	submitInfo.pSignalSemaphores = signalSemaphores;
+
+	CheckVkResult(
+		vkQueueSubmit(vulkanHandler.queues[vulkanHandler.graphicsQueueIndex], 1, &submitInfo, nullptr),
+		"error submitting draw command buffer"
+	);
+
+
+}
+
+/*
 *	Cleanup
 */
 
 void Cleanup(FGGVulkanHandler* vulkanHandler) {
+	vkDestroySemaphore(vulkanHandler->device, vulkanHandler->imageAvailableSemaphore, nullptr);
+	vkDestroySemaphore(vulkanHandler->device, vulkanHandler->renderFinishedSemaphore, nullptr);
 	for (const VkFramebuffer &framebuffer : vulkanHandler->swapchainFramebuffers) {
 		vkDestroyFramebuffer(vulkanHandler->device, framebuffer, nullptr);
 	}

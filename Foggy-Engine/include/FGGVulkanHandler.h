@@ -23,9 +23,17 @@ struct FGGVulkanHandler {
 	VkRenderPass renderPass;
 	VkPipeline graphicsPipeline;
 
+	VkSemaphore imageAvailableSemaphore;
+	VkSemaphore renderFinishedSemaphore;
+
 	std::array<const char*, 1> requiredValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 	std::array<const char*, 1> requiredDeviceExtensionsNames = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	std::array<VkQueueFlags, 1> requiredQueueFlags = { VK_QUEUE_GRAPHICS_BIT };
+	std::vector<VkQueue> queues;
+	
+	uint32_t graphicsQueueIndex;
+	uint32_t presentQueueIndex;
+
 	std::vector<uint32_t> queueFamilyIndices;
 	std::vector<VkCommandPool> cmdPools;
 	std::vector<VkCommandBuffer> cmdBuffers;
@@ -97,6 +105,15 @@ void RenderPassStart(const FGGVulkanHandler& vulkanHandler);
 extern void RenderPassEnd(VkRenderPass renderPass, const VkCommandBuffer* cmdBuffers, size_t cmdBufferCount);
 extern void CmdBufferRecordStop(const VkCommandBuffer * cmdBuffers, size_t cmdBufferCount);
 
+/*
+*	Semaphores
+*/
+extern void CreateSemaphore(const VkDevice& device, VkSemaphore* semaphore);
+
+/*
+*	Present phase
+*/
+extern void PresentFrame(const FGGVulkanHandler& vulkanHandler);
 
 /*
 *	Utilities
