@@ -12,12 +12,13 @@
 
 struct FGGVulkanHandler {
 	FGGWindow window;
-	VkInstance instance = VK_NULL_HANDLE;
-	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-	VkDevice device = VK_NULL_HANDLE;
-	VkSurfaceKHR surface = VK_NULL_HANDLE;
-	VkSwapchainKHR swapchain = VK_NULL_HANDLE;
+	VkInstance instance;
+	VkPhysicalDevice physicalDevice;
+	VkDevice device;
+	VkSurfaceKHR surface;
+	VkSwapchainKHR swapchain;
 	VkFormat swapchainImageFormat;
+	VkViewport viewport;
 	VkPipelineLayout pipelineLayout;
 	VkRenderPass renderPass;
 	VkPipeline graphicsPipeline;
@@ -27,6 +28,7 @@ struct FGGVulkanHandler {
 	std::array<VkQueueFlags, 1> requiredQueueFlags = { VK_QUEUE_GRAPHICS_BIT };
 	std::vector<uint32_t> queueFamilyIndices;
 	std::vector<VkCommandPool> cmdPools;
+	std::vector<VkCommandBuffer> cmdBuffers;
 	std::vector<VkImage> swapchainImages;
 	std::vector<VkImageView> swapchainImageViews;
 	std::vector<VkShaderModule> shaderModules;
@@ -54,7 +56,7 @@ extern bool CheckPhysicalDeviceExtensions(const FGGVulkanHandler& vulkanHandler,
 extern VkDeviceQueueCreateInfo CreateQueue(uint32_t queueFamilyIndex, const float &priority);
 extern void SetLogicalDevice(FGGVulkanHandler* vulkanHandler);
 extern VkCommandPool CreateCommandPool(const VkDevice &device, uint32_t queueFamilyIndex);
-extern void CreateCmdBuffer(const VkDevice& device, const VkCommandPool& cmdPool);
+extern VkCommandBuffer CreateCmdBuffer(const VkDevice& device, const VkCommandPool& cmdPool);
 
 /*
 *	Swapchain creation + image views
@@ -70,14 +72,31 @@ extern VkShaderModule CreateShaderModule(const VkDevice &device, const char* inp
 *	Pipeline Stuff
 */
 
-extern VkPipelineViewportStateCreateInfo SetViewportState(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface);
+extern VkPipelineViewportStateCreateInfo SetViewportState(const VkPhysicalDevice& physicalDevice, VkViewport *viewport, const VkSurfaceKHR& surface);
 extern VkPipelineRasterizationStateCreateInfo CreateRasterizer();
 extern VkPipelineMultisampleStateCreateInfo EnableMSAA();
 extern VkPipelineColorBlendStateCreateInfo ColorBlendSettings();
 extern VkPipelineDynamicStateCreateInfo SetDynamicState(const VkPipelineDynamicStateCreateInfo& dynamicStates);
 extern VkPipelineLayout SetPipelineLayout(const VkDevice& device);
-extern VkRenderPass CreateRenderPass(const VkFormat& swapchainImageFormat, const VkDevice device);
-extern void CreateGraphicsPipeline(const FGGVulkanHandler& vulkanHandler, VkPipeline* graphicsPipeline);
+extern void CreateRenderPass(const VkFormat& swapchainImageFormat, const VkDevice device, VkRenderPass* renderPass);
+extern void CreateGraphicsPipeline(FGGVulkanHandler *vulkanHandler, VkPipeline* graphicsPipeline);
+
+/*
+*	Framebuffers
+*/
+extern void CreateFramebuffers(FGGVulkanHandler *vulkanHandler);
+
+/*
+*	Draw
+*/
+extern void CmdBufferRecordStart(const FGGVulkanHandler& vulkanHandler);
+extern void RenderPassRecord(const FGGVulkanHandler &vulkanHandler);
+extern void GraphicsPipelineDraw(const VkCommandBuffer* cmdBuffers, const size_t cmdBufferCount, const VkViewport& viewport, const VkPipeline& graphicsPipeline);
+
+void RenderPassStart(const FGGVulkanHandler& vulkanHandler);
+extern void RenderPassEnd(VkRenderPass renderPass, const VkCommandBuffer* cmdBuffers, size_t cmdBufferCount);
+extern void CmdBufferRecordStop(const VkCommandBuffer * cmdBuffers, size_t cmdBufferCount);
+
 
 /*
 *	Utilities

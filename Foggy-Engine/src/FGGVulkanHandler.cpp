@@ -24,7 +24,17 @@ void InitVulkan(FGGVulkanHandler *vulkanHandler) {
 	CreateSwapchain(vulkanHandler);
 	GetSwapchainImages(vulkanHandler);
 	CreateSwapchainImageViews(vulkanHandler);
-	CreateGraphicsPipeline(*vulkanHandler, &vulkanHandler->graphicsPipeline);
+	CreateRenderPass(vulkanHandler->swapchainImageFormat, vulkanHandler->device, &vulkanHandler->renderPass);
+	CreateGraphicsPipeline(vulkanHandler, &vulkanHandler->graphicsPipeline);
+	CreateFramebuffers(vulkanHandler);
+
+	CmdBufferRecordStart(*vulkanHandler);
+	RenderPassStart(*vulkanHandler);
+
+	GraphicsPipelineDraw(&vulkanHandler->cmdBuffers[0], vulkanHandler->cmdBuffers.size(), vulkanHandler->viewport, vulkanHandler->graphicsPipeline);
+	
+	RenderPassEnd(vulkanHandler->renderPass, &vulkanHandler->cmdBuffers[0], vulkanHandler->cmdBuffers.size());
+	CmdBufferRecordStop(&vulkanHandler->cmdBuffers[0], vulkanHandler->cmdBuffers.size());
 }
 
 void CreateInstance(FGGVulkanHandler* vulkanHandler) {
@@ -44,7 +54,7 @@ void CreateInstance(FGGVulkanHandler* vulkanHandler) {
 	createInfo.pApplicationInfo = &appInfo;
 #ifndef NDEBUG
 	if (CheckValidationLayers(*vulkanHandler)) {
-		createInfo.enabledLayerCount = static_cast<uint32_t>(vulkanHandler->requiredValidationLayers.size());
+		createInfo.enabledLayerCount =(uint32_t)vulkanHandler->requiredValidationLayers.size();
 		createInfo.ppEnabledLayerNames = &vulkanHandler->requiredValidationLayers[0];
 	}
 #endif
@@ -187,7 +197,7 @@ bool CheckPhysicalDeviceExtensions(const FGGVulkanHandler &vulkanHandler, const 
 #ifndef NDEBUG
 	std::cout << "Enumerating device extensions" << std::endl;
 #endif
-	uint32_t requiredExtensionsCount = static_cast<uint32_t>(vulkanHandler.requiredDeviceExtensionsNames.size());
+	uint32_t requiredExtensionsCount = (uint32_t)vulkanHandler.requiredDeviceExtensionsNames.size();
 	for (const VkExtensionProperties& extensionProperties : pDeviceExtensions) {
 		for (const char* requiredName : vulkanHandler.requiredDeviceExtensionsNames) {
 			if (strcmp(requiredName, extensionProperties.extensionName) == 0) {
@@ -226,14 +236,14 @@ void SetLogicalDevice(FGGVulkanHandler *vulkanHandler) {
 	VkDeviceCreateInfo deviceCreateInfo{};
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 #ifndef NDEBUG
-	deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(vulkanHandler->requiredValidationLayers.size());
+	deviceCreateInfo.enabledLayerCount = (uint32_t)vulkanHandler->requiredValidationLayers.size();
 	deviceCreateInfo.ppEnabledLayerNames = &vulkanHandler->requiredValidationLayers[0];
 #endif
-	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+	deviceCreateInfo.queueCreateInfoCount = (uint32_t)queueCreateInfos.size();
 	deviceCreateInfo.pQueueCreateInfos = &queueCreateInfos[0];
 	VkPhysicalDeviceFeatures pDeviceFeatures{};
 	deviceCreateInfo.pEnabledFeatures = &pDeviceFeatures;
-	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(vulkanHandler->requiredDeviceExtensionsNames.size());
+	deviceCreateInfo.enabledExtensionCount = (uint32_t)vulkanHandler->requiredDeviceExtensionsNames.size();
 	deviceCreateInfo.ppEnabledExtensionNames = &vulkanHandler->requiredDeviceExtensionsNames[0];
 
 #ifndef NDEBUG
@@ -247,8 +257,9 @@ void SetLogicalDevice(FGGVulkanHandler *vulkanHandler) {
 
 	for (const uint32_t& index : vulkanHandler->queueFamilyIndices) {
 		VkCommandPool cmdPool = CreateCommandPool(vulkanHandler->device, index);
-		CreateCmdBuffer(vulkanHandler->device, cmdPool);
+		VkCommandBuffer cmdBuffer = CreateCmdBuffer(vulkanHandler->device, cmdPool);
 		vulkanHandler->cmdPools.push_back(cmdPool);
+		vulkanHandler->cmdBuffers.push_back(cmdBuffer);
 	}
 }
 
@@ -257,8 +268,8 @@ VkCommandPool CreateCommandPool(const VkDevice &device, uint32_t queueFamilyInde
 	VkCommandPoolCreateInfo cmdPoolCreateInfo;
 	cmdPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	cmdPoolCreateInfo.pNext = nullptr;
+	cmdPoolCreateInfo.flags = 0;
 	cmdPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
-	cmdPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
 #ifndef NDEBUG
 	std::cout << "Creating " << " command pool" << std::endl;
@@ -273,7 +284,7 @@ VkCommandPool CreateCommandPool(const VkDevice &device, uint32_t queueFamilyInde
 	return cmdPool;
 }
 
-void CreateCmdBuffer(const VkDevice &device, const VkCommandPool &cmdPool) {
+VkCommandBuffer CreateCmdBuffer(const VkDevice &device, const VkCommandPool &cmdPool) {
 	VkCommandBufferAllocateInfo cmdBufferAllocateInfo{};
 	cmdBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	cmdBufferAllocateInfo.pNext = nullptr;
@@ -289,6 +300,8 @@ void CreateCmdBuffer(const VkDevice &device, const VkCommandPool &cmdPool) {
 		vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdBuffer), 
 		"error creating command buffer"
 	);
+
+	return cmdBuffer;
 }
 
 /*
@@ -344,7 +357,7 @@ void CreateSwapchain(FGGVulkanHandler *vulkanHandler) {
 	if (vulkanHandler->queueFamilyIndices.size() == 1) {
 		swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	}
-	swapchainCreateInfo.queueFamilyIndexCount = static_cast<uint32_t>(vulkanHandler->queueFamilyIndices.size());
+	swapchainCreateInfo.queueFamilyIndexCount = (uint32_t)vulkanHandler->queueFamilyIndices.size();
 	swapchainCreateInfo.pQueueFamilyIndices = &vulkanHandler->queueFamilyIndices[0];
 
 #ifndef NDEBUG
@@ -423,7 +436,7 @@ VkShaderModule CreateShaderModule(const VkDevice &device, const char* input, con
 	return shaderModule;
 }
 
-VkPipelineViewportStateCreateInfo SetViewportState(const VkPhysicalDevice &physicalDevice, const VkSurfaceKHR &surface) {
+VkPipelineViewportStateCreateInfo SetViewportState(const VkPhysicalDevice &physicalDevice, VkViewport *viewport, const VkSurfaceKHR &surface) {
 
 #ifndef NDEBUG
 	std::cout << "setting viewport state" << std::endl;
@@ -432,13 +445,12 @@ VkPipelineViewportStateCreateInfo SetViewportState(const VkPhysicalDevice &physi
 	VkSurfaceCapabilitiesKHR surfaceCapabilities;
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceCapabilities);
 
-	VkViewport viewport{};
-	viewport.x = 0.0f;
-	viewport.y = 0.0f;
-	viewport.width  = static_cast<float>(surfaceCapabilities.currentExtent.width);
-	viewport.height = static_cast<float>(surfaceCapabilities.currentExtent.height);
-	viewport.minDepth = 0.0f;
-	viewport.maxDepth = 1.0f;
+	viewport->x = 0.0f;
+	viewport->y = 0.0f;
+	viewport->width  = static_cast<float>(surfaceCapabilities.currentExtent.width);
+	viewport->height = static_cast<float>(surfaceCapabilities.currentExtent.height);
+	viewport->minDepth = 0.0f;
+	viewport->maxDepth = 1.0f;
 
 	VkRect2D scissor{};
 	scissor.offset = {0, 0};
@@ -448,7 +460,7 @@ VkPipelineViewportStateCreateInfo SetViewportState(const VkPhysicalDevice &physi
 	viewportStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 	viewportStateCreateInfo.pNext = nullptr;
 	viewportStateCreateInfo.viewportCount = 1;
-	viewportStateCreateInfo.pViewports = &viewport;
+	viewportStateCreateInfo.pViewports = viewport;
 	viewportStateCreateInfo.scissorCount = 1;
 	viewportStateCreateInfo.pScissors = &scissor;
 
@@ -550,7 +562,7 @@ VkPipelineLayout SetPipelineLayout(const VkDevice &device) {
 	return pipelineLayout;
 }
 
-VkRenderPass CreateRenderPass(const VkFormat &swapchainImageFormat, const VkDevice device) {
+void CreateRenderPass(const VkFormat &swapchainImageFormat, const VkDevice device, VkRenderPass *renderPass) {
 
 	VkAttachmentDescription colorAttachmentDescription{};
 	colorAttachmentDescription.format = swapchainImageFormat;
@@ -589,19 +601,16 @@ VkRenderPass CreateRenderPass(const VkFormat &swapchainImageFormat, const VkDevi
 	std::cout << "creating render pass" << std::endl;
 #endif
 
-	VkRenderPass renderPass;
 	CheckVkResult(
-		vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &renderPass),
+		vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, renderPass),
 		"error creating render pass"
 	);
-
-	return renderPass;
 }
 
-void CreateGraphicsPipeline(const FGGVulkanHandler &vulkanHandler, VkPipeline *graphicsPipeline) {
+void CreateGraphicsPipeline(FGGVulkanHandler *vulkanHandler, VkPipeline *graphicsPipeline) {
 
-	VkShaderModule vertexShaderModule = CreateShaderModule(vulkanHandler.device, "../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
-	VkShaderModule fragmentShaderModule = CreateShaderModule(vulkanHandler.device, "../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
+	VkShaderModule vertexShaderModule = CreateShaderModule(vulkanHandler->device, "../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
+	VkShaderModule fragmentShaderModule = CreateShaderModule(vulkanHandler->device, "../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
 
 	std::array<VkShaderModule, 2> shaderModules = { vertexShaderModule, fragmentShaderModule };
 
@@ -643,18 +652,18 @@ void CreateGraphicsPipeline(const FGGVulkanHandler &vulkanHandler, VkPipeline *g
 	VkGraphicsPipelineCreateInfo graphicsPipelineCreateInfo{};
 	graphicsPipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	graphicsPipelineCreateInfo.pNext = nullptr;
-	graphicsPipelineCreateInfo.stageCount = static_cast<uint32_t>(shaderStages.size());
+	graphicsPipelineCreateInfo.stageCount = (uint32_t)shaderStages.size();
 	graphicsPipelineCreateInfo.pStages = &shaderStages[0];
 	graphicsPipelineCreateInfo.pVertexInputState = &vertexInputCreateInfo;
 	graphicsPipelineCreateInfo.pInputAssemblyState = &inputAssemblyStateCreateInfo;
 
-	VkPipelineViewportStateCreateInfo viewportState = SetViewportState(vulkanHandler.physicalDevice, vulkanHandler.surface);
+	VkPipelineViewportStateCreateInfo viewportState = SetViewportState(vulkanHandler->physicalDevice, &vulkanHandler->viewport, vulkanHandler->surface);
 	graphicsPipelineCreateInfo.pViewportState = &viewportState;
 
 	VkPipelineColorBlendStateCreateInfo blendState = ColorBlendSettings();
 	graphicsPipelineCreateInfo.pColorBlendState = &blendState;
 
-	VkPipelineDynamicStateCreateInfo dynamicState = SetDynamicState(&vulkanHandler.dynamicStates[0], vulkanHandler.dynamicStates.size());
+	VkPipelineDynamicStateCreateInfo dynamicState = SetDynamicState(&vulkanHandler->dynamicStates[0], (uint32_t)vulkanHandler->dynamicStates.size());
 	graphicsPipelineCreateInfo.pDynamicState = &dynamicState;
 	
 	VkPipelineMultisampleStateCreateInfo multiSampleState = EnableMSAA();
@@ -665,8 +674,8 @@ void CreateGraphicsPipeline(const FGGVulkanHandler &vulkanHandler, VkPipeline *g
 	
 	graphicsPipelineCreateInfo.pDepthStencilState = nullptr;
 	
-	graphicsPipelineCreateInfo.layout = SetPipelineLayout(vulkanHandler.device);
-	graphicsPipelineCreateInfo.renderPass = CreateRenderPass(vulkanHandler.swapchainImageFormat, vulkanHandler.device);
+	graphicsPipelineCreateInfo.layout = SetPipelineLayout(vulkanHandler->device);
+	graphicsPipelineCreateInfo.renderPass = vulkanHandler->renderPass;
 	graphicsPipelineCreateInfo.subpass = 0;
 
 #ifndef NDEBUG
@@ -674,12 +683,121 @@ void CreateGraphicsPipeline(const FGGVulkanHandler &vulkanHandler, VkPipeline *g
 #endif
 
 	CheckVkResult(
-		vkCreateGraphicsPipelines(vulkanHandler.device, nullptr, 1, &graphicsPipelineCreateInfo, nullptr, graphicsPipeline),
+		vkCreateGraphicsPipelines(vulkanHandler->device, nullptr, 1, &graphicsPipelineCreateInfo, nullptr, graphicsPipeline),
 		"error creating graphics pipeline"
 	);
 }
 
+/*
+*	Framebuffers
+*/
+
+void CreateFramebuffers(FGGVulkanHandler *vulkanHandler) {
+	VkSurfaceCapabilitiesKHR surfaceCapabilities;
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkanHandler->physicalDevice, vulkanHandler->surface, &surfaceCapabilities);
+
+	for (size_t i = 0; i < vulkanHandler->swapchainImageViews.size(); i++) {
+		
+		VkImageView attachments[] = {
+			vulkanHandler->swapchainImageViews[i]
+		};
+
+		VkFramebufferCreateInfo framebufferCreateInfo{};
+		framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferCreateInfo.pNext = nullptr;
+		framebufferCreateInfo.attachmentCount = 1;
+		framebufferCreateInfo.pAttachments = attachments;
+		framebufferCreateInfo.width = surfaceCapabilities.currentExtent.width;
+		framebufferCreateInfo.height = surfaceCapabilities.currentExtent.height;
+		framebufferCreateInfo.layers = 1;
+		framebufferCreateInfo.renderPass = vulkanHandler->renderPass;
+
+		VkFramebuffer framebuffer;
+		CheckVkResult(
+			vkCreateFramebuffer(vulkanHandler->device, &framebufferCreateInfo, nullptr, &framebuffer),
+			(std::string("error creating framebuffer at index ") + std::to_string(i)).c_str()
+		);
+
+		vulkanHandler->swapchainFramebuffers.push_back(framebuffer);
+	}
+}
+
+/*
+*	Drawing
+*/
+
+void CmdBufferRecordStart(const FGGVulkanHandler& vulkanHandler) {
+
+	for (const VkCommandBuffer cmdBuffer : vulkanHandler.cmdBuffers) {
+		VkCommandBufferBeginInfo cmdBufferBeginInfo{};
+		cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		cmdBufferBeginInfo.pNext = nullptr;
+		cmdBufferBeginInfo.flags = 0;
+		cmdBufferBeginInfo.pInheritanceInfo = nullptr;
+
+		CheckVkResult(
+			vkBeginCommandBuffer(cmdBuffer, &cmdBufferBeginInfo),
+			"error recording command buffer (begin)"
+		);
+	}
+}
+
+void RenderPassStart(const FGGVulkanHandler &vulkanHandler) {
+	
+	VkSurfaceCapabilitiesKHR surfaceCapabilities;
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkanHandler.physicalDevice, vulkanHandler.surface, &surfaceCapabilities);
+
+	for (size_t i = 0; i < vulkanHandler.cmdBuffers.size(); i++) {
+		
+		VkRenderPassBeginInfo renderPassBeginInfo{};
+		renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassBeginInfo.pNext = nullptr;
+		renderPassBeginInfo.renderPass = vulkanHandler.renderPass;
+		renderPassBeginInfo.framebuffer = vulkanHandler.swapchainFramebuffers[i];
+		renderPassBeginInfo.renderArea.offset = { 0, 0 };
+		renderPassBeginInfo.renderArea.extent = surfaceCapabilities.currentExtent;
+		VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+		renderPassBeginInfo.clearValueCount = 1;
+		renderPassBeginInfo.pClearValues = &clearColor;
+
+		vkCmdBeginRenderPass(vulkanHandler.cmdBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE); //use primary command buffers
+	}
+	
+}
+
+void RenderPassEnd(VkRenderPass renderPass, const VkCommandBuffer *cmdBuffers, size_t cmdBufferCount) {
+
+	for (size_t i = 0; i < cmdBufferCount; i++) {
+		vkCmdEndRenderPass(cmdBuffers[i]);
+	}
+}
+
+void CmdBufferRecordStop(const VkCommandBuffer* cmdBuffers, size_t cmdBufferCount) {
+	for (size_t i = 0; i < cmdBufferCount; i++) {
+		CheckVkResult(
+			vkEndCommandBuffer(cmdBuffers[i]),
+			"error recording command buffer (end)"
+		);
+	}
+}
+
+void GraphicsPipelineDraw(const VkCommandBuffer *cmdBuffers, const size_t cmdBufferCount, const VkViewport &viewport, const VkPipeline& graphicsPipeline) {
+	for (size_t i = 0; i < cmdBufferCount; i++) {
+		
+		vkCmdSetViewport(cmdBuffers[i], 0, 1, &viewport);
+		vkCmdBindPipeline(cmdBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+		vkCmdDraw(cmdBuffers[i], 3, 1, 0, 0);
+	}
+}
+
+/*
+*	Cleanup
+*/
+
 void Cleanup(FGGVulkanHandler* vulkanHandler) {
+	for (const VkFramebuffer &framebuffer : vulkanHandler->swapchainFramebuffers) {
+		vkDestroyFramebuffer(vulkanHandler->device, framebuffer, nullptr);
+	}
 	vkDestroyPipeline(vulkanHandler->device, vulkanHandler->graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(vulkanHandler->device, vulkanHandler->pipelineLayout, nullptr);
 	vkDestroyRenderPass(vulkanHandler->device, vulkanHandler->renderPass, nullptr);
@@ -711,7 +829,7 @@ bool CheckValidationLayers(const FGGVulkanHandler& vulkanHandler) {
 	size_t requestedLayers = vulkanHandler.requiredValidationLayers.size();
 
 	std::cout << "Installed validation layers: " << std::endl;
-	for (uint32_t i = 0; i < static_cast<uint32_t>(vulkanHandler.requiredValidationLayers.size()); i++) {
+	for (uint32_t i = 0; i < (uint32_t)vulkanHandler.requiredValidationLayers.size(); i++) {
 		for (const VkLayerProperties& properties : availableLayers) {
 			std::cout << properties.layerName << " - VERSION " << properties.implementationVersion <<
 				": " << properties.description << std::endl;
