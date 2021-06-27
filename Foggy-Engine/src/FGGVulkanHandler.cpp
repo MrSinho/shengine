@@ -30,16 +30,11 @@ void InitVulkan(FGGVulkanHandler *vulkanHandler) {
 
 	CmdBufferRecordStart(*vulkanHandler);
 	RenderPassStart(*vulkanHandler);
-
 	GraphicsPipelineDraw(&vulkanHandler->cmdBuffers[0], vulkanHandler->cmdBuffers.size(), vulkanHandler->viewport, vulkanHandler->graphicsPipeline);
-	
 	RenderPassEnd(vulkanHandler->renderPass, &vulkanHandler->cmdBuffers[0], vulkanHandler->cmdBuffers.size());
 	CmdBufferRecordStop(&vulkanHandler->cmdBuffers[0], vulkanHandler->cmdBuffers.size());
-
 	CreateSemaphore(vulkanHandler->device, &vulkanHandler->imageAvailableSemaphore);
 	CreateSemaphore(vulkanHandler->device, &vulkanHandler->renderFinishedSemaphore);
-
-	PresentFrame(*vulkanHandler);
 }
 
 void CreateInstance(FGGVulkanHandler* vulkanHandler) {
@@ -615,12 +610,23 @@ void CreateRenderPass(const VkFormat &swapchainImageFormat, const VkDevice devic
 	subpassDescription.colorAttachmentCount = 1;
 	subpassDescription.pColorAttachments = &colorAttachmentReference;
 
+
+	VkSubpassDependency subpassDependency{};
+	subpassDependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+	subpassDependency.dstSubpass = 0; //index of the subpass
+	subpassDependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	subpassDependency.srcAccessMask = 0;
+	subpassDependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	subpassDependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
 	VkRenderPassCreateInfo renderPassCreateInfo{};
 	renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	renderPassCreateInfo.attachmentCount = 1;
 	renderPassCreateInfo.pAttachments = &colorAttachmentDescription;
 	renderPassCreateInfo.subpassCount = 1;
 	renderPassCreateInfo.pSubpasses = &subpassDescription;
+	renderPassCreateInfo.dependencyCount = 1;
+	renderPassCreateInfo.pDependencies = &subpassDependency;
 
 #ifndef NDEBUG
 	std::cout << "creating render pass" << std::endl;
@@ -757,7 +763,7 @@ void CmdBufferRecordStart(const FGGVulkanHandler& vulkanHandler) {
 		VkCommandBufferBeginInfo cmdBufferBeginInfo{};
 		cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		cmdBufferBeginInfo.pNext = nullptr;
-		cmdBufferBeginInfo.flags = 0;
+		cmdBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 		cmdBufferBeginInfo.pInheritanceInfo = nullptr;
 
 		CheckVkResult(
@@ -860,7 +866,18 @@ void PresentFrame(const FGGVulkanHandler &vulkanHandler) {
 		"error submitting draw command buffer"
 	);
 
+	VkPresentInfoKHR presentInfo{};
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	presentInfo.waitSemaphoreCount = 1;
+	presentInfo.pWaitSemaphores = &signalSemaphores[0];
+	presentInfo.swapchainCount = 1;
+	presentInfo.pSwapchains = &vulkanHandler.swapchain;
+	presentInfo.pImageIndices = &imageIndex;
 
+	CheckVkResult(
+		vkQueuePresentKHR(vulkanHandler.queues[vulkanHandler.graphicsQueueIndex], &presentInfo),
+		"error presenting queue"
+	);
 }
 
 /*

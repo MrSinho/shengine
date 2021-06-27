@@ -11,6 +11,7 @@ int main() {
 
 	while (IsWindowActive(vulkanHandler.window)) {
 		glfwPollEvents();
+		PresentFrame(vulkanHandler);
 	}
 
 	return 0;
