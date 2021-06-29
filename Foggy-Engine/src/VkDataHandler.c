@@ -306,8 +306,7 @@ void CreateSwapchain(VkData* data) {
 			}
 		}
 		if (!found) {
-			data->imageFormat = pSurfaceFormats[0].colorSpace;
-			swapchainCreateInfo.imageFormat = data->imageFormat;
+			swapchainCreateInfo.imageColorSpace = pSurfaceFormats[0].colorSpace;
 		}
 	}
 	
