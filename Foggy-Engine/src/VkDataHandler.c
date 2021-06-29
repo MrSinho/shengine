@@ -229,7 +229,7 @@ void SetLogicalDevice(VkData *data) {
 	const float queuePriority = 1.0f;
 	VkDeviceQueueCreateInfo graphicsQueueInfo = SetQueueInfo(data->graphicsQueueIndex, &queuePriority);
 
-	const char* swapchainName = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+	const char* swapchainExtensionName = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 
 	VkDeviceCreateInfo deviceCreateInfo = {
 		VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,	//sType;
@@ -240,7 +240,7 @@ void SetLogicalDevice(VkData *data) {
 		0, 										//enabledLayerCount;
 		NULL,									//ppEnabledLayerNames;
 		1, 										//enabledExtensionCount;
-		&swapchainName,							//ppEnabledExtensionNames;
+		&swapchainExtensionName,							//ppEnabledExtensionNames;
 		NULL									//pEnabledFeatures;
 	};
 
@@ -360,13 +360,23 @@ void CreateSwapchainImageViews(VkData *data) {
 	}
 }
 
+void InitCommands(VkData *data) {
+	data->cmdPoolCount	= 1;
+	data->pCmdPools		= (VkCommandPool*)malloc(data->cmdPoolCount * sizeof(VkCommandPool));
+	data->pCmdPools[0]	= CreateCommandPool(data->device, data->graphicsQueue);
+
+	data->cmdBufferCount = 1;
+	data->pCmdBuffers	 = (VkCommandBuffer*)malloc(data->cmdBufferCount * sizeof(VkCommandBuffer));
+	data->pCmdBuffers[0] = CreateCmdBuffer(data->device, data->pCmdPools[0]);
+}
+
 VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex) {
 
 	VkCommandPoolCreateInfo cmdPoolCreateInfo = {
-		VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,	//sType;
-		NULL,										//pNext;
-		0,											//flags;
-		queueFamilyIndex							//queueFamilyIndex;
+		VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,			//sType;
+		NULL,												//pNext;
+		VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,	//flags;
+		queueFamilyIndex									//queueFamilyIndex;
 	};
 
 

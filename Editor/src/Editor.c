@@ -9,6 +9,8 @@ int main() {
 	GetSwapchainImages(&data);
 	CreateSwapchainImageViews(&data);
 
+	InitCommands(&data);
+
 	while (IsWindowActive(data.window.window)) {
 		PollEvents();
 	}

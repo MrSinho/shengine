@@ -64,8 +64,6 @@ extern int CheckPhysicalDeviceExtensions(const VkData data, const VkPhysicalDevi
 
 extern VkDeviceQueueCreateInfo SetQueueInfo(const uint32_t queueFamilyIndex, const float* priority);
 extern void SetLogicalDevice(VkData* data);
-extern VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex);
-extern VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPool);
 
 /*
 *	Swapchain stuff
@@ -73,6 +71,13 @@ extern VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPoo
 extern void CreateSwapchain(VkData *data);
 extern void GetSwapchainImages(VkData *data);
 extern void CreateSwapchainImageViews(VkData *data);
+
+/*
+*	CmdPool + CmdBuffer stuff
+*/
+extern void InitCommands(VkData *data);
+extern VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex);
+extern VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPool);
 
 /*
 *	Pipeline stuff
