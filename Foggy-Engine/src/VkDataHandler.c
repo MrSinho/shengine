@@ -35,6 +35,9 @@ VkData VKDataInitPrerequisites(uint32_t width, uint32_t height, const char *titl
 		NULL,						//pCmdPools
 		0,							//cmdBufferCount
 		NULL,						//pCmdBuffers
+		0,							//renderPass
+		0,							//framebufferCount
+		NULL,						//framebuffers
 		0,							//shaderModuleCount
 		NULL						//pShaderModules
 	};
@@ -413,6 +416,90 @@ VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPo
 	);
 
 	return cmdBuffer;
+}
+
+void CreateRenderPass(VkData* data) {
+	
+	VkAttachmentDescription colorAttachmentDescription = {
+		0,									//flags;
+		data->imageFormat,					//format;
+		1,									//samples;
+		VK_ATTACHMENT_LOAD_OP_CLEAR,		//loadOp;
+		VK_ATTACHMENT_STORE_OP_STORE,		//storeOp;
+		VK_ATTACHMENT_LOAD_OP_DONT_CARE,	//stencilLoadOp;
+		VK_ATTACHMENT_STORE_OP_DONT_CARE,	//stencilStoreOp;
+		VK_IMAGE_LAYOUT_UNDEFINED,			//initialLayout;
+		VK_IMAGE_LAYOUT_PRESENT_SRC_KHR		//finalLayout;
+	};
+
+	VkAttachmentReference colorAttachmentReference = {
+		0,
+		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
+	};
+
+	VkSubpassDescription subpassDescription = {
+		0,									//flags;
+		VK_PIPELINE_BIND_POINT_GRAPHICS,	//pipelineBindPoint;
+		0,									//inputAttachmentCount;
+		NULL,								//pInputAttachments;
+		1,									//colorAttachmentCount;
+		&colorAttachmentReference,			//pColorAttachments;
+		NULL,								//pResolveAttachments;
+		NULL,								//pDepthStencilAttachment;
+		0,									//preserveAttachmentCount;
+		NULL								//pPreserveAttachments;
+	};
+
+	VkRenderPassCreateInfo renderPassCreateInfo = {
+		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,	//sType;
+		NULL,										//pNext;
+		0,											//flags;
+		1,											//attachmentCount;
+		&colorAttachmentDescription,				//pAttachments;
+		1,											//subpassCount;
+		&subpassDescription,						//pSubpasses;
+		0,											//dependencyCount;
+		NULL										//pDependencies;
+	};
+
+#ifndef NDEBUG
+	puts("creating render pass");
+#endif
+
+	CheckVkResult(
+		vkCreateRenderPass(data->device, &renderPassCreateInfo, NULL, &data->renderPass),
+		"error creating render pass"
+	);
+}
+
+void SetFramebuffers(VkData* data) {
+	
+	VkSurfaceCapabilitiesKHR surfaceCapabilities = GetSurfaceCapabilities(data->device, data->surface);
+
+	VkFramebufferCreateInfo framebufferCreateInfo = {
+		VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,	//sType;
+		NULL,										//pNext;
+		0,											//flags;
+		data->renderPass,							//renderPass;
+		1,											//attachmentCount;
+		NULL,										//pAttachments;
+		surfaceCapabilities.currentExtent.width,	//width;
+		surfaceCapabilities.currentExtent.height,	//height;
+		1											//layers;
+	};
+
+	//NOTE: ONE FRAMEBUFFER FOR EACH ATTACHMENT
+
+	data->framebufferCount = data->swapchainImageViewCount;
+	data->pFramebuffers = (VkFramebuffer*)malloc(data->framebufferCount * sizeof(VkFramebuffer));
+
+	for (uint32_t i = 0; i < data->framebufferCount; i++) {
+		framebufferCreateInfo.pAttachments = &data->pSwapchainImageViews[i];
+		CheckVkResult(
+			vkCreateFramebuffer(data->device, &framebufferCreateInfo, NULL, &data->pFramebuffers[i]),
+			"error creating framebuffer"
+		);
+	}
 }
 
 VkShaderModule CreateShaderModule(const VkDevice device, const char* input, const char* output) {

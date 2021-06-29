@@ -38,6 +38,11 @@ typedef struct VkData {
 	uint32_t cmdBufferCount;
 	VkCommandBuffer *pCmdBuffers;
 
+	VkRenderPass renderPass;
+
+	uint32_t framebufferCount;
+	VkFramebuffer *pFramebuffers;
+
 	uint32_t shaderModuleCount;
 	VkShaderModule *pShaderModules;
 
@@ -78,6 +83,12 @@ extern void CreateSwapchainImageViews(VkData *data);
 extern void InitCommands(VkData *data);
 extern VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex);
 extern VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPool);
+
+/*
+*	Render stuff
+*/
+extern void CreateRenderPass(VkData *data);
+extern void SetFramebuffers(VkData *data);
 
 /*
 *	Pipeline stuff

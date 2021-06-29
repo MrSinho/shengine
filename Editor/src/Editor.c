@@ -11,6 +11,8 @@ int main() {
 
 	InitCommands(&data);
 
+	CreateRenderPass(&data);
+
 	while (IsWindowActive(data.window.window)) {
 		PollEvents();
 	}
