@@ -46,7 +46,7 @@ typedef struct VkData {
 /*
 *	Surface stuff
 */
-extern void CreateWindowSurface(const VkInstance instance, const GLFWwindow* window, VkSurfaceKHR* surface);
+extern void CreateWindowSurface(const VkInstance instance, GLFWwindow* window, VkSurfaceKHR* surface);
 extern VkSurfaceCapabilitiesKHR GetSurfaceCapabilities(const VkPhysicalDevice pDevice, const VkSurfaceKHR surface);
 
 /*

@@ -94,7 +94,7 @@ void CreateInstance(VkData* data) {
 	);
 }
 
-void CreateWindowSurface(const VkInstance instance, const GLFWwindow *window, VkSurfaceKHR *surface) {
+void CreateWindowSurface(const VkInstance instance, GLFWwindow *window, VkSurfaceKHR *surface) {
 	
 	CheckVkResult(
 		glfwCreateWindowSurface(instance, window, NULL, surface),
@@ -484,9 +484,10 @@ const char* TranslateQueueFlags(const VkQueueFlags queueFlag) {
 
 void Compile_glslc_Shader(const char* input, const char* output) {
 	char* cmd = "glslc ";
-	strcat_s(cmd, sizeof(cmd), input);
-	strcat_s(cmd, sizeof(cmd), "-o");
-	strcat_s(cmd, sizeof(cmd), output);
+	strncat(cmd, input, sizeof(cmd));
+	strncat(cmd, "-o", sizeof(cmd));
+	strncat(cmd, output, sizeof(cmd));
+
 #ifndef NDEBUG	
 	puts(cmd);
 #endif
