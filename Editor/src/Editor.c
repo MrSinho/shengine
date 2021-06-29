@@ -2,11 +2,14 @@
 
 int main() {
 
-	VkData computeData = VKDataInitPrerequisites(720, 480, "Foggy-Engine Editor");
+	VkData data = VKDataInitPrerequisites(720, 480, "Foggy-Engine Editor");
 
-	InitVulkan(&computeData);
+	InitVulkan(&data);
+	CreateSwapchain(&data);
+	GetSwapchainImages(&data);
+	CreateSwapchainImageViews(&data);
 
-	while (IsWindowActive(computeData.window.window)) {
+	while (IsWindowActive(data.window.window)) {
 		PollEvents();
 	}
 

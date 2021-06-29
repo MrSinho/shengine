@@ -20,40 +20,62 @@ typedef struct VkData {
 	Window window;
 	VkSurfaceKHR surface;
 
-	VkQueue computeQueue;
+	VkSwapchainKHR swapchain;
+	
+	VkFormat imageFormat;
 
-	VkCommandPool *cmdPools;
+	uint32_t swapchainImageCount;
+	VkImage* pSwapchainImages;
+
+	uint32_t swapchainImageViewCount;
+	VkImageView* pSwapchainImageViews;
+
+	VkQueue graphicsQueue;
+
 	uint32_t cmdPoolCount;
+	VkCommandPool *pCmdPools;
 
-	VkCommandBuffer *cmdBuffers;
 	uint32_t cmdBufferCount;
+	VkCommandBuffer *pCmdBuffers;
 
-	VkShaderModule *shaderModules;
 	uint32_t shaderModuleCount;
+	VkShaderModule *pShaderModules;
 
 } VkData;
+
+/*
+*	Surface stuff
+*/
+extern void CreateWindowSurface(const VkInstance instance, const GLFWwindow* window, VkSurfaceKHR* surface);
+extern VkSurfaceCapabilitiesKHR GetSurfaceCapabilities(const VkPhysicalDevice pDevice, const VkSurfaceKHR surface);
 
 /*
 * First setup
 */
 extern VkData VKDataInitPrerequisites(uint32_t width, uint32_t height, const char* title);
-void InitVulkan(VkData* vkComputeData);
-extern void CreateInstance(VkData* vkComputeData);
-extern void CreateWindowSurface(const VkInstance instance, const GLFWwindow* window, VkSurfaceKHR* surface);
-extern void SetPhysicalDevice(VkData* vkComputeData);
-extern int CheckPhysicalDeviceExtensions(const VkData vkComputeData, const VkPhysicalDevice pDevice);
+void InitVulkan(VkData* data);
+extern void CreateInstance(VkData* data);
+extern void SetPhysicalDevice(VkData* data);
+extern int CheckPhysicalDeviceExtensions(const VkData data, const VkPhysicalDevice pDevice);
 
 /*
-*	Logical device creation + command buffers
+*	Logical device creation 
 */
 
-extern VkDeviceQueueCreateInfo CreateQueue(const uint32_t queueFamilyIndex, const float* priority);
-extern void SetLogicalDevice(VkData* vkComputeData);
+extern VkDeviceQueueCreateInfo SetQueueInfo(const uint32_t queueFamilyIndex, const float* priority);
+extern void SetLogicalDevice(VkData* data);
 extern VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex);
 extern VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPool);
 
 /*
-* 
+*	Swapchain stuff
+*/
+extern void CreateSwapchain(VkData *data);
+extern void GetSwapchainImages(VkData *data);
+extern void CreateSwapchainImageViews(VkData *data);
+
+/*
+*	Pipeline stuff
 */
 extern VkShaderModule CreateShaderModule(const VkDevice device, const char* input, const char* output);
 
@@ -66,6 +88,6 @@ extern const char* TranslateVkResult(const VkResult vkResult);
 extern const char* TranslateQueueFlags(const VkQueueFlags queueFlag);
 extern void CheckVkResult(VkResult result, const char* errormsg);
 extern void Compile_glslc_Shader(const char* input, const char* output);
-extern void Cleanup(VkData *vkComputeData);
+extern void Cleanup(VkData *data);
 
 #endif

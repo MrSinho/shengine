@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Foggy-Engine.h"
+#include "VkDataHandler.h"
+#include "Window.h"
 #include "Utilities.h"
 
 /*
@@ -11,40 +12,46 @@
 
 VkData VKDataInitPrerequisites(uint32_t width, uint32_t height, const char *title) {
 	
-	VkData vkComputeData = {
-		0,						//instance
-		0,						//physicalDevice
-		0,						//device
-		VK_QUEUE_GRAPHICS_BIT,	//requiredQueueFlag
-		0,						//graphicsQueueIndex
-		0,						//presentQueueIndex
+	VkData data = {
+		0,							//instance
+		0,							//physicalDevice
+		0,							//device
+		VK_QUEUE_GRAPHICS_BIT,		//requiredQueueFlag
+		0,							//graphicsQueueIndex
+		0,							//presentQueueIndex
 		{NULL, 
 		width, 
 		height, 
-		title},					//window					
-		0,						//surface
-		VK_NULL_HANDLE,			//computeQueue
-		NULL,					//cmdPools
-		0,						//cmdPoolCount
-		NULL,					//cmdBuffers
-		0,						//cmdBufferCount
-		NULL,					//shaderModules
-		0						//shaderModuleCount
+		title},						//window					
+		0,							//surface
+		0,							//swapchain
+		VK_FORMAT_R8G8B8A8_UNORM,	//imageFormat
+		0,							//imageCount
+		NULL,						//pImages
+		0,							//imageViewCount
+		NULL,						//pImageViews
+		VK_NULL_HANDLE,				//graphicsQueue
+		0,							//cmdPoolCount
+		NULL,						//pCmdPools
+		0,							//cmdBufferCount
+		NULL,						//pCmdBuffers
+		0,							//shaderModuleCount
+		NULL						//pShaderModules
 	};
 
-	InitGLFW(&vkComputeData.window);
+	InitGLFW(&data.window);
 
-	return vkComputeData;
+	return data;
 }
 
-void InitVulkan(VkData *vkComputeData) {
-	CreateInstance(vkComputeData);
-	CreateWindowSurface(vkComputeData->instance, vkComputeData->window.window, &vkComputeData->surface);
-	SetPhysicalDevice(vkComputeData);
-	SetLogicalDevice(vkComputeData);
+void InitVulkan(VkData *data) {
+	CreateInstance(data);
+	CreateWindowSurface(data->instance, data->window.window, &data->surface);
+	SetPhysicalDevice(data);
+	SetLogicalDevice(data);
 }
 
-void CreateInstance(VkData* vkComputeData) {
+void CreateInstance(VkData* data) {
 
 	VkApplicationInfo applicationInfo = {
 		VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -62,14 +69,14 @@ void CreateInstance(VkData* vkComputeData) {
 	const char** extensionNames = glfwGetRequiredInstanceExtensions(&instanceExtensionsCount);
 
 	VkInstanceCreateInfo instanceCreateInfo = {
-		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-		NULL,
-		0,
-		&applicationInfo,
-		0,
-		NULL,
-		instanceExtensionsCount,
-		&extensionNames[0]
+		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,	//sType;
+		NULL,									//pNext;
+		0,										//flags;
+		&applicationInfo,						//pApplicationInfo;
+		0,										//enabledLayerCount;
+		NULL,									//ppEnabledLayerNames;
+		instanceExtensionsCount,				//enabledExtensionCount;
+		& extensionNames[0]						//ppEnabledExtensionNames;
 	};
 
 #ifndef NDEBUG
@@ -82,7 +89,7 @@ void CreateInstance(VkData* vkComputeData) {
 #endif
 
 	CheckVkResult(
-		vkCreateInstance(&instanceCreateInfo, VK_NULL_HANDLE, &vkComputeData->instance),
+		vkCreateInstance(&instanceCreateInfo, VK_NULL_HANDLE, &data->instance),
 		"error creating vkinstance"
 	);
 }
@@ -95,13 +102,19 @@ void CreateWindowSurface(const VkInstance instance, const GLFWwindow *window, Vk
 	);
 }
 
-void SetPhysicalDevice(VkData* vkComputeData) {
+extern VkSurfaceCapabilitiesKHR GetSurfaceCapabilities(const VkPhysicalDevice pDevice, const VkSurfaceKHR surface) {
+	VkSurfaceCapabilitiesKHR surfaceCapabilities;
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pDevice, surface, &surfaceCapabilities);
+	return surfaceCapabilities;
+}
+
+void SetPhysicalDevice(VkData* data) {
 
 	uint32_t pDeviceCount = 0;
-	vkEnumeratePhysicalDevices(vkComputeData->instance, &pDeviceCount, NULL);
+	vkEnumeratePhysicalDevices(data->instance, &pDeviceCount, NULL);
 
 	VkPhysicalDevice *pDevices = (VkPhysicalDevice*)malloc(pDeviceCount*sizeof(VkPhysicalDevice));
-	vkEnumeratePhysicalDevices(vkComputeData->instance, &pDeviceCount, pDevices);
+	vkEnumeratePhysicalDevices(data->instance, &pDeviceCount, pDevices);
 
 	if (pDeviceCount == 0) {
 		printf("No Vulkan compatible gpu has been found");
@@ -125,20 +138,21 @@ void SetPhysicalDevice(VkData* vkComputeData) {
 
 			//SURFACE SUPPORT
 			if (!surfaceSupport) {
-				vkGetPhysicalDeviceSurfaceSupportKHR(pDevices[i], j, vkComputeData->surface, &surfaceSupport);
+				vkGetPhysicalDeviceSurfaceSupportKHR(pDevices[i], j, data->surface, &surfaceSupport);
 				if (surfaceSupport) {
 					surfaceQueueFamilyIndices[i] = j;
 				}
 			}
 
 			// GRAPHICS QUEUE
-			if (pQueueFamilyProperties[j].queueFlags & vkComputeData->requiredQueueFlag) {
+			if (pQueueFamilyProperties[j].queueFlags & data->requiredQueueFlag) {
 				graphicsQueueFamilyIndices[i] = j;
 			}
 
 			//SUITABLE
-			if (pQueueFamilyProperties[j].queueFlags & vkComputeData->requiredQueueFlag && surfaceSupport) {
+			if (pQueueFamilyProperties[j].queueFlags & data->requiredQueueFlag && surfaceSupport) {
 				suitableDeviceCount += 1;
+				break;
 			}
 		}
 	}
@@ -167,26 +181,26 @@ void SetPhysicalDevice(VkData* vkComputeData) {
 
 		for (uint32_t i = 1; i < suitableDeviceCount; i++) {
 			if (scores[i] > scores[i - 1]) {
-				vkComputeData->physicalDevice = pDevices[i];
-				vkComputeData->graphicsQueueIndex = graphicsQueueFamilyIndices[i];
-				vkComputeData->presentQueueIndex = surfaceQueueFamilyIndices[i];
+				data->physicalDevice = pDevices[i];
+				data->graphicsQueueIndex = graphicsQueueFamilyIndices[i];
+				data->presentQueueIndex = surfaceQueueFamilyIndices[i];
 			}
 			else {
-				vkComputeData->physicalDevice = pDevices[i - 1 ];
-				vkComputeData->graphicsQueueIndex = graphicsQueueFamilyIndices[i - 1];
-				vkComputeData->presentQueueIndex = surfaceQueueFamilyIndices[i - 1];
+				data->physicalDevice = pDevices[i - 1 ];
+				data->graphicsQueueIndex = graphicsQueueFamilyIndices[i - 1];
+				data->presentQueueIndex = surfaceQueueFamilyIndices[i - 1];
 			}
 		}
 	}
 	else {
-		vkComputeData->physicalDevice = pDevices[0];
-		vkComputeData->graphicsQueueIndex = graphicsQueueFamilyIndices[0];
-		vkComputeData->presentQueueIndex = surfaceQueueFamilyIndices[0];
+		data->physicalDevice = pDevices[0];
+		data->graphicsQueueIndex = graphicsQueueFamilyIndices[0];
+		data->presentQueueIndex = surfaceQueueFamilyIndices[0];
 	}
 
 #ifndef NDEBUG
 		VkPhysicalDeviceProperties physicalDeviceProperties;
-		vkGetPhysicalDeviceProperties(vkComputeData->physicalDevice, &physicalDeviceProperties);
+		vkGetPhysicalDeviceProperties(data->physicalDevice, &physicalDeviceProperties);
 		printf("using %s \n", physicalDeviceProperties.deviceName);
 #endif
 
@@ -196,36 +210,38 @@ void SetPhysicalDevice(VkData* vkComputeData) {
 *	Logical device creation + command buffers
 */
 
-VkDeviceQueueCreateInfo CreateQueue(const uint32_t queueFamilyIndex, const float *priority) {
+VkDeviceQueueCreateInfo SetQueueInfo(const uint32_t queueFamilyIndex, const float *priority) {
 	
 	VkDeviceQueueCreateInfo queueCreateInfo = {
-		VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-		NULL,
-		0,
-		queueFamilyIndex,
-		1,
-		priority,
+		VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,	//sType;
+		NULL,										//pNext;
+		0,											//flags;
+		queueFamilyIndex,							//queueFamilyIndex;
+		1,											//queueCount;
+		priority,									//pQueuePriorities;
 	};
 	
 	return queueCreateInfo;
 }
 
-void SetLogicalDevice(VkData *vkComputeData) {
+void SetLogicalDevice(VkData *data) {
 	
 	const float queuePriority = 1.0f;
-	VkDeviceQueueCreateInfo graphicsQueueInfo = CreateQueue(vkComputeData->graphicsQueueIndex, &queuePriority);
+	VkDeviceQueueCreateInfo graphicsQueueInfo = SetQueueInfo(data->graphicsQueueIndex, &queuePriority);
+
+	const char* swapchainName = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 
 	VkDeviceCreateInfo deviceCreateInfo = {
-		VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-		NULL,
-		0,
-		1, 
-		&graphicsQueueInfo,
-		0, 
-		NULL,
-		0, 
-		NULL,
-		NULL
+		VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,	//sType;
+		NULL,									//pNext;
+		0,										//flags;
+		1, 										//queueCreateInfoCount;
+		&graphicsQueueInfo,						//pQueueCreateInfos;
+		0, 										//enabledLayerCount;
+		NULL,									//ppEnabledLayerNames;
+		1, 										//enabledExtensionCount;
+		&swapchainName,							//ppEnabledExtensionNames;
+		NULL									//pEnabledFeatures;
 	};
 
 #ifndef NDEBUG
@@ -233,19 +249,90 @@ void SetLogicalDevice(VkData *vkComputeData) {
 #endif
 
 	CheckVkResult(
-		vkCreateDevice(vkComputeData->physicalDevice, &deviceCreateInfo, NULL, &vkComputeData->device),
+		vkCreateDevice(data->physicalDevice, &deviceCreateInfo, NULL, &data->device),
 		"error creating logical device"
 	);
 		
 }
 
+void CreateSwapchain(VkData* data) {
+	
+	VkSurfaceCapabilitiesKHR sCapabilities = GetSurfaceCapabilities(data->physicalDevice, data->surface);
+
+	VkSwapchainCreateInfoKHR swapchainCreateInfo = {
+		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,	//sType;
+		NULL,											//pNext;
+		0,												//flags;
+		data->surface,									//surface;
+		sCapabilities.minImageCount,					//minImageCount;
+		data->imageFormat,								//imageFormat;
+		VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,				//imageColorSpace;
+		sCapabilities.currentExtent,					//imageExtent;
+		1,												//imageArrayLayers;
+		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,			//imageUsage;
+		VK_SHARING_MODE_EXCLUSIVE,						//imageSharingMode;
+		1,												//queueFamilyIndexCount;
+		&data->graphicsQueueIndex,						//pQueueFamilyIndices;
+		VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,			//preTransform;
+		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,				//compositeAlpha;
+		VK_PRESENT_MODE_FIFO_KHR,						//presentMode;
+		1,												//clipped;
+		NULL,											//oldSwapchain;
+	};
+
+#ifndef NDEBUG
+	puts("creating swapchain");
+#endif
+
+	CheckVkResult(
+		vkCreateSwapchainKHR(data->device, &swapchainCreateInfo, NULL, &data->swapchain),
+		"error creating swapchain"
+	);
+}
+
+void GetSwapchainImages(VkData *data) {
+	vkGetSwapchainImagesKHR(data->device, data->swapchain, &data->swapchainImageCount, NULL);
+	data->pSwapchainImages = (VkImage*)malloc(data->swapchainImageCount * sizeof(VkImage));
+	vkGetSwapchainImagesKHR(data->device, data->swapchain, &data->swapchainImageCount, data->pSwapchainImages);
+}
+
+void CreateSwapchainImageViews(VkData *data) {
+	data->swapchainImageViewCount = data->swapchainImageCount;
+	data->pSwapchainImageViews = (VkImageView*)malloc(data->swapchainImageViewCount * sizeof(VkImageView));
+
+	for (uint32_t i = 0; i < data->swapchainImageCount; i++) {
+		
+		VkImageViewCreateInfo imageViewCreateInfo = {
+			VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,	//sType;
+			NULL,										//pNext;
+			0,											//flags;
+			data->pSwapchainImages[i],					//image;
+			VK_IMAGE_VIEW_TYPE_2D,						//viewType;
+			data->imageFormat,							//format;
+			VK_COMPONENT_SWIZZLE_IDENTITY,				//components;
+			0
+		};
+
+		imageViewCreateInfo.subresourceRange.aspectMask   = VK_IMAGE_ASPECT_COLOR_BIT;	//aspectMask;
+		imageViewCreateInfo.subresourceRange.baseMipLevel = 0;							//baseMipLevel;
+		imageViewCreateInfo.subresourceRange.levelCount = 1;							//levelCount;
+		imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;						//baseArrayLayer;
+		imageViewCreateInfo.subresourceRange.layerCount = 1;							//layerCount;
+
+		CheckVkResult(
+			vkCreateImageView(data->device, &imageViewCreateInfo, NULL, data->pSwapchainImageViews),
+			"error creating image view"
+		);
+	}
+}
+
 VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex) {
 
 	VkCommandPoolCreateInfo cmdPoolCreateInfo = {
-		VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-		NULL,
-		0,
-		queueFamilyIndex
+		VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,	//sType;
+		NULL,										//pNext;
+		0,											//flags;
+		queueFamilyIndex							//queueFamilyIndex;
 	};
 
 
@@ -264,11 +351,11 @@ VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex
 
 VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPool) {
 	VkCommandBufferAllocateInfo cmdBufferAllocateInfo = {
-		VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-		NULL,
-		cmdPool,
-		VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-		1
+		VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,	//sType;
+		NULL,											//pNext;
+		cmdPool,										//commandPool;
+		VK_COMMAND_BUFFER_LEVEL_PRIMARY,				//level;
+		1												//commandBufferCount;
 	};
 
 #ifndef NDEBUG
@@ -291,11 +378,11 @@ VkShaderModule CreateShaderModule(const VkDevice device, const char* input, cons
 	size_t shaderbSize = sizeof(shaderBinaryCode);
 
 	VkShaderModuleCreateInfo shaderModuleCreateInfo = {
-		VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-		NULL,
-		0,
-		shaderbSize/sizeof(char),
-		(const uint32_t*)(shaderBinaryCode)
+		VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,	//sType;
+		NULL,											//pNext;
+		0,												//flags;
+		shaderbSize / sizeof(char),						//codeSize;
+		(const uint32_t*)(shaderBinaryCode)				//pCode;
 	};
 
 #ifndef NDEBUG

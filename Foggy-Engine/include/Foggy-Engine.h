@@ -3,5 +3,6 @@
 
 #include "VkDataHandler.h"
 #include "Window.h"
+#include "Utilities.h"
 
 #endif
