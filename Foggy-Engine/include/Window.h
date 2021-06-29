@@ -3,19 +3,21 @@
 
 #define GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_VULKAN
+
 #include <GLFW/glfw3.h>
 #include <stdint.h>
 
-struct FGGWindow {
+typedef struct Window {
 
 	GLFWwindow* window;
 	uint32_t width, height;
 	const char* title;
 
-};
+} Window;
 
-extern void InitGLFW(FGGWindow *window);
-extern bool IsWindowActive(const FGGWindow &window);
-extern void ClearWindow(FGGWindow *window);
+extern void InitGLFW(Window *window);
+extern int IsWindowActive(const GLFWwindow* window);
+extern void PollEvents();
+extern void ClearWindow(const GLFWwindow* window);
 
 #endif

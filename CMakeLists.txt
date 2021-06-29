@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 set(PROJECT_NAME Foggy-Engine)
-project(${PROJECT_NAME} VERSION 0.1)
+project(${PROJECT_NAME} C)
 
 #SUBDIRECTORIES
 add_subdirectory(Externals/glfw)
@@ -13,12 +11,11 @@ add_subdirectory(Externals/glfw)
 find_package(Vulkan REQUIRED FATAL_ERROR)
 
 #ENGINE
-file(GLOB_RECURSE ENGINE_SRC Foggy-Engine/src/*.cpp)
+file(GLOB_RECURSE ENGINE_SRC Foggy-Engine/src/*.c)
 add_library(Foggy-Engine STATIC ${ENGINE_SRC})
 target_include_directories(Foggy-Engine PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/Foggy-Engine/include
     ${CMAKE_CURRENT_SOURCE_DIR}/Externals/glfw/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/Externals/glm
     ${Vulkan_INCLUDE_DIRS}
 )
 target_link_libraries(Foggy-Engine PUBLIC
@@ -28,14 +25,14 @@ target_link_libraries(Foggy-Engine PUBLIC
 )
 
 #UTILITIES
-file(GLOB_RECURSE UTILITIES_SRC Utilities/src/*.cpp)
+file(GLOB_RECURSE UTILITIES_SRC Utilities/src/*.c)
 add_library(Utilities ${UTILITIES_SRC})
 target_include_directories(Utilities PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/include
 )
 
 #EDITOR
-file(GLOB_RECURSE EDITOR_SRC Editor/src/*.cpp)
+file(GLOB_RECURSE EDITOR_SRC Editor/src/*.c)
 add_executable(Editor ${EDITOR_SRC})
 target_link_libraries(Editor PUBLIC 
     Foggy-Engine

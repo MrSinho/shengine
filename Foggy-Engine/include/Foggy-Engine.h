@@ -1,7 +1,7 @@
-#ifndef FOGGY_ENGINE_H
-#define FOGGY_ENGINE_H
+#ifndef FOGGY_ENGINE
+#define FOGGY_ENGINE
 
-#include "FGGWindow.h"
-#include "FGGVulkanHandler.h"
+#include "VkDataHandler.h"
+#include "Window.h"
 
 #endif
