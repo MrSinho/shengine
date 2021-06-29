@@ -288,12 +288,25 @@ void CreateSwapchain(VkData* data) {
 	{
 		int found = 0;
 		for (uint32_t i = 0; i < surfaceFormatCount; i++) {
-			if (pSurfaceFormats[i].format & VK_FORMAT_R8G8B8A8_UNORM) {
+			if (pSurfaceFormats[i].format == VK_FORMAT_R8G8B8A8_UNORM) {
 				found = 1; break;
 			}
 		}
 		if (!found) {
 			data->imageFormat = pSurfaceFormats[0].format;
+			swapchainCreateInfo.imageFormat = data->imageFormat;
+		}
+	}
+
+	{
+		int found = 0;
+		for (uint32_t i = 0; i < surfaceFormatCount; i++) {
+			if (pSurfaceFormats[i].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+				found = 1; break;
+			}
+		}
+		if (!found) {
+			data->imageFormat = pSurfaceFormats[0].colorSpace;
 			swapchainCreateInfo.imageFormat = data->imageFormat;
 		}
 	}
