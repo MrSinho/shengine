@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../bin/libFoggy-Engine.a CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/VkDataHandler.c.o CMakeFiles/Foggy-Engine.dir/Foggy-Engine/src/Window.c.o
-/usr/bin/ranlib ../bin/libFoggy-Engine.a
