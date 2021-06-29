@@ -259,6 +259,11 @@ void CreateSwapchain(VkData* data) {
 	
 	VkSurfaceCapabilitiesKHR sCapabilities = GetSurfaceCapabilities(data->physicalDevice, data->surface);
 
+	uint32_t surfaceFormatCount = 0;
+	vkGetPhysicalDeviceSurfaceFormatsKHR(data->physicalDevice, data->surface, &surfaceFormatCount, NULL);
+	VkSurfaceFormatKHR* pSurfaceFormats = (VkSurfaceFormatKHR*)malloc(surfaceFormatCount * sizeof(VkSurfaceFormatKHR));
+	vkGetPhysicalDeviceSurfaceFormatsKHR(data->physicalDevice, data->surface, &surfaceFormatCount, pSurfaceFormats);
+
 	VkSwapchainCreateInfoKHR swapchainCreateInfo = {
 		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,	//sType;
 		NULL,											//pNext;
@@ -279,6 +284,20 @@ void CreateSwapchain(VkData* data) {
 		1,												//clipped;
 		NULL,											//oldSwapchain;
 	};
+
+	{
+		int found = 0;
+		for (uint32_t i = 0; i < surfaceFormatCount; i++) {
+			if (pSurfaceFormats[i].format & VK_FORMAT_R8G8B8A8_UNORM) {
+				found = 1; break;
+			}
+		}
+		if (!found) {
+			data->imageFormat = pSurfaceFormats[0].format;
+			swapchainCreateInfo.imageFormat = data->imageFormat;
+		}
+	}
+	
 
 #ifndef NDEBUG
 	puts("creating swapchain");
