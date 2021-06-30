@@ -365,7 +365,7 @@ void CreateSwapchainImageViews(VkData *data) {
 		imageViewCreateInfo.subresourceRange.layerCount = 1;							//layerCount;
 
 		CheckVkResult(
-			vkCreateImageView(data->device, &imageViewCreateInfo, NULL, data->pSwapchainImageViews),
+			vkCreateImageView(data->device, &imageViewCreateInfo, NULL, &data->pSwapchainImageViews[i]),
 			"error creating image view"
 		);
 	}

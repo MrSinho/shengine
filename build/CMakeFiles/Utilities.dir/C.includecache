@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../Utilities/include/Utilities.h
+
+/home/mrsinho/Desktop/Foggy-Engine/Utilities/src/Utilities.c
+Utilities.h
+/home/mrsinho/Desktop/Foggy-Engine/Utilities/src/Utilities.h
+stdio.h
+-
+stdlib.h
+-
+
