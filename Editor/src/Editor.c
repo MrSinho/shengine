@@ -18,6 +18,9 @@ int main() {
 	BuildShader("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
 	BuildShader("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
 
+	CreateShaderModule(data.device, "../Shaders/bin/Triangle.vert.spv");
+	CreateShaderModule(data.device, "../Shaders/bin/Triangle.frag.spv");
+
 	while (IsWindowActive(data.window.window)) {
 		PollEvents();
 		Draw(&data);

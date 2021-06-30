@@ -95,7 +95,7 @@ extern void Draw(VkData *data);
 /*
 *	Pipeline stuff
 */
-extern VkShaderModule CreateShaderModule(const VkDevice device, const char* input, const char* output);
+extern VkShaderModule CreateShaderModule(const VkDevice device, const char* input);
 
 /*
 *	Utilities

@@ -642,22 +642,21 @@ void Draw(VkData* data) {
 
 }
 
-VkShaderModule CreateShaderModule(const VkDevice device, const char* input, const char* output) {
+VkShaderModule CreateShaderModule(const VkDevice device, const char* input) {
 
-	BuildShader(input, output);
-	const char *shaderBinaryCode = ReadCode(output, "rb");
-	size_t shaderbSize = sizeof(shaderBinaryCode);
+	uint32_t codeSize = 0;
+	char *shaderCode = ReadCode(input, &codeSize, "rb");
 
 	VkShaderModuleCreateInfo shaderModuleCreateInfo = {
 		VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,	//sType;
 		NULL,											//pNext;
 		0,												//flags;
-		shaderbSize / sizeof(char),						//codeSize;
-		(const uint32_t*)(shaderBinaryCode)				//pCode;
+		codeSize,										//codeSize;
+		(const uint32_t*)(shaderCode)					//pCode;
 	};
 
 #ifndef NDEBUG
-	puts("creating shader module using binary at: ");
+	printf("creating shader module using binary at: %s \n", input);
 #endif
 
 	VkShaderModule shaderModule;

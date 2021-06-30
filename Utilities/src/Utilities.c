@@ -3,18 +3,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char *ReadCode(const char* path, const char *mode) {
+const char *ReadCode(const char* path, uint32_t *_codeSize, const char *mode) {
 	
-	FILE* file = fopen(path, mode);
+	FILE* stream;
+	fopen_s(&stream, path, mode);
 	
-	fseek(file, 0L, SEEK_END);
-	long size = ftell(file);
-	fseek(file, 0L, SEEK_SET);
+	fseek(stream, 0, SEEK_END);
+	long size = ftell(stream);
+	fseek(stream, 0, SEEK_SET);
 
-	const char* code = (const char *)(malloc(size));
+	*_codeSize = size;
+	char* code = (char *)malloc(size);
 
-	if (file != NULL) {
-		fread(code, size, 1, file);
+	if (stream != NULL) {
+		fread(code, size, 1, stream);
+		for (int i = 0; i < size; i++) {
+
+		}
 		return code;
 	}
 
