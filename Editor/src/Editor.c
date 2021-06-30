@@ -20,5 +20,7 @@ int main() {
 		Draw(&data);
 	}
 
+	Cleanup(&data);
+
 	return 0;
 }

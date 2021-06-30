@@ -543,28 +543,28 @@ void SetSyncObjects(VkData* data) {
 
 void Draw(VkData* data) {
 
-	// wait until the GPU has finished rendereing the last frame
+	// wait until the GPU has finished rendereing the previous frame
 	vkWaitForFences(data->device, 1, &data->renderFence, 1, 1000000000);
 	vkResetFences(data->device, 1, &data->renderFence);
+
+	//reset the command buffer and start recording
+	vkResetCommandBuffer(data->pCmdBuffers[0], 0);
 
 	// request image from the swapchain
 	uint32_t swapchainImageIndex;
 	vkAcquireNextImageKHR(data->device, data->swapchain, 1000000000, data->presentSemaphore, NULL, &swapchainImageIndex);
-	
-	//reset the command buffer and start recording
-	vkResetCommandBuffer(data->pCmdBuffers[0], 0);
 
 	//BEGIN INFOS
 	VkCommandBufferBeginInfo cmdBufferBeginInfo = {
 		VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,	//sType;
 		NULL,											//pNext;
-		VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,	//flags; //submit cmd buffer once
+		VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,	//flags; //submit cmd buffer once, before the next reset
 		NULL											//pInheritanceInfo;
 	};
 	
 	VkClearValue clearColor = { {1.0f, 0.0f, 0.0f} };
 	VkRenderPassBeginInfo renderPassBeginInfo = {
-		VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+		VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,		
 		NULL,
 		data->renderPass,
 		data->pFramebuffers[swapchainImageIndex],
@@ -741,4 +741,20 @@ void Compile_glslc_Shader(const char* input, const char* output) {
 	puts(cmd);
 #endif
 	system(cmd);
+}
+
+extern void Cleanup(VkData *data) {
+	for (uint32_t i = 0; i < data->cmdBufferCount; i++) {
+		vkEndCommandBuffer(data->pCmdBuffers[0]);
+	}
+	vkDestroyCommandBuffer(data->pCmdBuffers[0]);
+	vkDestroyCommandPool(data->device, data->pCmdPools[0], NULL);
+	for (uint32_t i = 0; i < data->framebufferCount; i++) {
+		vkDestroyImageView(data->device, data->pSwapchainImageViews[i], NULL);
+		vkDestroyFramebuffer(data->device, data->pFramebuffers[i], NULL);
+	}
+	vkDestroySwapchainKHR(data->device, data->swapchain, NULL);
+	vkDestroyDevice(data->device, NULL);
+	vkDestroySurfaceKHR(data->instance, data->surface, NULL);
+	vkDestroyInstance(data->instance, NULL);
 }
