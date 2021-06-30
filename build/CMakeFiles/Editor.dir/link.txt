@@ -1,1 +1,0 @@
-/usr/bin/cc -rdynamic CMakeFiles/Editor.dir/Editor/src/Editor.c.o -o ../bin/Editor  ../bin/libFoggy-Engine.a Externals/glfw/src/libglfw3.a -lpthread -lrt -lm -ldl -lvulkan libUtilities.a 
