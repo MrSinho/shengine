@@ -6,6 +6,10 @@
 #include "Window.h"
 #include "Utilities.h"
 
+#pragma warning (disable: 6011)
+#pragma warning (disable: 6385)
+#pragma warning (disable: 6386)
+
 /*
 * First setup
 */
@@ -640,7 +644,7 @@ void Draw(VkData* data) {
 
 VkShaderModule CreateShaderModule(const VkDevice device, const char* input, const char* output) {
 
-	Compile_glslc_Shader(input, output);
+	BuildShader(input, output);
 	const char *shaderBinaryCode = ReadCode(output, "rb");
 	size_t shaderbSize = sizeof(shaderBinaryCode);
 
@@ -749,12 +753,13 @@ const char* TranslateQueueFlags(const VkQueueFlags queueFlag) {
 	return "unknown flag";
 }
 
-void Compile_glslc_Shader(const char* input, const char* output) {
-	char* cmd = "glslc ";
-	strncat(cmd, input, sizeof(cmd));
-	strncat(cmd, "-o", sizeof(cmd));
-	strncat(cmd, output, sizeof(cmd));
-
+void BuildShader(const char* input, const char* output) {
+	const char cmd[256];
+	const char* o = " -o "; 
+	strcpy(cmd, "glslc ");
+	strncat(cmd, input, strlen(input));
+	strncat(cmd, o, strlen(o));
+	strncat(cmd, output, strlen(output));
 #ifndef NDEBUG	
 	puts(cmd);
 #endif

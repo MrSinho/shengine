@@ -31,6 +31,16 @@ target_include_directories(Utilities PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/include
 )
 
+#SHADERS
+message(STATUS "looking for glslc")
+find_program(GLSLC_FOUND glslc)
+if (NOT GLSLC_FOUND)
+    find_program(STATUS "glslc not found, required for shader compilation, install before executing the engine")
+else()
+    message(STATUS "found glslc")
+endif()
+
+
 #EDITOR
 file(GLOB_RECURSE EDITOR_SRC Editor/src/*.c)
 add_executable(Editor ${EDITOR_SRC})

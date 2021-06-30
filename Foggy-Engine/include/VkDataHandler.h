@@ -105,7 +105,7 @@ extern int CheckValidationLayer(const char *validationLayer);
 extern const char* TranslateVkResult(const VkResult vkResult);
 extern const char* TranslateQueueFlags(const VkQueueFlags queueFlag);
 extern void CheckVkResult(VkResult result, const char* errormsg);
-extern void Compile_glslc_Shader(const char* input, const char* output);
+extern void BuildShader(const char* input, const char* output);
 
 /*
 */

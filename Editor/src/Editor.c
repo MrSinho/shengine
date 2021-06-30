@@ -15,6 +15,9 @@ int main() {
 	SetFramebuffers(&data);
 	SetSyncObjects(&data);
 
+	BuildShader("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
+	BuildShader("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
+
 	while (IsWindowActive(data.window.window)) {
 		PollEvents();
 		Draw(&data);
