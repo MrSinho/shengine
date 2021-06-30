@@ -12,41 +12,38 @@
 
 VkData VKDataInitPrerequisites(uint32_t width, uint32_t height, const char *title) {
 	
-	VkData data = {
-		0,							//instance
-		0,							//physicalDevice
-		0,							//device
-		VK_QUEUE_GRAPHICS_BIT,		//requiredQueueFlag
-		0,							//graphicsQueueIndex
-		0,							//presentQueueIndex
-		{NULL, 
+	VkData data = {	
+		VK_NULL_HANDLE,				//instance;
+		VK_NULL_HANDLE,				//physicalDevice;
+		VK_NULL_HANDLE,				//device;
+		{NULL,
 		width, 
 		height, 
-		title},						//window					
-		0,							//surface
-		0,							//swapchain
-		VK_FORMAT_R8G8B8A8_UNORM,	//imageFormat
-		0,							//imageCount
-		NULL,						//pImages
-		0,							//imageViewCount
-		NULL,						//pImageViews
-		VK_NULL_HANDLE,				//graphicsQueue
-		0,							//cmdPoolCount
-		NULL,						//pCmdPools
-		0,							//cmdBufferCount
-		NULL,						//pCmdBuffers
-		0,							//renderPass
-		0,							//framebufferCount
-		NULL,						//framebuffers
-		NULL,						//renderSemaphore
-		NULL,						//presentSemaphore
-		NULL,						//renderFence
-		0,							//shaderModuleCount
-		NULL						//pShaderModules
+		title},						//window;
+		VK_NULL_HANDLE,				//surface;
+		VK_QUEUE_GRAPHICS_BIT,		//requiredQueueFlag;
+		1,							//queueFamilyIndexCount
+		0,							//graphicsQueueIndex;
+		0,							//presentQueueIndex;
+		VK_NULL_HANDLE,				//graphicsQueue;
+		VK_NULL_HANDLE,				//pCmdPools;
+		VK_NULL_HANDLE,				//pCmdBuffers;
+		VK_NULL_HANDLE,				//swapchain;
+		VK_FORMAT_R8G8B8A8_UNORM,	//imageFormat;
+		0,							//swapchainImageCount;
+		VK_NULL_HANDLE,				//pSwapchainImages;
+		0,							//pSwapchainImageViews;
+		VK_NULL_HANDLE,				//pFramebuffers;
+		VK_NULL_HANDLE,				//renderPass;
+		VK_NULL_HANDLE,				//renderSemaphore;
+		VK_NULL_HANDLE,				//presentSemaphore;
+		VK_NULL_HANDLE,				//renderFence;
+		0,							//shaderModuleCount;
+		VK_NULL_HANDLE,				//pShaderModules;
 	};
 
 	InitGLFW(&data.window);
-
+	
 	return data;
 }
 
@@ -204,6 +201,13 @@ void SetPhysicalDevice(VkData* data) {
 		data->graphicsQueueIndex = graphicsQueueFamilyIndices[0];
 		data->presentQueueIndex = surfaceQueueFamilyIndices[0];
 	}
+	
+	if (data->graphicsQueueIndex == data->presentQueueIndex) {
+		data->queueFamilyIndexCount = 1;
+	}
+	else {
+		data->queueFamilyIndexCount = 2;
+	}
 
 #ifndef NDEBUG
 		VkPhysicalDeviceProperties physicalDeviceProperties;
@@ -324,6 +328,17 @@ void CreateSwapchain(VkData* data) {
 		}
 	}
 	
+	//SHARING MODE CHECK
+	uint32_t* pQueueFamilyIndices = (uint32_t*)malloc(2 * sizeof(uint32_t));
+	{
+		if (data->graphicsQueueIndex != data->presentQueueIndex) {
+			swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+			swapchainCreateInfo.queueFamilyIndexCount = 2;
+			pQueueFamilyIndices[0] = data->graphicsQueueIndex; 
+			pQueueFamilyIndices[1] = data->presentQueueIndex;
+			swapchainCreateInfo.pQueueFamilyIndices = pQueueFamilyIndices;
+		}
+	}
 
 #ifndef NDEBUG
 	puts("creating swapchain");
@@ -342,8 +357,7 @@ void GetSwapchainImages(VkData *data) {
 }
 
 void CreateSwapchainImageViews(VkData *data) {
-	data->swapchainImageViewCount = data->swapchainImageCount;
-	data->pSwapchainImageViews = (VkImageView*)malloc(data->swapchainImageViewCount * sizeof(VkImageView));
+	data->pSwapchainImageViews = (VkImageView*)malloc(data->swapchainImageCount * sizeof(VkImageView));
 
 	for (uint32_t i = 0; i < data->swapchainImageCount; i++) {
 		
@@ -373,13 +387,18 @@ void CreateSwapchainImageViews(VkData *data) {
 
 void InitCommands(VkData *data) {
 
-	data->cmdPoolCount	= 1;
-	data->pCmdPools		= (VkCommandPool*)malloc(data->cmdPoolCount * sizeof(VkCommandPool));
-	data->pCmdPools[0]	= CreateCommandPool(data->device, data->graphicsQueueIndex);
+	data->pCmdPools = (VkCommandPool*)malloc(data->queueFamilyIndexCount * sizeof(VkCommandPool));
 
-	data->cmdBufferCount = 1;
-	data->pCmdBuffers	 = (VkCommandBuffer*)malloc(data->cmdBufferCount * sizeof(VkCommandBuffer));
-	data->pCmdBuffers[0] = CreateCmdBuffer(data->device, data->pCmdPools[0]);
+	uint32_t* pQueueFamilyIndices = (uint32_t*)malloc(data->queueFamilyIndexCount * sizeof(uint32_t));
+	data->pCmdPools[0] = CreateCommandPool(data->device, data->graphicsQueueIndex);
+	if (data->queueFamilyIndexCount == 2) {
+		data->pCmdPools[1] = CreateCommandPool(data->device, data->presentQueueIndex);
+	}
+
+	data->pCmdBuffers = (VkCommandBuffer*)malloc(data->queueFamilyIndexCount * sizeof(VkCommandBuffer));
+	for (uint32_t i = 0; i < data->queueFamilyIndexCount; i++) {
+		data->pCmdBuffers[i] = CreateCmdBuffer(data->device, data->pCmdPools[i]);;
+	}
 }
 
 VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex) {
@@ -497,10 +516,9 @@ void SetFramebuffers(VkData* data) {
 
 	//NOTE: ONE FRAMEBUFFER FOR EACH ATTACHMENT
 
-	data->framebufferCount = data->swapchainImageViewCount;
-	data->pFramebuffers = (VkFramebuffer*)malloc(data->framebufferCount * sizeof(VkFramebuffer));
+	data->pFramebuffers = (VkFramebuffer*)malloc(data->swapchainImageCount * sizeof(VkFramebuffer));
 
-	for (uint32_t i = 0; i < data->framebufferCount; i++) {
+	for (uint32_t i = 0; i < data->swapchainImageCount; i++) {
 		framebufferCreateInfo.pAttachments = &data->pSwapchainImageViews[i];
 		CheckVkResult(
 			vkCreateFramebuffer(data->device, &framebufferCreateInfo, NULL, &data->pFramebuffers[i]),

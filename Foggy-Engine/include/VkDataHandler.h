@@ -8,41 +8,36 @@
 
 typedef struct VkData {
 	
+	/*Initialization stuff*/
 	VkInstance instance;
 	VkPhysicalDevice physicalDevice;
 	VkDevice device;
-
-	VkQueueFlags requiredQueueFlag;
-
-	uint32_t graphicsQueueIndex;
-	uint32_t presentQueueIndex;
-
+	
+	/*Window and surface stuff*/
 	Window window;
 	VkSurfaceKHR surface;
 
-	VkSwapchainKHR swapchain;
-	
-	VkFormat imageFormat;
-
-	uint32_t swapchainImageCount;
-	VkImage* pSwapchainImages;
-
-	uint32_t swapchainImageViewCount;
-	VkImageView* pSwapchainImageViews;
-
+	/*Queue stuff*/
+	VkQueueFlags requiredQueueFlag;
+	uint32_t queueFamilyIndexCount;
+	uint32_t graphicsQueueIndex;
+	uint32_t presentQueueIndex;
 	VkQueue graphicsQueue;
 
-	uint32_t cmdPoolCount;
-	VkCommandPool *pCmdPools;
+	/*Command stuff*/
+	VkCommandPool* pCmdPools;
+	VkCommandBuffer* pCmdBuffers;
 
-	uint32_t cmdBufferCount;
-	VkCommandBuffer *pCmdBuffers;
+	/*Swapchain + images stuff*/
+	VkSwapchainKHR swapchain;
+	VkFormat imageFormat;
+	uint32_t swapchainImageCount;
+	VkImage* pSwapchainImages;
+	VkImageView* pSwapchainImageViews;
+	VkFramebuffer* pFramebuffers;
 
+	/*Render pass + sync objects stuff*/
 	VkRenderPass renderPass;
-
-	uint32_t framebufferCount;
-	VkFramebuffer *pFramebuffers;
-
 	VkSemaphore renderSemaphore;
 	VkSemaphore presentSemaphore;
 	VkFence renderFence;
