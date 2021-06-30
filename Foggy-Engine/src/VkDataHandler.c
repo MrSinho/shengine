@@ -743,18 +743,6 @@ void Compile_glslc_Shader(const char* input, const char* output) {
 	system(cmd);
 }
 
-extern void Cleanup(VkData *data) {
-	for (uint32_t i = 0; i < data->cmdBufferCount; i++) {
-		vkEndCommandBuffer(data->pCmdBuffers[0]);
-	}
-	vkDestroyCommandBuffer(data->pCmdBuffers[0]);
-	vkDestroyCommandPool(data->device, data->pCmdPools[0], NULL);
-	for (uint32_t i = 0; i < data->framebufferCount; i++) {
-		vkDestroyImageView(data->device, data->pSwapchainImageViews[i], NULL);
-		vkDestroyFramebuffer(data->device, data->pFramebuffers[i], NULL);
-	}
-	vkDestroySwapchainKHR(data->device, data->swapchain, NULL);
-	vkDestroyDevice(data->device, NULL);
-	vkDestroySurfaceKHR(data->instance, data->surface, NULL);
-	vkDestroyInstance(data->instance, NULL);
+extern void Cleanup(VkData* data) {
+
 }
