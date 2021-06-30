@@ -43,6 +43,10 @@ typedef struct VkData {
 	uint32_t framebufferCount;
 	VkFramebuffer *pFramebuffers;
 
+	VkSemaphore renderSemaphore;
+	VkSemaphore presentSemaphore;
+	VkFence renderFence;
+
 	uint32_t shaderModuleCount;
 	VkShaderModule *pShaderModules;
 
@@ -69,6 +73,7 @@ extern int CheckPhysicalDeviceExtensions(const VkData data, const VkPhysicalDevi
 
 extern VkDeviceQueueCreateInfo SetQueueInfo(const uint32_t queueFamilyIndex, const float* priority);
 extern void SetLogicalDevice(VkData* data);
+extern void GetGraphicsQueue(VkData* data);
 
 /*
 *	Swapchain stuff
@@ -89,6 +94,8 @@ extern VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPoo
 */
 extern void CreateRenderPass(VkData *data);
 extern void SetFramebuffers(VkData *data);
+extern void SetSyncObjects(VkData *data);
+extern void Draw(VkData *data);
 
 /*
 *	Pipeline stuff

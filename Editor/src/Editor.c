@@ -12,9 +12,12 @@ int main() {
 	InitCommands(&data);
 
 	CreateRenderPass(&data);
+	SetFramebuffers(&data);
+	SetSyncObjects(&data);
 
 	while (IsWindowActive(data.window.window)) {
 		PollEvents();
+		Draw(&data);
 	}
 
 	return 0;

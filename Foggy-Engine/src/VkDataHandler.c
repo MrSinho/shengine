@@ -38,6 +38,9 @@ VkData VKDataInitPrerequisites(uint32_t width, uint32_t height, const char *titl
 		0,							//renderPass
 		0,							//framebufferCount
 		NULL,						//framebuffers
+		NULL,						//renderSemaphore
+		NULL,						//presentSemaphore
+		NULL,						//renderFence
 		0,							//shaderModuleCount
 		NULL						//pShaderModules
 	};
@@ -52,6 +55,7 @@ void InitVulkan(VkData *data) {
 	CreateWindowSurface(data->instance, data->window.window, &data->surface);
 	SetPhysicalDevice(data);
 	SetLogicalDevice(data);
+	GetGraphicsQueue(data);
 }
 
 void CreateInstance(VkData* data) {
@@ -106,7 +110,7 @@ void CreateWindowSurface(const VkInstance instance, GLFWwindow *window, VkSurfac
 }
 
 extern VkSurfaceCapabilitiesKHR GetSurfaceCapabilities(const VkPhysicalDevice pDevice, const VkSurfaceKHR surface) {
-	VkSurfaceCapabilitiesKHR surfaceCapabilities;
+	VkSurfaceCapabilitiesKHR surfaceCapabilities = {0};
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pDevice, surface, &surfaceCapabilities);
 	return surfaceCapabilities;
 }
@@ -258,6 +262,10 @@ void SetLogicalDevice(VkData *data) {
 		
 }
 
+void GetGraphicsQueue(VkData *data) {
+	vkGetDeviceQueue(data->device, data->graphicsQueueIndex, 0, &data->graphicsQueue);
+}
+
 void CreateSwapchain(VkData* data) {
 	
 	VkSurfaceCapabilitiesKHR sCapabilities = GetSurfaceCapabilities(data->physicalDevice, data->surface);
@@ -364,9 +372,10 @@ void CreateSwapchainImageViews(VkData *data) {
 }
 
 void InitCommands(VkData *data) {
+
 	data->cmdPoolCount	= 1;
 	data->pCmdPools		= (VkCommandPool*)malloc(data->cmdPoolCount * sizeof(VkCommandPool));
-	data->pCmdPools[0]	= CreateCommandPool(data->device, data->graphicsQueue);
+	data->pCmdPools[0]	= CreateCommandPool(data->device, data->graphicsQueueIndex);
 
 	data->cmdBufferCount = 1;
 	data->pCmdBuffers	 = (VkCommandBuffer*)malloc(data->cmdBufferCount * sizeof(VkCommandBuffer));
@@ -474,8 +483,6 @@ void CreateRenderPass(VkData* data) {
 
 void SetFramebuffers(VkData* data) {
 	
-	VkSurfaceCapabilitiesKHR surfaceCapabilities = GetSurfaceCapabilities(data->device, data->surface);
-
 	VkFramebufferCreateInfo framebufferCreateInfo = {
 		VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,	//sType;
 		NULL,										//pNext;
@@ -483,8 +490,8 @@ void SetFramebuffers(VkData* data) {
 		data->renderPass,							//renderPass;
 		1,											//attachmentCount;
 		NULL,										//pAttachments;
-		surfaceCapabilities.currentExtent.width,	//width;
-		surfaceCapabilities.currentExtent.height,	//height;
+		data->window.width,							//width;
+		data->window.height,						//height;
 		1											//layers;
 	};
 
@@ -500,6 +507,117 @@ void SetFramebuffers(VkData* data) {
 			"error creating framebuffer"
 		);
 	}
+}
+
+void SetSyncObjects(VkData* data) {
+	VkFenceCreateInfo renderFenceCreateInfo = {
+		VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,	//sType;
+		NULL,									//pNext;
+		VK_FENCE_CREATE_SIGNALED_BIT			//flags;
+	};
+
+	CheckVkResult(
+		vkCreateFence(data->device, &renderFenceCreateInfo, NULL, &data->renderFence),
+		"error creating fence"
+	);
+
+	VkSemaphoreCreateInfo semaphoreCreateInfo = {
+		VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,	//sType;
+		NULL,										//pNext;
+		0											//flags;
+	};
+
+#ifndef NDEBUG 
+	puts("creating sync objects");
+#endif
+
+	CheckVkResult(
+		vkCreateSemaphore(data->device, &semaphoreCreateInfo, NULL, &data->renderSemaphore),
+		"error creating render semaphore"
+	);
+	CheckVkResult(
+		vkCreateSemaphore(data->device, &semaphoreCreateInfo, NULL, &data->presentSemaphore),
+		"error creating present semaphore"
+	);
+}
+
+void Draw(VkData* data) {
+
+	// wait until the GPU has finished rendereing the last frame
+	vkWaitForFences(data->device, 1, &data->renderFence, 1, 1000000000);
+	vkResetFences(data->device, 1, &data->renderFence);
+
+	// request image from the swapchain
+	uint32_t swapchainImageIndex;
+	vkAcquireNextImageKHR(data->device, data->swapchain, 1000000000, data->presentSemaphore, NULL, &swapchainImageIndex);
+	
+	//reset the command buffer and start recording
+	vkResetCommandBuffer(data->pCmdBuffers[0], 0);
+
+	//BEGIN INFOS
+	VkCommandBufferBeginInfo cmdBufferBeginInfo = {
+		VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,	//sType;
+		NULL,											//pNext;
+		VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,	//flags; //submit cmd buffer once
+		NULL											//pInheritanceInfo;
+	};
+	
+	VkClearValue clearColor = { {1.0f, 0.0f, 0.0f} };
+	VkRenderPassBeginInfo renderPassBeginInfo = {
+		VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+		NULL,
+		data->renderPass,
+		data->pFramebuffers[swapchainImageIndex],
+		{
+			{0, 0},
+			{data->window.width, data->window.height}
+		},
+		1,
+		&clearColor
+	};
+
+	//Start recording cmdbuffer
+	vkBeginCommandBuffer(data->pCmdBuffers[0], &cmdBufferBeginInfo);
+
+	//begin the render pass (cmdbuffer must be in a recording state)
+	vkCmdBeginRenderPass(data->pCmdBuffers[0], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+	//end operation
+	vkCmdEndRenderPass(data->pCmdBuffers[0]);
+	vkEndCommandBuffer(data->pCmdBuffers[0]);
+
+	VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+	//submit to GPU queue
+	// wait for the presentsemaphore, signal to the render semaphore
+	VkSubmitInfo submitInfo = {
+		VK_STRUCTURE_TYPE_SUBMIT_INFO,	//sType;
+		NULL,							//pNext;
+		1,								//waitSemaphoreCount;
+		&data->presentSemaphore,		//pWaitSemaphores;
+		&waitStage,						//pWaitDstStageMask;
+		1,								//commandBufferCount;
+		&data->pCmdBuffers[0],			//pCommandBuffers;
+		1,								//signalSemaphoreCount;
+		&data->renderSemaphore,			//pSignalSemaphores;
+	};
+
+	vkQueueSubmit(data->graphicsQueue, 1, &submitInfo, data->renderFence);
+
+	// Present the ready image
+	VkPresentInfoKHR presentInfo = {
+		VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,	//sType;
+		NULL,								//pNext;
+		1,									//waitSemaphoreCount;
+		&data->renderSemaphore, 			//pWaitSemaphores;
+		1,									//swapchainCount;
+		&data->swapchain,					//pSwapchains;
+		&swapchainImageIndex,				//pImageIndices;
+		NULL								//pResults;
+	};
+
+	vkQueuePresentKHR(data->graphicsQueue, &presentInfo);
+
 }
 
 VkShaderModule CreateShaderModule(const VkDevice device, const char* input, const char* output) {
