@@ -30,21 +30,23 @@ int main() {
 		CreateShaderStage(data.device, "../Shaders/bin/Triangle.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
 	}
 
+	SetVertexInputState(&pipeData.vertexInputStateInfo);
+
 	CreateInputAssembly(&pipeData.inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
 
 	CreateRasterizer(&pipeData.rasterizer);
 
 	SetMultisampleState(&pipeData.multisampleStateInfo);
 
-	ColorBlendSettings(&pipeData.colorBlendAttachment);
+	ColorBlendSettings(&pipeData.colorBlendAttachment, &pipeData.colorBlendState);
 
-	SetViewport(data.window, &pipeData.viewportState);
+	SetViewport(data.window, &pipeData);
 
-	SetupGraphicsPipeline(data.device, &pipeData);
+	SetupGraphicsPipeline(data, &pipeData);
 
 	while (IsWindowActive(data.window.window)) {
 		PollEvents();
-		Draw(&data);
+		Draw(&data, &pipeData);
 	}
 
 	Cleanup(&data);

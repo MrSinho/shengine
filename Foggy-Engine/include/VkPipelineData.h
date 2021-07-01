@@ -12,10 +12,14 @@ typedef struct PipelineData {
 	VkPipelineVertexInputStateCreateInfo vertexInputStateInfo;
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly;
 
+	VkViewport viewport;
+	VkRect2D scissor;
 	VkPipelineViewportStateCreateInfo viewportState;
 
 	VkPipelineRasterizationStateCreateInfo rasterizer;
+
 	VkPipelineColorBlendAttachmentState colorBlendAttachment;
+	VkPipelineColorBlendStateCreateInfo colorBlendState;
 
 	VkPipelineMultisampleStateCreateInfo multisampleStateInfo;
 
@@ -39,10 +43,10 @@ extern void CreateRasterizer(VkPipelineRasterizationStateCreateInfo* rasterizer)
 
 extern void SetMultisampleState(VkPipelineMultisampleStateCreateInfo* multisampleState);
 
-extern void ColorBlendSettings(VkPipelineColorBlendAttachmentState* colorBlendAttachment);
+extern void ColorBlendSettings(VkPipelineColorBlendAttachmentState* colorAttachment, VkPipelineColorBlendStateCreateInfo* colorBlendState);
 
-extern void SetViewport(const Window window, VkPipelineViewportStateCreateInfo *viewportState);
+extern void SetViewport(const Window window, PipelineData *pipeData);
 
-extern void SetupGraphicsPipeline(const VkDevice device, PipelineData *data);
+extern void SetupGraphicsPipeline(const VkData data, PipelineData* pipeData);
 
 #endif

@@ -1,3 +1,4 @@
+#include <VkDataHandler.h>
 #include "VkPipelineData.h"
 #include "Utilities.h"
 
@@ -10,6 +11,8 @@ PipelineData PipelineDataInitPrerequisitites() {
 		NULL,				//shaderStages;
 		0,					//vertexInputStateInfo;
 		0,					//inputAssembly;
+		0,					//viewport;
+		0,					//scissor;
 		0,					//viewportState;
 		0,					//rasterizer;
 		0,					//colorBlendAttachment;
@@ -93,7 +96,7 @@ void CreateRasterizer(VkPipelineRasterizationStateCreateInfo *rasterizer) {
 		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,	//sType;
 		NULL,														//pNext;
 		0,															//flags;
-		VK_TRUE,													//depthClampEnable;
+		VK_FALSE,													//depthClampEnable;
 		VK_FALSE,													//rasterizerDiscardEnable; //false let the rasterizer draw
 		VK_POLYGON_MODE_FILL,										//polygonMode;	//fill the drawn faces
 		VK_CULL_MODE_NONE,											//cullMode; //don't enable backface culling
@@ -124,7 +127,7 @@ void SetMultisampleState(VkPipelineMultisampleStateCreateInfo *multisampleState)
 	*multisampleState = multisampleStateCreateInfo;
 }
 
-void ColorBlendSettings(VkPipelineColorBlendAttachmentState *colorBlendAttachment) {
+void ColorBlendSettings(VkPipelineColorBlendAttachmentState *colorBlendAttachment, VkPipelineColorBlendStateCreateInfo* colorBlendState) {
 	VkPipelineColorBlendAttachmentState colorBlendAttachmentState = {
 		VK_FALSE,							//blendEnable;
 		0.0f,								//srcColorBlendFactor;
@@ -138,11 +141,22 @@ void ColorBlendSettings(VkPipelineColorBlendAttachmentState *colorBlendAttachmen
 		VK_COLOR_COMPONENT_B_BIT |
 		VK_COLOR_COMPONENT_A_BIT 			//colorWriteMask;
 	};
-
 	*colorBlendAttachment = colorBlendAttachmentState;
+
+	VkPipelineColorBlendStateCreateInfo colorBlendStateCreateInfo = {
+		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+		NULL,
+		0,
+		VK_FALSE,
+		VK_LOGIC_OP_COPY,
+		1,
+		colorBlendAttachment,
+		{0.0f, 0.0f, 0.0f}
+	};
+	*colorBlendState = colorBlendStateCreateInfo;
 }
 
-void SetViewport(const Window window, VkPipelineViewportStateCreateInfo* viewportState) {
+void SetViewport(const Window window, PipelineData *pipeData) {
 
 	VkViewport viewport = {
 		0.0f,					//x; 
@@ -152,27 +166,67 @@ void SetViewport(const Window window, VkPipelineViewportStateCreateInfo* viewpor
 		0.0f, 					//minDepth;
 		1.0f					//maxDepth;
 	};
+	pipeData->viewport = viewport;
 
 	VkRect2D scissor = {
 		{0, 0},							//offset
 		{window.width, window.height}	//extent
 	};
+	pipeData->scissor = scissor;
 
 	VkPipelineViewportStateCreateInfo viewportStateCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,	//sType;
 		NULL,													//pNext;
 		0,														//flags;
 		1, 														//viewportCount;
-		&viewport,												//pViewports;
+		&pipeData->viewport,									//pViewports;
 		1,														//scissorCount;
-		&scissor												//pScissors;
+		&pipeData->scissor										//pScissors;
 	};
-
-	*viewportState = viewportStateCreateInfo;
+	pipeData->viewportState = viewportStateCreateInfo;
 }
 
-void SetupGraphicsPipeline(const VkDevice device, PipelineData* data, const char* input) {
+void SetupGraphicsPipeline(const VkData data, PipelineData* pipeData) {
 	
+	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
+		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+		NULL
+	};
 	
+	CheckVkResult(
+		vkCreatePipelineLayout(data.device, &pipelineLayoutCreateInfo, NULL, &pipeData->pipelineLayout),
+		"error creating pipeline layout"
+	);
 
+	VkGraphicsPipelineCreateInfo graphicsPipelineCreateInfo = {
+		VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,	//sType;
+		NULL,												//pNext;
+		0,													//flags;
+		pipeData->shaderStageCount,							//stageCount;
+		pipeData->pShaderStages,							//pStages;
+		&pipeData->vertexInputStateInfo,					//pVertexInputState;
+		&pipeData->inputAssembly,							//pInputAssemblyState;
+		NULL,												//pTessellationState;
+		&pipeData->viewportState,							//pViewportState;
+		&pipeData->rasterizer,								//pRasterizationState;
+		&pipeData->multisampleStateInfo,					//pMultisampleState;
+		NULL,												//pDepthStencilState;
+		&pipeData->colorBlendState,							//pColorBlendState;
+		NULL,												//pDynamicState;
+		pipeData->pipelineLayout,							//layout;
+		data.renderPass,									//renderPass;
+		0,													//subpass;
+		NULL,												//basePipelineHandle;
+		0													//basePipelineIndex;
+	};
+
+	CheckVkResult(
+		vkCreateGraphicsPipelines(data.device, NULL, 1, &graphicsPipelineCreateInfo, NULL, &pipeData->pipeline),
+		"error creating graphics pipeline"
+	);
 }

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "VkDataHandler.h"
+#include "VkPipelineData.h"
 #include "Window.h"
 #include "Utilities.h"
 
@@ -561,7 +562,7 @@ void SetSyncObjects(VkData* data) {
 	);
 }
 
-void Draw(VkData* data) {
+void Draw(VkData* data, PipelineData* pipeData) {
 
 	// wait until the GPU has finished rendereing the previous frame
 	vkWaitForFences(data->device, 1, &data->renderFence, 1, 1000000000);
@@ -601,6 +602,11 @@ void Draw(VkData* data) {
 
 	//begin the render pass (cmdbuffer must be in a recording state)
 	vkCmdBeginRenderPass(data->pCmdBuffers[0], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+	//bind to pipeline
+	vkCmdBindPipeline(data->pCmdBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData->pipeline);
+	
+	vkCmdDraw(data->pCmdBuffers[0], 3, 1, 0, 0);
 
 	//end operation
 	vkCmdEndRenderPass(data->pCmdBuffers[0]);
