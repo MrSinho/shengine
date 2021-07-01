@@ -537,3 +537,17 @@ build/x64/Debug/ALL_BUILD/ALL_BUILD.tlog/CustomBuild.read.1.tlog
 build/x64/Debug/ALL_BUILD/ALL_BUILD.tlog/CustomBuild.write.1.tlog
 build/.vs/Foggy-Engine/v16/ipch/AutoPCH/5d22be90abddce17/EGL_CONTEXT.ipch
 *.ipch
+build/Editor.dir/Debug/Editor.Build.CppClean.log
+build/Editor.dir/Debug/Editor.vcxproj.FileListAbsolute.txt
+build/Externals/glfw/docs/x64/Debug/docs/docs.Build.CppClean.log
+build/Externals/glfw/docs/x64/Debug/docs/docs.vcxproj.FileListAbsolute.txt
+build/Externals/glfw/src/glfw.dir/Debug/glfw.vcxproj.FileListAbsolute.txt
+build/Externals/glfw/src/glfw.dir/Debug/glfw3.Build.CppClean.log
+build/Foggy-Engine.dir/Debug/Foggy-Engine.Build.CppClean.log
+build/Foggy-Engine.dir/Debug/Foggy-Engine.vcxproj.FileListAbsolute.txt
+build/Utilities.dir/Debug/Utilities.Build.CppClean.log
+build/Utilities.dir/Debug/Utilities.vcxproj.FileListAbsolute.txt
+build/x64/Debug/ALL_BUILD/ALL_BUILD.Build.CppClean.log
+build/x64/Debug/ALL_BUILD/ALL_BUILD.vcxproj.FileListAbsolute.txt
+build/x64/Debug/ZERO_CHECK/ZERO_CHECK.Build.CppClean.log
+build/x64/Debug/ZERO_CHECK/ZERO_CHECK.vcxproj.FileListAbsolute.txt

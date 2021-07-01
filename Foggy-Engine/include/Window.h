@@ -16,8 +16,8 @@ typedef struct Window {
 } Window;
 
 extern void InitGLFW(Window *window);
-extern int IsWindowActive(const GLFWwindow* window);
+extern int IsWindowActive(GLFWwindow* window);
 extern void PollEvents();
-extern void ClearWindow(const GLFWwindow* window);
+extern void ClearWindow(GLFWwindow* window);
 
 #endif

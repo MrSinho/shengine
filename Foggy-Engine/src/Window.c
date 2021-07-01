@@ -1,6 +1,7 @@
 #include "Window.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void InitGLFW(Window* window) {
 
@@ -15,7 +16,7 @@ void InitGLFW(Window* window) {
 	window->window = glfwCreateWindow(window->width, window->height, window->title, NULL, NULL);
 }
 
-int IsWindowActive(const GLFWwindow *window) {
+int IsWindowActive(GLFWwindow *window) {
 	return !glfwWindowShouldClose(window);
 }
 
@@ -23,7 +24,7 @@ void PollEvents() {
 	glfwPollEvents();
 }
 
-void ClearWindow(const GLFWwindow* window) {
+void ClearWindow(GLFWwindow* window) {
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

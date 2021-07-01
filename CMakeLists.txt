@@ -29,8 +29,11 @@ file(GLOB_RECURSE UTILITIES_SRC Utilities/src/*.c)
 add_library(Utilities ${UTILITIES_SRC})
 target_include_directories(Utilities PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/include
+    ${Vulkan_INCLUDE_DIRS}
 )
-
+target_link_libraries(Utilities PUBLIC 
+    ${VULKAN_LIBRARIES}
+)
 #SHADERS
 message(STATUS "looking for glslc")
 find_program(GLSLC_FOUND glslc)

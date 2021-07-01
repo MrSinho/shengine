@@ -42,9 +42,6 @@ typedef struct VkData {
 	VkSemaphore presentSemaphore;
 	VkFence renderFence;
 
-	uint32_t shaderModuleCount;
-	VkShaderModule *pShaderModules;
-
 } VkData;
 
 /*
@@ -91,21 +88,6 @@ extern void CreateRenderPass(VkData *data);
 extern void SetFramebuffers(VkData *data);
 extern void SetSyncObjects(VkData *data);
 extern void Draw(VkData *data);
-
-/*
-*	Pipeline stuff
-*/
-extern VkShaderModule CreateShaderModule(const VkDevice device, const char* input);
-
-/*
-*	Utilities
-*/
-
-extern int CheckValidationLayer(const char *validationLayer);
-extern const char* TranslateVkResult(const VkResult vkResult);
-extern const char* TranslateQueueFlags(const VkQueueFlags queueFlag);
-extern void CheckVkResult(VkResult result, const char* errormsg);
-extern void BuildShader(const char* input, const char* output);
 
 /*
 */
