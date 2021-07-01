@@ -583,7 +583,7 @@ void Draw(VkData* data, PipelineData* pipeData) {
 		NULL											//pInheritanceInfo;
 	};
 	
-	VkClearValue clearColor = { {1.0f, 0.0f, 0.0f} };
+	VkClearValue clearColor = { {0.01f, 0.01f, 0.01f} };
 	VkRenderPassBeginInfo renderPassBeginInfo = {
 		VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,		//sType;
 		NULL,											//pNext;
