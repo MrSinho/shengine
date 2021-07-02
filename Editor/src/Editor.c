@@ -4,7 +4,7 @@
 
 int main() {
 
-	VkData data = VKDataInitPrerequisites(720, 480, "Foggy-Engine Editor");
+	VkData data = VKDataInitPrerequisites(600, 600, "Foggy-Engine Editor");
 
 	InitVulkan(&data);
 	
@@ -20,14 +20,16 @@ int main() {
 
 	PipelineData pipeData = PipelineDataInitPrerequisitites();
 
-	BuildShader("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
-	BuildShader("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
+	BuildShader("../Shaders/src/Charges.vert", "../Shaders/bin/Charges.vert.spv");
+	BuildShader("../Shaders/src/Charges.frag", "../Shaders/bin/Charges.frag.spv");
 	
 	pipeData.shaderStageCount = 2;
 	pipeData.pShaderStages = (VkPipelineShaderStageCreateInfo*)calloc(pipeData.shaderStageCount, sizeof(VkPipelineShaderStageCreateInfo));
 	if (pipeData.pShaderStages != NULL) {
-		CreateShaderStage(data.device, "../Shaders/bin/Triangle.vert.spv", &pipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		CreateShaderStage(data.device, "../Shaders/bin/Triangle.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+		CreateShaderStage(data.device, "../Shaders/bin/Charges.vert.spv", &pipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		CreateShaderStage(data.device, "../Shaders/bin/Charges.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+		//CreateShaderStage(data.device, "../Shaders/bin/Triangle.vert.spv", &pipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		//CreateShaderStage(data.device, "../Shaders/bin/Triangle.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
 	}
 
 	SetVertexInputState(&pipeData.vertexInputStateInfo);

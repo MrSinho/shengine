@@ -606,7 +606,7 @@ void Draw(VkData* data, PipelineData* pipeData) {
 	//bind to pipeline
 	vkCmdBindPipeline(data->pCmdBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData->pipeline);
 	
-	vkCmdDraw(data->pCmdBuffers[0], 3, 1, 0, 0);
+	vkCmdDraw(data->pCmdBuffers[0], 6, 1, 0, 0);
 
 	//end operation
 	vkCmdEndRenderPass(data->pCmdBuffers[0]);
