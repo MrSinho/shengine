@@ -89,7 +89,7 @@ extern VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPoo
 extern void CreateRenderPass(VkData *data);
 extern void SetFramebuffers(VkData *data);
 extern void SetSyncObjects(VkData *data);
-extern void Draw(VkData *data, PipelineData* pipeData);
+extern void Draw(VkData *data, PipelineData* pipeData, uint32_t nVertices);
 
 /*
 */

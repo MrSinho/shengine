@@ -562,7 +562,7 @@ void SetSyncObjects(VkData* data) {
 	);
 }
 
-void Draw(VkData* data, PipelineData* pipeData) {
+void Draw(VkData* data, PipelineData* pipeData, uint32_t nVertices) {
 
 	// wait until the GPU has finished rendereing the previous frame
 	vkWaitForFences(data->device, 1, &data->renderFence, 1, 1000000000);
@@ -606,7 +606,7 @@ void Draw(VkData* data, PipelineData* pipeData) {
 	//bind to pipeline
 	vkCmdBindPipeline(data->pCmdBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData->pipeline);
 	
-	vkCmdDraw(data->pCmdBuffers[0], 6, 1, 0, 0);
+	vkCmdDraw(data->pCmdBuffers[0], nVertices, 1, 0, 0);
 
 	//end operation
 	vkCmdEndRenderPass(data->pCmdBuffers[0]);
