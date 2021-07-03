@@ -12,15 +12,18 @@ int main() {
 	GetSwapchainImages(&data);
 	CreateSwapchainImageViews(&data);
 
-	float vertices[24] = {
+	float vertices[48] = {
 		//positions					//UV		//normals
 		1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	   -1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
+	   -1.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	    1.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
 	};
 
 	Mesh triangle = {
-		24,				//vertexCount;
+		48,				//vertexCount;
 		&vertices[0],	//pVertices;
 		0,				//indexCount;
 		NULL			//pIndices;
@@ -44,10 +47,10 @@ int main() {
 	pipeData.shaderStageCount = 2;
 	pipeData.pShaderStages = (VkPipelineShaderStageCreateInfo*)calloc(pipeData.shaderStageCount, sizeof(VkPipelineShaderStageCreateInfo));
 	if (pipeData.pShaderStages != NULL) {
-		//CreateShaderStage(data.device, "../Shaders/bin/Charges.vert.spv", &pipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		//CreateShaderStage(data.device, "../Shaders/bin/Charges.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
-		CreateShaderStage(data.device, "../Shaders/bin/Triangle.vert.spv", &pipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		CreateShaderStage(data.device, "../Shaders/bin/Triangle.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+		CreateShaderStage(data.device, "../Shaders/bin/Charges.vert.spv", &pipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		CreateShaderStage(data.device, "../Shaders/bin/Charges.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+		//CreateShaderStage(data.device, "../Shaders/bin/Triangle.vert.spv", &pipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		//CreateShaderStage(data.device, "../Shaders/bin/Triangle.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
 	}
 
 	VkBuffer vertexBuffer;
