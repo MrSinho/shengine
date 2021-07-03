@@ -7,6 +7,7 @@
 #include "Window.h"
 
 typedef struct PipelineData PipelineData;
+typedef struct Mesh Mesh;
 
 typedef struct VkData {
 	
@@ -89,7 +90,7 @@ extern VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPoo
 extern void CreateRenderPass(VkData *data);
 extern void SetFramebuffers(VkData *data);
 extern void SetSyncObjects(VkData *data);
-extern void Draw(VkData *data, PipelineData* pipeData, uint32_t nVertices);
+extern void Draw(VkData *data, PipelineData* pipeData, const Mesh mesh, const VkBuffer vertexBuffer);
 
 /*
 */

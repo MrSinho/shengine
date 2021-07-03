@@ -3,23 +3,11 @@
 #include "Utilities.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 PipelineData PipelineDataInitPrerequisitites() {
 
-	PipelineData data = {
-		0,					//shaderStageCount;
-		NULL,				//shaderStages;
-		0,					//vertexInputStateInfo;
-		0,					//inputAssembly;
-		0,					//viewport;
-		0,					//scissor;
-		0,					//viewportState;
-		0,					//rasterizer;
-		0,					//colorBlendAttachment;
-		0,					//MSAAInfo;
-		0,					//pipelineLayout;
-		0,					//pipeline;
-	};
+	PipelineData data = {0};
 	
 	return data;
 }
@@ -66,17 +54,54 @@ void CreateShaderStage(const VkDevice device, const char *shaderPath, VkPipeline
 	*shInfo = shaderStageCreateInfo;
 }
 
-void SetVertexInputState(VkPipelineVertexInputStateCreateInfo *vi) {
-	VkPipelineVertexInputStateCreateInfo vertexInput = {
-		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,//sType;
-		NULL,	//pNext;
-		0,		//flags;
-		0,		//vertexBindingDescriptionCount;
-		0,		//pVertexBindingDescriptions;
-		0,		//vertexAttributeDescriptionCount;
-		0,		//pVertexAttributeDescriptions;
+void SetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t *vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription *pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo *vi) {
+	
+	pVertexInputAttributeDescriptions = (VkVertexInputAttributeDescription*)malloc(3 * sizeof(VkVertexInputAttributeDescription));
+
+	VkVertexInputBindingDescription vertexBindingDescription = {
+		0,									//binding;
+		sizeof(float) * 8,					//stride;
+		VK_VERTEX_INPUT_RATE_VERTEX 		//inputRate;
+	};
+	*vertexBindDescription = vertexBindingDescription;
+
+	VkVertexInputAttributeDescription positionInputAttributeDescription = {
+		0,							//location;
+		0,							//binding;
+		VK_FORMAT_R32G32B32_SFLOAT,	//format;
+		0							//offset;
 	};
 
+	VkVertexInputAttributeDescription uvInputAttributeDescription = {
+		1,							//location;
+		0,							//binding;
+		VK_FORMAT_R32G32_SFLOAT,	//format;
+		sizeof(float)*3				//offset;
+	};
+
+	VkVertexInputAttributeDescription normalInputAttributeDescription = {
+		2,								//location;
+		0,								//binding;
+		VK_FORMAT_R32G32B32_SFLOAT,		//format;
+		sizeof(float) * 5				//offset;
+	};
+
+	if (pVertexInputAttributeDescriptions != NULL) {
+		pVertexInputAttributeDescriptions[0] = positionInputAttributeDescription;
+		pVertexInputAttributeDescriptions[1] = uvInputAttributeDescription;
+		pVertexInputAttributeDescriptions[2] = normalInputAttributeDescription;
+	}
+	else { exit(-1); }
+
+	VkPipelineVertexInputStateCreateInfo vertexInput = {
+		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,//sType;
+		NULL,								//pNext;
+		0,									//flags;
+		1,									//vertexBindingDescriptionCount;
+		vertexBindDescription,				//pVertexBindingDescriptions;
+		3,									//vertexAttributeDescriptionCount;
+		pVertexInputAttributeDescriptions,	//pVertexAttributeDescriptions;
+	};
 	*vi = vertexInput;
 }
 
@@ -189,13 +214,13 @@ void SetViewport(const Window window, PipelineData *pipeData) {
 void SetupGraphicsPipeline(const VkData data, PipelineData* pipeData) {
 	
 	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
-		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-		NULL,
-		0,
-		0,
-		NULL,
-		0,
-		NULL
+		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,	//sType;
+		NULL,											//pNext;
+		0,												//flags;
+		0,												//setLayoutCount;
+		NULL,											//pSetLayouts;
+		0,												//pushConstantRangeCount;
+		NULL											//pPushConstantRanges;
 	};
 	
 	CheckVkResult(
