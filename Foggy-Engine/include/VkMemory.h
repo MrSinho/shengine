@@ -11,13 +11,14 @@ typedef struct Mesh {
 	float*		pVertices;
 	uint32_t	indexCount;
 	uint32_t*	pIndices;
+	VkBuffer 	vertexBuffer;
 
 } Mesh;
 
 typedef struct VkData VkData;
 
 extern void CreateVertexBuffer(const VkDevice device, VkBuffer* vertexBuffer, const uint32_t bufferSize);
-extern void LoadMesh(const VkData data, const Mesh mesh, VkBuffer *vertexBuffer);
+extern void LoadMesh(const VkData data, Mesh *mesh);
 
 extern void GetMemoryType(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, uint32_t *memoryTypeIndex);
 extern void AllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, VkDeviceMemory *pMemory);

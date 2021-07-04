@@ -76,6 +76,7 @@ extern void GetGraphicsQueue(VkData* data);
 extern void CreateSwapchain(VkData *data);
 extern void GetSwapchainImages(VkData *data);
 extern void CreateSwapchainImageViews(VkData *data);
+extern void InitSwapchainData(VkData *data);
 
 /*
 *	CmdPool + CmdBuffer stuff

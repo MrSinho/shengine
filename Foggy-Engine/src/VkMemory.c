@@ -28,14 +28,14 @@ void CreateVertexBuffer(const VkDevice device, VkBuffer* vertexBuffer, const uin
 	);
 }
 
-void LoadMesh(const VkData data, const Mesh mesh, VkBuffer *vertexBuffer) {
+void LoadMesh(const VkData data, Mesh *mesh) {
 
-	CreateVertexBuffer(data.device, vertexBuffer, mesh.vertexCount * sizeof(mesh.pVertices[0]));
+	CreateVertexBuffer(data.device, &mesh->vertexBuffer, mesh->vertexCount * sizeof(mesh->pVertices[0]));
 
 	VkDeviceMemory vertexBufferMemory;
-	AllocateMemory(data.device, data.physicalDevice, *vertexBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vertexBufferMemory);
+	AllocateMemory(data.device, data.physicalDevice, mesh->vertexBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vertexBufferMemory);
 		
-	MapMemory(data.device, vertexBufferMemory, mesh.vertexCount * sizeof(mesh.pVertices[0]), (void*)mesh.pVertices);
+	MapMemory(data.device, vertexBufferMemory, mesh->vertexCount * sizeof(mesh->pVertices[0]), (void*)mesh->pVertices);
 }
 
 void AllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, VkDeviceMemory *pMemory) {

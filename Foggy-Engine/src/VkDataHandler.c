@@ -274,6 +274,12 @@ void GetGraphicsQueue(VkData *data) {
 	vkGetDeviceQueue(data->device, data->graphicsQueueIndex, 0, &data->graphicsQueue);
 }
 
+void InitSwapchainData(VkData *data) {
+	CreateSwapchain(data);
+	GetSwapchainImages(data);
+	CreateSwapchainImageViews(data);
+}
+
 void CreateSwapchain(VkData* data) {
 	
 	VkSurfaceCapabilitiesKHR sCapabilities = GetSurfaceCapabilities(data->physicalDevice, data->surface);
