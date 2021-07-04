@@ -29,8 +29,6 @@ int main() {
 		//CreateShaderStage(data.device, "../Shaders/bin/Triangle.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
 	}
 
-
-	//PIPELINE INITIALIZATION
 	SetVertexInputState(&pipeData.vertexBindingDescription, &pipeData.vertexInputAttributeDescriptionCount, pipeData.pVertexInputAssemblyDescriptions, &pipeData.vertexInputStateInfo);
 	CreateInputAssembly(&pipeData.inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
 	CreateRasterizer(&pipeData.rasterizer);
@@ -55,7 +53,8 @@ int main() {
 		&vertices[0],	//pVertices;
 		0,				//indexCount;
 		NULL,			//pIndices;
-		0				//vertexBuffer
+		0,				//vertexBuffer
+		0				//vertexBufferMemory			
 	};
 
 	LoadMesh(data, &triangle);
@@ -67,6 +66,7 @@ int main() {
 	}
 
 	Cleanup(&data);
+	ClearBufferMemory(data.device, triangle.vertexBuffer, triangle.vertexBufferMemory);
 
 	return 0;
 }

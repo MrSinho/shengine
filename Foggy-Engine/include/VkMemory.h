@@ -7,11 +7,12 @@
 
 typedef struct Mesh {
 
-	uint32_t	vertexCount;
-	float*		pVertices;
-	uint32_t	indexCount;
-	uint32_t*	pIndices;
-	VkBuffer 	vertexBuffer;
+	uint32_t		vertexCount;
+	float*			pVertices;
+	uint32_t		indexCount;
+	uint32_t*		pIndices;
+	VkBuffer 		vertexBuffer;
+	VkDeviceMemory 	vertexBufferMemory;
 
 } Mesh;
 
