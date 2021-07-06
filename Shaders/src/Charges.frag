@@ -1,4 +1,4 @@
-#version 450
+#version 460
 //INPUTS:
 layout (location = 1) in vec4 fragPos;
 

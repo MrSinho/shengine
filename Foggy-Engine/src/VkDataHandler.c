@@ -11,6 +11,7 @@
 #pragma warning (disable: 6011)
 #pragma warning (disable: 6385)
 #pragma warning (disable: 6386)
+#pragma warning (disable: 6255)
 
 /*
 * First setup
@@ -163,6 +164,8 @@ void SetPhysicalDevice(VkData* data) {
 				break;
 			}
 		}
+
+		free(pQueueFamilyProperties);
 	}
 
 	if (suitableDeviceCount == 0) {
@@ -170,9 +173,10 @@ void SetPhysicalDevice(VkData* data) {
 		exit(-1);
 	}
 
-	uint32_t *scores = calloc(suitableDeviceCount, sizeof(uint32_t));
-
+	uint32_t *scores = malloc(suitableDeviceCount * sizeof(uint32_t));
 	for (uint32_t i = 0; i < suitableDeviceCount; i++) {
+
+		scores[i] = 0;
 
 		VkPhysicalDeviceProperties pDeviceProperties;
 		vkGetPhysicalDeviceProperties(pDevices[i], &pDeviceProperties);
@@ -212,6 +216,10 @@ void SetPhysicalDevice(VkData* data) {
 	else {
 		data->queueFamilyIndexCount = 2;
 	}
+	free(scores);
+	free(graphicsQueueFamilyIndices);
+	free(surfaceQueueFamilyIndices);
+	free(pDevices);
 
 #ifndef NDEBUG
 		VkPhysicalDeviceProperties physicalDeviceProperties;
@@ -337,6 +345,7 @@ void CreateSwapchain(VkData* data) {
 			swapchainCreateInfo.imageFormat = data->imageFormat;
 		}
 	}
+	free(pSurfaceFormats);
 	
 	//SHARING MODE CHECK
 	uint32_t* pQueueFamilyIndices = (uint32_t*)malloc(2 * sizeof(uint32_t));
@@ -349,6 +358,7 @@ void CreateSwapchain(VkData* data) {
 			swapchainCreateInfo.pQueueFamilyIndices = pQueueFamilyIndices;
 		}
 	}
+	free(pQueueFamilyIndices);
 
 #ifndef NDEBUG
 	puts("creating swapchain");
@@ -404,6 +414,7 @@ void InitCommands(VkData *data) {
 	if (data->queueFamilyIndexCount == 2) {
 		data->pCmdPools[1] = CreateCommandPool(data->device, data->presentQueueIndex);
 	}
+	free(pQueueFamilyIndices);
 
 	data->pCmdBuffers = (VkCommandBuffer*)malloc(data->queueFamilyIndexCount * sizeof(VkCommandBuffer));
 	for (uint32_t i = 0; i < data->queueFamilyIndexCount; i++) {

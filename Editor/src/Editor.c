@@ -15,7 +15,6 @@ int main() {
 
 	//BuildShader("../Shaders/src/Charges.vert", "../Shaders/bin/Charges.vert.spv");
 	//BuildShader("../Shaders/src/Charges.frag", "../Shaders/bin/Charges.frag.spv");
-
 	//BuildShader("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
 	//BuildShader("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
 

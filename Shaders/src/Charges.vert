@@ -1,4 +1,4 @@
-#version 450
+#version 460
 
 const vec4 viewport[6] = vec4[6](
     vec4(1.0f, 1.0f, 0.0f, 1.0f),

@@ -26,6 +26,8 @@ const char *ReadCode(const char* path, uint32_t *_codeSize, const char *mode) {
 		return code;
 	}
 
+	free(code);
+
 	return (void*)(0);
 }
 
@@ -39,15 +41,17 @@ int CheckValidationLayer(const char* validationLayer) {
 	VkLayerProperties* availableLayersProperties = (VkLayerProperties*)malloc(availableLayerCount * sizeof(VkLayerProperties));
 	vkEnumerateInstanceLayerProperties(&availableLayerCount, availableLayersProperties);
 
-	if (availableLayersProperties) {
+	if (availableLayersProperties != NULL) {
 		puts("Installed validation layers: ");
 		for (uint32_t i = 0; i < availableLayerCount; i++) {
 			puts(availableLayersProperties[i].layerName);
 			if (strcmp(availableLayersProperties[i].layerName, validationLayer) == 0) {
+				free(availableLayersProperties);
 				return 1;
 			}
 		}
 	}
+	free(availableLayersProperties);
 
 	return 0;
 }
