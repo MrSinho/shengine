@@ -1,21 +1,21 @@
-#include <VkDataHandler.h>
-#include "VkPipelineData.h"
-#include "Utilities.h"
+#include "fggVkCore.h"
+#include "fggVkPipelineData.h"
+#include "fggUtilities.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-PipelineData PipelineDataInitPrerequisitites() {
+FggVkPipelineData fggVkPipelineDataInitPrerequisitites() {
 
-	PipelineData data = {0};
+	FggVkPipelineData data = {0};
 	
 	return data;
 }
 
-void CreateShaderModule(const VkDevice device, VkShaderModule *shaderModule, const char* input) {
+void fggCreateShaderModule(const VkDevice device, VkShaderModule *shaderModule, const char* input) {
 	
 	uint32_t codeSize = 0;
-	const char* shaderCode = ReadCode(input, &codeSize, "rb");
+	const char* shaderCode = fggReadCode(input, &codeSize, "rb");
 
 	VkShaderModuleCreateInfo shaderModuleCreateInfo = {
 		VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,	//sType;
@@ -29,17 +29,17 @@ void CreateShaderModule(const VkDevice device, VkShaderModule *shaderModule, con
 	printf("creating shader module using binary at: %s \n", input);
 #endif
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateShaderModule(device, &shaderModuleCreateInfo, NULL, shaderModule),
 		"error creating shader module"
 	);
 
 }
 
-void CreateShaderStage(const VkDevice device, const char *shaderPath, VkPipelineShaderStageCreateInfo *shInfo, const VkShaderStageFlagBits stageFlag) {
+void fggCreateShaderStage(const VkDevice device, const char *shaderPath, VkPipelineShaderStageCreateInfo *shInfo, const VkShaderStageFlagBits stageFlag) {
 	
 	VkShaderModule vModule = { 0 };
-	CreateShaderModule(device, &vModule, shaderPath);
+	fggCreateShaderModule(device, &vModule, shaderPath);
 
 	VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,	//sType;
@@ -54,7 +54,7 @@ void CreateShaderStage(const VkDevice device, const char *shaderPath, VkPipeline
 	*shInfo = shaderStageCreateInfo;
 }
 
-void SetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t *vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription *pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo *vi) {
+void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t *vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription *pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo *vi) {
 	
 	pVertexInputAttributeDescriptions = (VkVertexInputAttributeDescription*)malloc(3 * sizeof(VkVertexInputAttributeDescription));
 
@@ -86,6 +86,7 @@ void SetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription,
 		sizeof(float) * 5				//offset;
 	};
 
+	*vertexInputAttributeDescriptionCount = 3;
 	if (pVertexInputAttributeDescriptions != NULL) {
 		pVertexInputAttributeDescriptions[0] = positionInputAttributeDescription;
 		pVertexInputAttributeDescriptions[1] = uvInputAttributeDescription;
@@ -95,17 +96,17 @@ void SetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription,
 
 	VkPipelineVertexInputStateCreateInfo vertexInput = {
 		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,//sType;
-		NULL,								//pNext;
-		0,									//flags;
-		1,									//vertexBindingDescriptionCount;
-		vertexBindDescription,				//pVertexBindingDescriptions;
-		3,									//vertexAttributeDescriptionCount;
-		pVertexInputAttributeDescriptions,	//pVertexAttributeDescriptions;
+		NULL,								  //pNext;
+		0,									  //flags;
+		1,									  //vertexBindingDescriptionCount;
+		vertexBindDescription,				  //pVertexBindingDescriptions;
+		*vertexInputAttributeDescriptionCount,//vertexAttributeDescriptionCount;
+		pVertexInputAttributeDescriptions,	  //pVertexAttributeDescriptions;
 	};
 	*vi = vertexInput;
 }
 
-void CreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable) {
+void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable) {
 	VkPipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,	//sType;
 		NULL,															//pNext;
@@ -116,7 +117,7 @@ void CreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, 
 	*inputAssembly = inputAssemblyStateCreateInfo;
 }
 
-void CreateRasterizer(VkPipelineRasterizationStateCreateInfo *rasterizer) {
+void fggCreateRasterizer(VkPipelineRasterizationStateCreateInfo *rasterizer) {
 	VkPipelineRasterizationStateCreateInfo rasterizationStateCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,	//sType;
 		NULL,														//pNext;
@@ -136,7 +137,7 @@ void CreateRasterizer(VkPipelineRasterizationStateCreateInfo *rasterizer) {
 	*rasterizer = rasterizationStateCreateInfo;
 }
 
-void SetMultisampleState(VkPipelineMultisampleStateCreateInfo *multisampleState) {
+void fggSetMultisampleState(VkPipelineMultisampleStateCreateInfo *multisampleState) {
 	VkPipelineMultisampleStateCreateInfo multisampleStateCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,	//sType;
 		NULL,														//pNext;
@@ -152,7 +153,7 @@ void SetMultisampleState(VkPipelineMultisampleStateCreateInfo *multisampleState)
 	*multisampleState = multisampleStateCreateInfo;
 }
 
-void ColorBlendSettings(VkPipelineColorBlendAttachmentState *colorBlendAttachment, VkPipelineColorBlendStateCreateInfo* colorBlendState) {
+void fggColorBlendSettings(VkPipelineColorBlendAttachmentState *colorBlendAttachment, VkPipelineColorBlendStateCreateInfo* colorBlendState) {
 	VkPipelineColorBlendAttachmentState colorBlendAttachmentState = {
 		VK_FALSE,							//blendEnable;
 		0.0f,								//srcColorBlendFactor;
@@ -181,8 +182,7 @@ void ColorBlendSettings(VkPipelineColorBlendAttachmentState *colorBlendAttachmen
 	*colorBlendState = colorBlendStateCreateInfo;
 }
 
-void SetViewport(const Window window, PipelineData *pipeData) {
-
+void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, VkPipelineViewportStateCreateInfo* vprtState) {
 	VkViewport viewport = {
 		0.0f,					//x; 
 		0.0f,					//y;
@@ -191,27 +191,45 @@ void SetViewport(const Window window, PipelineData *pipeData) {
 		0.0f, 					//minDepth;
 		1.0f					//maxDepth;
 	};
-	pipeData->viewport = viewport;
+	*vprt = viewport;
 
 	VkRect2D scissor = {
 		{0, 0},							//offset
 		{window.width, window.height}	//extent
 	};
-	pipeData->scissor = scissor;
+	*scssr = scissor;
 
 	VkPipelineViewportStateCreateInfo viewportStateCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,	//sType;
 		NULL,													//pNext;
 		0,														//flags;
 		1, 														//viewportCount;
-		&pipeData->viewport,									//pViewports;
+		vprt,													//pViewports;
 		1,														//scissorCount;
-		&pipeData->scissor										//pScissors;
+		scssr													//pScissors;
 	};
-	pipeData->viewportState = viewportStateCreateInfo;
+	*vprtState = viewportStateCreateInfo;
 }
 
-void SetupGraphicsPipeline(const VkData data, PipelineData* pipeData) {
+FggVkFixedStates fggFixedStatesInitPrerequisites() {
+	FggVkFixedStates fData = {
+		0
+	};
+	return fData;
+}
+
+void fggSetFixedStates(const FggVkCore data, FggVkFixedStates* fData) {
+	
+	fggSetVertexInputState(&fData->vertexBindingDescription, &fData->vertexInputAttributeDescriptionCount, fData->pVertexInputAssemblyDescriptions, &fData->vertexInputStateInfo);
+	fggCreateInputAssembly(&fData->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
+	fggCreateRasterizer(&fData->rasterizer);
+	fggSetMultisampleState(&fData->multisampleStateInfo);
+	fggColorBlendSettings(&fData->colorBlendAttachment, &fData->colorBlendState);
+	fggSetViewport(data.window, &fData->viewport, &fData->scissor, &fData->viewportState);
+
+}
+
+void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fData, FggVkPipelineData* pipeData) {
 	
 	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,	//sType;
@@ -223,8 +241,8 @@ void SetupGraphicsPipeline(const VkData data, PipelineData* pipeData) {
 		NULL											//pPushConstantRanges;
 	};
 	
-	CheckVkResult(
-		vkCreatePipelineLayout(data.device, &pipelineLayoutCreateInfo, NULL, &pipeData->pipelineLayout),
+	fggCheckVkResult(
+		vkCreatePipelineLayout(data.device, &pipelineLayoutCreateInfo, NULL, &pipeData->mainPipelineLayout),
 		"error creating pipeline layout"
 	);
 
@@ -234,23 +252,23 @@ void SetupGraphicsPipeline(const VkData data, PipelineData* pipeData) {
 		0,													//flags;
 		pipeData->shaderStageCount,							//stageCount;
 		pipeData->pShaderStages,							//pStages;
-		&pipeData->vertexInputStateInfo,					//pVertexInputState;
-		&pipeData->inputAssembly,							//pInputAssemblyState;
+		&fData.vertexInputStateInfo,					//pVertexInputState;
+		&fData.inputAssembly,							//pInputAssemblyState;
 		NULL,												//pTessellationState;
-		&pipeData->viewportState,							//pViewportState;
-		&pipeData->rasterizer,								//pRasterizationState;
-		&pipeData->multisampleStateInfo,					//pMultisampleState;
+		&fData.viewportState,							//pViewportState;
+		&fData.rasterizer,								//pRasterizationState;
+		&fData.multisampleStateInfo,					//pMultisampleState;
 		NULL,												//pDepthStencilState;
-		&pipeData->colorBlendState,							//pColorBlendState;
+		&fData.colorBlendState,							//pColorBlendState;
 		NULL,												//pDynamicState;
-		pipeData->pipelineLayout,							//layout;
+		pipeData->mainPipelineLayout,							//layout;
 		data.renderPass,									//renderPass;
 		0,													//subpass;
 		NULL,												//basePipelineHandle;
 		0													//basePipelineIndex;
 	};
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateGraphicsPipelines(data.device, NULL, 1, &graphicsPipelineCreateInfo, NULL, &pipeData->pipeline),
 		"error creating graphics pipeline"
 	);

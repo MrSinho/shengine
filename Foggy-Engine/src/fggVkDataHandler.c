@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "VkDataHandler.h"
-#include "VkPipelineData.h"
-#include "VkMemory.h"
-#include "Window.h"
-#include "Utilities.h"
+#include "fggVkCore.h"
+#include "fggVkPipelineData.h"
+#include "fggVkMemoryInfo.h"
+#include "fggWindow.h"
+#include "fggUtilities.h"
 
 #pragma warning (disable: 6011)
 #pragma warning (disable: 6385)
@@ -17,9 +17,9 @@
 * First setup
 */
 
-VkData VKDataInitPrerequisites(uint32_t width, uint32_t height, const char *title) {
+FggVkCore fggVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char *title) {
 	
-	VkData data = {	
+	FggVkCore data = {	
 		VK_NULL_HANDLE,				//instance;
 		VK_NULL_HANDLE,				//physicalDevice;
 		VK_NULL_HANDLE,				//device;
@@ -47,20 +47,20 @@ VkData VKDataInitPrerequisites(uint32_t width, uint32_t height, const char *titl
 		VK_NULL_HANDLE,				//renderFence;
 	};
 
-	InitGLFW(&data.window);
+	fggInitGLFW(&data.window);
 	
 	return data;
 }
 
-void InitVulkan(VkData *data) {
-	CreateInstance(data);
-	CreateWindowSurface(data->instance, data->window.window, &data->surface);
-	SetPhysicalDevice(data);
-	SetLogicalDevice(data);
-	GetGraphicsQueue(data);
+void fggInitVulkan(FggVkCore *data) {
+	fggCreateInstance(data);
+	fggCreateWindowSurface(data->instance, data->window.window, &data->surface);
+	fggSetPhysicalDevice(data);
+	fggSetLogicalDevice(data);
+	fggGetGraphicsQueue(data);
 }
 
-void CreateInstance(VkData* data) {
+void fggCreateInstance(FggVkCore* data) {
 
 	VkApplicationInfo applicationInfo = {
 		VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -89,7 +89,7 @@ void CreateInstance(VkData* data) {
 	};
 
 #ifndef NDEBUG
-		if (CheckValidationLayer(khronos_validation)) {
+		if (fggCheckValidationLayer(khronos_validation)) {
 			instanceCreateInfo.enabledLayerCount = 1;
 			instanceCreateInfo.ppEnabledLayerNames = &khronos_validation;
 		}
@@ -97,27 +97,27 @@ void CreateInstance(VkData* data) {
 		puts("creating vkinstance");
 #endif
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateInstance(&instanceCreateInfo, VK_NULL_HANDLE, &data->instance),
 		"error creating vkinstance"
 	);
 }
 
-void CreateWindowSurface(const VkInstance instance, GLFWwindow *window, VkSurfaceKHR *surface) {
+void fggCreateWindowSurface(const VkInstance instance, GLFWwindow *window, VkSurfaceKHR *surface) {
 	
-	CheckVkResult(
+	fggCheckVkResult(
 		glfwCreateWindowSurface(instance, window, NULL, surface),
 		"error creating window surface"
 	);
 }
 
-extern VkSurfaceCapabilitiesKHR GetSurfaceCapabilities(const VkPhysicalDevice pDevice, const VkSurfaceKHR surface) {
+extern VkSurfaceCapabilitiesKHR fggGetSurfaceCapabilities(const VkPhysicalDevice pDevice, const VkSurfaceKHR surface) {
 	VkSurfaceCapabilitiesKHR surfaceCapabilities = {0};
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pDevice, surface, &surfaceCapabilities);
 	return surfaceCapabilities;
 }
 
-void SetPhysicalDevice(VkData* data) {
+void fggSetPhysicalDevice(FggVkCore* data) {
 
 	uint32_t pDeviceCount = 0;
 	vkEnumeratePhysicalDevices(data->instance, &pDeviceCount, NULL);
@@ -233,7 +233,7 @@ void SetPhysicalDevice(VkData* data) {
 *	Logical device creation + command buffers
 */
 
-VkDeviceQueueCreateInfo SetQueueInfo(const uint32_t queueFamilyIndex, const float *priority) {
+VkDeviceQueueCreateInfo fggSetQueueInfo(const uint32_t queueFamilyIndex, const float *priority) {
 	
 	VkDeviceQueueCreateInfo queueCreateInfo = {
 		VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,	//sType;
@@ -247,10 +247,10 @@ VkDeviceQueueCreateInfo SetQueueInfo(const uint32_t queueFamilyIndex, const floa
 	return queueCreateInfo;
 }
 
-void SetLogicalDevice(VkData *data) {
+void fggSetLogicalDevice(FggVkCore *data) {
 	
 	const float queuePriority = 1.0f;
-	VkDeviceQueueCreateInfo graphicsQueueInfo = SetQueueInfo(data->graphicsQueueIndex, &queuePriority);
+	VkDeviceQueueCreateInfo graphicsQueueInfo = fggSetQueueInfo(data->graphicsQueueIndex, &queuePriority);
 
 	const char* swapchainExtensionName = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 
@@ -271,26 +271,26 @@ void SetLogicalDevice(VkData *data) {
 	puts("creating logical device");
 #endif
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateDevice(data->physicalDevice, &deviceCreateInfo, NULL, &data->device),
 		"error creating logical device"
 	);
 		
 }
 
-void GetGraphicsQueue(VkData *data) {
+void fggGetGraphicsQueue(FggVkCore *data) {
 	vkGetDeviceQueue(data->device, data->graphicsQueueIndex, 0, &data->graphicsQueue);
 }
 
-void InitSwapchainData(VkData *data) {
-	CreateSwapchain(data);
-	GetSwapchainImages(data);
-	CreateSwapchainImageViews(data);
+void fggInitSwapchainData(FggVkCore *data) {
+	fggCreateSwapchain(data);
+	fggGetSwapchainImages(data);
+	fggCreateSwapchainImageViews(data);
 }
 
-void CreateSwapchain(VkData* data) {
+void fggCreateSwapchain(FggVkCore* data) {
 	
-	VkSurfaceCapabilitiesKHR sCapabilities = GetSurfaceCapabilities(data->physicalDevice, data->surface);
+	VkSurfaceCapabilitiesKHR sCapabilities = fggGetSurfaceCapabilities(data->physicalDevice, data->surface);
 
 	uint32_t surfaceFormatCount = 0;
 	vkGetPhysicalDeviceSurfaceFormatsKHR(data->physicalDevice, data->surface, &surfaceFormatCount, NULL);
@@ -364,19 +364,19 @@ void CreateSwapchain(VkData* data) {
 	puts("creating swapchain");
 #endif
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateSwapchainKHR(data->device, &swapchainCreateInfo, NULL, &data->swapchain),
 		"error creating swapchain"
 	);
 }
 
-void GetSwapchainImages(VkData *data) {
+void fggGetSwapchainImages(FggVkCore *data) {
 	vkGetSwapchainImagesKHR(data->device, data->swapchain, &data->swapchainImageCount, NULL);
 	data->pSwapchainImages = (VkImage*)malloc(data->swapchainImageCount * sizeof(VkImage));
 	vkGetSwapchainImagesKHR(data->device, data->swapchain, &data->swapchainImageCount, data->pSwapchainImages);
 }
 
-void CreateSwapchainImageViews(VkData *data) {
+void fggCreateSwapchainImageViews(FggVkCore *data) {
 	data->pSwapchainImageViews = (VkImageView*)malloc(data->swapchainImageCount * sizeof(VkImageView));
 
 	for (uint32_t i = 0; i < data->swapchainImageCount; i++) {
@@ -398,31 +398,31 @@ void CreateSwapchainImageViews(VkData *data) {
 		imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;						//baseArrayLayer;
 		imageViewCreateInfo.subresourceRange.layerCount = 1;							//layerCount;
 
-		CheckVkResult(
+		fggCheckVkResult(
 			vkCreateImageView(data->device, &imageViewCreateInfo, NULL, &data->pSwapchainImageViews[i]),
 			"error creating image view"
 		);
 	}
 }
 
-void InitCommands(VkData *data) {
+void fggInitCommands(FggVkCore *data) {
 
 	data->pCmdPools = (VkCommandPool*)malloc(data->queueFamilyIndexCount * sizeof(VkCommandPool));
 
 	uint32_t* pQueueFamilyIndices = (uint32_t*)malloc(data->queueFamilyIndexCount * sizeof(uint32_t));
-	data->pCmdPools[0] = CreateCommandPool(data->device, data->graphicsQueueIndex);
+	data->pCmdPools[0] = fggCreateCmdPool(data->device, data->graphicsQueueIndex);
 	if (data->queueFamilyIndexCount == 2) {
-		data->pCmdPools[1] = CreateCommandPool(data->device, data->presentQueueIndex);
+		data->pCmdPools[1] = fggCreateCmdPool(data->device, data->presentQueueIndex);
 	}
 	free(pQueueFamilyIndices);
 
 	data->pCmdBuffers = (VkCommandBuffer*)malloc(data->queueFamilyIndexCount * sizeof(VkCommandBuffer));
 	for (uint32_t i = 0; i < data->queueFamilyIndexCount; i++) {
-		data->pCmdBuffers[i] = CreateCmdBuffer(data->device, data->pCmdPools[i]);;
+		data->pCmdBuffers[i] = fggCreateCmdBuffer(data->device, data->pCmdPools[i]);;
 	}
 }
 
-VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex) {
+VkCommandPool fggCreateCmdPool(const VkDevice device, uint32_t queueFamilyIndex) {
 
 	VkCommandPoolCreateInfo cmdPoolCreateInfo = {
 		VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,			//sType;
@@ -437,7 +437,7 @@ VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex
 #endif
 
 	VkCommandPool cmdPool = NULL;
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateCommandPool(device, &cmdPoolCreateInfo, NULL, &cmdPool), 
 		"error creating command pool"
 	);
@@ -445,7 +445,7 @@ VkCommandPool CreateCommandPool(const VkDevice device, uint32_t queueFamilyIndex
 	return cmdPool;
 }
 
-VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPool) {
+VkCommandBuffer fggCreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPool) {
 	VkCommandBufferAllocateInfo cmdBufferAllocateInfo = {
 		VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,	//sType;
 		NULL,											//pNext;
@@ -459,7 +459,7 @@ VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPo
 #endif
 
 	VkCommandBuffer cmdBuffer;
-	CheckVkResult(
+	fggCheckVkResult(
 		vkAllocateCommandBuffers(device, &cmdBufferAllocateInfo, &cmdBuffer), 
 		"error creating command buffer"
 	);
@@ -467,7 +467,7 @@ VkCommandBuffer CreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPo
 	return cmdBuffer;
 }
 
-void CreateRenderPass(VkData* data) {
+void fggCreateRenderPass(FggVkCore* data) {
 	
 	VkAttachmentDescription colorAttachmentDescription = {
 		0,									//flags;
@@ -515,13 +515,13 @@ void CreateRenderPass(VkData* data) {
 	puts("creating render pass");
 #endif
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateRenderPass(data->device, &renderPassCreateInfo, NULL, &data->renderPass),
 		"error creating render pass"
 	);
 }
 
-void SetFramebuffers(VkData* data) {
+void fggSetFramebuffers(FggVkCore* data) {
 	
 	VkFramebufferCreateInfo framebufferCreateInfo = {
 		VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,	//sType;
@@ -541,21 +541,21 @@ void SetFramebuffers(VkData* data) {
 
 	for (uint32_t i = 0; i < data->swapchainImageCount; i++) {
 		framebufferCreateInfo.pAttachments = &data->pSwapchainImageViews[i];
-		CheckVkResult(
+		fggCheckVkResult(
 			vkCreateFramebuffer(data->device, &framebufferCreateInfo, NULL, &data->pFramebuffers[i]),
 			"error creating framebuffer"
 		);
 	}
 }
 
-void SetSyncObjects(VkData* data) {
+void fggSetSyncObjects(FggVkCore* data) {
 	VkFenceCreateInfo renderFenceCreateInfo = {
 		VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,	//sType;
 		NULL,									//pNext;
 		VK_FENCE_CREATE_SIGNALED_BIT			//flags;
 	};
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateFence(data->device, &renderFenceCreateInfo, NULL, &data->renderFence),
 		"error creating fence"
 	);
@@ -570,17 +570,17 @@ void SetSyncObjects(VkData* data) {
 	puts("creating sync objects");
 #endif
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateSemaphore(data->device, &semaphoreCreateInfo, NULL, &data->renderSemaphore),
 		"error creating render semaphore"
 	);
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateSemaphore(data->device, &semaphoreCreateInfo, NULL, &data->presentSemaphore),
 		"error creating present semaphore"
 	);
 }
 
-void Draw(VkData* data, PipelineData* pipeData, const Mesh mesh, const VkBuffer vertexBuffer) {
+void fggDraw(FggVkCore* data, FggVkPipelineData* pipeData, const FggMesh mesh, const VkBuffer vertexBuffer) {
 
 	// wait until the GPU has finished rendereing the previous frame
 	vkWaitForFences(data->device, 1, &data->renderFence, 1, 1000000000);
@@ -667,6 +667,6 @@ void Draw(VkData* data, PipelineData* pipeData, const Mesh mesh, const VkBuffer 
 
 }
 
-extern void Cleanup(VkData* data) {
+extern void fggCleanup(FggVkCore* data) {
 
 }

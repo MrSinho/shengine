@@ -1,40 +1,46 @@
-#include <Foggy-Engine.h>
+#include <FGG_API.h>
 
+#include <stdio.h>
 #include <stdlib.h>
 
 int main() {
 
-	VkData data = VKDataInitPrerequisites(600, 600, "Foggy-Engine Editor");
+	FggTime time = { 0 };
+	FggVkCore data = fggVkCoreInitPrerequisites(600, 600, "Foggy-Engine Editor");
 
-	InitVulkan(&data);
-	InitSwapchainData(&data);
+	fggInitVulkan(&data);
+	fggInitSwapchainData(&data);
 
-	CreateRenderPass(&data);
-	SetFramebuffers(&data);
-	SetSyncObjects(&data);
+	fggCreateRenderPass(&data);
+	fggSetFramebuffers(&data);
+	fggSetSyncObjects(&data);
 
-	//BuildShader("../Shaders/src/Charges.vert", "../Shaders/bin/Charges.vert.spv");
-	//BuildShader("../Shaders/src/Charges.frag", "../Shaders/bin/Charges.frag.spv");
-	//BuildShader("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
-	//BuildShader("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
+	FggVkFixedStates fData = fggFixedStatesInitPrerequisites();
+	fggSetFixedStates(data, &fData);
 
-	PipelineData pipeData = PipelineDataInitPrerequisitites();
-	pipeData.shaderStageCount = 2;
-	pipeData.pShaderStages = (VkPipelineShaderStageCreateInfo*)calloc(pipeData.shaderStageCount, sizeof(VkPipelineShaderStageCreateInfo));
-	if (pipeData.pShaderStages != NULL) {
-		CreateShaderStage(data.device, "../Shaders/bin/Charges.vert.spv", &pipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		CreateShaderStage(data.device, "../Shaders/bin/Charges.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
-		//CreateShaderStage(data.device, "../Shaders/bin/Triangle.vert.spv", &pipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		//CreateShaderStage(data.device, "../Shaders/bin/Triangle.frag.spv", &pipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+	fggBuildShader("../Shaders/src/Charges.vert", "../Shaders/bin/Charges.vert.spv");
+	fggBuildShader("../Shaders/src/Charges.frag", "../Shaders/bin/Charges.frag.spv");
+	fggBuildShader("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
+	fggBuildShader("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
+
+	FggVkPipelineData coulombPipeData = fggVkPipelineDataInitPrerequisitites();
+	coulombPipeData.shaderStageCount = 2;
+	coulombPipeData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
+	if (coulombPipeData.pShaderStages != NULL) {
+		fggCreateShaderStage(data.device, "../Shaders/bin/Charges.vert.spv", &coulombPipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		fggCreateShaderStage(data.device, "../Shaders/bin/Charges.frag.spv", &coulombPipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
 	}
 
-	SetVertexInputState(&pipeData.vertexBindingDescription, &pipeData.vertexInputAttributeDescriptionCount, pipeData.pVertexInputAssemblyDescriptions, &pipeData.vertexInputStateInfo);
-	CreateInputAssembly(&pipeData.inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
-	CreateRasterizer(&pipeData.rasterizer);
-	SetMultisampleState(&pipeData.multisampleStateInfo);
-	ColorBlendSettings(&pipeData.colorBlendAttachment, &pipeData.colorBlendState);
-	SetViewport(data.window, &pipeData);
-	SetupGraphicsPipeline(data, &pipeData);
+	FggVkPipelineData trianglePipeData = fggVkPipelineDataInitPrerequisitites();
+	trianglePipeData.shaderStageCount = 2;
+	trianglePipeData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
+	if (trianglePipeData.pShaderStages != NULL) {
+		fggCreateShaderStage(data.device, "../Shaders/bin/Triangle.vert.spv", &trianglePipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		fggCreateShaderStage(data.device, "../Shaders/bin/Triangle.frag.spv", &trianglePipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+	}
+
+	fggSetupGraphicsPipeline(data, fData, &coulombPipeData);
+	fggSetupGraphicsPipeline(data, fData, &trianglePipeData);
 
 	// MESH AND COMMANDS
 	float vertices[48] = {
@@ -43,11 +49,11 @@ int main() {
 	   -1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	   -1.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 		1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	    1.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
+	   -1.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		1.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
 	};
 
-	Mesh triangle = {
+	FggMesh plane = {
 		48,				//vertexCount;
 		&vertices[0],	//pVertices;
 		0,				//indexCount;
@@ -56,16 +62,17 @@ int main() {
 		0				//vertexBufferMemory			
 	};
 
-	LoadMesh(data, &triangle);
-	InitCommands(&data);
+	fggLoadMesh(data, &plane);
+	fggInitCommands(&data);
 
-	while (IsWindowActive(data.window.window)) {
-		PollEvents();
-		Draw(&data, &pipeData, triangle, triangle.vertexBuffer);
+	while (fggIsWindowActive(data.window.window)) {
+		fggPollEvents();
+		fggGetTime(&time);
+		fggDraw(&data, &trianglePipeData, plane, plane.vertexBuffer);
 	}
 
-	Cleanup(&data);
-	ClearBufferMemory(data.device, triangle.vertexBuffer, triangle.vertexBufferMemory);
+	fggCleanup(&data);
+	fggClearBufferMemory(data.device, plane.vertexBuffer, plane.vertexBufferMemory);
 
 	return 0;
 }

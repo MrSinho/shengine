@@ -1,18 +1,13 @@
 #version 460
 
-const vec4 viewport[6] = vec4[6](
-    vec4(1.0f, 1.0f, 0.0f, 1.0f),
-    vec4(-1.0f, 1.0f, 0.0f, 1.0f),
-    vec4(-1.0f, -1.0f, 0.0f, 1.0f),
-    vec4(1.0f, 1.0f, 0.0f, 1.0f),
-    vec4(1.0f, -1.0f, 0.0f, 1.0f),
-    vec4(-1.0f, -1.0f, 0.0f, 1.0f)
-);
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec2 uv;
+layout (location = 2) in vec3 normal;
 
 layout (location = 1) out vec4 fragPos;
 
 void main() {
 
-    fragPos = viewport[gl_VertexIndex];
-    gl_Position = vec4(fragPos);
+    fragPos = vec4(position, 1.0f);
+    gl_Position = vec4(position, 1.0f);
 }

@@ -1,4 +1,4 @@
-#include "Utilities.h"
+#include "fggUtilities.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +7,7 @@
 #pragma warning (disable: 4996)
 #pragma warning (disable: 6385)
 
-const char *ReadCode(const char* path, uint32_t *_codeSize, const char *mode) {
+const char *fggReadCode(const char* path, uint32_t *_codeSize, const char *mode) {
 	
 	FILE* stream = fopen(path, mode);
 	
@@ -33,7 +33,7 @@ const char *ReadCode(const char* path, uint32_t *_codeSize, const char *mode) {
 
 #ifndef NDEBUG
 
-int CheckValidationLayer(const char* validationLayer) {
+int fggCheckValidationLayer(const char* validationLayer) {
 
 	uint32_t availableLayerCount = 0;
 	vkEnumerateInstanceLayerProperties(&availableLayerCount, NULL);
@@ -60,16 +60,16 @@ int CheckValidationLayer(const char* validationLayer) {
 
 
 
-void CheckVkResult(VkResult result, const char* errormsg) {
+void fggCheckVkResult(VkResult result, const char* errormsg) {
 	if (result != VK_SUCCESS) {
 #ifndef NDEBUG
-		printf("%s, %s \n", errormsg, TranslateVkResult(result));
+		printf("%s, %s \n", errormsg, fggTranslateVkResult(result));
 #endif	
 		exit(-1);
 	}
 }
 
-const char* TranslateVkResult(const VkResult vkResult) {
+const char* fggTranslateVkResult(const VkResult vkResult) {
 	switch (vkResult) {
 	case VK_SUCCESS:return "VK_SUCCESS";
 	case VK_NOT_READY:return "VK_NOT_READY";
@@ -99,7 +99,7 @@ const char* TranslateVkResult(const VkResult vkResult) {
 	return "unknown vkresult";
 }
 
-const char* TranslateQueueFlags(const VkQueueFlags queueFlag) {
+const char* fggTranslateQueueFlags(const VkQueueFlags queueFlag) {
 	if (queueFlag & VK_QUEUE_GRAPHICS_BIT) { return "VK_QUEUE_GRAPHICS_BIT"; }
 	if (queueFlag & VK_QUEUE_COMPUTE_BIT) { return "VK_QUEUE_COMPUTE_BIT"; }
 	if (queueFlag & VK_QUEUE_TRANSFER_BIT) { return "VK_QUEUE_TRANSFER_BIT"; }
@@ -115,7 +115,7 @@ const char* TranslateQueueFlags(const VkQueueFlags queueFlag) {
 	return "unknown flag";
 }
 
-void BuildShader(const char* input, const char* output) {
+void fggBuildShader(const char* input, const char* output) {
 	char cmd[256] = { 0 };
 	const char* o = " -o ";
 	strcpy(cmd, "glslc ");

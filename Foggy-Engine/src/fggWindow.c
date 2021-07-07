@@ -1,9 +1,9 @@
-#include "Window.h"
+#include "fggWindow.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void InitGLFW(Window* window) {
+void fggInitGLFW(FggWindow* window) {
 
 	if (!glfwInit()) {
 		puts("Error intializing gflfw!");
@@ -16,15 +16,15 @@ void InitGLFW(Window* window) {
 	window->window = glfwCreateWindow(window->width, window->height, window->title, NULL, NULL);
 }
 
-int IsWindowActive(GLFWwindow *window) {
+int fggIsWindowActive(GLFWwindow *window) {
 	return !glfwWindowShouldClose(window);
 }
 
-void PollEvents() {
+void fggPollEvents() {
 	glfwPollEvents();
 }
 
-void ClearWindow(GLFWwindow* window) {
+void fggClearWindow(GLFWwindow* window) {
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

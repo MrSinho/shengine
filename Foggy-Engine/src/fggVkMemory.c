@@ -1,12 +1,12 @@
-#include "VkMemory.h"
-#include "Utilities.h"
-#include "VkDataHandler.h"
+#include "fggVkMemoryInfo.h"
+#include "fggVkCore.h"
+#include "fggUtilities.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-void CreateVertexBuffer(const VkDevice device, VkBuffer* vertexBuffer, const uint32_t bufferSize) {
+void fggCreateVertexBuffer(const VkDevice device, VkBuffer* vertexBuffer, const uint32_t bufferSize) {
 	VkBufferCreateInfo vertexBufferCreateInfo = {
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,	//sType;
 		NULL,									//pNext;
@@ -22,25 +22,23 @@ void CreateVertexBuffer(const VkDevice device, VkBuffer* vertexBuffer, const uin
 	printf("creating vertex buffer of %u bytes \n", bufferSize);
 #endif	
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkCreateBuffer(device, &vertexBufferCreateInfo, NULL, vertexBuffer),
 		"error creating vertex buffer"
 	);
 }
 
-void LoadMesh(const VkData data, Mesh *mesh) {
+void fggLoadMesh(const FggVkCore data, FggMesh *mesh) {
 
-	CreateVertexBuffer(data.device, &mesh->vertexBuffer, mesh->vertexCount * sizeof(mesh->pVertices[0]));
-
-	AllocateMemory(data.device, data.physicalDevice, mesh->vertexBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &mesh->vertexBufferMemory);
-		
-	MapMemory(data.device, mesh->vertexBufferMemory, mesh->vertexCount * sizeof(mesh->pVertices[0]), (void*)mesh->pVertices);
+	fggCreateVertexBuffer(data.device, &mesh->vertexBuffer, mesh->vertexCount * sizeof(mesh->pVertices[0]));
+	fggAllocateMemory(data.device, data.physicalDevice, mesh->vertexBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &mesh->vertexBufferMemory);
+	fggMapMemory(data.device, mesh->vertexBufferMemory, mesh->vertexCount * sizeof(mesh->pVertices[0]), (void*)mesh->pVertices);
 }
 
-void AllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, VkDeviceMemory *pMemory) {
+void fggAllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, VkDeviceMemory *pMemory) {
 
 	uint32_t memoryTypeIndex = 0;
-	GetMemoryType(device, physicalDevice, buffer, typeFlags, &memoryTypeIndex);
+	fggGetMemoryType(device, physicalDevice, buffer, typeFlags, &memoryTypeIndex);
 
 	VkMemoryRequirements memoryRequirements;
 	vkGetBufferMemoryRequirements(device, buffer, &memoryRequirements);
@@ -56,7 +54,7 @@ void AllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDevice
 	printf("allocating %u bytes of memory\n", (uint32_t)memoryRequirements.size);
 #endif
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkAllocateMemory(device, &memoryAllocateInfo, NULL, pMemory),
 		"error allocating memory"
 	);
@@ -65,13 +63,13 @@ void AllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDevice
 	printf("binding memory\n");
 #endif
 
-	CheckVkResult(
+	fggCheckVkResult(
 		vkBindBufferMemory(device, buffer, *pMemory, 0),
 		"error binding buffer memory"
 	);
 }
 
-void GetMemoryType(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, uint32_t *memoryTypeIndex) {
+void fggGetMemoryType(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, uint32_t *memoryTypeIndex) {
 	
 	VkPhysicalDeviceMemoryProperties memoryProperties;
 	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
@@ -92,14 +90,14 @@ void GetMemoryType(const VkDevice device, const VkPhysicalDevice physicalDevice,
 	exit(-1);
 }
 
-void MapMemory(const VkDevice device, const VkDeviceMemory memory, const uint32_t dataSize, const void *pData) {
+void fggMapMemory(const VkDevice device, const VkDeviceMemory memory, const uint32_t dataSize, const void *pData) {
 	
 #ifndef NDEBUG
 	printf("mapping %u bytes of memory \n", dataSize);
 #endif 
 	
 	void* data;
-	CheckVkResult(
+	fggCheckVkResult(
 		vkMapMemory(device, memory, 0, dataSize, 0, &data),
 		"error mapping memory"
 	);
@@ -107,7 +105,7 @@ void MapMemory(const VkDevice device, const VkDeviceMemory memory, const uint32_
 	vkUnmapMemory(device, memory);
 }
 
-void ClearBufferMemory(const VkDevice device, const VkBuffer buffer, const VkDeviceMemory memory) {
+void fggClearBufferMemory(const VkDevice device, const VkBuffer buffer, const VkDeviceMemory memory) {
 	vkDestroyBuffer(device, buffer, NULL);
 	vkFreeMemory(device, memory, NULL);
 }
