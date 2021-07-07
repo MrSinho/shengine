@@ -1,21 +1,6 @@
 #include "fggWindow.h"
 #include "fggInput.h"
 
-//FggInput fggInputInitPrerequisites(const FggWindow window) {
-//	FggInput input = {0};
-//	glfwSetKeyCallback(window.window, fggInputInitPrerequisites);
-//	return input;
-//}
-
-void fggInputCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (action == GLFW_PRESS) {
-		
-	}
-	else if (action == GLFW_RELEASE) {
-
-	}
-}
-
 int fggIsKeyPressed(const FggWindow window, int key)
 {
 	if (glfwGetKey(window.window, key) == GLFW_PRESS) { return 1; }

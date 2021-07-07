@@ -142,16 +142,8 @@
 #define MOUSE_BUTTON_RIGHT     MOUSE_BUTTON_2
 #define MOUSE_BUTTON_MIDDLE    MOUSE_BUTTON_3
 
-//typedef struct FggInput {
-//
-//	int keys[348];
-//
-//} FggInput;
-//
-//extern FggInput fggInputInitPrerequisites(const FggWindow window);
 
-extern void fggInputCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
-	
+
 extern int fggIsKeyPressed(const FggWindow window, int key);
 
 extern int fggIsKeyReleased(const FggWindow window, int key);
