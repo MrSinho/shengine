@@ -1,4 +1,5 @@
 #include <FGG_API.h>
+#include <CGS_API.h>
 
 #include <stdio.h>
 #include <stdlib.h>

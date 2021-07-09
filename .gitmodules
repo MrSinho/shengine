@@ -4,3 +4,6 @@
 [submodule "Externals/CHaRGeS"]
 	path = Externals/CHaRGeS
 	url = https://github.com/MrSinho/CHaRGeS.git
+[submodule "Externals/EZ-ECS"]
+	path = Externals/EZ-ECS
+	url = https://github.com/MrSinho/EZ-ECS.git

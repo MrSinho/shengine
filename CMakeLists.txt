@@ -7,6 +7,7 @@ project(${PROJECT_NAME} C)
 #SUBDIRECTORIES
 add_subdirectory(Externals/glfw)
 add_subdirectory(Externals/CHaRGeS)
+add_subdirectory(Externals/EZ-ECS)
 
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)
@@ -18,6 +19,7 @@ target_include_directories(Foggy-Engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Foggy-Engine/include
     ${CMAKE_CURRENT_SOURCE_DIR}/Externals/glfw/include
     ${CGS_INCLUDE_DIR}
+    ${EZ_ECS_INCLUDE_DIR}
     ${Vulkan_INCLUDE_DIRS}
 )
 target_link_libraries(Foggy-Engine PUBLIC
