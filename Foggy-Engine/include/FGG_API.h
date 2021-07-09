@@ -2,7 +2,7 @@
 #define FGG_API_H
 
 #include "fggVkCore.h"
-#include "FggVkPipelineData.h"
+#include "fggVkPipelineData.h"
 #include "fggVkMemoryInfo.h"
 
 #include "fggWindow.h"

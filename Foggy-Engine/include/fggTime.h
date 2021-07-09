@@ -16,5 +16,5 @@ typedef struct FggTime
 
 extern void fggGetTime(FggTime* time);
 
-extern void fggSetTime(float now, FggTime* time);
+extern void fggSetTime(double now, FggTime* time);
 
