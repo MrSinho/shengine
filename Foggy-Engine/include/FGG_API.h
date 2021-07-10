@@ -4,6 +4,10 @@
 #include "fggVkCore.h"
 #include "fggVkPipelineData.h"
 #include "fggVkMemoryInfo.h"
+#include "fggPushConstants.h"
+
+#include "fggEcsImplementation.h"
+#include "fggComponents.h"
 
 #include "fggWindow.h"
 #include "fggInput.h"

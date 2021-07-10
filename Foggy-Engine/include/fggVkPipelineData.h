@@ -26,7 +26,6 @@ typedef struct FggVkFixedStates {
 
 } FggVkFixedStates;
 
-
 typedef struct FggVkPipelineData {
 
 	uint32_t shaderStageCount;
@@ -51,8 +50,6 @@ extern void fggColorBlendSettings(VkPipelineColorBlendAttachmentState* colorAtta
 extern void fggSetViewport(const FggWindow window, VkViewport *vprt, VkRect2D* scssr, VkPipelineViewportStateCreateInfo* vprtState);
 
 extern void fggSetFixedStates(const FggVkCore data, FggVkFixedStates* pipeData);
-
-
 
 
 extern FggVkPipelineData fggVkPipelineDataInitPrerequisitites();

@@ -10,6 +10,8 @@ typedef struct FggVkPipelineData FggVkPipelineData;
 
 typedef struct FggMesh FggMesh;
 
+typedef struct FggMeshPushConstants FggMeshPushConstants;
+
 typedef struct FggVkCore {
 	
 	/*Initialization stuff*/
@@ -100,7 +102,7 @@ extern void fggSetFramebuffers(FggVkCore *data);
 
 extern void fggSetSyncObjects(FggVkCore *data);
 
-extern void fggDraw(FggVkCore *data, FggVkPipelineData* pipeData, const FggMesh mesh, const VkBuffer vertexBuffer);
+extern void fggDraw(FggVkCore *data, FggVkPipelineData* pipeData, const FggMeshPushConstants meshPushConstants, const FggMesh mesh, const VkBuffer vertexBuffer);
 
 
 

@@ -1,5 +1,6 @@
 #include "fggVkCore.h"
 #include "fggVkPipelineData.h"
+#include "fggPushConstants.h"
 #include "fggUtilities.h"
 
 #include <stdio.h>
@@ -231,19 +232,25 @@ void fggSetFixedStates(const FggVkCore data, FggVkFixedStates* fData) {
 
 void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fData, FggVkPipelineData* pipeData) {
 	
-	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
+	VkPushConstantRange pushConstantRange = {
+		VK_SHADER_STAGE_VERTEX_BIT,		//stageFlags;
+		0,								//offset;
+		sizeof(FggMeshPushConstants)	//size;
+	};
+
+	VkPipelineLayoutCreateInfo mainPipelineLayoutCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,	//sType;
 		NULL,											//pNext;
 		0,												//flags;
 		0,												//setLayoutCount;
 		NULL,											//pSetLayouts;
-		0,												//pushConstantRangeCount;
-		NULL											//pPushConstantRanges;
+		1,												//pushConstantRangeCount;
+		&pushConstantRange								//pPushConstantRanges;
 	};
-	
+
 	fggCheckVkResult(
-		vkCreatePipelineLayout(data.device, &pipelineLayoutCreateInfo, NULL, &pipeData->mainPipelineLayout),
-		"error creating pipeline layout"
+		vkCreatePipelineLayout(data.device, &mainPipelineLayoutCreateInfo, NULL, &pipeData->mainPipelineLayout),
+		"error creating main pipeline layout"
 	);
 
 	VkGraphicsPipelineCreateInfo graphicsPipelineCreateInfo = {

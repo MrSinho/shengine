@@ -1,5 +1,6 @@
 #include <FGG_API.h>
-#include <CGS_API.h>
+
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,14 +25,6 @@ int main() {
 	fggBuildShader("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
 	fggBuildShader("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
 
-	FggVkPipelineData coulombPipeData = fggVkPipelineDataInitPrerequisitites();
-	coulombPipeData.shaderStageCount = 2;
-	coulombPipeData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
-	if (coulombPipeData.pShaderStages != NULL) {
-		fggCreateShaderStage(data.device, "../Shaders/bin/Charges.vert.spv", &coulombPipeData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		fggCreateShaderStage(data.device, "../Shaders/bin/Charges.frag.spv", &coulombPipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
-	}
-
 	FggVkPipelineData trianglePipeData = fggVkPipelineDataInitPrerequisitites();
 	trianglePipeData.shaderStageCount = 2;
 	trianglePipeData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
@@ -40,18 +33,24 @@ int main() {
 		fggCreateShaderStage(data.device, "../Shaders/bin/Triangle.frag.spv", &trianglePipeData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
 	}
 
-	fggSetupGraphicsPipeline(data, fData, &coulombPipeData);
 	fggSetupGraphicsPipeline(data, fData, &trianglePipeData);
+
+	//SCENE
+	ezecsScene scene = { 0 };
+	uint32_t triangle = ezecsCreateEntity();
+	FggTransform *triangleTransform = ezecsAddFggTransformComponent(&scene, triangle);
+	triangleTransform->position[2] = -3.0f;
+	
 
 	// MESH AND COMMANDS
 	float vertices[48] = {
 		//positions					//UVs		//normals
-		1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f,  1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f, -1.0f,  0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
+		1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
 	};
 
 	FggMesh plane = {
@@ -66,10 +65,14 @@ int main() {
 	fggLoadMesh(data, &plane);
 	fggInitCommands(&data);
 
+	FggMeshPushConstants mPushConstants = {0};
+
 	while (fggIsWindowActive(data.window.window)) {
 		fggPollEvents();
 		fggGetTime(&time);
-		fggDraw(&data, &trianglePipeData, plane, plane.vertexBuffer);
+		fggPushConstantsUpdate(data.window, &mPushConstants);
+		fggSceneUpdate(scene);
+		fggDraw(&data, &trianglePipeData, mPushConstants, plane, plane.vertexBuffer);
 	}
 
 	fggCleanup(&data);
