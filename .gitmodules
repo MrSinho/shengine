@@ -3,7 +3,7 @@
 	url = https://github.com/glfw/glfw.git
 [submodule "Externals/EZ-ECS"]
 	path = Externals/EZ-ECS
-	url = https://github.com/MrSinho/EZ-ECS.git
+	url = https://github.com/MrSinho/EZ-ECS
 [submodule "Externals/cglm"]
 	path = Externals/cglm
 	url = https://github.com/recp/cglm.git
