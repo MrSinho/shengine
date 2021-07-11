@@ -1,6 +1,6 @@
 #include "fggVkCore.h"
 #include "fggVkPipelineData.h"
-#include "fggPushConstants.h"
+#include "fggProjection.h"
 #include "fggUtilities.h"
 
 #include <stdio.h>
@@ -213,29 +213,29 @@ void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, V
 }
 
 FggVkFixedStates fggFixedStatesInitPrerequisites() {
-	FggVkFixedStates fData = {
+	FggVkFixedStates fStates = {
 		0
 	};
-	return fData;
+	return fStates;
 }
 
-void fggSetFixedStates(const FggVkCore data, FggVkFixedStates* fData) {
+void fggSetFixedStates(const FggVkCore data, FggVkFixedStates* fStates) {
 	
-	fggSetVertexInputState(&fData->vertexBindingDescription, &fData->vertexInputAttributeDescriptionCount, fData->pVertexInputAssemblyDescriptions, &fData->vertexInputStateInfo);
-	fggCreateInputAssembly(&fData->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
-	fggCreateRasterizer(&fData->rasterizer);
-	fggSetMultisampleState(&fData->multisampleStateInfo);
-	fggColorBlendSettings(&fData->colorBlendAttachment, &fData->colorBlendState);
-	fggSetViewport(data.window, &fData->viewport, &fData->scissor, &fData->viewportState);
+	fggSetVertexInputState(&fStates->vertexBindingDescription, &fStates->vertexInputAttributeDescriptionCount, fStates->pVertexInputAssemblyDescriptions, &fStates->vertexInputStateInfo);
+	fggCreateInputAssembly(&fStates->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
+	fggCreateRasterizer(&fStates->rasterizer);
+	fggSetMultisampleState(&fStates->multisampleStateInfo);
+	fggColorBlendSettings(&fStates->colorBlendAttachment, &fStates->colorBlendState);
+	fggSetViewport(data.window, &fStates->viewport, &fStates->scissor, &fStates->viewportState);
 
 }
 
-void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fData, FggVkPipelineData* pipeData) {
+void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fStates, FggVkPipelineData* pipeData) {
 	
 	VkPushConstantRange pushConstantRange = {
 		VK_SHADER_STAGE_VERTEX_BIT,		//stageFlags;
 		0,								//offset;
-		sizeof(FggMeshPushConstants)	//size;
+		sizeof(FggProjection)			//size;
 	};
 
 	VkPipelineLayoutCreateInfo mainPipelineLayoutCreateInfo = {
@@ -259,16 +259,16 @@ void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fData
 		0,													//flags;
 		pipeData->shaderStageCount,							//stageCount;
 		pipeData->pShaderStages,							//pStages;
-		&fData.vertexInputStateInfo,					//pVertexInputState;
-		&fData.inputAssembly,							//pInputAssemblyState;
+		&fStates.vertexInputStateInfo,						//pVertexInputState;
+		&fStates.inputAssembly,								//pInputAssemblyState;
 		NULL,												//pTessellationState;
-		&fData.viewportState,							//pViewportState;
-		&fData.rasterizer,								//pRasterizationState;
-		&fData.multisampleStateInfo,					//pMultisampleState;
+		&fStates.viewportState,								//pViewportState;
+		&fStates.rasterizer,									//pRasterizationState;
+		&fStates.multisampleStateInfo,						//pMultisampleState;
 		NULL,												//pDepthStencilState;
-		&fData.colorBlendState,							//pColorBlendState;
+		&fStates.colorBlendState,								//pColorBlendState;
 		NULL,												//pDynamicState;
-		pipeData->mainPipelineLayout,							//layout;
+		pipeData->mainPipelineLayout,						//layout;
 		data.renderPass,									//renderPass;
 		0,													//subpass;
 		NULL,												//basePipelineHandle;

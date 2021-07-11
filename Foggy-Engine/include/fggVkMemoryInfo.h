@@ -7,16 +7,7 @@
 
 typedef struct FggVkCore FggVkCore;
 
-typedef struct FggMesh {
-
-	uint32_t		vertexCount;
-	float*			pVertices;
-	uint32_t		indexCount;
-	uint32_t*		pIndices;
-	VkBuffer 		vertexBuffer;
-	VkDeviceMemory 	vertexBufferMemory;
-
-} FggMesh;
+typedef struct FggMesh FggMesh;
 
 
 

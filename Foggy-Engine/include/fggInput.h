@@ -143,7 +143,7 @@
 #define MOUSE_BUTTON_RIGHT     MOUSE_BUTTON_2
 #define MOUSE_BUTTON_MIDDLE    MOUSE_BUTTON_3
 
-
+typedef struct FggWindow FggWindow;
 
 extern int fggIsKeyPressed(const FggWindow window, int key);
 

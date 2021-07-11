@@ -8,7 +8,6 @@ project(${PROJECT_NAME} C)
 add_subdirectory(Externals/glfw)
 add_subdirectory(Externals/cglm EXCLUDE_FROM_ALL)
 option(CGLM_USE_C99 "" ON)
-add_subdirectory(Externals/EZ-ECS)
 
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)

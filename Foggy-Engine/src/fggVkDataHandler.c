@@ -6,8 +6,10 @@
 #include "fggVkPipelineData.h"
 #include "fggVkMemoryInfo.h"
 #include "fggWindow.h"
-#include "fggPushConstants.h"
+#include "fggProjection.h"
 #include "fggUtilities.h"
+
+#include "fggComponents.h"
 
 #pragma warning (disable: 6011)
 #pragma warning (disable: 6385)
@@ -581,7 +583,7 @@ void fggSetSyncObjects(FggVkCore* data) {
 	);
 }
 
-void fggDraw(FggVkCore* data, FggVkPipelineData* pipeData, const FggMeshPushConstants meshPushConstants, const FggMesh mesh, const VkBuffer vertexBuffer) {
+void fggDraw(FggVkCore* data, FggVkPipelineData* pipeData, const FggCamera camera, const FggProjection projection, const FggMesh mesh) {
 
 	// wait until the GPU has finished rendereing the previous frame
 	vkWaitForFences(data->device, 1, &data->renderFence, 1, 1000000000);
@@ -625,11 +627,11 @@ void fggDraw(FggVkCore* data, FggVkPipelineData* pipeData, const FggMeshPushCons
 	//bind to pipeline
 	vkCmdBindPipeline(data->pCmdBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData->pipeline);
 	
-	const VkBuffer buffers[1] = {vertexBuffer};
+	const VkBuffer buffers[1] = { mesh.vertexBuffer };
 	const VkDeviceSize offsets[1] = {0};
 	vkCmdBindVertexBuffers(data->pCmdBuffers[0], 0, 1, &buffers[0], &offsets[0]);
 
-	vkCmdPushConstants(data->pCmdBuffers[0], pipeData->mainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(FggMeshPushConstants), &meshPushConstants);
+	vkCmdPushConstants(data->pCmdBuffers[0], pipeData->mainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(FggProjection), &projection);
 
 	vkCmdDraw(data->pCmdBuffers[0], mesh.vertexCount/8, 1, 0, 0);
 

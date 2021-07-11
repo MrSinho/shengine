@@ -2,6 +2,8 @@
 #include "fggVkCore.h"
 #include "fggUtilities.h"
 
+#include "fggMesh.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

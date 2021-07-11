@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 
 #include "fggWindow.h"
+#include "fggMesh.h"
 
 typedef struct FggVkFixedStates {
 	
@@ -60,6 +61,6 @@ extern void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDe
 
 extern void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable);
 
-extern void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fData, FggVkPipelineData* pipeData);
+extern void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fStates, FggVkPipelineData* pipeData);
 
 #endif

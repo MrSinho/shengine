@@ -6,6 +6,7 @@ layout (location = 2) in vec3 normal;
 
 layout (push_constant) uniform constants {
 	mat4 projection;
+	mat4 view;
 } pushConstants;
 
 const vec4 colors[6] = vec4[6](
