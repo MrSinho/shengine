@@ -22,7 +22,7 @@ const char *fggReadCode(const char* path, uint32_t *pCodeSize, const char *mode)
 	char* code = (char *)malloc(*pCodeSize);
 
 	if (stream != NULL && code != NULL) {
-		fggCheckValue(fread(code, *pCodeSize, 1, stream), 1, "error reading buffer");
+		fggCheckValue((int)fread(code, *pCodeSize, 1, stream), 1, "error reading buffer");
 		return code;
 	}
 
