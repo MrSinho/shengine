@@ -4,3 +4,6 @@ sudo apt install -y libxrandr-dev
 sudo apt install -y libxinerama-dev
 sudo apt install -y libxcursor-dev
 sudo apt install -y libxi-dev
+sudo add-apt-repository ppa:oibaf/graphics-drivers -y
+sudo apt install -y libvulkan-dev
+sudo apt install -y libvulkan1 mesa-vulkan-drivers vulkan-utils
