@@ -87,7 +87,7 @@ int main() {
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 
-		fggSetProjection(core.window, &projection);
+		fggSetProjection(core.window, projection);
 		fggSceneUpdate(core, projection, scene);
 
 		fggFrameEnd(core, imageIndex);
