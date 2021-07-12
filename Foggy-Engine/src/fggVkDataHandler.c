@@ -22,7 +22,7 @@
 
 FggVkCore fggVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char *title) {
 	
-	FggVkCore data = {	
+	FggVkCore core = {	
 		VK_NULL_HANDLE,				//instance;
 		VK_NULL_HANDLE,				//physicalDevice;
 		VK_NULL_HANDLE,				//device;
@@ -50,20 +50,20 @@ FggVkCore fggVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char
 		VK_NULL_HANDLE,				//renderFence;
 	};
 
-	fggInitGLFW(&data.window);
+	fggInitGLFW(&core.window);
 	
-	return data;
+	return core;
 }
 
-void fggInitVulkan(FggVkCore *data) {
-	fggCreateInstance(data);
-	fggCreateWindowSurface(data->instance, data->window.window, &data->surface);
-	fggSetPhysicalDevice(data);
-	fggSetLogicalDevice(data);
-	fggGetGraphicsQueue(data);
+void fggInitVulkan(FggVkCore *core) {
+	fggCreateInstance(core);
+	fggCreateWindowSurface(core->instance, core->window.window, &core->surface);
+	fggSetPhysicalDevice(core);
+	fggSetLogicalDevice(core);
+	fggGetGraphicsQueue(core);
 }
 
-void fggCreateInstance(FggVkCore* data) {
+void fggCreateInstance(FggVkCore* core) {
 
 	VkApplicationInfo applicationInfo = {
 		VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -101,7 +101,7 @@ void fggCreateInstance(FggVkCore* data) {
 #endif
 
 	fggCheckVkResult(
-		vkCreateInstance(&instanceCreateInfo, VK_NULL_HANDLE, &data->instance),
+		vkCreateInstance(&instanceCreateInfo, VK_NULL_HANDLE, &core->instance),
 		"error creating vkinstance"
 	);
 }
@@ -120,13 +120,13 @@ extern VkSurfaceCapabilitiesKHR fggGetSurfaceCapabilities(const VkPhysicalDevice
 	return surfaceCapabilities;
 }
 
-void fggSetPhysicalDevice(FggVkCore* data) {
+void fggSetPhysicalDevice(FggVkCore* core) {
 
 	uint32_t pDeviceCount = 0;
-	vkEnumeratePhysicalDevices(data->instance, &pDeviceCount, NULL);
+	vkEnumeratePhysicalDevices(core->instance, &pDeviceCount, NULL);
 
 	VkPhysicalDevice *pDevices = (VkPhysicalDevice*)malloc(pDeviceCount*sizeof(VkPhysicalDevice));
-	vkEnumeratePhysicalDevices(data->instance, &pDeviceCount, pDevices);
+	vkEnumeratePhysicalDevices(core->instance, &pDeviceCount, pDevices);
 
 	if (pDeviceCount == 0) {
 		printf("No Vulkan compatible gpu has been found");
@@ -150,19 +150,19 @@ void fggSetPhysicalDevice(FggVkCore* data) {
 
 			//SURFACE SUPPORT
 			if (!surfaceSupport) {
-				vkGetPhysicalDeviceSurfaceSupportKHR(pDevices[i], j, data->surface, &surfaceSupport);
+				vkGetPhysicalDeviceSurfaceSupportKHR(pDevices[i], j, core->surface, &surfaceSupport);
 				if (surfaceSupport) {
 					surfaceQueueFamilyIndices[i] = j;
 				}
 			}
 
 			// GRAPHICS QUEUE
-			if (pQueueFamilyProperties[j].queueFlags & data->requiredQueueFlag) {
+			if (pQueueFamilyProperties[j].queueFlags & core->requiredQueueFlag) {
 				graphicsQueueFamilyIndices[i] = j;
 			}
 
 			//SUITABLE
-			if (pQueueFamilyProperties[j].queueFlags & data->requiredQueueFlag && surfaceSupport) {
+			if (pQueueFamilyProperties[j].queueFlags & core->requiredQueueFlag && surfaceSupport) {
 				suitableDeviceCount += 1;
 				break;
 			}
@@ -196,28 +196,28 @@ void fggSetPhysicalDevice(FggVkCore* data) {
 
 		for (uint32_t i = 1; i < suitableDeviceCount; i++) {
 			if (scores[i] > scores[i - 1]) {
-				data->physicalDevice = pDevices[i];
-				data->graphicsQueueIndex = graphicsQueueFamilyIndices[i];
-				data->presentQueueIndex = surfaceQueueFamilyIndices[i];
+				core->physicalDevice = pDevices[i];
+				core->graphicsQueueIndex = graphicsQueueFamilyIndices[i];
+				core->presentQueueIndex = surfaceQueueFamilyIndices[i];
 			}
 			else {
-				data->physicalDevice = pDevices[i - 1 ];
-				data->graphicsQueueIndex = graphicsQueueFamilyIndices[i - 1];
-				data->presentQueueIndex = surfaceQueueFamilyIndices[i - 1];
+				core->physicalDevice = pDevices[i - 1 ];
+				core->graphicsQueueIndex = graphicsQueueFamilyIndices[i - 1];
+				core->presentQueueIndex = surfaceQueueFamilyIndices[i - 1];
 			}
 		}
 	}
 	else {
-		data->physicalDevice = pDevices[0];
-		data->graphicsQueueIndex = graphicsQueueFamilyIndices[0];
-		data->presentQueueIndex = surfaceQueueFamilyIndices[0];
+		core->physicalDevice = pDevices[0];
+		core->graphicsQueueIndex = graphicsQueueFamilyIndices[0];
+		core->presentQueueIndex = surfaceQueueFamilyIndices[0];
 	}
 	
-	if (data->graphicsQueueIndex == data->presentQueueIndex) {
-		data->queueFamilyIndexCount = 1;
+	if (core->graphicsQueueIndex == core->presentQueueIndex) {
+		core->queueFamilyIndexCount = 1;
 	}
 	else {
-		data->queueFamilyIndexCount = 2;
+		core->queueFamilyIndexCount = 2;
 	}
 	free(scores);
 	free(graphicsQueueFamilyIndices);
@@ -226,7 +226,7 @@ void fggSetPhysicalDevice(FggVkCore* data) {
 
 #ifndef NDEBUG
 		VkPhysicalDeviceProperties physicalDeviceProperties;
-		vkGetPhysicalDeviceProperties(data->physicalDevice, &physicalDeviceProperties);
+		vkGetPhysicalDeviceProperties(core->physicalDevice, &physicalDeviceProperties);
 		printf("using %s \n", physicalDeviceProperties.deviceName);
 #endif
 
@@ -250,10 +250,10 @@ VkDeviceQueueCreateInfo fggSetQueueInfo(const uint32_t queueFamilyIndex, const f
 	return queueCreateInfo;
 }
 
-void fggSetLogicalDevice(FggVkCore *data) {
+void fggSetLogicalDevice(FggVkCore *core) {
 	
 	const float queuePriority = 1.0f;
-	VkDeviceQueueCreateInfo graphicsQueueInfo = fggSetQueueInfo(data->graphicsQueueIndex, &queuePriority);
+	VkDeviceQueueCreateInfo graphicsQueueInfo = fggSetQueueInfo(core->graphicsQueueIndex, &queuePriority);
 
 	const char* swapchainExtensionName = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 
@@ -275,45 +275,45 @@ void fggSetLogicalDevice(FggVkCore *data) {
 #endif
 
 	fggCheckVkResult(
-		vkCreateDevice(data->physicalDevice, &deviceCreateInfo, NULL, &data->device),
+		vkCreateDevice(core->physicalDevice, &deviceCreateInfo, NULL, &core->device),
 		"error creating logical device"
 	);
 		
 }
 
-void fggGetGraphicsQueue(FggVkCore *data) {
-	vkGetDeviceQueue(data->device, data->graphicsQueueIndex, 0, &data->graphicsQueue);
+void fggGetGraphicsQueue(FggVkCore *core) {
+	vkGetDeviceQueue(core->device, core->graphicsQueueIndex, 0, &core->graphicsQueue);
 }
 
-void fggInitSwapchainData(FggVkCore *data) {
-	fggCreateSwapchain(data);
-	fggGetSwapchainImages(data);
-	fggCreateSwapchainImageViews(data);
+void fggInitSwapchainData(FggVkCore *core) {
+	fggCreateSwapchain(core);
+	fggGetSwapchainImages(core);
+	fggCreateSwapchainImageViews(core);
 }
 
-void fggCreateSwapchain(FggVkCore* data) {
+void fggCreateSwapchain(FggVkCore* core) {
 	
-	VkSurfaceCapabilitiesKHR sCapabilities = fggGetSurfaceCapabilities(data->physicalDevice, data->surface);
+	VkSurfaceCapabilitiesKHR sCapabilities = fggGetSurfaceCapabilities(core->physicalDevice, core->surface);
 
 	uint32_t surfaceFormatCount = 0;
-	vkGetPhysicalDeviceSurfaceFormatsKHR(data->physicalDevice, data->surface, &surfaceFormatCount, NULL);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(core->physicalDevice, core->surface, &surfaceFormatCount, NULL);
 	VkSurfaceFormatKHR* pSurfaceFormats = (VkSurfaceFormatKHR*)malloc(surfaceFormatCount * sizeof(VkSurfaceFormatKHR));
-	vkGetPhysicalDeviceSurfaceFormatsKHR(data->physicalDevice, data->surface, &surfaceFormatCount, pSurfaceFormats);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(core->physicalDevice, core->surface, &surfaceFormatCount, pSurfaceFormats);
 
 	VkSwapchainCreateInfoKHR swapchainCreateInfo = {
 		VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,	//sType;
 		NULL,											//pNext;
 		0,												//flags;
-		data->surface,									//surface;
+		core->surface,									//surface;
 		sCapabilities.minImageCount,					//minImageCount;
-		data->imageFormat,								//imageFormat;
+		core->imageFormat,								//imageFormat;
 		VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,				//imageColorSpace;
 		sCapabilities.currentExtent,					//imageExtent;
 		1,												//imageArrayLayers;
 		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,			//imageUsage;
 		VK_SHARING_MODE_EXCLUSIVE,						//imageSharingMode;
 		1,												//queueFamilyIndexCount;
-		&data->graphicsQueueIndex,						//pQueueFamilyIndices;
+		&core->graphicsQueueIndex,						//pQueueFamilyIndices;
 		VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,			//preTransform;
 		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,				//compositeAlpha;
 		VK_PRESENT_MODE_FIFO_KHR,						//presentMode;
@@ -325,13 +325,13 @@ void fggCreateSwapchain(FggVkCore* data) {
 	{
 		int found = 0;
 		for (uint32_t i = 0; i < surfaceFormatCount; i++) {
-			if (pSurfaceFormats[i].format == data->imageFormat) {
+			if (pSurfaceFormats[i].format == core->imageFormat) {
 				found = 1; break;
 			}
 		}
 		if (found == 0) {
-			data->imageFormat = pSurfaceFormats[0].format;
-			swapchainCreateInfo.imageFormat = data->imageFormat;
+			core->imageFormat = pSurfaceFormats[0].format;
+			swapchainCreateInfo.imageFormat = core->imageFormat;
 		}
 	}
 
@@ -339,13 +339,13 @@ void fggCreateSwapchain(FggVkCore* data) {
 	{
 		int found = 0;
 		for (uint32_t i = 0; i < surfaceFormatCount; i++) {
-			if (pSurfaceFormats[i].format == data->imageFormat) {
+			if (pSurfaceFormats[i].format == core->imageFormat) {
 				found = 1; break;
 			}
 		}
 		if (found == 0) {
-			data->imageFormat = pSurfaceFormats[0].format;
-			swapchainCreateInfo.imageFormat = data->imageFormat;
+			core->imageFormat = pSurfaceFormats[0].format;
+			swapchainCreateInfo.imageFormat = core->imageFormat;
 		}
 	}
 	free(pSurfaceFormats);
@@ -353,11 +353,11 @@ void fggCreateSwapchain(FggVkCore* data) {
 	//SHARING MODE CHECK
 	uint32_t* pQueueFamilyIndices = (uint32_t*)malloc(2 * sizeof(uint32_t));
 	{
-		if (data->graphicsQueueIndex != data->presentQueueIndex) {
+		if (core->graphicsQueueIndex != core->presentQueueIndex) {
 			swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 			swapchainCreateInfo.queueFamilyIndexCount = 2;
-			pQueueFamilyIndices[0] = data->graphicsQueueIndex; 
-			pQueueFamilyIndices[1] = data->presentQueueIndex;
+			pQueueFamilyIndices[0] = core->graphicsQueueIndex; 
+			pQueueFamilyIndices[1] = core->presentQueueIndex;
 			swapchainCreateInfo.pQueueFamilyIndices = pQueueFamilyIndices;
 		}
 	}
@@ -368,29 +368,29 @@ void fggCreateSwapchain(FggVkCore* data) {
 #endif
 
 	fggCheckVkResult(
-		vkCreateSwapchainKHR(data->device, &swapchainCreateInfo, NULL, &data->swapchain),
+		vkCreateSwapchainKHR(core->device, &swapchainCreateInfo, NULL, &core->swapchain),
 		"error creating swapchain"
 	);
 }
 
-void fggGetSwapchainImages(FggVkCore *data) {
-	vkGetSwapchainImagesKHR(data->device, data->swapchain, &data->swapchainImageCount, NULL);
-	data->pSwapchainImages = (VkImage*)malloc(data->swapchainImageCount * sizeof(VkImage));
-	vkGetSwapchainImagesKHR(data->device, data->swapchain, &data->swapchainImageCount, data->pSwapchainImages);
+void fggGetSwapchainImages(FggVkCore *core) {
+	vkGetSwapchainImagesKHR(core->device, core->swapchain, &core->swapchainImageCount, NULL);
+	core->pSwapchainImages = (VkImage*)malloc(core->swapchainImageCount * sizeof(VkImage));
+	vkGetSwapchainImagesKHR(core->device, core->swapchain, &core->swapchainImageCount, core->pSwapchainImages);
 }
 
-void fggCreateSwapchainImageViews(FggVkCore *data) {
-	data->pSwapchainImageViews = (VkImageView*)malloc(data->swapchainImageCount * sizeof(VkImageView));
+void fggCreateSwapchainImageViews(FggVkCore *core) {
+	core->pSwapchainImageViews = (VkImageView*)malloc(core->swapchainImageCount * sizeof(VkImageView));
 
-	for (uint32_t i = 0; i < data->swapchainImageCount; i++) {
+	for (uint32_t i = 0; i < core->swapchainImageCount; i++) {
 		
 		VkImageViewCreateInfo imageViewCreateInfo = {
 			VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,	//sType;
 			NULL,										//pNext;
 			0,											//flags;
-			data->pSwapchainImages[i],					//image;
+			core->pSwapchainImages[i],					//image;
 			VK_IMAGE_VIEW_TYPE_2D,						//viewType;
-			data->imageFormat,							//format;
+			core->imageFormat,							//format;
 			VK_COMPONENT_SWIZZLE_IDENTITY,				//components;
 			0
 		};
@@ -402,26 +402,26 @@ void fggCreateSwapchainImageViews(FggVkCore *data) {
 		imageViewCreateInfo.subresourceRange.layerCount = 1;							//layerCount;
 
 		fggCheckVkResult(
-			vkCreateImageView(data->device, &imageViewCreateInfo, NULL, &data->pSwapchainImageViews[i]),
+			vkCreateImageView(core->device, &imageViewCreateInfo, NULL, &core->pSwapchainImageViews[i]),
 			"error creating image view"
 		);
 	}
 }
 
-void fggInitCommands(FggVkCore *data) {
+void fggInitCommands(FggVkCore *core) {
 
-	data->pCmdPools = (VkCommandPool*)malloc(data->queueFamilyIndexCount * sizeof(VkCommandPool));
+	core->pCmdPools = (VkCommandPool*)malloc(core->queueFamilyIndexCount * sizeof(VkCommandPool));
 
-	uint32_t* pQueueFamilyIndices = (uint32_t*)malloc(data->queueFamilyIndexCount * sizeof(uint32_t));
-	data->pCmdPools[0] = fggCreateCmdPool(data->device, data->graphicsQueueIndex);
-	if (data->queueFamilyIndexCount == 2) {
-		data->pCmdPools[1] = fggCreateCmdPool(data->device, data->presentQueueIndex);
+	uint32_t* pQueueFamilyIndices = (uint32_t*)malloc(core->queueFamilyIndexCount * sizeof(uint32_t));
+	core->pCmdPools[0] = fggCreateCmdPool(core->device, core->graphicsQueueIndex);
+	if (core->queueFamilyIndexCount == 2) {
+		core->pCmdPools[1] = fggCreateCmdPool(core->device, core->presentQueueIndex);
 	}
 	free(pQueueFamilyIndices);
 
-	data->pCmdBuffers = (VkCommandBuffer*)malloc(data->queueFamilyIndexCount * sizeof(VkCommandBuffer));
-	for (uint32_t i = 0; i < data->queueFamilyIndexCount; i++) {
-		data->pCmdBuffers[i] = fggCreateCmdBuffer(data->device, data->pCmdPools[i]);;
+	core->pCmdBuffers = (VkCommandBuffer*)malloc(core->queueFamilyIndexCount * sizeof(VkCommandBuffer));
+	for (uint32_t i = 0; i < core->queueFamilyIndexCount; i++) {
+		core->pCmdBuffers[i] = fggCreateCmdBuffer(core->device, core->pCmdPools[i]);;
 	}
 }
 
@@ -470,11 +470,11 @@ VkCommandBuffer fggCreateCmdBuffer(const VkDevice device, const VkCommandPool cm
 	return cmdBuffer;
 }
 
-void fggCreateRenderPass(FggVkCore* data) {
+void fggCreateRenderPass(FggVkCore* core) {
 	
 	VkAttachmentDescription colorAttachmentDescription = {
 		0,									//flags;
-		data->imageFormat,					//format;
+		core->imageFormat,					//format;
 		1,									//samples;
 		VK_ATTACHMENT_LOAD_OP_CLEAR,		//loadOp;
 		VK_ATTACHMENT_STORE_OP_STORE,		//storeOp;
@@ -519,39 +519,39 @@ void fggCreateRenderPass(FggVkCore* data) {
 #endif
 
 	fggCheckVkResult(
-		vkCreateRenderPass(data->device, &renderPassCreateInfo, NULL, &data->renderPass),
+		vkCreateRenderPass(core->device, &renderPassCreateInfo, NULL, &core->renderPass),
 		"error creating render pass"
 	);
 }
 
-void fggSetFramebuffers(FggVkCore* data) {
+void fggSetFramebuffers(FggVkCore* core) {
 	
 	VkFramebufferCreateInfo framebufferCreateInfo = {
 		VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,	//sType;
 		NULL,										//pNext;
 		0,											//flags;
-		data->renderPass,							//renderPass;
+		core->renderPass,							//renderPass;
 		1,											//attachmentCount;
 		NULL,										//pAttachments;
-		data->window.width,							//width;
-		data->window.height,						//height;
+		core->window.width,							//width;
+		core->window.height,						//height;
 		1											//layers;
 	};
 
 	//NOTE: ONE FRAMEBUFFER FOR EACH ATTACHMENT
 
-	data->pFramebuffers = (VkFramebuffer*)malloc(data->swapchainImageCount * sizeof(VkFramebuffer));
+	core->pFramebuffers = (VkFramebuffer*)malloc(core->swapchainImageCount * sizeof(VkFramebuffer));
 
-	for (uint32_t i = 0; i < data->swapchainImageCount; i++) {
-		framebufferCreateInfo.pAttachments = &data->pSwapchainImageViews[i];
+	for (uint32_t i = 0; i < core->swapchainImageCount; i++) {
+		framebufferCreateInfo.pAttachments = &core->pSwapchainImageViews[i];
 		fggCheckVkResult(
-			vkCreateFramebuffer(data->device, &framebufferCreateInfo, NULL, &data->pFramebuffers[i]),
+			vkCreateFramebuffer(core->device, &framebufferCreateInfo, NULL, &core->pFramebuffers[i]),
 			"error creating framebuffer"
 		);
 	}
 }
 
-void fggSetSyncObjects(FggVkCore* data) {
+void fggSetSyncObjects(FggVkCore* core) {
 	VkFenceCreateInfo renderFenceCreateInfo = {
 		VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,	//sType;
 		NULL,									//pNext;
@@ -559,7 +559,7 @@ void fggSetSyncObjects(FggVkCore* data) {
 	};
 
 	fggCheckVkResult(
-		vkCreateFence(data->device, &renderFenceCreateInfo, NULL, &data->renderFence),
+		vkCreateFence(core->device, &renderFenceCreateInfo, NULL, &core->renderFence),
 		"error creating fence"
 	);
 
@@ -574,70 +574,77 @@ void fggSetSyncObjects(FggVkCore* data) {
 #endif
 
 	fggCheckVkResult(
-		vkCreateSemaphore(data->device, &semaphoreCreateInfo, NULL, &data->renderSemaphore),
+		vkCreateSemaphore(core->device, &semaphoreCreateInfo, NULL, &core->renderSemaphore),
 		"error creating render semaphore"
 	);
 	fggCheckVkResult(
-		vkCreateSemaphore(data->device, &semaphoreCreateInfo, NULL, &data->presentSemaphore),
+		vkCreateSemaphore(core->device, &semaphoreCreateInfo, NULL, &core->presentSemaphore),
 		"error creating present semaphore"
 	);
 }
 
-void fggDraw(FggVkCore* data, FggVkPipelineData* pipeData, const FggCamera camera, const FggProjection projection, const FggMesh mesh) {
+void fggFrameReset(const FggVkCore core) {
+	vkWaitForFences(core.device, 1, &core.renderFence, 1, 1000000000);
+	vkResetFences(core.device, 1, &core.renderFence);
 
-	// wait until the GPU has finished rendereing the previous frame
-	vkWaitForFences(data->device, 1, &data->renderFence, 1, 1000000000);
-	vkResetFences(data->device, 1, &data->renderFence);
+	vkResetCommandBuffer(core.pCmdBuffers[0], 0);
+}
 
-	//reset the command buffer and start recording
-	vkResetCommandBuffer(data->pCmdBuffers[0], 0);
+void fggFrameBegin(const FggVkCore core, uint32_t *swapchainImageIndex) {
+	
+	vkAcquireNextImageKHR(core.device, core.swapchain, 1000000000, core.presentSemaphore, NULL, swapchainImageIndex);
 
-	// request image from the swapchain
-	uint32_t swapchainImageIndex;
-	vkAcquireNextImageKHR(data->device, data->swapchain, 1000000000, data->presentSemaphore, NULL, &swapchainImageIndex);
-
-	//BEGIN INFOS
 	VkCommandBufferBeginInfo cmdBufferBeginInfo = {
 		VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,	//sType;
 		NULL,											//pNext;
 		VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,	//flags; //submit cmd buffer once, before the next reset
 		NULL											//pInheritanceInfo;
 	};
-	
+
 	VkClearValue clearColor = { {0.1f, 0.1f, 0.1f} };
 	VkRenderPassBeginInfo renderPassBeginInfo = {
 		VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,		//sType;
 		NULL,											//pNext;
-		data->renderPass,								//renderPass;
-		data->pFramebuffers[swapchainImageIndex],		//framebuffer;
+		core.renderPass,								//renderPass;
+		core.pFramebuffers[*swapchainImageIndex],		//framebuffer;
 		{												//
 			{0, 0},										//
-			{data->window.width, data->window.height}	//
+			{core.window.width, core.window.height}	//
 		},												//renderArea;
 		1,												//clearValueCount;
 		&clearColor										//pClearValues;
 	};
 
-	//Start recording cmdbuffer
-	vkBeginCommandBuffer(data->pCmdBuffers[0], &cmdBufferBeginInfo);
+	vkBeginCommandBuffer(core.pCmdBuffers[0], &cmdBufferBeginInfo);
 
-	//begin the render pass (cmdbuffer must be in a recording state)
-	vkCmdBeginRenderPass(data->pCmdBuffers[0], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+	vkCmdBeginRenderPass(core.pCmdBuffers[0], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+}
 
-	//bind to pipeline
-	vkCmdBindPipeline(data->pCmdBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData->pipeline);
+void fggBindPipeline(const FggVkCore core, const FggVkPipelineData pipeData) {
+
+	vkCmdBindPipeline(core.pCmdBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData.pipeline);
+}
+
+void fggBindVertexBuffers(const FggVkCore core, const FggMesh mesh) {
+	const VkDeviceSize offset = 0;
+	vkCmdBindVertexBuffers(core.pCmdBuffers[0], 0, 1, &mesh.vertexBuffer, &offset);
+}
+
+void fggPushConstants(const FggVkCore core, const FggVkPipelineData pipeData, VkShaderStageFlagBits shaderStage, const uint32_t size, void* pPushConstants) {
+
+	vkCmdPushConstants(core.pCmdBuffers[0], pipeData.mainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, size, pPushConstants);
+}
+
+void fggDraw(const FggVkCore core, const FggVkPipelineData pipeData, const mat4 view, const mat4 projection, const FggMesh mesh) {
+
+	vkCmdDraw(core.pCmdBuffers[0], mesh.vertexCount/8, 1, 0, 0);
+
+}
+
+void fggFrameEnd(const FggVkCore core, const uint32_t swapchainImageIndex) {
 	
-	const VkBuffer buffers[1] = { mesh.vertexBuffer };
-	const VkDeviceSize offsets[1] = {0};
-	vkCmdBindVertexBuffers(data->pCmdBuffers[0], 0, 1, &buffers[0], &offsets[0]);
-
-	vkCmdPushConstants(data->pCmdBuffers[0], pipeData->mainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(FggProjection), &projection);
-
-	vkCmdDraw(data->pCmdBuffers[0], mesh.vertexCount/8, 1, 0, 0);
-
-	//end operation
-	vkCmdEndRenderPass(data->pCmdBuffers[0]);
-	vkEndCommandBuffer(data->pCmdBuffers[0]);
+	vkCmdEndRenderPass(core.pCmdBuffers[0]);
+	vkEndCommandBuffer(core.pCmdBuffers[0]);
 
 	VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
@@ -647,32 +654,31 @@ void fggDraw(FggVkCore* data, FggVkPipelineData* pipeData, const FggCamera camer
 		VK_STRUCTURE_TYPE_SUBMIT_INFO,	//sType;
 		NULL,							//pNext;
 		1,								//waitSemaphoreCount;
-		&data->presentSemaphore,		//pWaitSemaphores;
+		&core.presentSemaphore,		//pWaitSemaphores;
 		&waitStage,						//pWaitDstStageMask;
 		1,								//commandBufferCount;
-		&data->pCmdBuffers[0],			//pCommandBuffers;
+		&core.pCmdBuffers[0],			//pCommandBuffers;
 		1,								//signalSemaphoreCount;
-		&data->renderSemaphore,			//pSignalSemaphores;
+		&core.renderSemaphore,			//pSignalSemaphores;
 	};
 
-	vkQueueSubmit(data->graphicsQueue, 1, &submitInfo, data->renderFence);
+	vkQueueSubmit(core.graphicsQueue, 1, &submitInfo, core.renderFence);
 
 	// Present the ready image
 	VkPresentInfoKHR presentInfo = {
 		VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,	//sType;
 		NULL,								//pNext;
 		1,									//waitSemaphoreCount;
-		&data->renderSemaphore, 			//pWaitSemaphores;
+		&core.renderSemaphore, 			//pWaitSemaphores;
 		1,									//swapchainCount;
-		&data->swapchain,					//pSwapchains;
+		&core.swapchain,					//pSwapchains;
 		&swapchainImageIndex,				//pImageIndices;
 		NULL								//pResults;
 	};
 
-	vkQueuePresentKHR(data->graphicsQueue, &presentInfo);
-
+	vkQueuePresentKHR(core.graphicsQueue, &presentInfo);
 }
 
-extern void fggCleanup(FggVkCore* data) {
+extern void fggCleanup(FggVkCore* core) {
 
 }

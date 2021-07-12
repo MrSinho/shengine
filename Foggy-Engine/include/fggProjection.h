@@ -3,15 +3,11 @@
 
 #include <cglm/cglm.h>
 
+
+
 typedef struct FggWindow FggWindow;
 
-typedef struct FggProjection {
 
-	mat4 projection;
-
-} FggProjection;
-
-
-extern void fggProjectionUpdate(const FggWindow window, FggProjection* projection);
+extern void fggSetProjection(const FggWindow window, mat4 projection);
 
 #endif

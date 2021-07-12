@@ -5,6 +5,7 @@
 #include "fggEcsImplementation.h"
 #include "fggComponents.h"
 #include "fggProjection.h"
+#include "fggView.h"
 
 #include <cglm/cglm.h>
 
@@ -14,12 +15,11 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, ezec
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 		if (ezecsHasFggMesh(scene, entity)) {
-			FggMesh* m = ezecsGetFggMesh(scene, entity);
-			fggLoadMesh(core, m);
+
 		}
 
 		if (ezecsHasFggMaterial(scene, entity)) {
-			FggMaterial *m = ezecsGetFggMaterial(scene, entity);
+			FggMaterial* m = ezecsGetFggMaterial(scene, entity);
 			fggSetupGraphicsPipeline(core, fixedStates, &m->pipelineData);
 		}
 
@@ -28,16 +28,15 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, ezec
 		}
 
 		if (ezecsHasFggCamera(scene, entity)) {
-			FggCamera* camera = ezecsGetFggCamera(scene, entity);
 
 		}
 	}
 
 }
 
-void fggSceneUpdate(const FggVkCore core, const FggProjection projection, const ezecsScene scene) {
+void fggSceneUpdate(const FggVkCore core, const mat4 projection, const ezecsScene scene) {
 
-	FggCamera* camera;
+	FggCamera camera = { 0 };
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 		
@@ -45,7 +44,12 @@ void fggSceneUpdate(const FggVkCore core, const FggProjection projection, const 
 			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
-				fggDraw(&core, &mat->pipelineData, *camera, projection, *mesh);
+				
+				fggBindPipeline(core, mat->pipelineData);
+				fggBindVertexBuffers(core, *mesh);
+				void* pushConstants[2] = { projection, camera.view };
+				fggPushConstants(core, mat->pipelineData, VK_SHADER_STAGE_VERTEX_BIT, sizeof(mat4) * 2, pushConstants[0]);
+				fggDraw(core, mat->pipelineData, camera.view, projection, *mesh);
 			}
 		}
 
@@ -61,8 +65,8 @@ void fggSceneUpdate(const FggVkCore core, const FggProjection projection, const 
 		}
 
 		if (ezecsHasFggCamera(scene, entity)) {
-			camera = ezecsGetFggCamera(scene, entity);
-
+			camera = *ezecsGetFggCamera(scene, entity);
+			fggSetView(camera.view);
 		}
 
 	}

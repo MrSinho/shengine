@@ -13,7 +13,7 @@ typedef struct FggMesh FggMesh;
 
 extern void fggCreateVertexBuffer(const VkDevice device, VkBuffer* vertexBuffer, const uint32_t bufferSize);
 
-extern void fggLoadMesh(const FggVkCore data, FggMesh *mesh);
+extern void fggLoadMesh(const FggVkCore core, FggMesh *mesh);
 
 
 

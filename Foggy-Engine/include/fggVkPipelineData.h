@@ -40,8 +40,6 @@ typedef struct FggVkPipelineData {
 
 
 
-extern FggVkFixedStates fggFixedStatesInitPrerequisites();
-
 extern void fggCreateRasterizer(VkPipelineRasterizationStateCreateInfo* rasterizer);
 
 extern void fggSetMultisampleState(VkPipelineMultisampleStateCreateInfo* multisampleState);
@@ -50,7 +48,7 @@ extern void fggColorBlendSettings(VkPipelineColorBlendAttachmentState* colorAtta
 
 extern void fggSetViewport(const FggWindow window, VkViewport *vprt, VkRect2D* scssr, VkPipelineViewportStateCreateInfo* vprtState);
 
-extern void fggSetFixedStates(const FggVkCore data, FggVkFixedStates* pipeData);
+extern void fggSetFixedStates(const FggVkCore core, FggVkFixedStates* pipeData);
 
 
 extern FggVkPipelineData fggVkPipelineDataInitPrerequisitites();
@@ -61,6 +59,6 @@ extern void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDe
 
 extern void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable);
 
-extern void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fStates, FggVkPipelineData* pipeData);
+extern void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, FggVkPipelineData* pipeData);
 
 #endif

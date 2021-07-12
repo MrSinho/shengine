@@ -6,13 +6,11 @@
 
 #include "fggWindow.h"
 
+#include "cglm/cglm.h"
+
 typedef struct FggVkPipelineData FggVkPipelineData;
 
 typedef struct FggMesh FggMesh;
-
-typedef struct FggProkection FggProjection;
-
-typedef struct FggCamera FggCamera;
 
 typedef struct FggVkCore {
 	
@@ -62,35 +60,35 @@ extern VkSurfaceCapabilitiesKHR fggGetSurfaceCapabilities(const VkPhysicalDevice
 
 extern FggVkCore fggVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char* title);
 
-extern void fggInitVulkan(FggVkCore* data);
+extern void fggInitVulkan(FggVkCore* core);
 
-extern void fggCreateInstance(FggVkCore* data);
+extern void fggCreateInstance(FggVkCore* core);
 
-extern void fggSetPhysicalDevice(FggVkCore* data);
+extern void fggSetPhysicalDevice(FggVkCore* core);
 
-extern int CheckPhysicalDeviceExtensions(const FggVkCore data, const VkPhysicalDevice pDevice);
+extern int CheckPhysicalDeviceExtensions(const FggVkCore core, const VkPhysicalDevice pDevice);
 
 
 
 extern VkDeviceQueueCreateInfo fggSetQueueInfo(const uint32_t queueFamilyIndex, const float* priority);
 
-extern void fggSetLogicalDevice(FggVkCore* data);
+extern void fggSetLogicalDevice(FggVkCore* core);
 
-extern void fggGetGraphicsQueue(FggVkCore* data);
-
-
-
-extern void fggCreateSwapchain(FggVkCore *data);
-
-extern void fggGetSwapchainImages(FggVkCore *data);
-
-extern void fggCreateSwapchainImageViews(FggVkCore *data);
-
-extern void fggInitSwapchainData(FggVkCore *data);
+extern void fggGetGraphicsQueue(FggVkCore* core);
 
 
 
-extern void fggInitCommands(FggVkCore *data);
+extern void fggCreateSwapchain(FggVkCore *core);
+
+extern void fggGetSwapchainImages(FggVkCore *core);
+
+extern void fggCreateSwapchainImageViews(FggVkCore *core);
+
+extern void fggInitSwapchainData(FggVkCore *core);
+
+
+
+extern void fggInitCommands(FggVkCore *core);
 
 extern VkCommandPool fggCreateCmdPool(const VkDevice device, uint32_t queueFamilyIndex);
 
@@ -98,16 +96,29 @@ extern VkCommandBuffer fggCreateCmdBuffer(const VkDevice device, const VkCommand
 
 
 
-extern void fggCreateRenderPass(FggVkCore *data);
+extern void fggCreateRenderPass(FggVkCore *core);
 
-extern void fggSetFramebuffers(FggVkCore *data);
+extern void fggSetFramebuffers(FggVkCore *core);
 
-extern void fggSetSyncObjects(FggVkCore *data);
-
-extern void fggDraw(FggVkCore *data, FggVkPipelineData* pipeData, const FggCamera camera, const FggProjection projection, const FggMesh mesh);
+extern void fggSetSyncObjects(FggVkCore *core);
 
 
 
-extern void fggCleanup(FggVkCore *data);
+extern void fggFrameReset(const FggVkCore core);
+
+extern void fggFrameBegin(const FggVkCore core, uint32_t* swapchainImageIndex);
+
+extern void fggPushConstants(const FggVkCore core, const FggVkPipelineData pipeData, VkShaderStageFlagBits shaderStage, const uint32_t size, void* pPushConstants);
+
+extern void fggBindPipeline(const FggVkCore core, const FggVkPipelineData pipeData);
+
+extern void fggBindVertexBuffers(const FggVkCore core, const FggMesh mesh);
+
+extern void fggDraw(const FggVkCore core, const FggVkPipelineData pipeData, const mat4 view, const mat4 projection, const FggMesh mesh);
+
+extern void fggFrameEnd(const FggVkCore core, const uint32_t swapchainImageIndex);
+
+
+extern void fggCleanup(FggVkCore *core);
 
 #endif

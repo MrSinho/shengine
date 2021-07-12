@@ -8,9 +8,9 @@
 
 FggVkPipelineData fggVkPipelineDataInitPrerequisitites() {
 
-	FggVkPipelineData data = {0};
+	FggVkPipelineData core = {0};
 	
-	return data;
+	return core;
 }
 
 void fggCreateShaderModule(const VkDevice device, VkShaderModule *shaderModule, const char* input) {
@@ -212,30 +212,23 @@ void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, V
 	*vprtState = viewportStateCreateInfo;
 }
 
-FggVkFixedStates fggFixedStatesInitPrerequisites() {
-	FggVkFixedStates fStates = {
-		0
-	};
-	return fStates;
-}
-
-void fggSetFixedStates(const FggVkCore data, FggVkFixedStates* fStates) {
+void fggSetFixedStates(const FggVkCore core, FggVkFixedStates* fStates) {
 	
 	fggSetVertexInputState(&fStates->vertexBindingDescription, &fStates->vertexInputAttributeDescriptionCount, fStates->pVertexInputAssemblyDescriptions, &fStates->vertexInputStateInfo);
 	fggCreateInputAssembly(&fStates->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
 	fggCreateRasterizer(&fStates->rasterizer);
 	fggSetMultisampleState(&fStates->multisampleStateInfo);
 	fggColorBlendSettings(&fStates->colorBlendAttachment, &fStates->colorBlendState);
-	fggSetViewport(data.window, &fStates->viewport, &fStates->scissor, &fStates->viewportState);
+	fggSetViewport(core.window, &fStates->viewport, &fStates->scissor, &fStates->viewportState);
 
 }
 
-void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fStates, FggVkPipelineData* pipeData) {
+void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, FggVkPipelineData* pipeData) {
 	
 	VkPushConstantRange pushConstantRange = {
 		VK_SHADER_STAGE_VERTEX_BIT,		//stageFlags;
 		0,								//offset;
-		sizeof(FggProjection)			//size;
+		sizeof(mat4) * 2				//size;
 	};
 
 	VkPipelineLayoutCreateInfo mainPipelineLayoutCreateInfo = {
@@ -249,7 +242,7 @@ void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fStat
 	};
 
 	fggCheckVkResult(
-		vkCreatePipelineLayout(data.device, &mainPipelineLayoutCreateInfo, NULL, &pipeData->mainPipelineLayout),
+		vkCreatePipelineLayout(core.device, &mainPipelineLayoutCreateInfo, NULL, &pipeData->mainPipelineLayout),
 		"error creating main pipeline layout"
 	);
 
@@ -269,14 +262,14 @@ void fggSetupGraphicsPipeline(const FggVkCore data, const FggVkFixedStates fStat
 		&fStates.colorBlendState,								//pColorBlendState;
 		NULL,												//pDynamicState;
 		pipeData->mainPipelineLayout,						//layout;
-		data.renderPass,									//renderPass;
+		core.renderPass,									//renderPass;
 		0,													//subpass;
 		NULL,												//basePipelineHandle;
 		0													//basePipelineIndex;
 	};
 
 	fggCheckVkResult(
-		vkCreateGraphicsPipelines(data.device, NULL, 1, &graphicsPipelineCreateInfo, NULL, &pipeData->pipeline),
+		vkCreateGraphicsPipelines(core.device, NULL, 1, &graphicsPipelineCreateInfo, NULL, &pipeData->pipeline),
 		"error creating graphics pipeline"
 	);
 }

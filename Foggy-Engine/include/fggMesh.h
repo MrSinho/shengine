@@ -8,9 +8,9 @@
 typedef struct FggMesh {
 
 	uint32_t		vertexCount;
-	float* pVertices;
+	float*			pVertices;
 	uint32_t		indexCount;
-	uint32_t* pIndices;
+	uint32_t*		pIndices;
 	VkBuffer 		vertexBuffer;
 	VkDeviceMemory 	vertexBufferMemory;
 

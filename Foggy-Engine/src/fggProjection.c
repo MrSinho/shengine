@@ -2,8 +2,10 @@
 
 #include "fggWindow.h"
 
-void fggProjectionUpdate(const FggWindow window, FggProjection* meshPushConstants) {
+
+
+void fggSetProjection(const FggWindow window, mat4 projection) {
 	
-	glm_perspective(45.0f, (float)window.width / (float)window.height, 0.1f, 150.0f, meshPushConstants->projection);
+	glm_perspective(45.0f, (float)window.width / (float)window.height, 0.1f, 150.0f, projection);
 
 }

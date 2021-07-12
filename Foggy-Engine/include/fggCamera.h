@@ -9,6 +9,10 @@ typedef struct FggCamera {
 
 	mat4 view;
 
+	vec3 position;
+	vec3 rotation;
+	vec3 scale;
+
 } FggCamera;
 
 EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggCamera, 2)

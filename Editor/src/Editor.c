@@ -11,44 +11,47 @@ ezecsScene editorMakeScene(const FggVkCore core) {
 	ezecsAddFggCamera(&scene, engineCamera);
 
 	uint32_t quad = ezecsCreateEntity();
-	FggTransform* quadTransform = ezecsAddFggTransform(&scene, quad);
-	FggMesh* quadMesh = ezecsAddFggMesh(&scene, quad);
+	FggTransform* t= ezecsAddFggTransform(&scene, quad);
+	FggMesh* m = ezecsAddFggMesh(&scene, quad);
 	float vertices[48] = {
 		//positions					//UVs		//normals
-		1.0f-1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f-1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f-1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f-1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f-1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f-1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
+		1.0f - 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f - 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f - 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		1.0f - 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f - 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		1.0f - 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
 	};
-	quadMesh->vertexCount = 48;
-	quadMesh->pVertices = vertices;
-	FggMaterial* material = ezecsAddFggMaterial(&scene, quad);
-	material->pipelineData.shaderStageCount = 2;
-	material->pipelineData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
-	if (material->pipelineData.pShaderStages != NULL) {
-		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.vert.spv", &material->pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.frag.spv", &material->pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+	m->vertexCount = 48;
+	m->pVertices = vertices;
+	FggMaterial* mat = ezecsAddFggMaterial(&scene, quad);
+	mat->pipelineData.shaderStageCount = 2;
+	mat->pipelineData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
+	if (mat->pipelineData.pShaderStages != NULL) {
+		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.vert.spv", &mat->pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.frag.spv", &mat->pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
 	}
-	fggLoadMesh(core, quadMesh);
+	fggLoadMesh(core, m);
 
 	uint32_t triangle = ezecsCreateEntity();
-	FggMesh* triangleMesh = ezecsAddFggMesh(&scene, triangle);
-	float vv[48] = {
+	FggTransform* tt = ezecsAddFggTransform(&scene, triangle);
+	FggMesh* tm = ezecsAddFggMesh(&scene, triangle);
+	float tvertices[48] = {
 		//positions					//UVs		//normals
 		1.0f + 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	   -1.0f + 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	   -1.0f + 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f + 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f + 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f + 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
 	};
-	triangleMesh->vertexCount = 48;
-	triangleMesh->pVertices = vv;
-	FggMaterial* tmaterial = ezecsAddFggMaterial(&scene, triangle);
-	tmaterial->pipelineData = material->pipelineData;
-	fggLoadMesh(core, triangleMesh);
+	tm->vertexCount = 24;
+	tm->pVertices = tvertices;
+	FggMaterial* tmat = ezecsAddFggMaterial(&scene, triangle);
+	tmat->pipelineData.shaderStageCount = 2;
+	tmat->pipelineData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
+	if (tmat->pipelineData.pShaderStages != NULL) {
+		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.vert.spv", &tmat->pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.frag.spv", &tmat->pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+	}
+	fggLoadMesh(core, tm);
 
 	return scene;
 }
@@ -65,42 +68,30 @@ int main() {
 	fggSetFramebuffers(&core);
 	fggSetSyncObjects(&core);
 
-	FggVkFixedStates fStates = fggFixedStatesInitPrerequisites();
+	FggVkFixedStates fStates = { 0 };
 	fggSetFixedStates(core, &fStates);
 
 	fggBuildShader("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
 	fggBuildShader("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
 
 	ezecsScene scene = editorMakeScene(core);
-	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
-		if (ezecsHasFggMesh(scene, entity)) {
-			FggMesh* m = ezecsGetFggMesh(scene, entity);
-		}
-
-		if (ezecsHasFggMaterial(scene, entity)) {
-			FggMaterial* m = ezecsGetFggMaterial(scene, entity);
-			fggSetupGraphicsPipeline(core, fStates, &m->pipelineData);
-		}
-
-		if (ezecsHasFggTransform(scene, entity)) {
-
-		}
-
-		if (ezecsHasFggCamera(scene, entity)) {
-			FggCamera* camera = ezecsGetFggCamera(scene, entity);
-
-		}
-	}
-
+	fggSceneInit(core, fStates, scene);
 	fggInitCommands(&core);
 
-	FggProjection projection = {0};
+	mat4 projection = GLM_MAT4_IDENTITY_INIT;
 
 	while (fggIsWindowActive(core.window.window)) {
 		fggPollEvents();
 		fggGetTime(&time);
-		fggProjectionUpdate(core.window, &projection);
+
+		fggFrameReset(core);
+		uint32_t imageIndex = 0;
+		fggFrameBegin(core, &imageIndex);
+
+		fggSetProjection(core.window, &projection);
 		fggSceneUpdate(core, projection, scene);
+
+		fggFrameEnd(core, imageIndex);
 	}
 
 	fggCleanup(&core);
