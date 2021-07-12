@@ -14,13 +14,12 @@ ezecsScene editorMakeScene(const FggVkCore core) {
 	FggTransform* t= ezecsAddFggTransform(&scene, quad);
 	FggMesh* m = ezecsAddFggMesh(&scene, quad);
 	float vertices[48] = {
-		//positions					//UVs		//normals
-		1.0f - 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f - 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f - 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f - 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f - 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f - 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
+		1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f - 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f - 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		1.0f - 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
 	};
 	m->vertexCount = 48;
 	m->pVertices = vertices;
@@ -37,10 +36,9 @@ ezecsScene editorMakeScene(const FggVkCore core) {
 	FggTransform* tt = ezecsAddFggTransform(&scene, triangle);
 	FggMesh* tm = ezecsAddFggMesh(&scene, triangle);
 	float tvertices[48] = {
-		//positions					//UVs		//normals
-		1.0f + 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f + 1.0f,  1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f + 1.0f, -1.0f,  -3.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		1.0f + 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f + 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	   -1.0f + 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	};
 	tm->vertexCount = 24;
 	tm->pVertices = tvertices;
