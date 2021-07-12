@@ -12,3 +12,12 @@ addons:
     packages:
       - cmake-data
       - cmake
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - make
+  - make test
