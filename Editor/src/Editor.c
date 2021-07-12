@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-ezecsScene editorMakeScene(const FggVkCore core) {
+ezecsScene editorMakeScene(const FggVkCore core, FggMaterial mat) {
 
 	ezecsScene scene = ezecsCreateScene();
 
@@ -11,8 +11,8 @@ ezecsScene editorMakeScene(const FggVkCore core) {
 	ezecsAddFggCamera(&scene, engineCamera);
 
 	uint32_t quad = ezecsCreateEntity();
-	FggTransform* t= ezecsAddFggTransform(&scene, quad);
-	FggMesh* m = ezecsAddFggMesh(&scene, quad);
+	FggTransform* quadTransform = ezecsAddFggTransform(&scene, quad);
+	FggMesh* quadMesh = ezecsAddFggMesh(&scene, quad);
 	float vertices[48] = {
 		1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	   -1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
@@ -21,37 +21,42 @@ ezecsScene editorMakeScene(const FggVkCore core) {
 	   -1.0f - 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 		1.0f - 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
 	};
-	m->vertexCount = 48;
-	m->pVertices = vertices;
-	FggMaterial* mat = ezecsAddFggMaterial(&scene, quad);
-	mat->pipelineData.shaderStageCount = 2;
-	mat->pipelineData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
-	if (mat->pipelineData.pShaderStages != NULL) {
-		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.vert.spv", &mat->pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.frag.spv", &mat->pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
-	}
-	fggLoadMesh(core, m);
+	quadMesh->vertexCount = 48;
+	quadMesh->pVertices = vertices;
+	FggMaterial* quadMat = ezecsAddFggMaterial(&scene, quad);
+	*quadMat = mat;
+	fggLoadMesh(core, quadMesh);
 
 	uint32_t triangle = ezecsCreateEntity();
-	FggTransform* tt = ezecsAddFggTransform(&scene, triangle);
-	FggMesh* tm = ezecsAddFggMesh(&scene, triangle);
+	FggTransform* triangleTransform = ezecsAddFggTransform(&scene, triangle);
+	FggMesh* triangleMesh = ezecsAddFggMesh(&scene, triangle);
 	float tvertices[48] = {
 		1.0f + 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	   -1.0f + 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	   -1.0f + 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	};
-	tm->vertexCount = 24;
-	tm->pVertices = tvertices;
-	FggMaterial* tmat = ezecsAddFggMaterial(&scene, triangle);
-	tmat->pipelineData.shaderStageCount = 2;
-	tmat->pipelineData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
-	if (tmat->pipelineData.pShaderStages != NULL) {
-		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.vert.spv", &tmat->pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.frag.spv", &tmat->pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
-	}
-	fggLoadMesh(core, tm);
+	triangleMesh->vertexCount = 24;
+	triangleMesh->pVertices = tvertices;
+	FggMaterial* triangleMat = ezecsAddFggMaterial(&scene, triangle);
+	*triangleMat = mat;
+	fggLoadMesh(core, triangleMesh);
 
 	return scene;
+}
+
+FggMaterial fggSetupMaterial(const FggVkCore core) {
+	
+	fggBuildShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
+	fggBuildShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
+
+	FggMaterial baseMaterial = { 0 };
+	baseMaterial.pipelineData.shaderStageCount = 2;
+	baseMaterial.pipelineData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
+	if (baseMaterial.pipelineData.pShaderStages != NULL) {
+		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.vert.spv", &baseMaterial.pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.frag.spv", &baseMaterial.pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+	}
+	return baseMaterial;
 }
 
 int main() {
@@ -69,10 +74,9 @@ int main() {
 	FggVkFixedStates fStates = { 0 };
 	fggSetFixedStates(core, &fStates);
 
-	fggBuildShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
-	fggBuildShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
-
-	ezecsScene scene = editorMakeScene(core);
+	FggMaterial mat = fggSetupMaterial(core);
+	ezecsScene scene = editorMakeScene(core, mat);
+	
 	fggSceneInit(core, fStates, scene);
 	fggInitCommands(&core);
 

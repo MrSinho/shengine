@@ -6,7 +6,7 @@
 
 #include "fggWindow.h"
 
-#include "cglm/cglm.h"
+#include "fggCglmImplementation.h"
 
 typedef struct FggVkPipelineData FggVkPipelineData;
 
@@ -108,7 +108,7 @@ extern void fggFrameReset(const FggVkCore core);
 
 extern void fggFrameBegin(const FggVkCore core, uint32_t* swapchainImageIndex);
 
-extern void fggPushConstants(const FggVkCore core, const FggVkPipelineData pipeData, VkShaderStageFlagBits shaderStage, const uint32_t size, void* pPushConstants);
+extern void fggPushConstants(const FggVkCore core, const FggVkPipelineData pipeData, VkShaderStageFlagBits shaderStage, const uint32_t size, const void* pPushConstants);
 
 extern void fggBindPipeline(const FggVkCore core, const FggVkPipelineData pipeData);
 

@@ -1,7 +1,7 @@
 #ifndef FGG_PROJECTION_H
 #define FGG_PROJECTION_H
 
-#include <cglm/cglm.h>
+#include "fggCglmImplementation.h"
 
 
 

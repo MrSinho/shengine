@@ -630,7 +630,7 @@ void fggBindVertexBuffers(const FggVkCore core, const FggMesh mesh) {
 	vkCmdBindVertexBuffers(core.pCmdBuffers[0], 0, 1, &mesh.vertexBuffer, &offset);
 }
 
-void fggPushConstants(const FggVkCore core, const FggVkPipelineData pipeData, VkShaderStageFlagBits shaderStage, const uint32_t size, void* pPushConstants) {
+void fggPushConstants(const FggVkCore core, const FggVkPipelineData pipeData, VkShaderStageFlagBits shaderStage, const uint32_t size, const void* pPushConstants) {
 
 	vkCmdPushConstants(core.pCmdBuffers[0], pipeData.mainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, size, pPushConstants);
 }

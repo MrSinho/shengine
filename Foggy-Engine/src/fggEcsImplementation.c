@@ -7,7 +7,7 @@
 #include "fggProjection.h"
 #include "fggView.h"
 
-#include <cglm/cglm.h>
+#include "fggCglmImplementation.h"
 
 
 
@@ -46,7 +46,7 @@ void fggSceneUpdate(const FggVkCore core, const mat4 projection, const ezecsScen
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
 				fggBindPipeline(core, mat->pipelineData);
-				void* pushConstants[2] = { projection, camera.view };
+				const void* pushConstants[2] = { projection, camera.view };
 				fggPushConstants(core, mat->pipelineData, VK_SHADER_STAGE_VERTEX_BIT, sizeof(mat4) * 2, pushConstants[0]);
 				fggDraw(core, mat->pipelineData, camera.view, projection, *mesh);
 			}
@@ -56,9 +56,9 @@ void fggSceneUpdate(const FggVkCore core, const mat4 projection, const ezecsScen
 			FggTransform* t = ezecsGetFggTransform(scene, entity);
 			glm_mat4_identity(t->model);
 			glm_scale(t->model, t->scale);
-			glm_rotate(t->model, t->rotation[0] * GLM_PI / 180.0f, (vec3) { 1.0f, 0.0f, 0.0f });
-			glm_rotate(t->model, t->rotation[1] * GLM_PI / 180.0f, (vec3) { 0.0f, 1.0f, 0.0f });
-			glm_rotate(t->model, t->rotation[2] * GLM_PI / 180.0f, (vec3) { 0.0f, 0.0f, 1.0f });
+			glm_rotate(t->model, t->rotation[0] * (float)GLM_PI / 180.0f, (vec3) { 1.0f, 0.0f, 0.0f });
+			glm_rotate(t->model, t->rotation[1] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 1.0f, 0.0f });
+			glm_rotate(t->model, t->rotation[2] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 0.0f, 1.0f });
 			glm_translate(t->model, t->position);
 
 		}

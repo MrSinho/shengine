@@ -1,7 +1,7 @@
 #ifndef FGG_TRANSFORM_H
 #define FGG_TRANSFORM_H
 
-#include <cglm/cglm.h>
+#include "fggCglmImplementation.h"
 
 #include "fggEcsImplementation.h"
 

@@ -1,7 +1,7 @@
 #ifndef FGG_DEFAULT_CAMERA_H
 #define FGG_DEFAULT_CAMERA_H
 
-#include <cglm/cglm.h>
+#include "fggCglmImplementation.h"
 
 #include "fggEcsImplementation.h"
 
