@@ -1,5 +1,7 @@
 language: c
 os: ubuntu
+dist: trusty
+sudo: require
 
 install: make get-deps
 
@@ -8,9 +10,9 @@ compiler: gcc
 addons:
   apt:
     sources:
-      - george-edison55-precise-backports
+      - ubuntu-toolchain-r-test
     packages:
-      - cmake-data
+      - gcc
       - cmake
 
 before_script:
