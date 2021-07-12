@@ -27,8 +27,8 @@ ezecsScene editorMakeScene(const FggVkCore core) {
 	mat->pipelineData.shaderStageCount = 2;
 	mat->pipelineData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
 	if (mat->pipelineData.pShaderStages != NULL) {
-		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.vert.spv", &mat->pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.frag.spv", &mat->pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.vert.spv", &mat->pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.frag.spv", &mat->pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
 	}
 	fggLoadMesh(core, m);
 
@@ -46,8 +46,8 @@ ezecsScene editorMakeScene(const FggVkCore core) {
 	tmat->pipelineData.shaderStageCount = 2;
 	tmat->pipelineData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
 	if (tmat->pipelineData.pShaderStages != NULL) {
-		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.vert.spv", &tmat->pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		fggCreateShaderStage(core.device, "../Shaders/bin/Triangle.frag.spv", &tmat->pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.vert.spv", &tmat->pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.frag.spv", &tmat->pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
 	}
 	fggLoadMesh(core, tm);
 
@@ -69,8 +69,8 @@ int main() {
 	FggVkFixedStates fStates = { 0 };
 	fggSetFixedStates(core, &fStates);
 
-	fggBuildShader("../Shaders/src/Triangle.vert", "../Shaders/bin/Triangle.vert.spv");
-	fggBuildShader("../Shaders/src/Triangle.frag", "../Shaders/bin/Triangle.frag.spv");
+	fggBuildShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
+	fggBuildShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 
 	ezecsScene scene = editorMakeScene(core);
 	fggSceneInit(core, fStates, scene);
@@ -83,6 +83,7 @@ int main() {
 		fggGetTime(&time);
 
 		fggFrameReset(core);
+
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 
