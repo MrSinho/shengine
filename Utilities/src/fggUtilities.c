@@ -7,7 +7,7 @@
 #pragma warning (disable: 4996)
 #pragma warning (disable: 6385)
 
-const char *fggReadCode(const char* path, uint32_t *_codeSize, const char *mode) {
+const char *fggReadCode(const char* path, uint32_t *pCodeSize, const char *mode) {
 	
 	FILE* stream = fopen(path, mode);
 	
@@ -16,13 +16,13 @@ const char *fggReadCode(const char* path, uint32_t *_codeSize, const char *mode)
 	}
 
 	fseek(stream, 0, SEEK_END);
-	*_codeSize = ftell(stream);
+	*pCodeSize = ftell(stream);
 	fseek(stream, 0, SEEK_SET);
 
-	char* code = (char *)malloc(*_codeSize);
+	char* code = (char *)malloc(*pCodeSize);
 
 	if (stream != NULL && code != NULL) {
-		fread(code, *_codeSize, 1, stream);
+		fggCheckValue(fread(code, *pCodeSize, 1, stream), 1, "error reading buffer");
 		return code;
 	}
 
@@ -66,6 +66,13 @@ void fggCheckVkResult(VkResult result, const char* errormsg) {
 		printf("%s, %s \n", errormsg, fggTranslateVkResult(result));
 #endif	
 		exit(-1);
+	}
+}
+
+void fggCheckValue(const int result, const int desiredValue, const char *errormsg) {
+	if (result != desiredValue) {
+		perror(errormsg);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -125,5 +132,5 @@ void fggBuildShader(const char* input, const char* output) {
 #ifndef NDEBUG	
 	puts(cmd);
 #endif
-	system(cmd);
+	fggCheckValue(system(cmd), 0, "error building shader at given path");
 }

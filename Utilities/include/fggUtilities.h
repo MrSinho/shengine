@@ -12,8 +12,10 @@ extern const char* fggTranslateQueueFlags(const VkQueueFlags queueFlag);
 
 extern void fggCheckVkResult(VkResult result, const char* errormsg);
 
+extern void fggCheckValue(const int result, const int desiredValue, const char *errormsg);
+
 extern void fggBuildShader(const char* input, const char* output);
 
-extern const char *fggReadCode(const char *path, uint32_t *codeSize, const char *mode);
+extern const char *fggReadCode(const char *path, uint32_t *pCodeSize, const char *mode);
 
 #endif
