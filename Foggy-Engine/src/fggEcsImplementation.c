@@ -42,11 +42,10 @@ void fggSceneUpdate(const FggVkCore core, const mat4 projection, const ezecsScen
 		
 		if (ezecsHasFggMesh(scene, entity)) {
 			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
+			fggBindVertexBuffers(core, *mesh);
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
-				
 				fggBindPipeline(core, mat->pipelineData);
-				fggBindVertexBuffers(core, *mesh);
 				void* pushConstants[2] = { projection, camera.view };
 				fggPushConstants(core, mat->pipelineData, VK_SHADER_STAGE_VERTEX_BIT, sizeof(mat4) * 2, pushConstants[0]);
 				fggDraw(core, mat->pipelineData, camera.view, projection, *mesh);
