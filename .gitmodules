@@ -7,3 +7,6 @@
 [submodule "Externals/cglm"]
 	path = Externals/cglm
 	url = https://github.com/recp/cglm.git
+[submodule "Externals/ufbx"]
+	path = Externals/ufbx
+	url = https://github.com/bqqbarbhg/ufbx.git
