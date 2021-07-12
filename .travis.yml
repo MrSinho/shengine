@@ -13,7 +13,6 @@ addons:
       - gcc
       - cmake
       - make
-      - build-dep glfw
 
 before_script:
   - bash linuxPrerequisites.sh
