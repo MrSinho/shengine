@@ -13,6 +13,7 @@ addons:
       - gcc
       - cmake
       - make
+      - build-dep glfw
 
 before_script:
   - mkdir build
