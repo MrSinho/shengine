@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 #include <vulkan/vulkan.h>
-#include <ufbx.h>
 
-extern void fggLoadFbx(const char* path);
 
 #endif
