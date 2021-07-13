@@ -13,4 +13,3 @@ sudo apt-get install -y libvulkan-dev
 sudo apt-get install -y libvulkan1 
 sudo apt-get install -y mesa-vulkan-drivers 
 sudo apt-get install -y vulkan-utils
-sudo apt-get install -y glslc
