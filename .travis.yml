@@ -2,7 +2,7 @@ language: c
 compiler: gcc
 
 os: linux
-distro: xenial
+dist: xenial
 sudo: require
 
 before_script:
