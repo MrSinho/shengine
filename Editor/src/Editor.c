@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-ezecsScene* editorMakeScene(const FggVkCore core, FggMaterial mat) {
+void editorMakeScene(const FggVkCore core, FggMaterial mat, ezecsScene scene) {
 
-	ezecsScene* scene = ezecsCreateScene();
+	ezecsCreateScene(scene);
 
 	uint32_t engineCamera = ezecsCreateEntity();
 	ezecsAddFggCamera(scene, engineCamera);
@@ -74,10 +74,11 @@ int main() {
 	FggVkFixedStates fStates = { 0 };
 	fggSetFixedStates(core, &fStates);
 
-	FggMaterial mat = fggSetupMaterial(core);
-	ezecsScene* scene = editorMakeScene(core, mat);
-	
+	FggMaterial baseMaterial = fggSetupMaterial(core);
+	ezecsScene scene;
+	editorMakeScene(core, baseMaterial, scene);
 	fggSceneInit(core, fStates, scene);
+	
 	fggInitCommands(&core);
 
 	mat4 projection = GLM_MAT4_IDENTITY_INIT;

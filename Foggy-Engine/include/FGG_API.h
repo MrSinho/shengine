@@ -4,6 +4,7 @@
 #include "fggVkCore.h"
 #include "fggVkPipelineData.h"
 #include "fggVkMemoryInfo.h"
+#include "fggDrawLoop.h"
 #include "fggProjection.h"
 #include "fggView.h"
 
