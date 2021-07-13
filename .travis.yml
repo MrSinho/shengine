@@ -1,29 +1,12 @@
 language: c
-os: ubuntu
-dist: trusty
+os: mint
 sudo: require
 
 compiler: gcc
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc
-      - cmake
-      - make
-      - libx11-dev
-      - doxygen
-      - libxrandr-dev
-      - libxinerama-dev
-      - libxcursor-dev
-      - libxi-dev
-
 before_script:
-  - wget -O vulkansdk-linux-x86_64-1.0.51.0.run https://vulkan.lunarg.com/sdk/download/1.0.51.0/linux/vulkansdk-linux-x86_64-1.0.51.0.run?Human=true
-  - chmod ugo+x vulkansdk-linux-x86_64-1.0.51.0.run
-  - ./vulkansdk-linux-x86_64-1.0.51.0.run
+  - sudo apt-get install -y gcc cmake make
+  - bash linuxPrerequisites.sh
   - mkdir build
   - cd build
   - cmake ..
