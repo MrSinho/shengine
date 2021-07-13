@@ -1,6 +1,5 @@
 language: c
 os: linux
-distro: mint
 sudo: require
 
 before_script:
