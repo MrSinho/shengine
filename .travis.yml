@@ -9,13 +9,21 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
+      - ppa:oibaf/graphics-drivers
     packages:
       - gcc
       - cmake
       - make
-
-before_install:
-  - bash linuxPrerequisites.sh
+      - libx11-dev
+      - doxygen
+      - libxrandr-dev
+      - libxinerama-dev
+      - libxcursor-dev
+      - libxi-dev
+      - libvulkan-dev 
+      - libvulkan1 
+      - mesa-vulkan-drivers 
+      - vulkan-utils
 
 before_script:
   - mkdir build
