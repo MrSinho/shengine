@@ -72,7 +72,7 @@ void fggCreateInstance(FggVkCore* core) {
 		VK_MAKE_VERSION(0, 1, 0),
 		"VK-Compute Engine",
 		VK_MAKE_VERSION(0, 1, 0),
-		VK_API_VERSION_1_2,
+		VK_API_VERSION_1_1,
 	};
 
 	const char* khronos_validation = "VK_LAYER_KHRONOS_validation";
