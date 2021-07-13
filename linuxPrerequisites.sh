@@ -1,13 +1,11 @@
-sudo apt install -y libx11-dev
-sudo apt install -y doxygen
-sudo apt install -y libxrandr-dev
+sudo apt-get update -y
+sudo apt-get install -y libx11-dev
+sudo apt-get install -y doxygen
+sudo apt-get install -y libxrandr-dev
 
-sudo apt install -y libxinerama-dev
-sudo apt install -y libxcursor-dev
-sudo apt install -y libxi-dev
+sudo apt-get install -y libxinerama-dev
+sudo apt-get install -y libxcursor-dev
+sudo apt-get install -y libxi-dev
 
-sudo add-apt-repository ppa:oibaf/graphics-drivers -y
-sudo apt update
-sudo apt upgrade
-apt-cache search libvulkan-dev libvulkan1 mesa-vulkan-drivers vulkan-utils
-sudo apt install -y libvulkan-dev libvulkan1 mesa-vulkan-drivers vulkan-utils
+sudo add-apt-repository -y ppa:oibaf/graphics-drivers
+sudo apt-get install -y libvulkan-dev libvulkan1 mesa-vulkan-drivers vulkan-utils

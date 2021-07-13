@@ -14,8 +14,10 @@ addons:
       - cmake
       - make
 
-before_script:
+before_install:
   - bash linuxPrerequisites.sh
+
+before_script:
   - mkdir build
   - cd build
   - cmake ..
