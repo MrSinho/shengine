@@ -116,5 +116,5 @@ void fggBuildShader(const char* input, const char* output) {
 #ifndef NDEBUG	
 	puts(cmd);
 #endif
-	fggCheckValue(system(cmd), 0, "error building shader at given path");
+	system(cmd);
 }
