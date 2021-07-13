@@ -10,7 +10,7 @@ before_script:
   - bash linuxPrerequisites.sh
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake -DFGG_USE_VULKAN_1_1=ON ..
 
 script:
   - make VERBOSE=1
