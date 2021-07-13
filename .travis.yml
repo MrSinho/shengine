@@ -1,8 +1,8 @@
 language: c
 compiler: gcc
 
-os: linux
-distro: xenial
+os: ubuntu
+distro: trusty
 sudo: require
 
 before_script:
