@@ -4,6 +4,16 @@
 
 Linux: [![Build Status](https://travis-ci.com/MrSinho/Foggy-Engine.svg?token=WEQzvPex7Gf2cPScBckx&branch=main)](https://travis-ci.com/MrSinho/Foggy-Engine)
 
+The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu on different hardware configurations
+
+## Prerequisites
+
+Make sure you've installed the vulkan sdk on your machine and the required development libraries for glfw on linux. 
+
+```bash
+bash linuxPrerequisites.sh
+```
+
 ## Build from source
 
 ### Clone repository
@@ -15,11 +25,6 @@ mkdir build && cd build
 ``` 
 
 ### Generate projects
-
-Make sure you've installed the vulkan sdk on your machine and the required development libraries for glfw on linux. 
-```bash
-bash linuxPrerequisites.sh
-```
 
 Use cmake:
 ```bash
