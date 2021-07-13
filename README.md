@@ -36,7 +36,7 @@ In case your system does not support Vulkan 1.2 use the commands `cmake -DFGG_US
 
 ### Binaries and output
 
-the binaries
+The built binaries are in `bin`
 
 ## Tutorial:
 no
