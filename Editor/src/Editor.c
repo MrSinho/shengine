@@ -40,8 +40,6 @@ void editorMakeScene(const FggVkCore core, FggMaterial mat, ezecsScene scene) {
 	FggMaterial* triangleMat = ezecsAddFggMaterial(scene, triangle);
 	*triangleMat = mat;
 	fggAllocateMeshData(core, triangleMesh);
-
-	return scene;
 }
 
 FggMaterial fggSetupMaterial(const FggVkCore core) {
