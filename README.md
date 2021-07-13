@@ -4,7 +4,7 @@
 
 Linux: [![Build Status](https://travis-ci.com/MrSinho/Foggy-Engine.svg?token=WEQzvPex7Gf2cPScBckx&branch=main)](https://travis-ci.com/MrSinho/Foggy-Engine)
 
-The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu on different hardware configurations
+The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different hardware configurations
 
 ## Prerequisites
 
