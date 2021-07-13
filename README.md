@@ -6,6 +6,9 @@ Linux: [![Build Status](https://travis-ci.com/MrSinho/Foggy-Engine.svg?token=WEQ
 
 The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different hardware configurations
 
+## Current features:
+ - Entity Component System using [EZ-ECS](https://github.com/MrSinho/EZ-ECS)
+
 ## Prerequisites
 
 Make sure you've installed the vulkan sdk on your machine and the required development libraries for glfw on linux. 
