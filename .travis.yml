@@ -13,4 +13,4 @@ before_script:
   - cmake ..
 
 script:
-  - make -e FGG_USE_VULKAN_1_0
+  - make CFLAGS=FGG_USE_VULKAN_1_0
