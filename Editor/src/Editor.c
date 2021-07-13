@@ -82,6 +82,7 @@ int main() {
 
 	mat4 projection = GLM_MAT4_IDENTITY_INIT;
 
+
 	while (fggIsWindowActive(core.window.window)) {
 		fggPollEvents();
 		fggGetTime(&time);
