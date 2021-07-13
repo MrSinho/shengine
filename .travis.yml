@@ -9,7 +9,6 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - ppa:oibaf/graphics-drivers
     packages:
       - gcc
       - cmake
@@ -20,12 +19,11 @@ addons:
       - libxinerama-dev
       - libxcursor-dev
       - libxi-dev
-      - libvulkan-dev 
-      - libvulkan1 
-      - mesa-vulkan-drivers 
-      - vulkan-utils
 
 before_script:
+  - wget -O vulkansdk-linux-x86_64-1.0.51.0.run https://vulkan.lunarg.com/sdk/download/1.0.51.0/linux/vulkansdk-linux-x86_64-1.0.51.0.run?Human=true
+  - chmod ugo+x vulkansdk-linux-x86_64-1.0.51.0.run
+  - ./vulkansdk-linux-x86_64-1.0.51.0.run
   - mkdir build
   - cd build
   - cmake ..
