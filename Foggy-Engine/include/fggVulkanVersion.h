@@ -3,12 +3,14 @@
 
 #include <vulkan/vulkan.h>
 
-#define FGG_VULKAN_VERSION 12
+#define FGG_USE_VULKAN 12
 
-#if FGG_VULKAN_VERSION == 10
+#if FGG_USE_VULKAN == 10
 	#define FGG_VULKAN_VERSION VK_API_VERSION_1_0
-#elif FGG_VULKAN_VERSION == 11
+#elif FGG_USE_VULKAN == 11
 	#define FGG_VULKAN_VERSION VK_API_VERSION_1_0
+#else
+	#define FGG_VULKAN_VERSION VK_API_VERSION_1_2
 #endif
 
 #endif
