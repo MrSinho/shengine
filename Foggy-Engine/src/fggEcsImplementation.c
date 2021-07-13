@@ -48,7 +48,7 @@ void fggSceneUpdate(const FggVkCore core, const mat4 projection, const ezecsScen
 				fggBindPipeline(core, mat->pipelineData);
 				const void* pushConstants[2] = { projection, camera.view };
 				fggPushConstants(core, mat->pipelineData, VK_SHADER_STAGE_VERTEX_BIT, sizeof(mat4) * 2, pushConstants[0]);
-				fggDraw(core, mat->pipelineData, camera.view, projection, *mesh);
+				fggDraw(core, mat->pipelineData, *mesh);
 			}
 		}
 
