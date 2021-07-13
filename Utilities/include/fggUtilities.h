@@ -8,8 +8,6 @@ extern int fggCheckValidationLayer(const char* validationLayer);
 
 extern const char* fggTranslateVkResult(const VkResult vkResult);
 
-extern const char* fggTranslateQueueFlags(const VkQueueFlags queueFlag);
-
 extern void fggCheckVkResult(VkResult result, const char* errormsg);
 
 extern void fggCheckValue(const int result, const int desiredValue, const char *errormsg);

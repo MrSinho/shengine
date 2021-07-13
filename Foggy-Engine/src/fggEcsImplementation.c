@@ -11,7 +11,7 @@
 
 
 
-void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, ezecsScene scene) {
+void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, const ezecsScene* scene) {
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 		if (ezecsHasFggMesh(scene, entity)) {
@@ -34,7 +34,7 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, ezec
 
 }
 
-void fggSceneUpdate(const FggVkCore core, const mat4 projection, const ezecsScene scene) {
+void fggSceneUpdate(const FggVkCore core, const mat4 projection, const ezecsScene* scene) {
 
 	FggCamera camera = { 0 };
 

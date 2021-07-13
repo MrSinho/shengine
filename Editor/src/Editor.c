@@ -3,16 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-ezecsScene editorMakeScene(const FggVkCore core, FggMaterial mat) {
+ezecsScene* editorMakeScene(const FggVkCore core, FggMaterial mat) {
 
-	ezecsScene scene = ezecsCreateScene();
+	ezecsScene* scene = ezecsCreateScene();
 
 	uint32_t engineCamera = ezecsCreateEntity();
-	ezecsAddFggCamera(&scene, engineCamera);
+	ezecsAddFggCamera(scene, engineCamera);
 
 	uint32_t quad = ezecsCreateEntity();
-	FggTransform* quadTransform = ezecsAddFggTransform(&scene, quad);
-	FggMesh* quadMesh = ezecsAddFggMesh(&scene, quad);
+	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
+	FggMesh* quadMesh = ezecsAddFggMesh(scene, quad);
 	float vertices[48] = {
 		1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	   -1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
@@ -23,13 +23,13 @@ ezecsScene editorMakeScene(const FggVkCore core, FggMaterial mat) {
 	};
 	quadMesh->vertexCount = 48;
 	quadMesh->pVertices = vertices;
-	FggMaterial* quadMat = ezecsAddFggMaterial(&scene, quad);
+	FggMaterial* quadMat = ezecsAddFggMaterial(scene, quad);
 	*quadMat = mat;
 	fggLoadMesh(core, quadMesh);
 
 	uint32_t triangle = ezecsCreateEntity();
-	FggTransform* triangleTransform = ezecsAddFggTransform(&scene, triangle);
-	FggMesh* triangleMesh = ezecsAddFggMesh(&scene, triangle);
+	FggTransform* triangleTransform = ezecsAddFggTransform(scene, triangle);
+	FggMesh* triangleMesh = ezecsAddFggMesh(scene, triangle);
 	float tvertices[48] = {
 		1.0f + 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
 	   -1.0f + 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
@@ -37,7 +37,7 @@ ezecsScene editorMakeScene(const FggVkCore core, FggMaterial mat) {
 	};
 	triangleMesh->vertexCount = 24;
 	triangleMesh->pVertices = tvertices;
-	FggMaterial* triangleMat = ezecsAddFggMaterial(&scene, triangle);
+	FggMaterial* triangleMat = ezecsAddFggMaterial(scene, triangle);
 	*triangleMat = mat;
 	fggLoadMesh(core, triangleMesh);
 
@@ -75,7 +75,7 @@ int main() {
 	fggSetFixedStates(core, &fStates);
 
 	FggMaterial mat = fggSetupMaterial(core);
-	ezecsScene scene = editorMakeScene(core, mat);
+	ezecsScene* scene = editorMakeScene(core, mat);
 	
 	fggSceneInit(core, fStates, scene);
 	fggInitCommands(&core);

@@ -106,22 +106,6 @@ const char* fggTranslateVkResult(const VkResult vkResult) {
 	return "unknown vkresult";
 }
 
-const char* fggTranslateQueueFlags(const VkQueueFlags queueFlag) {
-	if (queueFlag & VK_QUEUE_GRAPHICS_BIT) { return "VK_QUEUE_GRAPHICS_BIT"; }
-	if (queueFlag & VK_QUEUE_COMPUTE_BIT) { return "VK_QUEUE_COMPUTE_BIT"; }
-	if (queueFlag & VK_QUEUE_TRANSFER_BIT) { return "VK_QUEUE_TRANSFER_BIT"; }
-	if (queueFlag & VK_QUEUE_SPARSE_BINDING_BIT) { return "VK_QUEUE_SPARSE_BINDING_BIT"; }
-	if (queueFlag & VK_QUEUE_PROTECTED_BIT) { return "VK_QUEUE_PROTECTED_BIT"; }
-#ifdef VK_ENABLE_BETA_EXTENSIONS
-	if (queueFlags & VK_QUEUE_VIDEO_DECODE_BIT_KHR) { return "VK_QUEUE_VIDEO_DECODE_BIT_KHR"; }
-#endif											
-#ifdef VK_ENABLE_BETA_EXTENSIONS				
-	if (queueFlags & VK_QUEUE_VIDEO_ENCODE_BIT_KHR) { return "VK_QUEUE_VIDEO_ENCODE_BIT_KHR"; }
-#endif											
-	if (queueFlag & VK_QUEUE_FLAG_BITS_MAX_ENUM) { return "VK_QUEUE_FLAG_BITS_MAX_ENUM"; }
-	return "unknown flag";
-}
-
 void fggBuildShader(const char* input, const char* output) {
 	char cmd[256] = { 0 };
 	const char* o = " -o ";
