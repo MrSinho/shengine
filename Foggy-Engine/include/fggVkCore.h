@@ -4,6 +4,8 @@
 #include <vulkan/vulkan.h>
 #include <stdint.h>
 
+#include "fggVulkanVersion.h"
+
 #include "fggWindow.h"
 
 #include "fggCglmImplementation.h"

@@ -66,13 +66,13 @@ void fggInitVulkan(FggVkCore *core) {
 void fggCreateInstance(FggVkCore* core) {
 
 	VkApplicationInfo applicationInfo = {
-		VK_STRUCTURE_TYPE_APPLICATION_INFO,
-		NULL,
-		"VK-Compute Application",
-		VK_MAKE_VERSION(0, 1, 0),
-		"VK-Compute Engine",
-		VK_MAKE_VERSION(0, 1, 0),
-		VK_API_VERSION_1_1,
+		VK_STRUCTURE_TYPE_APPLICATION_INFO,	//sType;
+		NULL,								//pNext;
+		"VK-Compute Application",			//pApplicationName;
+		VK_MAKE_VERSION(0, 1, 0),			//applicationVersion;
+		"VK-Compute Engine",				//pEngineName;
+		VK_MAKE_VERSION(0, 1, 0),			//engineVersion;
+		FGG_VULKAN_VERSION,					//apiVersion;
 	};
 
 	const char* khronos_validation = "VK_LAYER_KHRONOS_validation";
