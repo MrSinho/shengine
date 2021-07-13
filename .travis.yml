@@ -10,7 +10,7 @@ before_script:
   - bash linuxPrerequisites.sh
   - mkdir build
   - cd build
-  - cmake .. -D CMAKE_C_FLAGS=FGG_USE_VULKAN_1_0
+  - cmake -DFGG_USE_VULKAN_1_0=ON ..
 
 script:
-  - make
+  - make VERBOSE=1

@@ -12,6 +12,11 @@ option(CGLM_USE_C99 "" ON)
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)
 
+option(FGG_USE_VULKAN_1_0 OFF)
+if(FGG_USE_VULKAN_1_0)
+    add_definitions(-DFGG_USE_VULKAN_1_0)
+endif(FGG_USE_VULKAN_1_0)
+
 #ENGINE
 file(GLOB_RECURSE ENGINE_SRC Foggy-Engine/src/*.c)
 add_library(Foggy-Engine STATIC ${ENGINE_SRC})
