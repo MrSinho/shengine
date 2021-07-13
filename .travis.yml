@@ -13,4 +13,4 @@ before_script:
   - cmake -DFGG_USE_VULKAN_1_1=ON ..
 
 script:
-  - make VERBOSE=1
+  - make
