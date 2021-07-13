@@ -8,6 +8,7 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 
 ## Current features:
  - Entity Component System using [EZ-ECS](https://github.com/MrSinho/EZ-ECS)
+ - 
 
 ## Prerequisites
 
@@ -35,11 +36,11 @@ cmake ..
 cmake --build .
 ```
 
-In case your system does not support Vulkan 1.2 use the commands `cmake -DFGG_USE_VULKAN_1_1=ON` or `cmake -DFGG_USE_VULKAN_1_0=ON` 
+In case your system does not support Vulkan 1.2, use the command `cmake -DFGG_USE_VULKAN_1_1=ON` or `cmake -DFGG_USE_VULKAN_1_0=ON` depending on the api version you're going to use.
 
 ### Binaries and output
 
-The built binaries are in `bin`
+The built binaries are in `bin`.
 
 ## Tutorial:
 no
