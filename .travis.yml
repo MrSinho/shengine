@@ -12,5 +12,6 @@ before_script:
   - cd build
   - cmake -DFGG_USE_VULKAN_1_1=ON ..
 
+
 script:
   - make
