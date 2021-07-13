@@ -6,6 +6,7 @@
 #include "fggComponents.h"
 #include "fggProjection.h"
 #include "fggView.h"
+#include "fggDrawLoop.h"
 
 #include "fggCglmImplementation.h"
 

@@ -22,6 +22,11 @@ if(FGG_USE_VULKAN_1_1)
     add_definitions(-DFGG_USE_VULKAN_1_1)
 endif(FGG_USE_VULKAN_1_1)
 
+#UFBX
+add_library(ufbx STATIC Externals/ufbx/ufbx.c)
+set(UFBX_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Externals/ufbx)
+target_include_directories(ufbx PUBLIC ${UFBX_INCLUDE_DIR})
+
 #ENGINE
 file(GLOB_RECURSE ENGINE_SRC Foggy-Engine/src/*.c)
 add_library(Foggy-Engine STATIC ${ENGINE_SRC})
@@ -37,11 +42,12 @@ target_link_libraries(Foggy-Engine PUBLIC
     ${Vulkan_LIBRARIES}      
     Utilities
     cglm
+    ufbx
 )
 
 #UTILITIES
 file(GLOB_RECURSE UTILITIES_SRC Utilities/src/*.c)
-add_library(Utilities ${UTILITIES_SRC})
+add_library(Utilities STATIC ${UTILITIES_SRC})
 target_include_directories(Utilities PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/include
     ${Vulkan_INCLUDE_DIRS}

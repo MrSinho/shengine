@@ -25,7 +25,7 @@ ezecsScene* editorMakeScene(const FggVkCore core, FggMaterial mat) {
 	quadMesh->pVertices = vertices;
 	FggMaterial* quadMat = ezecsAddFggMaterial(scene, quad);
 	*quadMat = mat;
-	fggLoadMesh(core, quadMesh);
+	fggAllocateMeshData(core, quadMesh);
 
 	uint32_t triangle = ezecsCreateEntity();
 	FggTransform* triangleTransform = ezecsAddFggTransform(scene, triangle);
@@ -39,7 +39,7 @@ ezecsScene* editorMakeScene(const FggVkCore core, FggMaterial mat) {
 	triangleMesh->pVertices = tvertices;
 	FggMaterial* triangleMat = ezecsAddFggMaterial(scene, triangle);
 	*triangleMat = mat;
-	fggLoadMesh(core, triangleMesh);
+	fggAllocateMeshData(core, triangleMesh);
 
 	return scene;
 }

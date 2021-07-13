@@ -2,6 +2,7 @@
 #define FGG_MESH_H
 
 #include "fggEcsImplementation.h"
+
 #include <stdint.h>
 #include <vulkan/vulkan.h>
 
@@ -17,5 +18,5 @@ typedef struct FggMesh {
 } FggMesh;
 
 EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMesh, 3)
-	
+
 #endif
