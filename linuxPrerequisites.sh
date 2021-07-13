@@ -9,4 +9,5 @@ sudo apt install -y libxi-dev
 sudo add-apt-repository ppa:oibaf/graphics-drivers -y
 sudo apt update
 sudo apt upgrade
+apt-cache search libvulkan-dev libvulkan1 mesa-vulkan-drivers vulkan-utils
 sudo apt install -y libvulkan-dev libvulkan1 mesa-vulkan-drivers vulkan-utils
