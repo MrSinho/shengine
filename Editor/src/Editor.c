@@ -45,8 +45,6 @@ FggMaterial fggSetupMaterial(const FggVkCore core, const void* pPushConstants) {
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	
-	
-
 	FggMaterial baseMaterial = {
 		0,				//pipelineData
 		{0},			//pushConstantRange;
