@@ -15,6 +15,7 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 ## To do:
  - Depth buffering
  - Fbx loader (probably using [Autodesk FBX SDK](http://www.autodesk.com/fbx))
+ - Material update independent from scene update
 
 ## Prerequisites
 
