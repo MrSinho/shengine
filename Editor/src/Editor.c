@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void editorMakeScene(const FggVkCore core, FggMaterial mat, ezecsScene scene) {
+void editorMakeScene(const FggVkCore core, const FggMaterial mat, ezecsScene scene) {
 
 	ezecsCreateScene(scene);
 
@@ -23,8 +23,7 @@ void editorMakeScene(const FggVkCore core, FggMaterial mat, ezecsScene scene) {
 	};
 	quadMesh->vertexCount = 48;
 	quadMesh->pVertices = vertices;
-	FggMaterial* quadMat = ezecsAddFggMaterial(scene, quad);
-	*quadMat = mat;
+	const FggMaterial *m = ezecsSetFggMaterial(scene, &mat, quad);
 	fggAllocateMeshData(core, quadMesh);
 
 	uint32_t triangle = ezecsCreateEntity();
@@ -37,23 +36,28 @@ void editorMakeScene(const FggVkCore core, FggMaterial mat, ezecsScene scene) {
 	};
 	triangleMesh->vertexCount = 24;
 	triangleMesh->pVertices = tvertices;
-	FggMaterial* triangleMat = ezecsAddFggMaterial(scene, triangle);
-	*triangleMat = mat;
+	const FggMaterial* matr = ezecsSetFggMaterial(scene, &mat, triangle);
 	fggAllocateMeshData(core, triangleMesh);
 }
 
-FggMaterial fggSetupMaterial(const FggVkCore core) {
-	
-	fggBuildShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
-	fggBuildShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
+FggMaterial fggSetupMaterial(const FggVkCore core, const void* pPushConstants) {
 
-	FggMaterial baseMaterial = { 0 };
-	baseMaterial.pipelineData.shaderStageCount = 2;
-	baseMaterial.pipelineData.pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
-	if (baseMaterial.pipelineData.pShaderStages != NULL) {
-		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.vert.spv", &baseMaterial.pipelineData.pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		fggCreateShaderStage(core.device, "../Shaders/bin/Mesh.frag.spv", &baseMaterial.pipelineData.pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
-	}
+	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
+	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
+	
+	
+
+	FggMaterial baseMaterial = {
+		0,				//pipelineData
+		{0},			//pushConstantRange;
+		pPushConstants,		//pPushConstantsData;
+	};
+	baseMaterial.pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	baseMaterial.pushConstantRange.offset = 0;
+	baseMaterial.pushConstantRange.size = sizeof(mat4);
+	baseMaterial.pPushConstantsData = pPushConstants;
+	fggInitPipelineData(core, "../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", &baseMaterial.pipelineData);
+
 	return baseMaterial;
 }
 
@@ -72,32 +76,34 @@ int main() {
 	FggVkFixedStates fStates = { 0 };
 	fggSetFixedStates(core, &fStates);
 
-	FggMaterial baseMaterial = fggSetupMaterial(core);
+	mat4 projection = GLM_MAT4_IDENTITY_INIT;
+	void* pushConstants[1] = { (void*)projection };
+	FggMaterial baseMaterial = fggSetupMaterial(core, pushConstants[0]);
 	ezecsScene scene;
 	editorMakeScene(core, baseMaterial, scene);
 	fggSceneInit(core, fStates, scene);
 	
 	fggInitCommands(&core);
 
-	mat4 projection = GLM_MAT4_IDENTITY_INIT;
-
 
 	while (fggIsWindowActive(core.window.window)) {
 		fggPollEvents();
 		fggGetTime(&time);
-
+	
 		fggFrameReset(core);
-
+	
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
-
+	
 		fggSetProjection(core.window, projection);
-		fggSceneUpdate(core, projection, scene);
-
+	
+		fggSceneUpdate(core, scene);
+	
 		fggFrameEnd(core, imageIndex);
 	}
 
 	fggCleanup(&core);
+	fggReleaseShaderStages(baseMaterial.pipelineData);
 
 	return 0;
 }

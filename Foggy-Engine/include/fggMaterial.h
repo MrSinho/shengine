@@ -3,11 +3,15 @@
 
 #include <fggEcsImplementation.h>
 
+#include "fggVkCore.h"
 #include "fggVkPipelineData.h"
 
 typedef struct FggMaterial {
 
-	FggVkPipelineData pipelineData;
+	FggVkPipelineData		pipelineData;
+
+	VkPushConstantRange		pushConstantRange;
+	void*					pPushConstantsData;
 
 } FggMaterial;
 

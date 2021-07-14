@@ -41,9 +41,9 @@ void fggFrameBegin(const FggVkCore core, uint32_t* swapchainImageIndex) {
 	vkCmdBeginRenderPass(core.pCmdBuffers[0], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
-void fggBindPipeline(const FggVkCore core, const FggVkPipelineData pipeData) {
+void fggBindPipeline(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData) {
 
-	vkCmdBindPipeline(core.pCmdBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData.pipeline);
+	vkCmdBindPipeline(graphicsCmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData.pipeline);
 }
 
 void fggBindVertexBuffers(const FggVkCore core, const FggMesh mesh) {
@@ -51,14 +51,15 @@ void fggBindVertexBuffers(const FggVkCore core, const FggMesh mesh) {
 	vkCmdBindVertexBuffers(core.pCmdBuffers[0], 0, 1, &mesh.vertexBuffer, &offset);
 }
 
-void fggPushConstants(const FggVkCore core, const FggVkPipelineData pipeData, VkShaderStageFlagBits shaderStage, const uint32_t size, const void* pPushConstants) {
-
-	vkCmdPushConstants(core.pCmdBuffers[0], pipeData.mainPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, size, pPushConstants);
+void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const VkPushConstantRange range, const void** ppPushConstants) {
+	if (range.size > 0 || ppPushConstants != NULL) {
+		vkCmdPushConstants(graphicsCmdBuffer, pipeData.mainPipelineLayout, range.stageFlags, range.offset, range.size, ppPushConstants);
+	}
 }
 
-void fggDraw(const FggVkCore core, const FggVkPipelineData pipeData, const FggMesh mesh) {
+void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const FggMesh mesh) {
 
-	vkCmdDraw(core.pCmdBuffers[0], mesh.vertexCount / 8, 1, 0, 0);
+	vkCmdDraw(graphicsCmdBuffer, mesh.vertexCount / 8, 1, 0, 0);
 
 }
 

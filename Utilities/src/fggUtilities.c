@@ -106,7 +106,7 @@ const char* fggTranslateVkResult(const VkResult vkResult) {
 	return "unknown vkresult";
 }
 
-void fggBuildShader(const char* input, const char* output) {
+void fggCompileGLSLShader(const char* input, const char* output) {
 	char cmd[256] = { 0 };
 	const char* o = " -o ";
 	strcpy(cmd, "glslc ");

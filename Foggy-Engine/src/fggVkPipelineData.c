@@ -6,11 +6,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-FggVkPipelineData fggVkPipelineDataInitPrerequisitites() {
+void fggInitPipelineData(const FggVkCore core, const char* vertexspv, const char* fragmentspv, FggVkPipelineData* pipeData) {
 
-	FggVkPipelineData core = {0};
-	
-	return core;
+	pipeData->shaderStageCount = 2;
+	pipeData->pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
+	if (pipeData->pShaderStages != NULL) {
+		fggCreateShaderStage(core.device, vertexspv,   &pipeData->pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
+		fggCreateShaderStage(core.device, fragmentspv, &pipeData->pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+	}
+
 }
 
 void fggCreateShaderModule(const VkDevice device, VkShaderModule *shaderModule, const char* input) {
@@ -223,23 +227,22 @@ void fggSetFixedStates(const FggVkCore core, FggVkFixedStates* fStates) {
 
 }
 
-void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, FggVkPipelineData* pipeData) {
+void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, const VkPushConstantRange pushConstantRange, FggVkPipelineData* pipeData) {
 	
-	VkPushConstantRange pushConstantRange = {
-		VK_SHADER_STAGE_VERTEX_BIT,		//stageFlags;
-		0,								//offset;
-		sizeof(mat4) * 2				//size;
-	};
-
 	VkPipelineLayoutCreateInfo mainPipelineLayoutCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,	//sType;
 		NULL,											//pNext;
 		0,												//flags;
 		0,												//setLayoutCount;
 		NULL,											//pSetLayouts;
-		1,												//pushConstantRangeCount;
-		&pushConstantRange								//pPushConstantRanges;
+		0,												//pushConstantRangeCount;
+		NULL,											//pPushConstantRanges;
 	};
+
+	if (pushConstantRange.size > 0) {
+		mainPipelineLayoutCreateInfo.pushConstantRangeCount = 1;
+		mainPipelineLayoutCreateInfo.pPushConstantRanges = &pushConstantRange;
+	}
 
 	fggCheckVkResult(
 		vkCreatePipelineLayout(core.device, &mainPipelineLayoutCreateInfo, NULL, &pipeData->mainPipelineLayout),
@@ -272,4 +275,8 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		vkCreateGraphicsPipelines(core.device, NULL, 1, &graphicsPipelineCreateInfo, NULL, &pipeData->pipeline),
 		"error creating graphics pipeline"
 	);
+}
+
+void fggReleaseShaderStages(FggVkPipelineData pipeData) {
+	free(pipeData.pShaderStages);
 }

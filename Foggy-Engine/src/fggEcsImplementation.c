@@ -21,7 +21,7 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, cons
 
 		if (ezecsHasFggMaterial(scene, entity)) {
 			FggMaterial* m = ezecsGetFggMaterial(scene, entity);
-			fggSetupGraphicsPipeline(core, fixedStates, &m->pipelineData);
+			fggSetupGraphicsPipeline(core, fixedStates, m->pushConstantRange, &m->pipelineData);
 		}
 
 		if (ezecsHasFggTransform(scene, entity)) {
@@ -35,7 +35,7 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, cons
 
 }
 
-void fggSceneUpdate(const FggVkCore core, const mat4 projection, const ezecsScene scene) {
+void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 
 	FggCamera camera = { 0 };
 
@@ -46,10 +46,9 @@ void fggSceneUpdate(const FggVkCore core, const mat4 projection, const ezecsScen
 			fggBindVertexBuffers(core, *mesh);
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
-				fggBindPipeline(core, mat->pipelineData);
-				const void* pushConstants[2] = { projection, camera.view };
-				fggPushConstants(core, mat->pipelineData, VK_SHADER_STAGE_VERTEX_BIT, sizeof(mat4) * 2, pushConstants[0]);
-				fggDraw(core, mat->pipelineData, *mesh);
+				fggBindPipeline(core.pCmdBuffers[0], mat->pipelineData);
+				fggPushConstants(core.pCmdBuffers[0], mat->pipelineData, mat->pushConstantRange, mat->pPushConstantsData);
+				fggDraw(core.pCmdBuffers[0], mat->pipelineData, *mesh);
 			}
 		}
 

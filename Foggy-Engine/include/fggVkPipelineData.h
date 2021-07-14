@@ -39,7 +39,6 @@ typedef struct FggVkPipelineData {
 } FggVkPipelineData;
 
 
-
 extern void fggCreateRasterizer(VkPipelineRasterizationStateCreateInfo* rasterizer);
 
 extern void fggSetMultisampleState(VkPipelineMultisampleStateCreateInfo* multisampleState);
@@ -51,7 +50,8 @@ extern void fggSetViewport(const FggWindow window, VkViewport *vprt, VkRect2D* s
 extern void fggSetFixedStates(const FggVkCore core, FggVkFixedStates* pipeData);
 
 
-extern FggVkPipelineData fggVkPipelineDataInitPrerequisitites();
+ 
+extern void fggCreateShaderModule(const VkDevice device, VkShaderModule* shaderModule, const char* input);
 
 extern void fggCreateShaderStage(const VkDevice device, const char* shaderPath, VkPipelineShaderStageCreateInfo* shInfo, const VkShaderStageFlagBits stageFlag);
 
@@ -59,6 +59,10 @@ extern void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDe
 
 extern void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable);
 
-extern void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, FggVkPipelineData* pipeData);
+extern void fggInitPipelineData(const FggVkCore core, const char* vertexspv, const char* fragmentspv, FggVkPipelineData* pipeData);
+
+extern void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, const VkPushConstantRange pushConstantRange, FggVkPipelineData* pipeData);
+
+extern void fggReleaseShaderStages(FggVkPipelineData pipeData);
 
 #endif
