@@ -87,14 +87,12 @@ int main() {
 	while (fggIsWindowActive(core.window.window)) {
 		fggPollEvents();
 		fggGetTime(&time);
-	
 		fggFrameReset(core);
 	
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 	
 		fggSetProjection(core.window, projection);
-	
 		fggSceneUpdate(core, scene);
 	
 		fggFrameEnd(core, imageIndex);
