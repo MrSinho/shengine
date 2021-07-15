@@ -7,9 +7,6 @@ void editorMakeScene(const FggVkCore core, const FggMaterial mat, ezecsScene sce
 
 	ezecsCreateScene(scene);
 
-	uint32_t engineCamera = ezecsCreateEntity();
-	ezecsAddFggCamera(scene, engineCamera);
-
 	uint32_t quad = ezecsCreateEntity();
 	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
 	FggMesh* quadMesh = ezecsAddFggMesh(scene, quad);
@@ -40,7 +37,7 @@ void editorMakeScene(const FggVkCore core, const FggMaterial mat, ezecsScene sce
 	fggAllocateMeshData(core, triangleMesh);
 }
 
-FggMaterial fggSetupMaterial(const FggVkCore core, const void* pPushConstants) {
+FggMaterial fggSetupMaterial(const FggVkCore core, void** ppPushConstants) {
 
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
@@ -48,12 +45,12 @@ FggMaterial fggSetupMaterial(const FggVkCore core, const void* pPushConstants) {
 	FggMaterial baseMaterial = {
 		0,				//pipelineData
 		0,				//pushConstantRange;
-		pPushConstants,	//pPushConstantsData;
+		ppPushConstants,	//pPushConstantsData;
 	};
 	baseMaterial.pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	baseMaterial.pushConstantRange.offset = 0;
-	baseMaterial.pushConstantRange.size = sizeof(mat4);
-	baseMaterial.pPushConstantsData = pPushConstants;
+	baseMaterial.pushConstantRange.size = sizeof(mat4)*2;
+	baseMaterial.ppPushConstantsData = ppPushConstants;
 	fggInitPipelineData(core, "../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", &baseMaterial.pipelineData);
 
 	return baseMaterial;
@@ -74,30 +71,12 @@ int main() {
 	FggVkFixedStates fStates = { 0 };
 	fggSetFixedStates(core, &fStates);
 
-	mat4 projection = GLM_MAT4_IDENTITY_INIT;
-	void* pushConstants[1] = { (void*)projection };
-	FggMaterial baseMaterial = fggSetupMaterial(core, pushConstants[0]);
+							//projection		//view
+	mat4 pConst[2] = { GLM_MAT4_IDENTITY_INIT, GLM_MAT4_IDENTITY_INIT };
+	FggMaterial baseMaterial = fggSetupMaterial(core, (void*)&pConst);
 	ezecsScene scene;
 	editorMakeScene(core, baseMaterial, scene);
-	//fggSceneInit(core, fStates, scene);
-	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
-		if (ezecsHasFggMesh(scene, entity)) {
-
-		}
-
-		if (ezecsHasFggMaterial(scene, entity)) {
-			FggMaterial* m = ezecsGetFggMaterial(scene, entity);
-			fggSetupGraphicsPipeline(core, fStates, m->pushConstantRange, &m->pipelineData);
-		}
-
-		if (ezecsHasFggTransform(scene, entity)) {
-
-		}
-
-		if (ezecsHasFggCamera(scene, entity)) {
-
-		}
-	}
+	fggSceneInit(core, fStates, scene);
 
 	fggInitCommands(&core);
 
@@ -110,7 +89,9 @@ int main() {
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 	
-		fggSetProjection(core.window, projection);
+		fggSetProjection(core.window, pConst[0]);
+		fggSetView(pConst[1]);
+
 		fggSceneUpdate(core, scene);
 	
 		fggFrameEnd(core, imageIndex);

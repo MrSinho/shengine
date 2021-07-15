@@ -3,7 +3,6 @@
 
 #include "fggEcsImplementation.h"
 #include "fggTransform.h"
-#include "fggCamera.h"
 #include "fggMesh.h"
 #include "fggMaterial.h"
 

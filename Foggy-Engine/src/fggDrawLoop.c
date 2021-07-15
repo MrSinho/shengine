@@ -51,9 +51,9 @@ void fggBindVertexBuffers(const FggVkCore core, const FggMesh mesh) {
 	vkCmdBindVertexBuffers(core.pCmdBuffers[0], 0, 1, &mesh.vertexBuffer, &offset);
 }
 
-void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const VkPushConstantRange range, const void** ppPushConstants) {
-	if (range.size > 0 || ppPushConstants != NULL) {
-		vkCmdPushConstants(graphicsCmdBuffer, pipeData.mainPipelineLayout, range.stageFlags, range.offset, range.size, ppPushConstants);
+void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const VkPushConstantRange range, const void* pPushConstants) {
+	if (range.size > 0 || pPushConstants != NULL) {
+		vkCmdPushConstants(graphicsCmdBuffer, pipeData.mainPipelineLayout, range.stageFlags, range.offset, range.size, pPushConstants);
 	}
 }
 

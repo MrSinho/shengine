@@ -17,6 +17,6 @@ typedef struct FggMesh {
 
 } FggMesh;
 
-EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMesh, 3)
+EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMesh, 1)
 
 #endif

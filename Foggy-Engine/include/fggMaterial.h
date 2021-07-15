@@ -11,10 +11,10 @@ typedef struct FggMaterial {
 	FggVkPipelineData		pipelineData;
 
 	VkPushConstantRange		pushConstantRange;
-	void*					pPushConstantsData;
+	void**					ppPushConstantsData;
 
 } FggMaterial;
 
-EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMaterial, 4)
+EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMaterial, 2)
 
 #endif

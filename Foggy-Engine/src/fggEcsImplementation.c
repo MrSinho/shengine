@@ -27,17 +27,11 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, cons
 		if (ezecsHasFggTransform(scene, entity)) {
 
 		}
-
-		if (ezecsHasFggCamera(scene, entity)) {
-
-		}
 	}
 
 }
 
 void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
-
-	FggCamera camera = { 0 };
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 		
@@ -47,7 +41,7 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
 				fggBindPipeline(core.pCmdBuffers[0], mat->pipelineData);
-				fggPushConstants(core.pCmdBuffers[0], mat->pipelineData, mat->pushConstantRange, mat->pPushConstantsData);
+				fggPushConstants(core.pCmdBuffers[0], mat->pipelineData, mat->pushConstantRange, mat->ppPushConstantsData);
 				fggDraw(core.pCmdBuffers[0], mat->pipelineData, *mesh);
 			}
 		}
@@ -61,11 +55,6 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 			glm_rotate(t->model, t->rotation[2] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 0.0f, 1.0f });
 			glm_translate(t->model, t->position);
 
-		}
-
-		if (ezecsHasFggCamera(scene, entity)) {
-			camera = *ezecsGetFggCamera(scene, entity);
-			fggSetView(camera.view);
 		}
 
 	}

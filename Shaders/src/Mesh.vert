@@ -6,6 +6,7 @@ layout (location = 2) in vec3 normal;
 
 layout (push_constant) uniform constants {
 	mat4 projection;
+	mat4 view;
 } pushConstants;
 
 const vec4 colors[6] = vec4[6](
@@ -22,5 +23,5 @@ layout (location = 0) out vec4 color;
 void main() {
 
   color = colors[gl_VertexIndex];
-  gl_Position = pushConstants.projection * vec4(position, 1.0f);
+  gl_Position = pushConstants.projection * pushConstants.view * vec4(position, 1.0f);
 }
