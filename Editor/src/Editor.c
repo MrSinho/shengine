@@ -47,8 +47,8 @@ FggMaterial fggSetupMaterial(const FggVkCore core, const void* pPushConstants) {
 	
 	FggMaterial baseMaterial = {
 		0,				//pipelineData
-		{0},			//pushConstantRange;
-		pPushConstants,		//pPushConstantsData;
+		0,				//pushConstantRange;
+		pPushConstants,	//pPushConstantsData;
 	};
 	baseMaterial.pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	baseMaterial.pushConstantRange.offset = 0;
