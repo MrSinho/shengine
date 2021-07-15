@@ -79,8 +79,26 @@ int main() {
 	FggMaterial baseMaterial = fggSetupMaterial(core, pushConstants[0]);
 	ezecsScene scene;
 	editorMakeScene(core, baseMaterial, scene);
-	fggSceneInit(core, fStates, scene);
-	
+	//fggSceneInit(core, fStates, scene);
+	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
+		if (ezecsHasFggMesh(scene, entity)) {
+
+		}
+
+		if (ezecsHasFggMaterial(scene, entity)) {
+			FggMaterial* m = ezecsGetFggMaterial(scene, entity);
+			fggSetupGraphicsPipeline(core, fStates, m->pushConstantRange, &m->pipelineData);
+		}
+
+		if (ezecsHasFggTransform(scene, entity)) {
+
+		}
+
+		if (ezecsHasFggCamera(scene, entity)) {
+
+		}
+	}
+
 	fggInitCommands(&core);
 
 
