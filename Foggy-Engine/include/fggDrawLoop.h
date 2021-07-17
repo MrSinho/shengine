@@ -21,7 +21,9 @@ extern void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggV
 
 extern void fggBindVertexBuffers(const FggVkCore core, const FggMesh mesh);
 
-extern void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const FggMesh mesh);
+extern void fggBindIndexBuffers(const FggVkCore core, const FggMesh mesh);
+
+extern void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggMesh mesh);
 
 extern void fggFrameEnd(const FggVkCore core, const uint32_t swapchainImageIndex);
 

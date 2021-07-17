@@ -38,11 +38,14 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 		if (ezecsHasFggMesh(scene, entity)) {
 			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
 			fggBindVertexBuffers(core, *mesh);
+			if (mesh->indexCount > 0 && mesh->indexBuffer != NULL) {
+				fggBindIndexBuffers(core, *mesh);
+			}
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
 				fggBindPipeline(core.pCmdBuffers[0], mat->pipelineData);
 				fggPushConstants(core.pCmdBuffers[0], mat->pipelineData, mat->pushConstantRange, mat->ppPushConstantsData);
-				fggDraw(core.pCmdBuffers[0], mat->pipelineData, *mesh);
+				fggDraw(core.pCmdBuffers[0], *mesh);
 			}
 		}
 

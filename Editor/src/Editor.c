@@ -8,7 +8,7 @@ void editorMakeScene(const FggVkCore core, const FggMaterial mat, ezecsScene sce
 	ezecsCreateScene(scene);
 
 	PlyFileData geometryply = { 0 };
-	plyLoadFile("../Assets/Meshes/triangle.ply", &geometryply, PLY_EXTRACT_VPOSITIONS_BIT | PLY_EXTRACT_UVS_BIT | PLY_EXTRACT_VNORMALS_BIT);
+	plyLoadFile("../Assets/Meshes/triangle.ply", &geometryply, 0);
 
 	uint32_t quad = ezecsCreateEntity();
 	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
@@ -16,8 +16,11 @@ void editorMakeScene(const FggVkCore core, const FggMaterial mat, ezecsScene sce
 	
 	quadMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
 	quadMesh->pVertices = geometryply.pVertices;
+	quadMesh->indexCount = geometryply.indexCount;
+	quadMesh->pIndices = geometryply.pIndices;
 	const FggMaterial *m = ezecsSetFggMaterial(scene, &mat, quad);
-	fggAllocateMeshData(core, quadMesh);
+	fggAllocateMeshVertexData(core, quadMesh);
+	fggAllocateMeshIndexData(core, quadMesh);
 
 	plyFree(&geometryply);
 }

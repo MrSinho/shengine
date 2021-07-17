@@ -11,10 +11,11 @@ typedef struct FggMesh FggMesh;
 
 
 
-extern void fggCreateVertexBuffer(const VkDevice device, VkBuffer* vertexBuffer, const uint32_t bufferSize);
+extern void fggCreateBuffer(const VkDevice device, const uint32_t bufferSize, VkBufferUsageFlagBits bufferUsage, VkBuffer* buffer);
 
-extern void fggAllocateMeshData(const FggVkCore core, FggMesh *mesh);
+extern void fggAllocateMeshVertexData(const FggVkCore core, FggMesh *mesh);
 
+extern void fggAllocateMeshIndexData(const FggVkCore core, FggMesh* mesh);
 
 
 extern void fggGetMemoryType(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, uint32_t *memoryTypeIndex);

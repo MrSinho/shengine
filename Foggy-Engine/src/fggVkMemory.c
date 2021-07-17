@@ -9,32 +9,38 @@
 #include <string.h>
 
 
-void fggCreateVertexBuffer(const VkDevice device, VkBuffer* vertexBuffer, const uint32_t bufferSize) {
-	VkBufferCreateInfo vertexBufferCreateInfo = {
+void fggCreateBuffer(const VkDevice device, const uint32_t bufferSize, VkBufferUsageFlagBits bufferUsage, VkBuffer* buffer) {
+	VkBufferCreateInfo bufferCreateInfo = {
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,	//sType;
 		NULL,									//pNext;
 		0,										//flags;
-		bufferSize,								//size;
-		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,		//usage;
+		(VkDeviceSize)bufferSize,				//size;
+		bufferUsage,							//usage;
 		VK_SHARING_MODE_EXCLUSIVE,				//sharingMode;
 		0,										//queueFamilyIndexCount;
 		NULL									//pQueueFamilyIndices;
 	};
 
 #ifndef NDEBUG
-	printf("creating vertex buffer of %u bytes \n", bufferSize);
+	printf("creating buffer of %u bytes \n", bufferSize);
 #endif	
 
 	fggCheckVkResult(
-		vkCreateBuffer(device, &vertexBufferCreateInfo, NULL, vertexBuffer),
-		"error creating vertex buffer"
+		vkCreateBuffer(device, &bufferCreateInfo, NULL, buffer),
+		"error creating buffer"
 	);
 }
 
-void fggAllocateMeshData(const FggVkCore core, FggMesh *mesh) {
-	fggCreateVertexBuffer(core.device, &mesh->vertexBuffer, mesh->vertexCount * sizeof(mesh->pVertices[0]));
+void fggAllocateMeshVertexData(const FggVkCore core, FggMesh *mesh) {
+	fggCreateBuffer(core.device, mesh->vertexCount * sizeof(mesh->pVertices[0]), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, &mesh->vertexBuffer);
 	fggAllocateMemory(core.device, core.physicalDevice, mesh->vertexBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &mesh->vertexBufferMemory);
 	fggMapMemory(core.device, mesh->vertexBufferMemory, mesh->vertexCount * sizeof(mesh->pVertices[0]), (void*)mesh->pVertices);
+}
+
+void fggAllocateMeshIndexData(const FggVkCore core, FggMesh* mesh) {
+	fggCreateBuffer(core.device, mesh->indexCount * sizeof(mesh->pIndices[0]), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, &mesh->indexBuffer);
+	fggAllocateMemory(core.device, core.physicalDevice, mesh->indexBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &mesh->indexBufferMemory);
+	fggMapMemory(core.device, mesh->indexBufferMemory, mesh->indexCount * sizeof(mesh->pIndices[0]), (void*)mesh->pIndices);
 }
 
 void fggAllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, VkDeviceMemory *pMemory) {
@@ -98,12 +104,12 @@ void fggMapMemory(const VkDevice device, const VkDeviceMemory memory, const uint
 	printf("mapping %u bytes of memory \n", dataSize);
 #endif 
 	
-	void* core;
+	void* data;
 	fggCheckVkResult(
-		vkMapMemory(device, memory, 0, dataSize, 0, &core),
+		vkMapMemory(device, memory, 0, dataSize, 0, &data),
 		"error mapping memory"
 	);
-	memcpy(core, pData, (size_t)dataSize);
+	memcpy(data, pData, (size_t)dataSize);
 	vkUnmapMemory(device, memory);
 }
 

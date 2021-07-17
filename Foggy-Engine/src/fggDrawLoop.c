@@ -51,16 +51,24 @@ void fggBindVertexBuffers(const FggVkCore core, const FggMesh mesh) {
 	vkCmdBindVertexBuffers(core.pCmdBuffers[0], 0, 1, &mesh.vertexBuffer, &offset);
 }
 
+void fggBindIndexBuffers(const FggVkCore core, const FggMesh mesh) {
+	vkCmdBindIndexBuffer(core.pCmdBuffers[0], mesh.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+}
+
 void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const VkPushConstantRange range, const void* pPushConstants) {
 	if (range.size > 0 || pPushConstants != NULL) {
 		vkCmdPushConstants(graphicsCmdBuffer, pipeData.mainPipelineLayout, range.stageFlags, range.offset, range.size, pPushConstants);
 	}
 }
 
-void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const FggMesh mesh) {
+void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggMesh mesh) {
 
-	vkCmdDraw(graphicsCmdBuffer, mesh.vertexCount / 8, 1, 0, 0);
-
+	if (mesh.indexCount <= 0) {
+		vkCmdDraw(graphicsCmdBuffer, mesh.vertexCount / 8, 1, 0, 0);
+	}
+	else {
+		vkCmdDrawIndexed(graphicsCmdBuffer, mesh.indexCount, 1, 0, 0, 0);
+	}
 }
 
 void fggFrameEnd(const FggVkCore core, const uint32_t swapchainImageIndex) {
