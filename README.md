@@ -11,11 +11,11 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 ## Current features:
  - Entity Component System using [EZ-ECS](https://github.com/MrSinho/EZ-ECS)
  - Material creation and usage
+ - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter)
 
 ## To do:
  - Depth buffering
- - Fbx loader (probably using [Autodesk FBX SDK](http://www.autodesk.com/fbx))
- - Material update independent from scene update
+ - Mesh indices support 
 
 ## Prerequisites
 
