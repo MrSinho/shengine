@@ -8,7 +8,7 @@ void editorMakeScene(const FggVkCore core, const FggMaterial mat, ezecsScene sce
 	ezecsCreateScene(scene);
 
 	PlyFileData geometryply = { 0 };
-	plyLoadFile("../Assets/Meshes/triangle.ply", &geometryply, 0);
+	plyLoadFile("../Assets/Meshes/spheres.ply", &geometryply, 0);
 
 	uint32_t quad = ezecsCreateEntity();
 	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
