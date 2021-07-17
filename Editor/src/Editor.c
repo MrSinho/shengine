@@ -7,34 +7,19 @@ void editorMakeScene(const FggVkCore core, const FggMaterial mat, ezecsScene sce
 
 	ezecsCreateScene(scene);
 
+	PlyFileData geometryply = { 0 };
+	plyLoadFile("../Assets/Meshes/triangle.ply", &geometryply, PLY_EXTRACT_VPOSITIONS_BIT | PLY_EXTRACT_UVS_BIT | PLY_EXTRACT_VNORMALS_BIT);
+
 	uint32_t quad = ezecsCreateEntity();
 	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
 	FggMesh* quadMesh = ezecsAddFggMesh(scene, quad);
-	float vertices[48] = {
-		1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f - 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f - 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f - 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f - 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
-	};
-	quadMesh->vertexCount = 48;
-	quadMesh->pVertices = vertices;
+	
+	quadMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
+	quadMesh->pVertices = geometryply.pVertices;
 	const FggMaterial *m = ezecsSetFggMaterial(scene, &mat, quad);
 	fggAllocateMeshData(core, quadMesh);
 
-	uint32_t triangle = ezecsCreateEntity();
-	FggTransform* triangleTransform = ezecsAddFggTransform(scene, triangle);
-	FggMesh* triangleMesh = ezecsAddFggMesh(scene, triangle);
-	float tvertices[48] = {
-		1.0f + 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f + 1.0f,  1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	   -1.0f + 1.0f, -1.0f,  -4.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-	};
-	triangleMesh->vertexCount = 24;
-	triangleMesh->pVertices = tvertices;
-	const FggMaterial* matr = ezecsSetFggMaterial(scene, &mat, triangle);
-	fggAllocateMeshData(core, triangleMesh);
+	plyFree(&geometryply);
 }
 
 FggMaterial fggSetupMaterial(const FggVkCore core, void** ppPushConstants) {
@@ -43,8 +28,8 @@ FggMaterial fggSetupMaterial(const FggVkCore core, void** ppPushConstants) {
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	
 	FggMaterial baseMaterial = {
-		0,				//pipelineData
-		0,				//pushConstantRange;
+		0,					//pipelineData
+		0,					//pushConstantRange;
 		ppPushConstants,	//pPushConstantsData;
 	};
 	baseMaterial.pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;

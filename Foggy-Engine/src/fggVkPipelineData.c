@@ -77,18 +77,18 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 		0							//offset;
 	};
 
-	VkVertexInputAttributeDescription uvInputAttributeDescription = {
-		1,							//location;
-		0,							//binding;
-		VK_FORMAT_R32G32_SFLOAT,	//format;
-		sizeof(float)*3				//offset;
-	};
-
 	VkVertexInputAttributeDescription normalInputAttributeDescription = {
-		2,								//location;
+		1,								//location;
 		0,								//binding;
 		VK_FORMAT_R32G32B32_SFLOAT,		//format;
 		sizeof(float) * 5				//offset;
+	};
+
+	VkVertexInputAttributeDescription uvInputAttributeDescription = {
+		2,							//location;
+		0,							//binding;
+		VK_FORMAT_R32G32_SFLOAT,	//format;
+		sizeof(float)*3				//offset;
 	};
 
 	*vertexInputAttributeDescriptionCount = 3;

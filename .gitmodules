@@ -10,3 +10,9 @@
 [submodule "Externals/ufbx"]
 	path = Externals/ufbx
 	url = https://github.com/bqqbarbhg/ufbx.git
+[submodule "PlyImporter"]
+	path = Externals/PlyImporter
+	url = https://github.com/MrSinho/PlyImporter.git
+[submodule "Externals/PlyImporter"]
+	path = Externals/PlyImporter
+	url = https://www.github.com/MrSinho/PlyImporter.git

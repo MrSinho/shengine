@@ -6,8 +6,10 @@ project(${PROJECT_NAME} C)
 
 #SUBDIRECTORIES
 add_subdirectory(Externals/glfw)
-add_subdirectory(Externals/cglm EXCLUDE_FROM_ALL)
 option(CGLM_USE_C99 "" ON)
+add_subdirectory(Externals/cglm EXCLUDE_FROM_ALL)
+set(PLY_BUILD_EXAMPLE OFF CACHE BOOL "")
+add_subdirectory(Externals/PlyImporter EXCLUDE_FROM_ALL)
 
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)
@@ -21,11 +23,6 @@ option(FGG_USE_VULKAN_1_1 OFF)
 if(FGG_USE_VULKAN_1_1)
     add_definitions(-DFGG_USE_VULKAN_1_1)
 endif(FGG_USE_VULKAN_1_1)
-
-#UFBX
-#add_library(ufbx STATIC Externals/ufbx/ufbx.c)
-#set(UFBX_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Externals/ufbx)
-#target_include_directories(ufbx PUBLIC ${UFBX_INCLUDE_DIR})
 
 #ENGINE
 file(GLOB_RECURSE ENGINE_SRC Foggy-Engine/src/*.c)
@@ -42,6 +39,7 @@ target_link_libraries(Foggy-Engine PUBLIC
     ${Vulkan_LIBRARIES}      
     Utilities
     cglm
+    PlyImporter
 )
 
 #UTILITIES

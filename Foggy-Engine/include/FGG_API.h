@@ -11,6 +11,8 @@
 #include "fggEcsImplementation.h"
 #include "fggComponents.h"
 
+#include "PlyImporter.h"
+
 #include "fggWindow.h"
 #include "fggInput.h"
 #include "fggTime.h"
