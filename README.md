@@ -7,6 +7,7 @@ Linux: [![Build Status](https://travis-ci.com/MrSinho/Foggy-Engine.svg?token=WEQ
 The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
 ![best picture](Saved/Pictures/stanfordHand.png)
+
 Stanford Hand
 
 ## Current features:
