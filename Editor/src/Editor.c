@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void editorMakeScene(const FggVkCore core, const FggMaterial mat, void* scene) {
+void editorMakeScene(const FggVkCore core, FggMaterial mat, ezecsScene scene) {
 
 	ezecsCreateScene(scene);
 
@@ -18,7 +18,7 @@ void editorMakeScene(const FggVkCore core, const FggMaterial mat, void* scene) {
 	quadMesh->pVertices = geometryply.pVertices;
 	quadMesh->indexCount = geometryply.indexCount;
 	quadMesh->pIndices = geometryply.pIndices;
-	const FggMaterial *m = ezecsSetFggMaterial(scene, &mat, quad);
+	FggMaterial *m = ezecsSetFggMaterial(scene, &mat, quad);
 	fggAllocateMeshVertexData(core, quadMesh);
 	fggAllocateMeshIndexData(core, quadMesh);
 
@@ -59,22 +59,22 @@ int main() {
 	fggSetupMaterial(core, (void*)&pConst, &baseMaterial);
 
 	ezecsScene scene;
-	editorMakeScene(core, baseMaterial, (void*)scene);
+	editorMakeScene(core, baseMaterial, scene);
 	//fggSceneInit(core, fStates, scene);
 
-	FggMaterial* m = ezecsGetFggMaterial((void*)scene, 0);
+	FggMaterial* m = ezecsGetFggMaterial(scene, 0);
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
-		if (ezecsHasFggMesh((void*)scene, entity)) {
+		if (ezecsHasFggMesh(scene, entity)) {
 
 		}
 
-		if (ezecsHasFggMaterial((void*)scene, entity)) {
-			FggMaterial* m = ezecsGetFggMaterial((void*)scene, entity);
+		if (ezecsHasFggMaterial(scene, entity)) {
+			FggMaterial* m = ezecsGetFggMaterial(scene, entity);
 			fggSetupGraphicsPipeline(core, fStates, m->pushConstantRange, &m->pipelineData);
 		}
 
-		if (ezecsHasFggTransform((void*)scene, entity)) {
+		if (ezecsHasFggTransform(scene, entity)) {
 
 		}
 	}
@@ -93,7 +93,7 @@ int main() {
 		fggSetProjection(core.window, pConst[0]);
 		fggSetView(pConst[1]);
 
-		fggSceneUpdate(core, (void*)scene);
+		fggSceneUpdate(core, scene);
 	
 		fggFrameEnd(core, imageIndex);
 	}
