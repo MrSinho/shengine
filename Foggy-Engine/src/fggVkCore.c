@@ -612,7 +612,7 @@ void fggCmdRelease(FggVkCore* core) {
 	}
 
 	free(core->pCmdBuffers);
-	free(core->pCmdPools);
+	free(core->pCmdPools); 
 
 	core->queueFamilyIndexCount = 0;
 }
