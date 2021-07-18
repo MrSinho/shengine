@@ -3,30 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void editorMakeScene(const FggVkCore core, FggMaterial mat, ezecsScene scene) {
-
-	ezecsCreateScene(scene);
-
-	PlyFileData geometryply = { 0 };
-	plyLoadFile("../Assets/Meshes/stanfordLucy.ply", &geometryply, 0);
-
-	uint32_t quad = ezecsCreateEntity();
-	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
-	FggMesh* quadMesh = ezecsAddFggMesh(scene, quad);
-	
-	quadMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
-	quadMesh->pVertices = geometryply.pVertices;
-	quadMesh->indexCount = geometryply.indexCount;
-	quadMesh->pIndices = geometryply.pIndices;
-	FggMaterial *m = ezecsSetFggMaterial(scene, &mat, quad);
-	fggAllocateMeshVertexData(core, quadMesh);
-	fggAllocateMeshIndexData(core, quadMesh);
-
-	plyFree(&geometryply);
-}
-
 void fggSetupMaterial(const FggVkCore core, void** ppPushConstants, FggMaterial* pMaterial) {
-
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	
@@ -35,7 +12,6 @@ void fggSetupMaterial(const FggVkCore core, void** ppPushConstants, FggMaterial*
 	pMaterial->pushConstantRange.size = sizeof(mat4)*2;
 	pMaterial->ppPushConstantsData = ppPushConstants;
 	fggInitPipelineData(core, "../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", &pMaterial->pipelineData);
-
 }
 
 int main() {
@@ -55,32 +31,28 @@ int main() {
 
 							//projection		//view
 	mat4 pConst[2] = { GLM_MAT4_IDENTITY_INIT, GLM_MAT4_IDENTITY_INIT };
-	FggMaterial baseMaterial = { 0, 0, NULL };
+	FggMaterial baseMaterial = { 0 };
 	fggSetupMaterial(core, (void*)&pConst, &baseMaterial);
 
 	ezecsScene scene;
-	editorMakeScene(core, baseMaterial, scene);
-	//fggSceneInit(core, fStates, scene);
+	ezecsCreateScene(scene);
 
-	FggMaterial* m = ezecsGetFggMaterial(scene, 0);
+	PlyFileData geometryply = { 0 };
+	plyLoadFile("../Assets/Meshes/stanfordLucy.ply", &geometryply, 0);
+	uint32_t quad = ezecsCreateEntity();
+	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
+	FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
+	geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
+	geometryMesh->pVertices = geometryply.pVertices;
+	geometryMesh->indexCount = geometryply.indexCount;
+	geometryMesh->pIndices = geometryply.pIndices;
+	ezecsSetFggMaterial(scene, &baseMaterial, quad);
+	fggAllocateMeshVertexData(core, geometryMesh);
+	fggAllocateMeshIndexData(core,  geometryMesh);
+	plyFree(&geometryply);
 
-	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
-		if (ezecsHasFggMesh(scene, entity)) {
-
-		}
-
-		if (ezecsHasFggMaterial(scene, entity)) {
-			FggMaterial* m = ezecsGetFggMaterial(scene, entity);
-			fggSetupGraphicsPipeline(core, fStates, m->pushConstantRange, &m->pipelineData);
-		}
-
-		if (ezecsHasFggTransform(scene, entity)) {
-
-		}
-	}
-
+	fggSceneInit(core, fStates, scene);
 	fggInitCommands(&core);
-
 
 	while (fggIsWindowActive(core.window.window)) {
 		fggPollEvents();
