@@ -11,13 +11,13 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 Stanford Hand
 
 ## Current features:
- - Entity Component System using [EZ-ECS](https://github.com/MrSinho/EZ-ECS)
+ - Entity Component System using [EZ-ECS](https://github.com/MrSinho/EZ-ECS) by MrSinho
  - Material creation and usage
- - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter)
+ - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter) by MrSinho
+ - Indexed and not indexed drawing
 
 ## To do:
  - Depth buffering
- - Mesh indices support 
 
 ## Prerequisites
 
