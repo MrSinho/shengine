@@ -82,8 +82,12 @@ void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
 				vkDestroyPipelineLayout(core.device, mat->pipelineData.mainPipelineLayout, NULL);
 				vkDestroyPipeline(core.device, mat->pipelineData.pipeline, NULL);
+				vkDestroyShaderModule(core.device, mat->pipelineData.pShaderModules[0], NULL);
+				vkDestroyShaderModule(core.device, mat->pipelineData.pShaderModules[1], NULL);
 				free(mat->pipelineData.pShaderStages);
+				
 				mat->pipelineData.shaderStageCount = 0;
+				mat->pipelineData.shaderModuleCount = 0;
 				mat = NULL;
 			}
 		}

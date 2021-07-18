@@ -74,6 +74,8 @@ int main() {
 	vkDeviceWaitIdle(core.device);
 	fggSceneRelease(core, scene);
 	fggSurfaceRelease(&core);
+	fggCmdRelease(&core);
+	fggCoreRelease(&core);
 
 	return 0;
 }

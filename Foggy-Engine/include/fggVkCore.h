@@ -106,4 +106,8 @@ extern void fggSetSyncObjects(FggVkCore *core);
 
 extern void fggSurfaceRelease(FggVkCore* core);
 
+extern void fggCmdRelease(FggVkCore* core);
+
+extern void fggCoreRelease(FggVkCore* core);
+
 #endif

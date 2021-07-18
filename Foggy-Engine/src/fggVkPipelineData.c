@@ -8,16 +8,24 @@
 
 void fggInitPipelineData(const FggVkCore core, const char* vertexspv, const char* fragmentspv, FggVkPipelineData* pipeData) {
 
+	pipeData->shaderModuleCount = 2;
 	pipeData->shaderStageCount = 2;
-	pipeData->pShaderStages = calloc(2, sizeof(VkPipelineShaderStageCreateInfo));
-	if (pipeData->pShaderStages != NULL) {
-		fggCreateShaderStage(core.device, vertexspv,   &pipeData->pShaderStages[0], VK_SHADER_STAGE_VERTEX_BIT);
-		fggCreateShaderStage(core.device, fragmentspv, &pipeData->pShaderStages[1], VK_SHADER_STAGE_FRAGMENT_BIT);
+
+	pipeData->pShaderModules = calloc(pipeData->shaderModuleCount, sizeof(VkShaderModule));
+	if (pipeData->pShaderModules != NULL) {
+		fggCreateShaderModule(core.device, vertexspv, &pipeData->pShaderModules[0]);
+		fggCreateShaderModule(core.device, fragmentspv, &pipeData->pShaderModules[1]);
+	
+		pipeData->pShaderStages = calloc(pipeData->shaderModuleCount, sizeof(VkPipelineShaderStageCreateInfo));
+		if (pipeData->pShaderStages != NULL) {
+			fggCreateShaderStage(core.device, pipeData->pShaderModules[0], vertexspv, VK_SHADER_STAGE_VERTEX_BIT, &pipeData->pShaderStages[0]);
+			fggCreateShaderStage(core.device, pipeData->pShaderModules[1], fragmentspv, VK_SHADER_STAGE_FRAGMENT_BIT, &pipeData->pShaderStages[1]);
+		}
 	}
 
 }
 
-void fggCreateShaderModule(const VkDevice device, VkShaderModule *shaderModule, const char* input) {
+void fggCreateShaderModule(const VkDevice device, const char* input, VkShaderModule* shaderModule) {
 	
 	uint32_t codeSize = 0;
 	const char* shaderCode = fggReadCode(input, &codeSize, "rb");
@@ -41,22 +49,20 @@ void fggCreateShaderModule(const VkDevice device, VkShaderModule *shaderModule, 
 
 }
 
-void fggCreateShaderStage(const VkDevice device, const char *shaderPath, VkPipelineShaderStageCreateInfo *shInfo, const VkShaderStageFlagBits stageFlag) {
+void fggCreateShaderStage(const VkDevice device, const VkShaderModule shModule, const char *shaderPath, const VkShaderStageFlagBits stageFlag, VkPipelineShaderStageCreateInfo* pShInfo) {
 	
-	VkShaderModule vModule = { 0 };
-	fggCreateShaderModule(device, &vModule, shaderPath);
-
 	VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,	//sType;
 		NULL,													//pNext;
 		0,														//flags;
 		stageFlag,												//stage;
-		vModule,												//module;
+		shModule,												//module;
 		"main",													//pName;
 		NULL,													//pSpecializationInfo;
 	};
 
-	*shInfo = shaderStageCreateInfo;
+	*pShInfo = shaderStageCreateInfo;
+
 }
 
 void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t *vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription *pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo *vi) {

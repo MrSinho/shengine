@@ -31,6 +31,8 @@ typedef struct FggVkPipelineData {
 
 	uint32_t shaderStageCount;
 	VkPipelineShaderStageCreateInfo* pShaderStages;
+	uint32_t shaderModuleCount;
+	VkShaderModule* pShaderModules;
 
 	VkPipelineLayout mainPipelineLayout;
 
@@ -51,9 +53,9 @@ extern void fggSetFixedStates(const FggVkCore core, FggVkFixedStates* pipeData);
 
 
  
-extern void fggCreateShaderModule(const VkDevice device, VkShaderModule* shaderModule, const char* input);
+extern void fggCreateShaderModule(const VkDevice device, const char* input, VkShaderModule* shaderModule);
 
-extern void fggCreateShaderStage(const VkDevice device, const char* shaderPath, VkPipelineShaderStageCreateInfo* shInfo, const VkShaderStageFlagBits stageFlag);
+extern void fggCreateShaderStage(const VkDevice device, const VkShaderModule shModule, const char* shaderPath, const VkShaderStageFlagBits stageFlag, VkPipelineShaderStageCreateInfo* pShInfo);
 
 extern void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t* vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription* pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo* vi);
 
