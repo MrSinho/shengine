@@ -581,6 +581,8 @@ void fggSetSyncObjects(FggVkCore* core) {
 }
 
 void fggSurfaceRelease(FggVkCore* core) {
+	
+	vkDeviceWaitIdle(core->device);
 
 	for (uint32_t i = 0; i < core->swapchainImageCount; i++) {
 		vkDestroyFramebuffer(core->device, core->pFramebuffers[i], NULL);
@@ -597,6 +599,9 @@ void fggSurfaceRelease(FggVkCore* core) {
 }
 
 void fggCmdRelease(FggVkCore* core) {
+
+	vkDeviceWaitIdle(core->device);
+
 	vkDestroySemaphore(core->device, core->presentSemaphore, NULL);
 	vkDestroySemaphore(core->device, core->renderSemaphore, NULL);
 	vkDestroyFence(core->device, core->renderFence, NULL);
@@ -613,6 +618,9 @@ void fggCmdRelease(FggVkCore* core) {
 }
 
 void fggCoreRelease(FggVkCore* core) {	
+	
+	vkDeviceWaitIdle(core->device);
+
 	vkDestroyRenderPass(core->device, core->renderPass, NULL);
 	vkDestroyDevice(core->device, NULL);
 	vkDestroyInstance(core->instance, NULL);

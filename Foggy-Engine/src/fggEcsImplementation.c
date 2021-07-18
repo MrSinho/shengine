@@ -65,6 +65,8 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 
 void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
 
+	vkDeviceWaitIdle(core.device);
+
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 
 		if (ezecsHasFggMesh(scene, entity)) {

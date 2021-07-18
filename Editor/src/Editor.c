@@ -71,7 +71,6 @@ int main() {
 		fggFrameEnd(core, imageIndex);
 	}
 
-	vkDeviceWaitIdle(core.device);
 	fggSceneRelease(core, scene);
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);
