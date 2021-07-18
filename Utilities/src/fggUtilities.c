@@ -6,6 +6,7 @@
 
 #pragma warning (disable: 4996)
 #pragma warning (disable: 6385)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
 
 const char *fggReadCode(const char* path, uint32_t *pCodeSize, const char *mode) {
 	
@@ -116,5 +117,5 @@ void fggCompileGLSLShader(const char* input, const char* output) {
 #ifndef NDEBUG	
 	puts(cmd);
 #endif
-	system(cmd);
+	int rtrn = system(cmd);
 }

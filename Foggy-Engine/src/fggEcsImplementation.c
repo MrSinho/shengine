@@ -12,7 +12,7 @@
 
 
 
-void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, const ezecsScene scene) {
+void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, void* scene) {
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 		if (ezecsHasFggMesh(scene, entity)) {
@@ -31,7 +31,7 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, cons
 
 }
 
-void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
+void fggSceneUpdate(const FggVkCore core, void* scene) {
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 		
