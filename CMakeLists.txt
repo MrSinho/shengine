@@ -37,19 +37,19 @@ target_include_directories(Foggy-Engine PUBLIC
 target_link_libraries(Foggy-Engine PUBLIC
     glfw
     ${Vulkan_LIBRARIES}      
-    Utilities
+    FggUtilities
     cglm
     PlyImporter
 )
 
 #UTILITIES
-file(GLOB_RECURSE UTILITIES_SRC Utilities/src/*.c)
-add_library(Utilities STATIC ${UTILITIES_SRC})
-target_include_directories(Utilities PUBLIC
+file(GLOB_RECURSE FGG_UTILITIES_SRC Utilities/src/*.c)
+add_library(FggUtilities STATIC ${FGG_UTILITIES_SRC})
+target_include_directories(FggUtilities PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/include
     ${Vulkan_INCLUDE_DIRS}
 )
-target_link_libraries(Utilities PUBLIC 
+target_link_libraries(FggUtilities PUBLIC 
     ${VULKAN_LIBRARIES}
 )
 #SHADERS
