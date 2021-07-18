@@ -63,6 +63,5 @@ extern void fggInitPipelineData(const FggVkCore core, const char* vertexspv, con
 
 extern void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, const VkPushConstantRange pushConstantRange, FggVkPipelineData* pipeData);
 
-extern void fggReleaseShaderStages(FggVkPipelineData pipeData);
 
 #endif

@@ -276,7 +276,3 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		"error creating graphics pipeline"
 	);
 }
-
-void fggReleaseShaderStages(FggVkPipelineData pipeData) {
-	free(pipeData.pShaderStages);
-}

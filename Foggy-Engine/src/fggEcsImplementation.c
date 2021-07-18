@@ -11,7 +11,6 @@
 #include "fggCglmImplementation.h"
 
 
-
 void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, const ezecsScene scene) {
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
@@ -58,6 +57,35 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 			glm_rotate(t->model, t->rotation[2] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 0.0f, 1.0f });
 			glm_translate(t->model, t->position);
 
+		}
+
+	}
+
+}
+
+void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
+
+	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
+
+		if (ezecsHasFggMesh(scene, entity)) {
+			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
+			fggClearBufferMemory(core.device, mesh->vertexBuffer, mesh->vertexBufferMemory);
+			if (mesh->pVertices != NULL) { free(mesh->pVertices); }
+			mesh->vertexCount = 0;
+			if (mesh->indexCount > 0 && mesh->indexBuffer != NULL) {
+				fggClearBufferMemory(core.device, mesh->indexBuffer, mesh->indexBufferMemory);
+				free(mesh->pIndices);
+				mesh->indexCount = 0;
+			}
+			mesh = NULL;
+			if (ezecsHasFggMaterial(scene, entity)) {
+				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
+				vkDestroyPipelineLayout(core.device, mat->pipelineData.mainPipelineLayout, NULL);
+				vkDestroyPipeline(core.device, mat->pipelineData.pipeline, NULL);
+				free(mat->pipelineData.pShaderStages);
+				mat->pipelineData.shaderStageCount = 0;
+				mat = NULL;
+			}
 		}
 
 	}

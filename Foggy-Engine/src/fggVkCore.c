@@ -580,6 +580,28 @@ void fggSetSyncObjects(FggVkCore* core) {
 	);
 }
 
-extern void fggCleanup(FggVkCore* core) {
+void fggSurfaceRelease(FggVkCore* core) {
+	vkDeviceWaitIdle(core->device);
+	for (uint32_t i = 0; i < core->swapchainImageCount; i++) {
+		vkDestroyFramebuffer(core->device, core->pFramebuffers[i], NULL);
+		vkDestroyImageView(core->device, core->pSwapchainImageViews[i], NULL);
+	}
+	vkDestroySwapchainKHR(core->device, core->swapchain, NULL);
 
+	vkDestroySemaphore(core->device, core->presentSemaphore, NULL);
+	vkDestroySemaphore(core->device, core->renderSemaphore, NULL);
+	vkDestroyFence(core->device, core->renderFence, NULL);
+
+	vkDestroyCommandPool(core->device, core->pCmdPools[0], NULL);
+	if (core->presentQueueIndex != core->graphicsQueueIndex) {
+		vkDestroyCommandPool(core->device, core->pCmdPools[1], NULL);
+	}
+
+	free(core->pFramebuffers);
+	free(core->pSwapchainImageViews);
+	free(core->pSwapchainImages);
+	free(core->pCmdBuffers);
+	free(core->pCmdPools);
+
+	vkDestroySurfaceKHR(core->instance, core->surface, NULL);
 }

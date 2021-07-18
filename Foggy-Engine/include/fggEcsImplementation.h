@@ -20,5 +20,6 @@ extern void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedState
 
 extern void fggSceneUpdate(const FggVkCore core, const ezecsScene scene);
 
+extern void fggSceneRelease(const FggVkCore core, const ezecsScene scene);
 
 #endif

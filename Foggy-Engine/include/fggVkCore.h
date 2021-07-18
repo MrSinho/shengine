@@ -104,8 +104,6 @@ extern void fggSetFramebuffers(FggVkCore *core);
 
 extern void fggSetSyncObjects(FggVkCore *core);
 
-
-
-extern void fggCleanup(FggVkCore *core);
+extern void fggSurfaceRelease(FggVkCore* core);
 
 #endif

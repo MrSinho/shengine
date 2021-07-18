@@ -4,8 +4,8 @@
 #include <stdlib.h>
 
 void fggSetupMaterial(const FggVkCore core, void** ppPushConstants, FggMaterial* pMaterial) {
-	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
-	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
+	//fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
+	//fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	
 	pMaterial->pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	pMaterial->pushConstantRange.offset = 0;
@@ -38,7 +38,7 @@ int main() {
 	ezecsCreateScene(scene);
 
 	PlyFileData geometryply = { 0 };
-	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
+	plyLoadFile("../Assets/Meshes/stanfordLucy.ply", &geometryply, 0);
 	uint32_t quad = ezecsCreateEntity();
 	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
 	FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
@@ -71,8 +71,9 @@ int main() {
 		fggFrameEnd(core, imageIndex);
 	}
 
-	fggCleanup(&core);
-	fggReleaseShaderStages(baseMaterial.pipelineData);
+	vkDeviceWaitIdle(core.device);
+	fggSceneRelease(core, scene);
+	fggSurfaceRelease(&core);
 
 	return 0;
 }
