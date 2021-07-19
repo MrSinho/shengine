@@ -6,8 +6,9 @@
 
 #pragma warning (disable: 4996)
 #pragma warning (disable: 6385)
-#pragma GCC diagnostic ignored "-Wstringop-overflow"
-
+#ifdef __GNU__
+	#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
 const char *fggReadCode(const char* path, uint32_t *pCodeSize, const char *mode) {
 	
 	FILE* stream = fopen(path, mode);
