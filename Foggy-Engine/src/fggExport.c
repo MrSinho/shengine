@@ -22,6 +22,8 @@ void fggExport(const char* path) {
     offset += sizeof(uint32_t);
     fseek(stream, offset, SEEK_SET);
 
+    const uint32_t fggComponentIDs[EZ_ECS_MAX_COMPONENTS]   = { ezecsFggTransformID, ezecsFggMeshID, ezecsFggMaterialID };
+    const uint32_t fggComponentSizes[EZ_ECS_MAX_COMPONENTS] = { ezecsFggTransformSize, ezecsFggMeshSize, ezecsFggMaterialSize };
     fwrite(fggComponentIDs, sizeof(uint32_t), EZ_ECS_MAX_COMPONENTS, stream);
     fwrite(fggComponentSizes, sizeof(uint32_t), EZ_ECS_MAX_COMPONENTS, stream);
     offset += 2 * EZ_ECS_MAX_COMPONENTS * sizeof(uint32_t);
