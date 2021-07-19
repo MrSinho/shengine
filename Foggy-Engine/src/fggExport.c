@@ -40,6 +40,15 @@ void fggExport(const char* path, const ezecsScene scene) {
                 fwrite(scene[entity][component], fggComponentExportSizes[component], 1, stream);
                 offset += fggComponentExportSizes[component];
                 fseek(stream, offset, SEEK_SET);
+                if (fggComponentIDs[component] == ezecsFggMeshID) {
+                    FggMesh* mesh = (FggMesh*)scene[entity][component];
+                    fwrite(mesh->pVertices, sizeof(float), mesh->vertexCount, stream);
+                    offset += mesh->vertexCount * sizeof(float);
+                    fseek(stream, offset, SEEK_SET);
+                    fwrite(mesh->pIndices, sizeof(uint32_t), mesh->indexCount, stream);
+                    offset += mesh->indexCount * sizeof(uint32_t);
+                    fseek(stream, offset, SEEK_SET);
+                }
             }
         }
     }

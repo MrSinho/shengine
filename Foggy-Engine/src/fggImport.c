@@ -35,6 +35,14 @@ void fggImport(const char* path, ezecsScene scene) {
             fread(scene[entity][component], componentSizes[component], 1, stream);
             offset += componentSizes[component];
             fseek(stream, offset, SEEK_SET);
+
+            if (fggComponentIDs[component] == ezecsFggMeshID) {
+                FggMesh* mesh = (FggMesh*)scene[entity][component];
+                mesh->pVertices = calloc(mesh->vertexCount, sizeof(float));
+                mesh->pIndices  = calloc(mesh->indexCount, sizeof(uint32_t));
+                fread(&mesh->pVertices[0], sizeof(float), mesh->vertexCount, stream);
+                fread(&mesh->pIndices[0], sizeof(uint32_t), mesh->indexCount, stream);
+            }
         }
     }
 

@@ -13,9 +13,9 @@
 typedef struct FggMesh {
 
 	uint32_t		vertexCount;
-	float*			pVertices;
-
 	uint32_t		indexCount;
+
+	float*			pVertices;
 	uint32_t*		pIndices;
 
 	VkBuffer 		vertexBuffer;
@@ -32,6 +32,6 @@ EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMesh, 1)
 
 FGG_DEFINE_EXPORT_OFFSET(FggMesh, 0);
 
-FGG_DEFINE_EXPORT_SIZE(FggMesh, sizeof(FggMesh) - sizeof(VkBuffer) * 2 - sizeof(VkDeviceMemory) * 2);
+FGG_DEFINE_EXPORT_SIZE(FggMesh, sizeof(FggMesh) - sizeof(VkBuffer) * 2 - sizeof(VkDeviceMemory) * 2 - sizeof(uint32_t*) - sizeof(float*));
 
 #endif
