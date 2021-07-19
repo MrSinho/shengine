@@ -7,12 +7,17 @@ void fggSetupMaterial(const FggVkCore core, void** ppPushConstants, FggMaterial*
 	//fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	//fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	
-	pMaterial->vertexShaderPath = "../Shaders/bin/Mesh.vert.spv";
-	pMaterial->fragmentShaderPath = "../Shaders/bin/Mesh.frag.spv";
-	pMaterial->pushConstantsShaderStageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	pMaterial->pushConstantsOffset = 0;
-	pMaterial->pushConstantsSize = sizeof(mat4) * 2;
-	pMaterial->ppPushConstantsData = ppPushConstants;
+	FggMaterial mat = {
+		"../Shaders/bin/Mesh.vert.spv",	//vertexShaderPath;
+		"../Shaders/bin/Mesh.frag.spv",	//fragmentShaderPath;	
+		VK_SHADER_STAGE_VERTEX_BIT,		//pushConstantsShaderStageFlags;
+		sizeof(mat4) * 2,				//pushConstantsSize;
+		0,								//pushConstantsOffset;
+		ppPushConstants,				//ppPushConstantsData;
+		0,								//pipelineData;
+		0								//pushConstantRange;
+	};
+	*pMaterial = mat;
 
 	fggSetPushConstants(pMaterial->pushConstantsShaderStageFlags, pMaterial->pushConstantsOffset, pMaterial->pushConstantsSize, pMaterial->ppPushConstantsData, &pMaterial->pushConstantRange);
 	fggInitPipelineData(core, "../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", &pMaterial->pipelineData);
