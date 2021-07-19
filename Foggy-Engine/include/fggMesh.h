@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <vulkan/vulkan.h>
 
-
 #include "fggEcsImplementation.h"
 #include "fggExport.h"
 

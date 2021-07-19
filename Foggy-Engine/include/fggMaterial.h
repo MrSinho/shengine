@@ -40,6 +40,6 @@ EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMaterial, 2)
 
 FGG_DEFINE_EXPORT_OFFSET(FggMaterial, 0);
 
-FGG_DEFINE_EXPORT_SIZE(FggMaterial, sizeof(FggMaterial) - sizeof(FggVkPipelineData) - sizeof(VkPushConstantRange));
+FGG_DEFINE_EXPORT_SIZE(FggMaterial, sizeof(FggMaterial) - sizeof(FggVkPipelineData) - sizeof(VkPushConstantRange) - sizeof(void**));
 
 #endif

@@ -27,19 +27,21 @@ void fggExport(const char* path, const ezecsScene scene) {
     for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
         for (uint32_t component = 0; component < EZ_ECS_MAX_COMPONENTS; component++) {
             if (scene[entity][component] == NULL) {
-                char null = '\0';
+                uint32_t max = UINT32_MAX;
                 uint32_t sz = 1;
                 while (sz < fggComponentExportSizes[component]) {
-                    fwrite(&null, 1, 1, stream);
+                    fwrite(&max, 1, sizeof(void*), stream);
                     offset++; 
-                    sz++;
+                    sz+=sizeof(void*);
                     fseek(stream, offset, SEEK_SET);
                 }
             }
             else {
-                fwrite(scene[entity][component], fggComponentExportSizes[component], 1, stream);
-                offset += fggComponentExportSizes[component];
-                fseek(stream, offset, SEEK_SET);
+                if (fggComponentIDs[component] != ezecsFggMaterialID) {
+                    fwrite(scene[entity][component], fggComponentExportSizes[component], 1, stream);
+                    offset += fggComponentExportSizes[component];
+                    fseek(stream, offset, SEEK_SET);
+                }
                 if (fggComponentIDs[component] == ezecsFggMeshID) {
                     FggMesh* mesh = (FggMesh*)scene[entity][component];
                     fwrite(mesh->pVertices, sizeof(float), mesh->vertexCount, stream);

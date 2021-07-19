@@ -30,18 +30,29 @@ void fggImport(const char* path, ezecsScene scene) {
 
     for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
         for (uint32_t component = 0; component < EZ_ECS_MAX_COMPONENTS; component++) {
-            scene[entity][component] = calloc(1, componentSizes[component]);
-            if (scene[entity][component] == NULL) { return; }
-            fread(scene[entity][component], componentSizes[component], 1, stream);
-            offset += componentSizes[component];
+            uint32_t valid = 1;
+            fread(&valid, sizeof(uint32_t), 1, stream);
             fseek(stream, offset, SEEK_SET);
+            if (valid != UINT32_MAX) {
+                scene[entity][component] = calloc(1, componentSizes[component]);
+                if (scene[entity][component] == NULL) { return; }
+                fread(scene[entity][component], componentSizes[component], 1, stream);
+                offset += componentSizes[component];
+                fseek(stream, offset, SEEK_SET);
 
-            if (fggComponentIDs[component] == ezecsFggMeshID) {
-                FggMesh* mesh = (FggMesh*)scene[entity][component];
-                mesh->pVertices = calloc(mesh->vertexCount, sizeof(float));
-                mesh->pIndices  = calloc(mesh->indexCount, sizeof(uint32_t));
-                fread(&mesh->pVertices[0], sizeof(float), mesh->vertexCount, stream);
-                fread(&mesh->pIndices[0], sizeof(uint32_t), mesh->indexCount, stream);
+                if (fggComponentIDs[component] == ezecsFggMeshID) {
+                    FggMesh* mesh = (FggMesh*)scene[entity][component];
+                    mesh->pVertices = calloc(mesh->vertexCount, sizeof(float));
+                    mesh->pIndices = calloc(mesh->indexCount, sizeof(uint32_t));
+                    if (mesh->pVertices != NULL && mesh->pIndices != NULL) {
+                        fread(&mesh->pVertices[0], sizeof(float), mesh->vertexCount, stream);
+                        offset += mesh->vertexCount * sizeof(float);
+                        fseek(stream, offset, SEEK_SET);
+                        fread(&mesh->pIndices[0], sizeof(uint32_t), mesh->indexCount, stream);
+                        offset += mesh->indexCount * sizeof(uint32_t);
+                        fseek(stream, offset, SEEK_SET);
+                    }
+                }
             }
         }
     }

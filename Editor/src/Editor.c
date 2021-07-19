@@ -18,9 +18,6 @@ void fggSetupMaterial(const FggVkCore core, void** ppPushConstants, FggMaterial*
 		0								//pushConstantRange;
 	};
 	*pMaterial = mat;
-
-	fggSetPushConstants(pMaterial->pushConstantsShaderStageFlags, pMaterial->pushConstantsOffset, pMaterial->pushConstantsSize, pMaterial->ppPushConstantsData, &pMaterial->pushConstantRange);
-	fggInitPipelineData(core, "../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", &pMaterial->pipelineData);
 }
 
 int main() {
@@ -44,24 +41,22 @@ int main() {
 	fggSetupMaterial(core, (void*)&pConst, &baseMaterial);
 
 	ezecsScene scene = { 0 };
-
-	//fggImport("../Export/scene.fgg", scene);
-
 	ezecsCreateScene(scene);
 
-	PlyFileData geometryply = { 0 };
-	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
-	uint32_t quad = ezecsCreateEntity();
-	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
-	FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
-	geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
-	geometryMesh->pVertices = geometryply.pVertices;
-	geometryMesh->indexCount = geometryply.indexCount;
-	geometryMesh->pIndices = geometryply.pIndices;
-	ezecsSetFggMaterial(scene, &baseMaterial, quad);
-	fggAllocateMeshVertexData(core, geometryMesh);
-	fggAllocateMeshIndexData(core,  geometryMesh);
+	fggImport("../Export/scene.fgg", scene);
 
+
+	//PlyFileData geometryply = { 0 };
+	//plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
+	//uint32_t quad = ezecsCreateEntity();
+	//FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
+	//FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
+	//geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
+	//geometryMesh->pVertices		= geometryply.pVertices;
+	//geometryMesh->indexCount = geometryply.indexCount;
+	//geometryMesh->pIndices = geometryply.pIndices;
+	ezecsSetFggMaterial(scene, &baseMaterial, 0);
+	
 	fggSceneInit(core, fStates, scene);
 	fggInitCommands(&core);
 
@@ -85,7 +80,7 @@ int main() {
 	fggExport("../Export/scene.fgg", scene);
 
 
-	plyFree(&geometryply);
+	//plyFree(&geometryply);
 	fggSceneRelease(core, scene);
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);
