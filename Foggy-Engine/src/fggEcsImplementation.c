@@ -18,13 +18,12 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, cons
 			FggMesh* m = ezecsGetFggMesh(scene, entity);
 			fggAllocateMeshVertexData(core, m);
 			fggAllocateMeshIndexData(core, m);
+			//free(m->pVertices);
+			//free(m->pIndices);
 		}
 
 		if (ezecsHasFggMaterial(scene, entity)) {
 			FggMaterial* m = ezecsGetFggMaterial(scene, entity);
-			fggSetPushConstants(m->pushConstantsShaderStageFlags, m->pushConstantsOffset, m->pushConstantsSize, m->ppPushConstantsData, &m->pushConstantRange);
-			fggInitPipelineData(core, "../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", &m->pipelineData);
-			fggSetupGraphicsPipeline(core, fixedStates, m->pushConstantRange, &m->pipelineData);
 		}
 
 		if (ezecsHasFggTransform(scene, entity)) {

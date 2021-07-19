@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void fggSetupMaterial(const FggVkCore core, void** ppPushConstants, FggMaterial* pMaterial) {
+void fggSetupMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, void** ppPushConstants, FggMaterial* pMaterial) {
 	//fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	//fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	
@@ -17,6 +17,11 @@ void fggSetupMaterial(const FggVkCore core, void** ppPushConstants, FggMaterial*
 		0,								//pipelineData;
 		0								//pushConstantRange;
 	};
+
+	fggSetPushConstants(mat.pushConstantsShaderStageFlags, mat.pushConstantsOffset, mat.pushConstantsSize, mat.ppPushConstantsData, &mat.pushConstantRange);
+	fggInitPipelineData(core, "../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", &mat.pipelineData);
+	fggSetupGraphicsPipeline(core, fixedStates, mat.pushConstantRange, &mat.pipelineData);
+
 	*pMaterial = mat;
 }
 
@@ -32,32 +37,31 @@ int main() {
 	fggSetFramebuffers(&core);
 	fggSetSyncObjects(&core);
 
-	FggVkFixedStates fStates = { 0 };
-	fggSetFixedStates(core, &fStates);
+	FggVkFixedStates fixedStates = { 0 };
+	fggSetFixedStates(core, &fixedStates);
 
 							//projection		//view
 	mat4 pConst[2] = { GLM_MAT4_IDENTITY_INIT, GLM_MAT4_IDENTITY_INIT };
 	FggMaterial baseMaterial = { 0 };
-	fggSetupMaterial(core, (void*)&pConst, &baseMaterial);
+	fggSetupMaterial(core, fixedStates, (void*)&pConst, &baseMaterial);
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
+	//fggImport("../Export/scene.fgg", scene);
 
-	fggImport("../Export/scene.fgg", scene);
 
-
-	//PlyFileData geometryply = { 0 };
-	//plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
-	//uint32_t quad = ezecsCreateEntity();
-	//FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
-	//FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
-	//geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
-	//geometryMesh->pVertices		= geometryply.pVertices;
-	//geometryMesh->indexCount = geometryply.indexCount;
-	//geometryMesh->pIndices = geometryply.pIndices;
+	PlyFileData geometryply = { 0 };
+	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
+	uint32_t quad = ezecsCreateEntity();
+	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
+	FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
+	geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
+	geometryMesh->pVertices		= geometryply.pVertices;
+	geometryMesh->indexCount = geometryply.indexCount;
+	geometryMesh->pIndices = geometryply.pIndices;
 	ezecsSetFggMaterial(scene, &baseMaterial, 0);
 	
-	fggSceneInit(core, fStates, scene);
+	fggSceneInit(core, fixedStates, scene);
 	fggInitCommands(&core);
 
 	while (fggIsWindowActive(core.window.window)) {
