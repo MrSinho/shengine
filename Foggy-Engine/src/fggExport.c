@@ -49,6 +49,31 @@ void fggExport(const char* path, const ezecsScene scene) {
                     offset += mesh->indexCount * sizeof(uint32_t);
                     fseek(stream, offset, SEEK_SET);
                 }
+
+                if (component == ezecsFggTransformID) {
+                    FggTransform* trans = (FggTransform*)scene[entity][component];
+                    fwrite(trans->model, sizeof(mat4), 1, stream);
+                    offset += sizeof(mat4);
+                    fseek(stream, offset, SEEK_SET);
+                    fwrite(trans->position, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fwrite(trans->rotation, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fwrite(trans->scale, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fwrite(trans->front, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fwrite(trans->left, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fwrite(trans->up, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                }
             }
         }
     }

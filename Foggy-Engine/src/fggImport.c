@@ -31,6 +31,7 @@ void fggImport(const char* path, ezecsScene scene) {
             if (valid != UINT32_MAX) {
                 scene[entity][component] = calloc(1, fggComponentSizes[component]);
                 if (scene[entity][component] == NULL) { return; }
+                
                 if (component == ezecsFggMeshID) {
                     FggMesh* mesh = (FggMesh*)scene[entity][component];
                     fread(&mesh->vertexCount, sizeof(uint32_t), 1, stream);
@@ -51,6 +52,31 @@ void fggImport(const char* path, ezecsScene scene) {
                         offset += mesh->indexCount * sizeof(uint32_t);
                         fseek(stream, offset, SEEK_SET);
                     }
+                }
+
+                else if (component == ezecsFggTransformID) {
+                    FggTransform* trans = (FggTransform*)scene[entity][component];
+                    fread(trans->model, sizeof(mat4), 1, stream);
+                    offset += sizeof(mat4);
+                    fseek(stream, offset, SEEK_SET);
+                    fread(trans->position, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fread(trans->rotation, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fread(trans->scale, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fread(trans->front, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fread(trans->left, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
+                    fread(trans->up, sizeof(vec3), 1, stream);
+                    offset += sizeof(vec3);
+                    fseek(stream, offset, SEEK_SET);
                 }
             }
         }
