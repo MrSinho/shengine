@@ -61,6 +61,8 @@ extern void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDe
 
 extern void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable);
 
+extern void fggSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, void** ppData, VkPushConstantRange* pPushConstantRange);
+
 extern void fggInitPipelineData(const FggVkCore core, const char* vertexspv, const char* fragmentspv, FggVkPipelineData* pipeData);
 
 extern void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, const VkPushConstantRange pushConstantRange, FggVkPipelineData* pipeData);

@@ -6,6 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void fggSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, void** ppData, VkPushConstantRange* pPushConstantsRange) {
+	pPushConstantsRange->offset		= offset;
+	pPushConstantsRange->size		= size;
+	pPushConstantsRange->stageFlags = shaderStageFlags;
+}
+
 void fggInitPipelineData(const FggVkCore core, const char* vertexspv, const char* fragmentspv, FggVkPipelineData* pipeData) {
 
 	pipeData->shaderModuleCount = 2;
