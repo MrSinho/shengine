@@ -43,10 +43,10 @@ target_link_libraries(Foggy-Engine PUBLIC
 )
 
 #UTILITIES
-file(GLOB_RECURSE FGG_UTILITIES_SRC Utilities/src/*.c)
+file(GLOB_RECURSE FGG_UTILITIES_SRC FggUtilities/src/*.c)
 add_library(FggUtilities STATIC ${FGG_UTILITIES_SRC})
 target_include_directories(FggUtilities PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/Utilities/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/FggUtilities/include
     ${Vulkan_INCLUDE_DIRS}
 )
 target_link_libraries(FggUtilities PUBLIC 

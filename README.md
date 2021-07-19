@@ -50,6 +50,15 @@ cmake --build .
 
 In case your system does not support Vulkan 1.2, use the command `cmake -DFGG_USE_VULKAN_1_1=ON` or `cmake -DFGG_USE_VULKAN_1_0=ON` depending on the api version you're going to use.
 
+## Possible export binary format:
+
+ * define max entities and max components
+ * create scene matrix EZ_ECS_MAX_ENTITIES * EZ_ECS_MAX_COMPONENTS
+    * write a binary section defining the component index and size
+    * write the actual data 
+    * everything should be exported to the binary file (for example mesh vertices), exception for vulkan specific structures
+    * 
+
 ### Binaries and output
 
 The built binaries are in `bin`.

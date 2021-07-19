@@ -38,7 +38,7 @@ int main() {
 	ezecsCreateScene(scene);
 
 	PlyFileData geometryply = { 0 };
-	plyLoadFile("../Assets/Meshes/stanfordLucy.ply", &geometryply, 0);
+	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
 	uint32_t quad = ezecsCreateEntity();
 	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
 	FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
@@ -49,7 +49,6 @@ int main() {
 	ezecsSetFggMaterial(scene, &baseMaterial, quad);
 	fggAllocateMeshVertexData(core, geometryMesh);
 	fggAllocateMeshIndexData(core,  geometryMesh);
-	plyFree(&geometryply);
 
 	fggSceneInit(core, fStates, scene);
 	fggInitCommands(&core);
@@ -71,6 +70,7 @@ int main() {
 		fggFrameEnd(core, imageIndex);
 	}
 
+	plyFree(&geometryply);
 	fggSceneRelease(core, scene);
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);

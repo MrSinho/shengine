@@ -6,4 +6,12 @@
 #include "fggMesh.h"
 #include "fggMaterial.h"
 
+static const uint32_t fggComponentIDs = {
+    ezecsFggTransformID, ezecsFggMeshID, ezecsFggMaterialID
+};
+
+static const uint32_t fggComponentSizes = {
+    ezecsFggTransformSize, ezecsFggMeshSize, ezecsFggMaterialSize
+};
+
 #endif
