@@ -47,18 +47,19 @@ int main() {
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
-	//fggImport("../Export/scene.fgg", scene);
+	fggImport("../Export/scene.fgg", scene);
 
 
-	PlyFileData geometryply = { 0 };
-	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
-	uint32_t quad = ezecsCreateEntity();
-	FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
-	FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
-	geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
-	geometryMesh->pVertices		= geometryply.pVertices;
-	geometryMesh->indexCount = geometryply.indexCount;
-	geometryMesh->pIndices = geometryply.pIndices;
+	//PlyFileData geometryply = { 0 };
+	//plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
+	//uint32_t quad = ezecsCreateEntity();
+	//FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
+	//FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
+	//geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
+	//geometryMesh->pVertices		= geometryply.pVertices;
+	//geometryMesh->indexCount = geometryply.indexCount;
+	//geometryMesh->pIndices = geometryply.pIndices;
+	//FggMesh* m = ezecsGetFggMesh(scene, 0);
 	ezecsSetFggMaterial(scene, &baseMaterial, 0);
 	
 	fggSceneInit(core, fixedStates, scene);
