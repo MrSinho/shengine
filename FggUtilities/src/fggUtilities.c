@@ -6,7 +6,7 @@
 
 #pragma warning (disable: 4996)
 #pragma warning (disable: 6385)
-#ifdef __GNU__
+#ifdef __GNUC__
 	#pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
 const char *fggReadCode(const char* path, uint32_t *pCodeSize, const char *mode) {
