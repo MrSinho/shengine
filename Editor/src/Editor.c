@@ -7,6 +7,11 @@ void fggSetupMaterial(const FggVkCore core, void** ppPushConstants, FggMaterial*
 	//fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	//fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	
+	pMaterial->pushConstantsShaderStageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	pMaterial->pushConstantsOffset = 0;
+	pMaterial->pushConstantsSize = sizeof(mat4) * 2;
+	pMaterial->ppPushConstantsData = ppPushConstants;
+
 	pMaterial->pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 	pMaterial->pushConstantRange.offset = 0;
 	pMaterial->pushConstantRange.size = sizeof(mat4)*2;

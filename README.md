@@ -57,7 +57,9 @@ In case your system does not support Vulkan 1.2, use the command `cmake -DFGG_US
     * write a binary section defining the component index and size
     * write the actual data 
     * everything should be exported to the binary file (for example mesh vertices), exception for vulkan specific structures
-    * 
+    * that's a reason why you have to specify the structure offset and size you want to write and discard what is not needed
+    
+
 
 ### Binaries and output
 

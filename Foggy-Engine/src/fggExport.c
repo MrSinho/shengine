@@ -22,10 +22,6 @@ void fggExport(const char* path) {
     offset += sizeof(uint32_t);
     fseek(stream, offset, SEEK_SET);
 
-    fwrite(&componentsHeaderStart[0], sizeof(char), strlen(componentsHeaderStart), stream);
-    offset += strlen(componentsHeaderStart);
-    fseek(stream, offset, SEEK_SET);
-
     fwrite(fggComponentIDs, sizeof(uint32_t), EZ_ECS_MAX_COMPONENTS, stream);
     fwrite(fggComponentSizes, sizeof(uint32_t), EZ_ECS_MAX_COMPONENTS, stream);
     offset += 2 * EZ_ECS_MAX_COMPONENTS * sizeof(uint32_t);

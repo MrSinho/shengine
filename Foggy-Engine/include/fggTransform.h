@@ -5,6 +5,8 @@
 
 #include "fggEcsImplementation.h"
 
+#include "fggExport.h"
+
 typedef struct FggTransform {
 
 	mat4 model;
@@ -19,5 +21,9 @@ typedef struct FggTransform {
 } FggTransform;
 
 EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggTransform, 0)
+
+FGG_DEFINE_EXPORT_OFFSET(FggTransform, 0);
+
+FGG_DEFINE_EXPORT_SIZE(FggTransform, sizeof(FggTransform));
 
 #endif
