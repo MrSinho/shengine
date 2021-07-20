@@ -47,7 +47,7 @@ int main() {
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
-	fggImport("../Export/scene.fgg", scene);
+	fggImport("../bin/scene.fgg", scene);
 
 
 	//PlyFileData geometryply = { 0 };
@@ -83,7 +83,7 @@ int main() {
 		fggFrameEnd(core, imageIndex);
 	}
 	
-	fggExport("../Export/scene.fgg", scene);
+	fggExport("../bin/scene.fgg", scene);
 
 
 	//plyFree(&geometryply);
