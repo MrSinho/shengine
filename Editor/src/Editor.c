@@ -59,7 +59,8 @@ int main() {
 	//geometryMesh->pVertices		= geometryply.pVertices;
 	//geometryMesh->indexCount = geometryply.indexCount;
 	//geometryMesh->pIndices = geometryply.pIndices;
-	//FggMesh* m = ezecsGetFggMesh(scene, 0);
+	//FggMesh* mesh = ezecsGetFggMesh(scene, 0);
+	//FggMaterial* mat = ezecsGetFggMaterial(scene, 0);
 	ezecsSetFggMaterial(scene, &baseMaterial, 0);
 	
 	fggSceneInit(core, fixedStates, scene);

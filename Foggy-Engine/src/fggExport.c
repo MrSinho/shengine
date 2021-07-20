@@ -13,13 +13,13 @@ void fggExport(const char* path, const ezecsScene scene) {
     uint32_t offset = 0;
 
     const uint32_t fggComponentIDs[EZ_ECS_MAX_COMPONENTS] = { ezecsFggTransformID, ezecsFggMeshID, ezecsFggMaterialID };
-    const uint32_t fggComponentExportSizes[EZ_ECS_MAX_COMPONENTS] = { ezecsFggTransformSize, ezecsFggMeshSize, ezecsFggMaterialSize};
+    const uint32_t fggComponentSizes[EZ_ECS_MAX_COMPONENTS] = { ezecsFggTransformSize, ezecsFggMeshSize, ezecsFggMaterialSize};
     
     for (uint32_t component = 0; component < EZ_ECS_MAX_COMPONENTS; component++) {
         fwrite(&fggComponentIDs[component], sizeof(uint32_t), 1, stream);
         offset += sizeof(uint32_t);
         fseek(stream, offset, SEEK_SET);
-        fwrite(&fggComponentExportSizes[component], sizeof(uint32_t), 1, stream);
+        fwrite(&fggComponentSizes[component], sizeof(uint32_t), 1, stream);
         offset += sizeof(uint32_t);
         fseek(stream, offset, SEEK_SET);
     }
@@ -33,7 +33,7 @@ void fggExport(const char* path, const ezecsScene scene) {
                 fseek(stream, offset, SEEK_SET);
             }
             else {
-               
+               //exceptions
                 if (component == ezecsFggMeshID) {
                     FggMesh* mesh = (FggMesh*)scene[entity][component];
                     fwrite(&mesh->vertexCount, sizeof(uint32_t), 1, stream);
@@ -50,10 +50,10 @@ void fggExport(const char* path, const ezecsScene scene) {
                     fseek(stream, offset, SEEK_SET);
                 }
 
-                if (component == ezecsFggTransformID) {
-                    FggTransform* trans = (FggTransform*)scene[entity][component];
-                    fwrite(trans, sizeof(FggTransform), 1, stream);
-                    offset += sizeof(FggTransform);
+                else {
+                    void* comp = scene[entity][component];
+                    fwrite(comp, fggComponentSizes[component], 1, stream);
+                    offset += fggComponentSizes[component];
                     fseek(stream, offset, SEEK_SET);
                 }
             }

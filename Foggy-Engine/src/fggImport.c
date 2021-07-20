@@ -54,10 +54,10 @@ void fggImport(const char* path, ezecsScene scene) {
                     }
                 }
 
-                else if (component == ezecsFggTransformID) {
-                    FggTransform* trans = (FggTransform*)scene[entity][component];
-                    fread(trans, sizeof(FggTransform), 1, stream);
-                    offset += sizeof(FggTransform);
+                else {
+                    void* comp = scene[entity][component];
+                    fread(comp, sizeof(fggComponentSizes[component]), 1, stream);
+                    offset += fggComponentSizes[component];
                     fseek(stream, offset, SEEK_SET);
                 }
             }
