@@ -56,26 +56,8 @@ void fggImport(const char* path, ezecsScene scene) {
 
                 else if (component == ezecsFggTransformID) {
                     FggTransform* trans = (FggTransform*)scene[entity][component];
-                    fread(trans->model, sizeof(mat4), 1, stream);
-                    offset += sizeof(mat4);
-                    fseek(stream, offset, SEEK_SET);
-                    fread(trans->position, sizeof(vec3), 1, stream);
-                    offset += sizeof(vec3);
-                    fseek(stream, offset, SEEK_SET);
-                    fread(trans->rotation, sizeof(vec3), 1, stream);
-                    offset += sizeof(vec3);
-                    fseek(stream, offset, SEEK_SET);
-                    fread(trans->scale, sizeof(vec3), 1, stream);
-                    offset += sizeof(vec3);
-                    fseek(stream, offset, SEEK_SET);
-                    fread(trans->front, sizeof(vec3), 1, stream);
-                    offset += sizeof(vec3);
-                    fseek(stream, offset, SEEK_SET);
-                    fread(trans->left, sizeof(vec3), 1, stream);
-                    offset += sizeof(vec3);
-                    fseek(stream, offset, SEEK_SET);
-                    fread(trans->up, sizeof(vec3), 1, stream);
-                    offset += sizeof(vec3);
+                    fread(trans, sizeof(FggTransform), 1, stream);
+                    offset += sizeof(FggTransform);
                     fseek(stream, offset, SEEK_SET);
                 }
             }
