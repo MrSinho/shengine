@@ -50,6 +50,10 @@ void fggExport(const char* path, const ezecsScene scene) {
                     fseek(stream, offset, SEEK_SET);
                 }
 
+                if (component == ezecsFggMaterialID) {
+                    
+                }
+
                 else {
                     void* comp = scene[entity][component];
                     fwrite(comp, fggComponentSizes[component], 1, stream);
