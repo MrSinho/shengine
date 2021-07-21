@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "FDL.h"
+
 void fggSetupMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, void** ppPushConstants, FggMaterial* pMaterial) {
 	//fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	//fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
@@ -27,6 +29,9 @@ void fggSetupMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, 
 
 int main() {
 
+	fdlBuild("../../scene.fdl");
+
+#if 0
 	FggTime time = { 0 };
 	FggVkCore core = fggVkCoreInitPrerequisites(600, 600, "Foggy-Engine Editor");
 
@@ -93,4 +98,5 @@ int main() {
 	fggCoreRelease(&core);
 
 	return 0;
+#endif
 }
