@@ -8,5 +8,8 @@ void fdlBuild(const char* path) {
 
     FILE* stream = fopen(path, "r");
 
-    uint32_t 
+    char line[256];
+    while (fgets(line, 256, stream) != NULL) {
+        
+    }
 }
