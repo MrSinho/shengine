@@ -40,14 +40,6 @@ target_link_libraries(Foggy-Engine PUBLIC
     FggUtilities
     cglm
     PlyImporter
-    FDL
-)
-
-#Foggy Description Language
-file(GLOB_RECURSE FDL_SRC FDL/src/*.c)
-add_library(FDL STATIC ${FDL_SRC})
-target_include_directories(FDL PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/FDL/include
 )
 
 #UTILITIES
