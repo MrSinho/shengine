@@ -18,7 +18,7 @@ Stanford Hand
 
 ## To do:
  - Depth buffering
- - Shader uniforms 
+ - Double/triple buffering
  - Runtime scene editor
  - Scene loader
 
