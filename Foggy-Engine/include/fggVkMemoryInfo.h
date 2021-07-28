@@ -17,7 +17,6 @@ extern void fggAllocateMeshVertexData(const FggVkCore core, FggMesh *mesh);
 
 extern void fggAllocateMeshIndexData(const FggVkCore core, FggMesh* mesh);
 
-
 extern void fggGetMemoryType(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, uint32_t *memoryTypeIndex);
 
 extern void fggAllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, VkDeviceMemory *pMemory);

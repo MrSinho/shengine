@@ -55,10 +55,16 @@ void fggBindIndexBuffers(const FggVkCore core, const FggMesh mesh) {
 	vkCmdBindIndexBuffer(core.pCmdBuffers[0], mesh.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 }
 
-void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const VkPushConstantRange range, const void* pPushConstants) {
-	if (range.size > 0 || pPushConstants != NULL) {
-		vkCmdPushConstants(graphicsCmdBuffer, pipeData.mainPipelineLayout, range.stageFlags, range.offset, range.size, pPushConstants);
+void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData) {
+	if (pipeData.pushConstantRange.size > 0 || pipeData.ppPushConstantData != NULL) {
+		vkCmdPushConstants(graphicsCmdBuffer, pipeData.mainPipelineLayout, pipeData.pushConstantRange.stageFlags, pipeData.pushConstantRange.offset, pipeData.pushConstantRange.size, pipeData.ppPushConstantData);
 	}
+}
+
+void fggBindDescriptorSets(const FggVkCore core, FggVkPipelineData pipeData) {
+	pipeData.writeDescriptorSet.pBufferInfo = &pipeData.descriptorBufferInfo;
+	vkUpdateDescriptorSets(core.device, 1, &pipeData.writeDescriptorSet, 0, NULL);
+	vkCmdBindDescriptorSets(core.pCmdBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData.mainPipelineLayout, 0, 1, &pipeData.descriptorSet, 0, NULL);
 }
 
 void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggMesh mesh) {

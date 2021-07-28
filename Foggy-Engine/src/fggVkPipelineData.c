@@ -6,13 +6,104 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void fggSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, void** ppData, VkPushConstantRange* pPushConstantsRange) {
-	pPushConstantsRange->offset		= offset;
-	pPushConstantsRange->size		= size;
-	pPushConstantsRange->stageFlags = shaderStageFlags;
+#include <fggVkMemoryInfo.h>
+
+void fggAllocateUniformBufferData(const FggVkCore core, const uint32_t bufferSize, FggVkPipelineData* pPipeData) {
+	pPipeData->uniformBufferSize = bufferSize;
+	fggCreateBuffer(core.device, pPipeData->uniformBufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, &pPipeData->uniformBuffer);
+	fggAllocateMemory(core.device, core.physicalDevice, pPipeData->uniformBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &pPipeData->uniformBufferMemory);
 }
 
-void fggInitPipelineData(const FggVkCore core, const char* vertexspv, const char* fragmentspv, FggVkPipelineData* pipeData) {
+void fggDescriptorSetLayout(const FggVkCore core, const uint32_t binding, const VkShaderStageFlags shaderStageFlags, FggVkPipelineData* pPipeData) {
+
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {
+		binding,							//binding;
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,	//descriptorType;
+		1,									//descriptorCount;
+		shaderStageFlags,					//stageFlags;
+		NULL								//pImmutableSamplers;
+	};
+
+	VkDescriptorSetLayoutCreateInfo descriptorSetLayout = {
+		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,	//sType;
+		NULL,													//pNext;
+		0,														//flags;
+		1,														//bindingCount;
+		&descriptorSetLayoutBinding								//pBindings;
+	};
+
+	fggCheckVkResult(
+		vkCreateDescriptorSetLayout(core.device, &descriptorSetLayout, NULL, &pPipeData->descriptorSetLayout),
+		"error creating descriptor set layout"
+	);
+}
+
+void fggCreateDescriptorPool(const FggVkCore core, FggVkPipelineData* pPipeData) {
+	VkDescriptorPoolSize descriptorPoolSize = {
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,	//type;
+		core.swapchainImageCount			//descriptorCount;
+	};
+
+	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {
+		VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,	//sType;
+		NULL,											//pNext;
+		0,												//flags;
+		core.swapchainImageCount,						//maxSets;
+		1,												//poolSizeCount;
+		&descriptorPoolSize								//pPoolSizes;
+	};
+
+	fggCheckVkResult(
+		vkCreateDescriptorPool(core.device, &descriptorPoolCreateInfo, NULL, &pPipeData->descriptorPool),
+		"error creating descriptor pool"
+	);
+}
+
+void fggAllocateDescriptorSets(const FggVkCore core, FggVkPipelineData* pPipeData) {
+	
+	VkDescriptorSetAllocateInfo allocateInfo = {
+		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,	//sType;
+		NULL,											//pNext;
+		pPipeData->descriptorPool,						//descriptorPool;
+		1,												//descriptorSetCount;
+		&pPipeData->descriptorSetLayout					//pSetLayouts;
+	};
+
+	fggCheckVkResult(
+		vkAllocateDescriptorSets(core.device, &allocateInfo, &pPipeData->descriptorSet),
+		"error allocating descriptor set"
+	);
+
+	VkDescriptorBufferInfo descriptorBufferInfo = {
+		pPipeData->uniformBuffer,		//buffer;
+		0,								//offset;
+		pPipeData->uniformBufferSize,	//range;
+	};
+	pPipeData->descriptorBufferInfo = descriptorBufferInfo;
+
+	VkWriteDescriptorSet writeDescriptorSet = {		
+		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,					//sType;
+		NULL,													//pNext;
+		pPipeData->descriptorSet,								//dstSet;
+		0,														//dstBinding;
+		0,														//dstArrayElement;
+		1,														//descriptorCount;
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,						//descriptorType;
+		NULL,													//pImageInfo;
+		&pPipeData->descriptorBufferInfo,						//pBufferInfo;
+		NULL													//pTexelBufferView;
+	};
+	pPipeData->writeDescriptorSet = writeDescriptorSet;
+}
+
+void fggSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, void** ppData, FggVkPipelineData* pPipeData) {
+	pPipeData->pushConstantRange.offset		= offset;
+	pPipeData->pushConstantRange.size		= size;
+	pPipeData->pushConstantRange.stageFlags = shaderStageFlags;
+	pPipeData->ppPushConstantData = ppData;
+}
+
+void fggSetupShaders(const FggVkCore core, const char* vertexspv, const char* fragmentspv, FggVkPipelineData* pipeData) {
 
 	pipeData->shaderModuleCount = 2;
 	pipeData->shaderStageCount = 2;
@@ -141,11 +232,11 @@ void fggCreateRasterizer(VkPipelineRasterizationStateCreateInfo *rasterizer) {
 		0,															//flags;
 		VK_FALSE,													//depthClampEnable;
 		VK_FALSE,													//rasterizerDiscardEnable; //false let the rasterizer draw
-		VK_POLYGON_MODE_FILL,										//polygonMode;	//fill the drawn faces
-		VK_CULL_MODE_NONE,											//cullMode; //don't enable backface culling
-		VK_FRONT_FACE_CLOCKWISE,									//frontFace;
-		VK_FALSE,													//depthBiasEnable; // 
-		0.0f,														//depthBiasConstantFactor; // level to apply to every pixel
+		VK_POLYGON_MODE_FILL,										//polygonMode;
+		VK_CULL_MODE_BACK_BIT,										//cullMode
+		VK_FRONT_FACE_COUNTER_CLOCKWISE,							//frontFace
+		VK_FALSE,													//depthBiasEnable 
+		0.0f,														//depthBiasConstantFactor;
 		0.0f,														//depthBiasClamp; // depth bias clamp value
 		0.0f,														//depthBiasSlopeFactor; 
 		1.0f														//lineWidth;
@@ -228,19 +319,28 @@ void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, V
 	*vprtState = viewportStateCreateInfo;
 }
 
-void fggSetFixedStates(const FggVkCore core, FggVkFixedStates* fStates) {
+void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixedStates* fStates) {
 	
 	fggSetVertexInputState(&fStates->vertexBindingDescription, &fStates->vertexInputAttributeDescriptionCount, fStates->pVertexInputAssemblyDescriptions, &fStates->vertexInputStateInfo);
 	fggCreateInputAssembly(&fStates->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
 	fggCreateRasterizer(&fStates->rasterizer);
+	if (flags & FGG_FIXED_STATES_WIREFRAME_BIT) {
+		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
+	}
+	if (flags & FGG_FIXED_STATES_POINTS_BIT) {
+		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_POINT;
+	}
+
 	fggSetMultisampleState(&fStates->multisampleStateInfo);
 	fggColorBlendSettings(&fStates->colorBlendAttachment, &fStates->colorBlendState);
 	fggSetViewport(core.window, &fStates->viewport, &fStates->scissor, &fStates->viewportState);
 
 }
 
-void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, const VkPushConstantRange pushConstantRange, FggVkPipelineData* pipeData) {
+void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStates, FggPipelineSetupFlags setupFlags, FggVkPipelineData* pPipeData) {
 	
+	pPipeData->setupFlags = setupFlags;
+
 	VkPipelineLayoutCreateInfo mainPipelineLayoutCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,	//sType;
 		NULL,											//pNext;
@@ -251,13 +351,18 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		NULL,											//pPushConstantRanges;
 	};
 
-	if (pushConstantRange.size > 0) {
+	if (setupFlags & FGG_PIPELINE_SETUP_PUSH_CONSTANTS_BIT) {
 		mainPipelineLayoutCreateInfo.pushConstantRangeCount = 1;
-		mainPipelineLayoutCreateInfo.pPushConstantRanges = &pushConstantRange;
+		mainPipelineLayoutCreateInfo.pPushConstantRanges = &pPipeData->pushConstantRange;
 	}
 
+	if (setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
+		mainPipelineLayoutCreateInfo.setLayoutCount = 1;
+		mainPipelineLayoutCreateInfo.pSetLayouts = &pPipeData->descriptorSetLayout;
+	}											   
+
 	fggCheckVkResult(
-		vkCreatePipelineLayout(core.device, &mainPipelineLayoutCreateInfo, NULL, &pipeData->mainPipelineLayout),
+		vkCreatePipelineLayout(core.device, &mainPipelineLayoutCreateInfo, NULL, &pPipeData->mainPipelineLayout),
 		"error creating main pipeline layout"
 	);
 
@@ -265,8 +370,8 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,	//sType;
 		NULL,												//pNext;
 		0,													//flags;
-		pipeData->shaderStageCount,							//stageCount;
-		pipeData->pShaderStages,							//pStages;
+		pPipeData->shaderStageCount,							//stageCount;
+		pPipeData->pShaderStages,							//pStages;
 		&fStates.vertexInputStateInfo,						//pVertexInputState;
 		&fStates.inputAssembly,								//pInputAssemblyState;
 		NULL,												//pTessellationState;
@@ -276,7 +381,7 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		NULL,												//pDepthStencilState;
 		&fStates.colorBlendState,								//pColorBlendState;
 		NULL,												//pDynamicState;
-		pipeData->mainPipelineLayout,						//layout;
+		pPipeData->mainPipelineLayout,						//layout;
 		core.renderPass,									//renderPass;
 		0,													//subpass;
 		NULL,												//basePipelineHandle;
@@ -284,7 +389,20 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 	};
 
 	fggCheckVkResult(
-		vkCreateGraphicsPipelines(core.device, NULL, 1, &graphicsPipelineCreateInfo, NULL, &pipeData->pipeline),
+		vkCreateGraphicsPipelines(core.device, NULL, 1, &graphicsPipelineCreateInfo, NULL, &pPipeData->pipeline),
 		"error creating graphics pipeline"
 	);
+}
+
+void fggDestroyPipeline(const FggVkCore core, FggVkPipelineData* pPipeData) {
+	fggClearBufferMemory(core.device, pPipeData->uniformBuffer, pPipeData->uniformBufferMemory);
+	vkDestroyDescriptorPool(core.device, pPipeData->descriptorPool, NULL);
+	vkDestroyDescriptorSetLayout(core.device, pPipeData->descriptorSetLayout, NULL);
+	vkDestroyPipelineLayout(core.device, pPipeData->mainPipelineLayout, NULL);
+	vkDestroyPipeline(core.device, pPipeData->pipeline, NULL);
+	vkDestroyShaderModule(core.device, pPipeData->pShaderModules[0], NULL);
+	vkDestroyShaderModule(core.device, pPipeData->pShaderModules[1], NULL);
+
+	free(pPipeData->pShaderStages);
+
 }

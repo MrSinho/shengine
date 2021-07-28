@@ -24,13 +24,7 @@ typedef struct FggMaterial {
 	const char* 			vertexShaderPath;
 	const char* 			fragmentShaderPath;	
 
-	uint32_t 				pushConstantsShaderStageFlags;
-	uint32_t 				pushConstantsSize;
-	uint32_t 				pushConstantsOffset;
-	void**					ppPushConstantsData;
-
 	FggVkPipelineData		pipelineData;
-	VkPushConstantRange		pushConstantRange;
 
 } FggMaterial;
 

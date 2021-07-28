@@ -21,7 +21,7 @@ typedef struct FggVkCore {
 	VkPhysicalDevice physicalDevice;
 	VkDevice device;
 	
-	/*FggWindow and surface stuff*/
+	/*Window and surface stuff*/
 	FggWindow window;
 	VkSurfaceKHR surface;
 

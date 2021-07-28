@@ -67,6 +67,7 @@ void fggCheckVkResult(VkResult result, const char* errormsg) {
 #ifndef NDEBUG
 		printf("%s, %s \n", errormsg, fggTranslateVkResult(result));
 #endif	
+		system("pause");
 		exit(-1);
 	}
 }

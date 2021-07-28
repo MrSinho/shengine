@@ -54,6 +54,10 @@ void fggImport(const char* path, ezecsScene scene) {
                     }
                 }
 
+                else if (component == ezecsFggMaterialID) {
+
+                }
+
                 else {
                     void* comp = scene[entity][component];
                     fread(comp, sizeof(fggComponentSizes[component]), 1, stream);

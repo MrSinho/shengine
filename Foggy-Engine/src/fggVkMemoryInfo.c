@@ -8,13 +8,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <fggVkPipelineData.h>
 
-void fggCreateBuffer(const VkDevice device, const uint32_t bufferSize, VkBufferUsageFlagBits bufferUsage, VkBuffer* buffer) {
+void fggCreateBuffer(const VkDevice device, const uint32_t size, VkBufferUsageFlagBits bufferUsage, VkBuffer* buffer) {
 	VkBufferCreateInfo bufferCreateInfo = {
 		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,	//sType;
 		NULL,									//pNext;
 		0,										//flags;
-		(VkDeviceSize)bufferSize,				//size;
+		(VkDeviceSize)size,						//size;
 		bufferUsage,							//usage;
 		VK_SHARING_MODE_EXCLUSIVE,				//sharingMode;
 		0,										//queueFamilyIndexCount;
@@ -22,7 +23,7 @@ void fggCreateBuffer(const VkDevice device, const uint32_t bufferSize, VkBufferU
 	};
 
 #ifndef NDEBUG
-	printf("creating buffer of %u bytes \n", bufferSize);
+	printf("creating buffer of %u bytes \n", size);
 #endif	
 
 	fggCheckVkResult(
@@ -101,7 +102,7 @@ void fggGetMemoryType(const VkDevice device, const VkPhysicalDevice physicalDevi
 void fggMapMemory(const VkDevice device, const VkDeviceMemory memory, const uint32_t dataSize, const void *pData) {
 	
 #ifndef NDEBUG
-	printf("mapping %u bytes of memory \n", dataSize);
+	//printf("mapping %u bytes of memory \n", dataSize);
 #endif 
 	
 	void* data;

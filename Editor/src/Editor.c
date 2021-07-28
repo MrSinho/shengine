@@ -4,23 +4,27 @@
 #include <stdlib.h>
 
 void fggSetupMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, void** ppPushConstants, FggMaterial* pMaterial) {
-	//fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
-	//fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
+	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
+	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	
 	FggMaterial mat = {
 		"../Shaders/bin/Mesh.vert.spv",	//vertexShaderPath;
 		"../Shaders/bin/Mesh.frag.spv",	//fragmentShaderPath;	
-		VK_SHADER_STAGE_VERTEX_BIT,		//pushConstantsShaderStageFlags;
-		sizeof(mat4) * 2,				//pushConstantsSize;
-		0,								//pushConstantsOffset;
-		ppPushConstants,				//ppPushConstantsData;
 		0,								//pipelineData;
-		0								//pushConstantRange;
 	};
 
-	fggSetPushConstants(mat.pushConstantsShaderStageFlags, mat.pushConstantsOffset, mat.pushConstantsSize, mat.ppPushConstantsData, &mat.pushConstantRange);
-	fggInitPipelineData(core, "../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", &mat.pipelineData);
-	fggSetupGraphicsPipeline(core, fixedStates, mat.pushConstantRange, &mat.pipelineData);
+	fggAllocateUniformBufferData(core, sizeof(mat4), &mat.pipelineData);
+	fggDescriptorSetLayout(core, 0, VK_SHADER_STAGE_VERTEX_BIT, &mat.pipelineData);
+	fggCreateDescriptorPool(core, &mat.pipelineData);
+	fggAllocateDescriptorSets(core, &mat.pipelineData);
+
+	fggSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mat4)*2, ppPushConstants, &mat.pipelineData);
+
+
+	fggSetupShaders(core, mat.vertexShaderPath, mat.fragmentShaderPath, &mat.pipelineData);
+	
+	FggPipelineSetupFlags pipeFlags = FGG_PIPELINE_SETUP_PUSH_CONSTANTS_BIT | FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT;
+	fggSetupGraphicsPipeline(core, fixedStates, pipeFlags, &mat.pipelineData);
 
 	*pMaterial = mat;
 }
@@ -38,31 +42,33 @@ int main() {
 	fggSetSyncObjects(&core);
 
 	FggVkFixedStates fixedStates = { 0 };
-	fggSetFixedStates(core, &fixedStates);
+	FggFixedStateFlags fixedStateFlags = FGG_FIXED_STATES_POLYGON_BIT;
+	fggSetFixedStates(core, fixedStateFlags, &fixedStates);
 
 							//projection		//view
 	mat4 pConst[2] = { GLM_MAT4_IDENTITY_INIT, GLM_MAT4_IDENTITY_INIT };
 	FggMaterial baseMaterial = { 0 };
-	fggSetupMaterial(core, fixedStates, (void*)&pConst, &baseMaterial);
+	fggSetupMaterial(core, fixedStates, (void**)pConst, &baseMaterial);
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
-	fggImport("../bin/scene.fgg", scene);
+	//fggImport("../bin/scene.fgg", scene);
 
 
-	//PlyFileData geometryply = { 0 };
-	//plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
-	//uint32_t quad = ezecsCreateEntity();
-	//FggTransform* quadTransform = ezecsAddFggTransform(scene, quad);
-	//FggMesh* geometryMesh = ezecsAddFggMesh(scene, quad);
-	//geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
-	//geometryMesh->pVertices		= geometryply.pVertices;
-	//geometryMesh->indexCount = geometryply.indexCount;
-	//geometryMesh->pIndices = geometryply.pIndices;
-	//FggMesh* mesh = ezecsGetFggMesh(scene, 0);
-	//FggMaterial* mat = ezecsGetFggMaterial(scene, 0);
-	ezecsSetFggMaterial(scene, &baseMaterial, 0);
-	
+	PlyFileData geometryply = { 0 };
+	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
+	uint32_t geometry = ezecsCreateEntity();
+	FggTransform* geometryTransform = ezecsAddFggTransform(scene, geometry);
+	FggMesh* geometryMesh = ezecsAddFggMesh(scene, geometry);
+	geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
+	geometryMesh->pVertices = geometryply.pVertices;
+	geometryMesh->indexCount = geometryply.indexCount;
+	geometryMesh->pIndices = geometryply.pIndices;
+	ezecsSetFggMaterial(scene, &baseMaterial, geometry);
+	geometryTransform->scale[0] = 1.0f;
+	geometryTransform->scale[1] = 1.0f;
+	geometryTransform->scale[2] = 1.0f;
+
 	fggSceneInit(core, fixedStates, scene);
 	fggInitCommands(&core);
 
@@ -83,10 +89,10 @@ int main() {
 		fggFrameEnd(core, imageIndex);
 	}
 	
-	fggExport("../bin/scene.fgg", scene);
+	//fggExport("../bin/scene.fgg", scene);
 
 
-	//plyFree(&geometryply);
+	plyFree(&geometryply);
 	fggSceneRelease(core, scene);
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);
