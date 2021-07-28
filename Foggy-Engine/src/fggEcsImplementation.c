@@ -18,8 +18,10 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, cons
 			FggMesh* m = ezecsGetFggMesh(scene, entity);
 			fggAllocateMeshVertexData(core, m);
 			fggAllocateMeshIndexData(core, m);
-			//free(m->pVertices);
-			//free(m->pIndices);
+			if (m->flags & FGG_MESH_SETUP_STATIC_MESH) {
+				fggMapVertexBufferMemory(core, m);
+				fggMapIndexBufferMemory(core, m);
+			}
 		}
 
 		if (ezecsHasFggMaterial(scene, entity)) {
@@ -41,6 +43,10 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 		if (ezecsHasFggMesh(scene, entity)) {
 			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
 			fggBindVertexBuffers(core, *mesh);
+			if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH) {
+				fggMapVertexBufferMemory(core, mesh);
+				fggMapIndexBufferMemory(core, mesh);
+			}
 			if (mesh->indexCount > 0 && mesh->indexBuffer != NULL) {
 				fggBindIndexBuffers(core, *mesh);
 			}

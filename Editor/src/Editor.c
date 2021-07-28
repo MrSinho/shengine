@@ -59,7 +59,10 @@ int main() {
 	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
 	uint32_t geometry = ezecsCreateEntity();
 	FggTransform* geometryTransform = ezecsAddFggTransform(scene, geometry);
+	
+	FggMeshSetupFlags geometrySetupFlags = FGG_MESH_SETUP_STATIC_MESH;
 	FggMesh* geometryMesh = ezecsAddFggMesh(scene, geometry);
+	geometryMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
 	geometryMesh->pVertices = geometryply.pVertices;
 	geometryMesh->indexCount = geometryply.indexCount;

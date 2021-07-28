@@ -15,6 +15,10 @@ extern void fggCreateBuffer(const VkDevice device, const uint32_t bufferSize, Vk
 
 extern void fggAllocateMeshVertexData(const FggVkCore core, FggMesh *mesh);
 
+extern void fggMapVertexBufferMemory(const FggVkCore core, FggMesh* mesh);
+
+extern void fggMapIndexBufferMemory(const FggVkCore core, FggMesh* mesh);
+
 extern void fggAllocateMeshIndexData(const FggVkCore core, FggMesh* mesh);
 
 extern void fggGetMemoryType(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, uint32_t *memoryTypeIndex);

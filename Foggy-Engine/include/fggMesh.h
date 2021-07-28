@@ -8,6 +8,10 @@
 #include "fggEcsImplementation.h"
 #include "fggExport.h"
 
+typedef enum FggMeshSetupFlags {
+	FGG_MESH_SETUP_STATIC_MESH  = 0b001,
+	FGG_MESH_SETUP_DYNAMIC_MESH = 0b010
+} FggMeshSetupFlags;
 
 typedef struct FggMesh {
 
@@ -22,6 +26,8 @@ typedef struct FggMesh {
 
 	VkBuffer		indexBuffer;
 	VkDeviceMemory	indexBufferMemory;
+
+	FggMeshSetupFlags flags;
 
 } FggMesh;
 

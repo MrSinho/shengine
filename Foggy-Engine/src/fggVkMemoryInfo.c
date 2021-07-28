@@ -35,6 +35,13 @@ void fggCreateBuffer(const VkDevice device, const uint32_t size, VkBufferUsageFl
 void fggAllocateMeshVertexData(const FggVkCore core, FggMesh *mesh) {
 	fggCreateBuffer(core.device, mesh->vertexCount * sizeof(mesh->pVertices[0]), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, &mesh->vertexBuffer);
 	fggAllocateMemory(core.device, core.physicalDevice, mesh->vertexBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &mesh->vertexBufferMemory);
+}
+
+void fggMapVertexBufferMemory(const FggVkCore core, FggMesh* mesh) {
+	fggMapMemory(core.device, mesh->vertexBufferMemory, mesh->vertexCount * sizeof(mesh->pVertices[0]), (void*)mesh->pVertices);
+}
+
+void fggMapIndexBufferMemory(const FggVkCore core, FggMesh* mesh) {
 	fggMapMemory(core.device, mesh->vertexBufferMemory, mesh->vertexCount * sizeof(mesh->pVertices[0]), (void*)mesh->pVertices);
 }
 
