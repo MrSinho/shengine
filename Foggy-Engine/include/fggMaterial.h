@@ -5,17 +5,15 @@
 
 #include "fggVkCore.h"
 #include "fggVkPipelineData.h"
-#include "fggExport.h"
 
 
-
-typedef enum FggShaderStageFlagBits {
+typedef enum FggShaderStageFlags {
 
 	FGG_SHADER_STAGE_VERTEX_BIT 	= VK_SHADER_STAGE_VERTEX_BIT,
     FGG_SHADER_STAGE_GEOMETRY_BIT 	= VK_SHADER_STAGE_GEOMETRY_BIT,
     FGG_SHADER_STAGE_FRAGMENT_BIT 	= VK_SHADER_STAGE_FRAGMENT_BIT
 
-} FggShaderStageFlagBits;
+} FggShaderStageFlags;
 
 
 

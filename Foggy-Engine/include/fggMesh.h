@@ -6,7 +6,6 @@
 #include <vulkan/vulkan.h>
 
 #include "fggEcsImplementation.h"
-#include "fggExport.h"
 
 typedef enum FggMeshSetupFlags {
 	FGG_MESH_SETUP_STATIC_MESH  = 0b001,

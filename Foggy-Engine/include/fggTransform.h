@@ -5,7 +5,6 @@
 
 #include "fggEcsImplementation.h"
 
-#include "fggExport.h"
 
 typedef struct FggTransform {
 

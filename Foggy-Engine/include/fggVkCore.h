@@ -25,18 +25,18 @@ typedef struct FggVkCore {
 	FggWindow window;
 	VkSurfaceKHR surface;
 
-	/*Queue stuff*/
+	/*Queues*/
 	VkQueueFlags requiredQueueFlag;
 	uint32_t queueFamilyIndexCount;
 	uint32_t graphicsQueueIndex;
 	uint32_t presentQueueIndex;
 	VkQueue graphicsQueue;
 
-	/*Command stuff*/
+	/*Commands*/
 	VkCommandPool* pCmdPools;
 	VkCommandBuffer* pCmdBuffers;
 
-	/*Swapchain + images stuff*/
+	/*Swapchain*/
 	VkSwapchainKHR swapchain;
 	VkFormat imageFormat;
 	uint32_t swapchainImageCount;
@@ -44,7 +44,7 @@ typedef struct FggVkCore {
 	VkImageView* pSwapchainImageViews;
 	VkFramebuffer* pFramebuffers;
 
-	/*Render pass + sync objects stuff*/
+	/*Render pass + sync objects*/
 	VkRenderPass renderPass;
 	VkSemaphore renderSemaphore;
 	VkSemaphore presentSemaphore;

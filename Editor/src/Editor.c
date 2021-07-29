@@ -71,7 +71,7 @@ int main() {
 		-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 	};
 	geometryMesh->pVertices = calloc(24, sizeof(4));
-	if (geometryMesh->pVertices == NULL) { return; }
+	if (geometryMesh->pVertices == NULL) { return EXIT_FAILURE; }
 	for (uint32_t i = 0; i < 24; i++) {
 		geometryMesh->pVertices[i] = vertices[i];
 	}
