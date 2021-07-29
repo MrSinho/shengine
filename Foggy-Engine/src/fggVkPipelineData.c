@@ -181,7 +181,7 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 		0							//offset;
 	};
 	if (flags & FGG_FIXED_STATES_VERTEX_POSITIONS_BIT) {
-		vertexInputAttributeDescriptionCount++;
+		*vertexInputAttributeDescriptionCount += 1;
 	}
 	
 	VkVertexInputAttributeDescription normalInputAttributeDescription = {
@@ -191,7 +191,7 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 		sizeof(float) * 5				//offset;
 	};
 	if (flags & FGG_FIXED_STATES_VERTEX_NORMALS_BIT) {
-		vertexInputAttributeDescriptionCount++;
+		*vertexInputAttributeDescriptionCount += 1;
 	}
 
 	VkVertexInputAttributeDescription uvInputAttributeDescription = {
@@ -201,7 +201,7 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 		sizeof(float)*3				//offset;
 	};
 	if (flags & FGG_FIXED_STATES_VERTEX_TCOORDS_BIT) {
-		vertexInputAttributeDescriptionCount++;
+		*vertexInputAttributeDescriptionCount += 1;
 	}
 
 	pVertexInputAttributeDescriptions = (VkVertexInputAttributeDescription*)malloc(*vertexInputAttributeDescriptionCount * sizeof(VkVertexInputAttributeDescription));
