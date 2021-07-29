@@ -11,6 +11,8 @@ typedef struct FggVkPipelineData FggVkPipelineData;
 
 typedef struct FggMesh FggMesh;
 
+typedef struct FggVkFixedStates FggVkFixedStates;
+
 extern void fggFrameReset(const FggVkCore core);
 
 extern void fggFrameBegin(const FggVkCore core, uint32_t* swapchainImageIndex);
@@ -25,7 +27,7 @@ extern void fggBindIndexBuffers(const FggVkCore core, const FggMesh mesh);
 
 extern void fggBindDescriptorSets(const FggVkCore core, FggVkPipelineData pipeData);
 
-extern void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggMesh mesh);
+extern void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggVkFixedStates fStates, const FggMesh mesh);
 
 extern void fggFrameEnd(const FggVkCore core, const uint32_t swapchainImageIndex);
 

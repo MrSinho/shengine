@@ -168,10 +168,9 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 	
 	VkVertexInputBindingDescription vertexBindingDescription = {
 		0,									//binding;
-		sizeof(float) * 8,					//stride;
+		0,									//stride;
 		VK_VERTEX_INPUT_RATE_VERTEX 		//inputRate;
 	};
-	*vertexBindDescription = vertexBindingDescription;
 	
 
 	VkVertexInputAttributeDescription positionInputAttributeDescription = {
@@ -182,6 +181,7 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 	};
 	if (flags & FGG_FIXED_STATES_VERTEX_POSITIONS_BIT) {
 		*vertexInputAttributeDescriptionCount += 1;
+		vertexBindingDescription.stride += sizeof(float) * 3;
 	}
 	
 	VkVertexInputAttributeDescription normalInputAttributeDescription = {
@@ -192,6 +192,7 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 	};
 	if (flags & FGG_FIXED_STATES_VERTEX_NORMALS_BIT) {
 		*vertexInputAttributeDescriptionCount += 1;
+		vertexBindingDescription.stride += sizeof(float) * 3;
 	}
 
 	VkVertexInputAttributeDescription uvInputAttributeDescription = {
@@ -202,6 +203,7 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 	};
 	if (flags & FGG_FIXED_STATES_VERTEX_TCOORDS_BIT) {
 		*vertexInputAttributeDescriptionCount += 1;
+		vertexBindingDescription.stride += sizeof(float) * 2;
 	}
 
 	pVertexInputAttributeDescriptions = (VkVertexInputAttributeDescription*)malloc(*vertexInputAttributeDescriptionCount * sizeof(VkVertexInputAttributeDescription));
@@ -210,14 +212,15 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 			pVertexInputAttributeDescriptions[0] = positionInputAttributeDescription;
 		}
 		if (flags & FGG_FIXED_STATES_VERTEX_NORMALS_BIT) {
-		pVertexInputAttributeDescriptions[1] = normalInputAttributeDescription;
+			pVertexInputAttributeDescriptions[1] = normalInputAttributeDescription;
 		}
 		if (flags & FGG_FIXED_STATES_VERTEX_TCOORDS_BIT) {
 			pVertexInputAttributeDescriptions[2] = uvInputAttributeDescription;
 		}
 	}
-	else { exit(-1); }
+	else { exit(EXIT_FAILURE); }
 
+	*vertexBindDescription = vertexBindingDescription;
 	VkPipelineVertexInputStateCreateInfo vertexInput = {
 		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,//sType;
 		NULL,								  //pNext;

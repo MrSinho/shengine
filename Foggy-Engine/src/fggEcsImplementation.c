@@ -48,7 +48,7 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, cons
 
 }
 
-void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
+void fggSceneUpdate(const FggVkCore core, const FggVkFixedStates fStates, const ezecsScene scene) {
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 		
@@ -84,7 +84,7 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 				if (mat->pipelineData.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
 					fggBindDescriptorSets(core, mat->pipelineData);
 				}
-				fggDraw(core.pCmdBuffers[0], *mesh);
+				fggDraw(core.pCmdBuffers[0], fStates, *mesh);
 			}
 		}
 

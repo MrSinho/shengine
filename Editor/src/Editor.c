@@ -43,9 +43,9 @@ int main() {
 
 	FggVkFixedStates fixedStates = { 0 };
 	FggFixedStateFlags fixedStateFlags = FGG_FIXED_STATES_POLYGON_BIT | 
-										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
-										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
-										 FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
+										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT;
+										 //FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
+										 //FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
 	fggSetFixedStates(core, fixedStateFlags, &fixedStates);
 
 							//projection		//view
@@ -69,11 +69,11 @@ int main() {
 	//geometryMesh->indexCount = geometryply.indexCount;
 	//geometryMesh->pIndices = geometryply.pIndices;
 	float vertices[24] = {
-		0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-		1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 
+		1.0f,  1.0f, 0.0f, 
+		-1.0f,  1.0f, 0.0f,
 	};
-	geometryMesh->pVertices = calloc(24, sizeof(4));
+	geometryMesh->pVertices = calloc(24, sizeof(uint32_t));
 	if (geometryMesh->pVertices == NULL) { return EXIT_FAILURE; }
 	for (uint32_t i = 0; i < 24; i++) {
 		geometryMesh->pVertices[i] = vertices[i];
@@ -100,7 +100,7 @@ int main() {
 		fggSetView(pConst[1]);
 
 		geometryMesh->pVertices[0] = (float)sin((float)time.now);
-		fggSceneUpdate(core, scene);
+		fggSceneUpdate(core, fixedStates, scene);
 	
 		fggFrameEnd(core, imageIndex);
 	}
