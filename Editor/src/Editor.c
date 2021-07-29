@@ -42,7 +42,10 @@ int main() {
 	fggSetSyncObjects(&core);
 
 	FggVkFixedStates fixedStates = { 0 };
-	FggFixedStateFlags fixedStateFlags = FGG_FIXED_STATES_POLYGON_BIT | FGG_FIXED_STATES_VERTEX_POSITIONS_BIT | FGG_FIXED_STATES_VERTEX_NORMALS_BIT | FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
+	FggFixedStateFlags fixedStateFlags = FGG_FIXED_STATES_POLYGON_BIT | 
+										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
+										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
+										 FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
 	fggSetFixedStates(core, fixedStateFlags, &fixedStates);
 
 							//projection		//view
