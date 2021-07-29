@@ -52,7 +52,6 @@ int main() {
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
-	//fggImport("../bin/scene.fgg", scene);
 
 
 	PlyFileData geometryply = { 0 };
@@ -97,15 +96,12 @@ int main() {
 
 		fggSetView(pConst[1]);
 
-		geometryMesh->pVertices[0] = sin(time.now);
+		geometryMesh->pVertices[0] = (float)sin((float)time.now);
 		fggSceneUpdate(core, scene);
 	
 		fggFrameEnd(core, imageIndex);
 	}
 	
-	//fggExport("../bin/scene.fgg", scene);
-
-
 	plyFree(&geometryply);
 	fggSceneRelease(core, scene);
 	fggSurfaceRelease(&core);
