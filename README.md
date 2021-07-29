@@ -10,6 +10,10 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 
 Stanford Hand
 
+![dynamic mesh](Saved/Pictures/dynamicMesh.gif)
+
+Dynamic mesh
+
 ## Current features:
  - Entity Component System using [EZ-ECS](https://github.com/MrSinho/EZ-ECS) by MrSinho
  - Material creation and usage

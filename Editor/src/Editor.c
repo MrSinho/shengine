@@ -57,16 +57,22 @@ int main() {
 
 	PlyFileData geometryply = { 0 };
 	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
+	
 	uint32_t geometry = ezecsCreateEntity();
 	FggTransform* geometryTransform = ezecsAddFggTransform(scene, geometry);
-	
-	FggMeshSetupFlags geometrySetupFlags = FGG_MESH_SETUP_STATIC_MESH;
 	FggMesh* geometryMesh = ezecsAddFggMesh(scene, geometry);
-	geometryMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
-	geometryMesh->pVertices = geometryply.pVertices;
-	geometryMesh->indexCount = geometryply.indexCount;
-	geometryMesh->pIndices = geometryply.pIndices;
+	geometryMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
+	//geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
+	//geometryMesh->pVertices = geometryply.pVertices;
+	//geometryMesh->indexCount = geometryply.indexCount;
+	//geometryMesh->pIndices = geometryply.pIndices;
+	float vertices[24] = {
+		0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	};
+	geometryMesh->pVertices = vertices;
+	geometryMesh->vertexCount = 24;
 	ezecsSetFggMaterial(scene, &baseMaterial, geometry);
 	geometryTransform->scale[0] = 1.0f;
 	geometryTransform->scale[1] = 1.0f;
@@ -87,6 +93,7 @@ int main() {
 
 		fggSetView(pConst[1]);
 
+		geometryMesh->pVertices[0] = sin(time.now);
 		fggSceneUpdate(core, scene);
 	
 		fggFrameEnd(core, imageIndex);
