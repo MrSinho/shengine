@@ -71,7 +71,10 @@ int main() {
 		1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 		-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 	};
-	geometryMesh->pVertices = vertices;
+	geometryMesh->pVertices = calloc(24, sizeof(4));
+	for (uint32_t i = 0; i < 24; i++) {
+		geometryMesh->pVertices[i] = vertices[i];
+	}
 	geometryMesh->vertexCount = 24;
 	ezecsSetFggMaterial(scene, &baseMaterial, geometry);
 	geometryTransform->scale[0] = 1.0f;
