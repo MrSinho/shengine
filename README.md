@@ -14,11 +14,13 @@ Stanford Hand
 
 Dynamic mesh
 
-## Current features:
+## Current features (tested):
  - Entity Component System using [EZ-ECS](https://github.com/MrSinho/EZ-ECS) by MrSinho
  - Material creation and usage
  - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter) by MrSinho
  - Indexed and not indexed drawing
+ - Uniform buffer object support
+ - Dynamic mesh
 
 ## To do:
  - Depth buffering
