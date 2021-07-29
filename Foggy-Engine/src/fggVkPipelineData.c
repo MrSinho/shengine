@@ -162,16 +162,17 @@ void fggCreateShaderStage(const VkDevice device, const VkShaderModule shModule, 
 
 }
 
-void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t *vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription *pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo *vi) {
+void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t *vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription *pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo *vi, FggFixedStateFlags flags) {
 	
-	pVertexInputAttributeDescriptions = (VkVertexInputAttributeDescription*)malloc(3 * sizeof(VkVertexInputAttributeDescription));
-
+	*vertexInputAttributeDescriptionCount = 0;
+	
 	VkVertexInputBindingDescription vertexBindingDescription = {
 		0,									//binding;
 		sizeof(float) * 8,					//stride;
 		VK_VERTEX_INPUT_RATE_VERTEX 		//inputRate;
 	};
 	*vertexBindDescription = vertexBindingDescription;
+	
 
 	VkVertexInputAttributeDescription positionInputAttributeDescription = {
 		0,							//location;
@@ -179,13 +180,19 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 		VK_FORMAT_R32G32B32_SFLOAT,	//format;
 		0							//offset;
 	};
-
+	if (flags & FGG_FIXED_STATES_VERTEX_POSITIONS_BIT) {
+		vertexInputAttributeDescriptionCount++;
+	}
+	
 	VkVertexInputAttributeDescription normalInputAttributeDescription = {
 		1,								//location;
 		0,								//binding;
 		VK_FORMAT_R32G32B32_SFLOAT,		//format;
 		sizeof(float) * 5				//offset;
 	};
+	if (flags & FGG_FIXED_STATES_VERTEX_NORMALS_BIT) {
+		vertexInputAttributeDescriptionCount++;
+	}
 
 	VkVertexInputAttributeDescription uvInputAttributeDescription = {
 		2,							//location;
@@ -193,12 +200,21 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 		VK_FORMAT_R32G32_SFLOAT,	//format;
 		sizeof(float)*3				//offset;
 	};
+	if (flags & FGG_FIXED_STATES_VERTEX_TCOORDS_BIT) {
+		vertexInputAttributeDescriptionCount++;
+	}
 
-	*vertexInputAttributeDescriptionCount = 3;
+	pVertexInputAttributeDescriptions = (VkVertexInputAttributeDescription*)malloc(*vertexInputAttributeDescriptionCount * sizeof(VkVertexInputAttributeDescription));
 	if (pVertexInputAttributeDescriptions != NULL) {
-		pVertexInputAttributeDescriptions[0] = positionInputAttributeDescription;
-		pVertexInputAttributeDescriptions[1] = uvInputAttributeDescription;
-		pVertexInputAttributeDescriptions[2] = normalInputAttributeDescription;
+		if (flags & FGG_FIXED_STATES_VERTEX_POSITIONS_BIT) {
+			pVertexInputAttributeDescriptions[0] = positionInputAttributeDescription;
+		}
+		if (flags & FGG_FIXED_STATES_VERTEX_NORMALS_BIT) {
+		pVertexInputAttributeDescriptions[1] = normalInputAttributeDescription;
+		}
+		if (flags & FGG_FIXED_STATES_VERTEX_TCOORDS_BIT) {
+			pVertexInputAttributeDescriptions[2] = uvInputAttributeDescription;
+		}
 	}
 	else { exit(-1); }
 
@@ -321,7 +337,7 @@ void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, V
 
 void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixedStates* fStates) {
 	
-	fggSetVertexInputState(&fStates->vertexBindingDescription, &fStates->vertexInputAttributeDescriptionCount, fStates->pVertexInputAssemblyDescriptions, &fStates->vertexInputStateInfo);
+	fggSetVertexInputState(&fStates->vertexBindingDescription, &fStates->vertexInputAttributeDescriptionCount, fStates->pVertexInputAssemblyDescriptions, &fStates->vertexInputStateInfo, flags);
 	fggCreateInputAssembly(&fStates->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
 	fggCreateRasterizer(&fStates->rasterizer);
 	if (flags & FGG_FIXED_STATES_WIREFRAME_BIT) {

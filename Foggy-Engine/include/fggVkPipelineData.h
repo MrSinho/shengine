@@ -7,9 +7,12 @@
 #include "fggMesh.h"
 
 typedef enum FggFixedStateFlags {
-	FGG_FIXED_STATES_WIREFRAME_BIT = 0b0001,
-	FGG_FIXED_STATES_POLYGON_BIT = 0b0010,
-	FGG_FIXED_STATES_POINTS_BIT = 0b0100,
+	FGG_FIXED_STATES_WIREFRAME_BIT 				= 0b000001,
+	FGG_FIXED_STATES_POLYGON_BIT   				= 0b000010,
+	FGG_FIXED_STATES_POINTS_BIT    				= 0b000100,
+	FGG_FIXED_STATES_VERTEX_POSITIONS_BIT 		= 0b001000,
+	FGG_FIXED_STATES_VERTEX_NORMALS_BIT 		= 0b010000,
+	FGG_FIXED_STATES_VERTEX_TCOORDS_BIT 		= 0b100000
 } FggFixedStateFlags;
 
 typedef struct FggVkFixedStates {
@@ -92,7 +95,7 @@ extern void fggCreateShaderStage(const VkDevice device, const VkShaderModule shM
 
 
 
-extern void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t* vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription* pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo* vi);
+extern void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t* vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription* pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo* vi, FggFixedStateFlags flags);
 
 extern void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable);
 
