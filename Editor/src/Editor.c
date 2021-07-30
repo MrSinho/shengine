@@ -58,7 +58,7 @@ void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 int main() {
 
 	FggTime time = { 0 };
-	FggVkCore core = fggVkCoreInitPrerequisites(1280, 720, "Foggy-Engine Editor");
+	FggVkCore core = fggVkCoreInitPrerequisites(720, 480, "Foggy-Engine Editor");
 
 	fggInitVulkan(&core);
 	fggInitSwapchainData(&core);
@@ -68,7 +68,7 @@ int main() {
 	fggSetSyncObjects(&core);
 
 	FggVkFixedStates meshFStates, lineFStates = { 0 };
-	FggFixedStateFlags meshFStateFlags = FGG_FIXED_STATES_POLYGON_MODE_FACE_BIT |
+	FggFixedStateFlags meshFStateFlags = FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
 										 FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST |
 										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
 										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
@@ -91,7 +91,7 @@ int main() {
 
 	//PRISM
 	PlyFileData prismply = { 0 };
-	plyLoadFile("../Assets/Meshes/prism.ply", &prismply, 0);
+	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &prismply, 0);
 	uint32_t prism = ezecsCreateEntity();
 	FggTransform* prismTransform = ezecsAddFggTransform(scene, prism);
 	FggMesh* prismMesh = ezecsAddFggMesh(scene, prism);
@@ -104,9 +104,10 @@ int main() {
 	prismTransform->scale[0] = 1.0f;
 	prismTransform->scale[1] = 1.0f;
 	prismTransform->scale[2] = 1.0f;
-	prismTransform->position[0] = 1.0f;
+	prismTransform->position[0] = 0.0f;
 	prismTransform->position[2] = -3.0f;
-	prismTransform->rotation[1] = -100.0f;
+
+	//prismTransform->rotation[1] = -100.0f;
 
 	//RAYS
 	float vertices[12] = {
@@ -116,7 +117,7 @@ int main() {
 	};
 	uint32_t ray = ezecsCreateEntity();
 	FggMesh* rayMesh = ezecsAddFggMesh(scene, ray);
-	rayMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	rayMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
 	rayMesh->vertexCount = sizeof(vertices) / sizeof(float);
 	rayMesh->pVertices = calloc(rayMesh->vertexCount, sizeof(uint32_t));
 	if (rayMesh->pVertices == NULL) { return EXIT_FAILURE; }
@@ -144,7 +145,9 @@ int main() {
 
 		fggSetView(pConst[1]);
 
-		//rayMesh->pVertices[0] = (float)sin((float)time.now);
+		//rayMesh->pVertices[0] *= (float)sin((float)time.now);
+		prismTransform->position[2] = -0.5*(float)sin((float)time.now);
+		prismTransform->rotation[1] += 1.0f;
 		fggSceneUpdate(core, scene);
 	
 		fggFrameEnd(core, imageIndex);
