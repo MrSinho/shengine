@@ -11,7 +11,7 @@
 #include "fggCglmImplementation.h"
 
 
-void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, const ezecsScene scene) {
+void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 		if (ezecsHasFggMesh(scene, entity)) {
@@ -48,7 +48,7 @@ void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, cons
 
 }
 
-void fggSceneUpdate(const FggVkCore core, const FggVkFixedStates fStates, const ezecsScene scene) {
+void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 		
@@ -84,7 +84,9 @@ void fggSceneUpdate(const FggVkCore core, const FggVkFixedStates fStates, const 
 				if (mat->pipelineData.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
 					fggBindDescriptorSets(core, mat->pipelineData);
 				}
-				fggDraw(core.pCmdBuffers[0], fStates, *mesh);
+				uint32_t meshStride = 0;
+				if (mesh->flags & FGG_MESH_SETUP_STATIC_MESH)
+				fggDraw(core.pCmdBuffers[0], mat->pipelineData.vertexStride / 4, *mesh);
 			}
 		}
 

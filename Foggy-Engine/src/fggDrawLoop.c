@@ -67,10 +67,10 @@ void fggBindDescriptorSets(const FggVkCore core, FggVkPipelineData pipeData) {
 	vkCmdBindDescriptorSets(core.pCmdBuffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData.mainPipelineLayout, 0, 1, &pipeData.descriptorSet, 0, NULL);
 }
 
-void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggVkFixedStates fStates, const FggMesh mesh) {
+void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const uint32_t stride, const FggMesh mesh) {
 
 	if (mesh.indexCount <= 0) {
-		vkCmdDraw(graphicsCmdBuffer, mesh.vertexCount / (fStates.vertexInputStateInfo.pVertexBindingDescriptions->stride / 4), 1, 0, 0);
+		vkCmdDraw(graphicsCmdBuffer, mesh.vertexCount / stride, 1, 0, 0);
 	}
 	else {
 		vkCmdDrawIndexed(graphicsCmdBuffer, mesh.indexCount, 1, 0, 0, 0);

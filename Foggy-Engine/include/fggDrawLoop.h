@@ -27,7 +27,7 @@ extern void fggBindIndexBuffers(const FggVkCore core, const FggMesh mesh);
 
 extern void fggBindDescriptorSets(const FggVkCore core, FggVkPipelineData pipeData);
 
-extern void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const FggVkFixedStates fStates, const FggMesh mesh);
+extern void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const uint32_t stride, const FggMesh mesh);
 
 extern void fggFrameEnd(const FggVkCore core, const uint32_t swapchainImageIndex);
 

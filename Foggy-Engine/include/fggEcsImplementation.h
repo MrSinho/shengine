@@ -16,9 +16,9 @@
 typedef struct FggVkFixedStates FggVkFixedStates;
 
 
-extern void fggSceneInit(const FggVkCore core, const FggVkFixedStates fixedStates, const ezecsScene scene);
+extern void fggSceneInit(const FggVkCore core, const ezecsScene scene);
 
-extern void fggSceneUpdate(const FggVkCore core, const FggVkFixedStates fStates, const ezecsScene scene);
+extern void fggSceneUpdate(const FggVkCore core, const ezecsScene scene);
 
 extern void fggSceneRelease(const FggVkCore core, const ezecsScene scene);
 

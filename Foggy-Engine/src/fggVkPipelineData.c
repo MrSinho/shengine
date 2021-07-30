@@ -341,14 +341,21 @@ void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, V
 void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixedStates* fStates) {
 	
 	fggSetVertexInputState(&fStates->vertexBindingDescription, &fStates->vertexInputAttributeDescriptionCount, fStates->pVertexInputAssemblyDescriptions, &fStates->vertexInputStateInfo, flags);
-	fggCreateInputAssembly(&fStates->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
-	fggCreateRasterizer(&fStates->rasterizer);
-	if (flags & FGG_FIXED_STATES_WIREFRAME_BIT) {
+	if (flags & FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT) {
 		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
 	}
-	if (flags & FGG_FIXED_STATES_POINTS_BIT) {
+	if (flags & FGG_FIXED_STATES_POLYGON_MODE_POINTS_BIT) {
 		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_POINT;
 	}
+	fggCreateInputAssembly(&fStates->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
+	if (flags & FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST) {
+		fStates->inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+	}
+	if (flags & FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST) {
+		fStates->inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+	}
+	fggCreateRasterizer(&fStates->rasterizer);
+	
 
 	fggSetMultisampleState(&fStates->multisampleStateInfo);
 	fggColorBlendSettings(&fStates->colorBlendAttachment, &fStates->colorBlendState);
@@ -389,16 +396,16 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,	//sType;
 		NULL,												//pNext;
 		0,													//flags;
-		pPipeData->shaderStageCount,							//stageCount;
+		pPipeData->shaderStageCount,						//stageCount;
 		pPipeData->pShaderStages,							//pStages;
 		&fStates.vertexInputStateInfo,						//pVertexInputState;
 		&fStates.inputAssembly,								//pInputAssemblyState;
 		NULL,												//pTessellationState;
 		&fStates.viewportState,								//pViewportState;
-		&fStates.rasterizer,									//pRasterizationState;
+		&fStates.rasterizer,								//pRasterizationState;
 		&fStates.multisampleStateInfo,						//pMultisampleState;
 		NULL,												//pDepthStencilState;
-		&fStates.colorBlendState,								//pColorBlendState;
+		&fStates.colorBlendState,							//pColorBlendState;
 		NULL,												//pDynamicState;
 		pPipeData->mainPipelineLayout,						//layout;
 		core.renderPass,									//renderPass;
@@ -406,6 +413,8 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		NULL,												//basePipelineHandle;
 		0													//basePipelineIndex;
 	};
+
+	pPipeData->vertexStride = fStates.vertexInputStateInfo.pVertexBindingDescriptions->stride;
 
 	fggCheckVkResult(
 		vkCreateGraphicsPipelines(core.device, NULL, 1, &graphicsPipelineCreateInfo, NULL, &pPipeData->pipeline),
