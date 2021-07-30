@@ -112,6 +112,7 @@ int main() {
 	float vertices[12] = {
 	-1.0f, -1.0f, 0.0f, 
 	1.0f,  1.0f, 0.0f, 
+	-1.0f,  1.0f, 0.0f,
 	};
 	uint32_t ray = ezecsCreateEntity();
 	FggMesh* rayMesh = ezecsAddFggMesh(scene, ray);
