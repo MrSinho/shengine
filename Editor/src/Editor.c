@@ -4,13 +4,13 @@
 #include <stdlib.h>
 
 void fggSetupMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, void** ppPushConstants, FggMaterial* pMaterial) {
-	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
-	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
+	fggCompileGLSLShader("../Shaders/src/Refraction.vert", "../Shaders/bin/Refraction.vert.spv");
+	fggCompileGLSLShader("../Shaders/src/Refraction.frag", "../Shaders/bin/Refraction.frag.spv");
 	
 	FggMaterial mat = {
-		"../Shaders/bin/Mesh.vert.spv",	//vertexShaderPath;
-		"../Shaders/bin/Mesh.frag.spv",	//fragmentShaderPath;	
-		0,								//pipelineData;
+		"../Shaders/bin/Refraction.vert.spv",	//vertexShaderPath;
+		"../Shaders/bin/Refraction.frag.spv",	//fragmentShaderPath;	
+		0,										//pipelineData;
 	};
 
 	fggAllocateUniformBufferData(core, sizeof(mat4), &mat.pipelineData);
@@ -43,8 +43,8 @@ int main() {
 
 	FggVkFixedStates fixedStates = { 0 };
 	FggFixedStateFlags fixedStateFlags = FGG_FIXED_STATES_POLYGON_BIT | 
-										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT;
-										 //FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
+										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
+										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT; 
 										 //FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
 	fggSetFixedStates(core, fixedStateFlags, &fixedStates);
 
@@ -69,9 +69,9 @@ int main() {
 	//geometryMesh->indexCount = geometryply.indexCount;
 	//geometryMesh->pIndices = geometryply.pIndices;
 	float vertices[24] = {
-		0.0f, -1.0f, 0.0f, 
-		1.0f,  1.0f, 0.0f, 
-		-1.0f,  1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,  0.0f, 0.0f, 0.0f,
+		1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 	};
 	geometryMesh->pVertices = calloc(24, sizeof(uint32_t));
 	if (geometryMesh->pVertices == NULL) { return EXIT_FAILURE; }
