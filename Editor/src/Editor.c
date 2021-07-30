@@ -4,12 +4,12 @@
 #include <stdlib.h>
 
 void fggSetupMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, void** ppPushConstants, FggMaterial* pMaterial) {
-	fggCompileGLSLShader("../Shaders/src/Refraction.vert", "../Shaders/bin/Refraction.vert.spv");
-	fggCompileGLSLShader("../Shaders/src/Refraction.frag", "../Shaders/bin/Refraction.frag.spv");
+	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
+	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	
 	FggMaterial mat = {
-		"../Shaders/bin/Refraction.vert.spv",	//vertexShaderPath;
-		"../Shaders/bin/Refraction.frag.spv",	//fragmentShaderPath;	
+		"../Shaders/bin/Mesh.vert.spv",	//vertexShaderPath;
+		"../Shaders/bin/Mesh.frag.spv",	//fragmentShaderPath;	
 		0,										//pipelineData;
 	};
 
@@ -44,8 +44,8 @@ int main() {
 	FggVkFixedStates fixedStates = { 0 };
 	FggFixedStateFlags fixedStateFlags = FGG_FIXED_STATES_POLYGON_BIT | 
 										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
-										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT; 
-										 //FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
+										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
+										 FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
 	fggSetFixedStates(core, fixedStateFlags, &fixedStates);
 
 							//projection		//view
@@ -58,27 +58,27 @@ int main() {
 
 
 	PlyFileData geometryply = { 0 };
-	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &geometryply, 0);
+	plyLoadFile("../Assets/Meshes/prism.ply", &geometryply, 0);
 	
 	uint32_t geometry = ezecsCreateEntity();
 	FggTransform* geometryTransform = ezecsAddFggTransform(scene, geometry);
 	FggMesh* geometryMesh = ezecsAddFggMesh(scene, geometry);
-	geometryMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
-	//geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
-	//geometryMesh->pVertices = geometryply.pVertices;
-	//geometryMesh->indexCount = geometryply.indexCount;
-	//geometryMesh->pIndices = geometryply.pIndices;
-	float vertices[24] = {
-		0.0f, -1.0f, 0.0f,  0.0f, 0.0f, 0.0f,
-		1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	};
-	geometryMesh->pVertices = calloc(24, sizeof(uint32_t));
-	if (geometryMesh->pVertices == NULL) { return EXIT_FAILURE; }
-	for (uint32_t i = 0; i < 24; i++) {
-		geometryMesh->pVertices[i] = vertices[i];
-	}
-	geometryMesh->vertexCount = 24;
+	geometryMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	geometryMesh->vertexCount = geometryply.vertexCount * geometryply.vertexStride;
+	geometryMesh->pVertices = geometryply.pVertices;
+	geometryMesh->indexCount = geometryply.indexCount;
+	geometryMesh->pIndices = geometryply.pIndices;
+	//float vertices[24] = {
+	//	0.0f, -1.0f, 0.0f,  0.0f, 0.0f, 0.0f,
+	//	1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 0.0f,
+	//	-1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	//};
+	//geometryMesh->pVertices = calloc(24, sizeof(uint32_t));
+	//if (geometryMesh->pVertices == NULL) { return EXIT_FAILURE; }
+	//for (uint32_t i = 0; i < 24; i++) {
+	//	geometryMesh->pVertices[i] = vertices[i];
+	//}
+	//geometryMesh->vertexCount = 24;
 	ezecsSetFggMaterial(scene, &baseMaterial, geometry);
 	geometryTransform->scale[0] = 1.0f;
 	geometryTransform->scale[1] = 1.0f;
