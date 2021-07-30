@@ -341,12 +341,7 @@ void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, V
 void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixedStates* fStates) {
 	
 	fggSetVertexInputState(&fStates->vertexBindingDescription, &fStates->vertexInputAttributeDescriptionCount, fStates->pVertexInputAssemblyDescriptions, &fStates->vertexInputStateInfo, flags);
-	if (flags & FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT) {
-		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
-	}
-	if (flags & FGG_FIXED_STATES_POLYGON_MODE_POINTS_BIT) {
-		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_POINT;
-	}
+	
 	fggCreateInputAssembly(&fStates->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
 	if (flags & FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST) {
 		fStates->inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
@@ -354,7 +349,14 @@ void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixe
 	if (flags & FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST) {
 		fStates->inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 	}
+	
 	fggCreateRasterizer(&fStates->rasterizer);
+	if (flags & FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT) {
+		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
+	}
+	if (flags & FGG_FIXED_STATES_POLYGON_MODE_POINTS_BIT) {
+		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_POINT;
+	}
 	
 
 	fggSetMultisampleState(&fStates->multisampleStateInfo);

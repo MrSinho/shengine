@@ -1,4 +1,3 @@
-
 #include "fggVkMemoryInfo.h"
 #include "fggVkPipelineData.h"
 
@@ -51,10 +50,10 @@ void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
 void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
-		
+
 		if (ezecsHasFggMesh(scene, entity)) {
 			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
-			
+
 			//Map memory
 			if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH) {
 				fggMapVertexBufferMemory(core, mesh);
@@ -84,8 +83,6 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 				if (mat->pipelineData.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
 					fggBindDescriptorSets(core, mat->pipelineData);
 				}
-				uint32_t meshStride = 0;
-				if (mesh->flags & FGG_MESH_SETUP_STATIC_MESH)
 				fggDraw(core.pCmdBuffers[0], mat->pipelineData.vertexStride / 4, *mesh);
 			}
 		}
@@ -117,7 +114,7 @@ void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
 
 		if (ezecsHasFggMesh(scene, entity)) {
 			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
-			if (mesh->vertexCount > 0 && mesh->pVertices != NULL) { 
+			if (mesh->vertexCount > 0 && mesh->pVertices != NULL) {
 				fggClearBufferMemory(core.device, mesh->vertexBuffer, mesh->vertexBufferMemory);
 				free(mesh->pVertices);
 				mesh->vertexCount = 0;

@@ -68,67 +68,103 @@ int main() {
 	fggSetSyncObjects(&core);
 
 	FggVkFixedStates meshFStates, lineFStates = { 0 };
-	FggFixedStateFlags meshFStateFlags = FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
-										 FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST |
+	FggFixedStateFlags meshFStateFlags = FGG_FIXED_STATES_POLYGON_MODE_FACE_BIT |
 										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
 										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
 										 FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
 	fggSetFixedStates(core, meshFStateFlags, &meshFStates);
-	FggFixedStateFlags lineStateFlags = FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
-										FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST |
-										FGG_FIXED_STATES_VERTEX_POSITIONS_BIT;
-	fggSetFixedStates(core, lineStateFlags, &lineFStates);
+	FggFixedStateFlags triangleStateFlags = FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
+											FGG_FIXED_STATES_VERTEX_POSITIONS_BIT;
+	fggSetFixedStates(core, triangleStateFlags, &lineFStates);
 
 	//MATERIALS
-	FggMaterial baseMaterial, lineMaterial = { 0 };
+	FggMaterial meshMaterial, lineMaterial = { 0 };
 	
 	mat4 pConst[2] = { GLM_MAT4_IDENTITY_INIT, GLM_MAT4_IDENTITY_INIT };
-	fggSetupBaseMaterial(core, meshFStates, (void**)pConst, &baseMaterial);
+	fggSetupBaseMaterial(core, meshFStates, (void**)pConst, &meshMaterial);
 	fggSetupLineMaterial(core, lineFStates, (void**)pConst, &lineMaterial);
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
 
-	//PRISM
-	PlyFileData prismply = { 0 };
-	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &prismply, 0);
-	uint32_t prism = ezecsCreateEntity();
-	FggTransform* prismTransform = ezecsAddFggTransform(scene, prism);
-	FggMesh* prismMesh = ezecsAddFggMesh(scene, prism);
-	prismMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	prismMesh->vertexCount = prismply.vertexCount * prismply.vertexStride;
-	prismMesh->pVertices = prismply.pVertices;
-	prismMesh->indexCount = prismply.indexCount;
-	prismMesh->pIndices = prismply.pIndices;
-	ezecsSetFggMaterial(scene, &baseMaterial, prism);
-	prismTransform->scale[0] = 1.0f;
-	prismTransform->scale[1] = 1.0f;
-	prismTransform->scale[2] = 1.0f;
-	prismTransform->position[0] = 0.0f;
-	prismTransform->position[2] = -3.0f;
+	//hand
+	PlyFileData handply = { 0 };
+	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &handply, 0);
+	uint32_t hand = ezecsCreateEntity();
+	FggTransform* handTransform = ezecsAddFggTransform(scene, hand);
+	FggMesh* handMesh = ezecsAddFggMesh(scene, hand);
+	handMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	handMesh->vertexCount = handply.vertexCount * handply.vertexStride;
+	handMesh->pVertices = handply.pVertices;
+	handMesh->indexCount = handply.indexCount;
+	handMesh->pIndices = handply.pIndices;
+	ezecsSetFggMaterial(scene, &meshMaterial, hand);
+	handTransform->scale[0] = 1.0f;
+	handTransform->scale[1] = 1.0f;
+	handTransform->scale[2] = 1.0f;
+	handTransform->position[0] = 0.0f;
+	handTransform->position[1] = -1.3f;
+	handTransform->position[2] = -5.0f;
+	
+	//lucy
+	PlyFileData lucyply = { 0 };
+	plyLoadFile("../Assets/Meshes/stanfordLucy.ply", &lucyply, 0);
+	uint32_t lucy = ezecsCreateEntity();
+	FggTransform* lucyTransform = ezecsAddFggTransform(scene, lucy);
+	FggMesh* lucyMesh = ezecsAddFggMesh(scene, lucy);
+	lucyMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	lucyMesh->vertexCount = lucyply.vertexCount * lucyply.vertexStride;
+	lucyMesh->pVertices = lucyply.pVertices;
+	lucyMesh->indexCount = lucyply.indexCount;
+	lucyMesh->pIndices = lucyply.pIndices;
+	FggMaterial newmat = { 0 };
+	fggSetupBaseMaterial(core, meshFStates, (void**)pConst, &newmat);
+	ezecsSetFggMaterial(scene, &newmat, lucy);
+	lucyTransform->scale[0] = 1.0f;
+	lucyTransform->scale[1] = 1.0f;
+	lucyTransform->scale[2] = 1.0f;
+	lucyTransform->position[0] = 2.0f;
+	lucyTransform->position[1] = 0.0f;
+	lucyTransform->position[2] = -2.0f;
+	
+	//text
+	PlyFileData textply = { 0 };
+	plyLoadFile("../Assets/Meshes/text.ply", &textply, 0);
+	uint32_t text = ezecsCreateEntity();
+	FggTransform* textTransform = ezecsAddFggTransform(scene, text);
+	FggMesh* textMesh = ezecsAddFggMesh(scene, text);
+	textMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	textMesh->vertexCount = textply.vertexCount * textply.vertexStride;
+	textMesh->pVertices = textply.pVertices;
+	textMesh->indexCount = textply.indexCount;
+	textMesh->pIndices = textply.pIndices;
+	FggMaterial newmat1 = { 0 };
+	fggSetupBaseMaterial(core, meshFStates, (void**)pConst, &newmat1);
+	ezecsSetFggMaterial(scene, &newmat1, text);
+	textTransform->scale[0] = 1.0f;
+	textTransform->scale[1] = 1.0f;
+	textTransform->scale[2] = 1.0f;
 
-	//prismTransform->rotation[1] = -100.0f;
-
-	//RAYS
+	//triangle
 	float vertices[12] = {
-	-1.0f, -1.0f, 0.0f, 
-	1.0f,  1.0f, 0.0f, 
-	-1.0f,  1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 
+		1.0f,  1.0f, 0.0f, 
+		-1.0f,  1.0f, 0.0f,
 	};
-	uint32_t ray = ezecsCreateEntity();
-	FggMesh* rayMesh = ezecsAddFggMesh(scene, ray);
-	rayMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
-	rayMesh->vertexCount = sizeof(vertices) / sizeof(float);
-	rayMesh->pVertices = calloc(rayMesh->vertexCount, sizeof(uint32_t));
-	if (rayMesh->pVertices == NULL) { return EXIT_FAILURE; }
-	for (uint32_t i = 0; i < rayMesh->vertexCount; i++) {
-		rayMesh->pVertices[i] = vertices[i];
+	uint32_t triangle = ezecsCreateEntity();
+	FggMesh* triangleMesh = ezecsAddFggMesh(scene, triangle);
+	triangleMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
+	triangleMesh->vertexCount = sizeof(vertices) / sizeof(float);
+	triangleMesh->pVertices = calloc(triangleMesh->vertexCount, sizeof(uint32_t));
+	if (triangleMesh->pVertices == NULL) { return EXIT_FAILURE; }
+	for (uint32_t i = 0; i < triangleMesh->vertexCount; i++) {
+		triangleMesh->pVertices[i] = vertices[i];
 	}
-	ezecsSetFggMaterial(scene, &lineMaterial, ray);
-	FggTransform* rayTransform = ezecsAddFggTransform(scene, ray);
-	rayTransform->scale[0] = 1.0f;
-	rayTransform->scale[1] = 1.0f;
-	rayTransform->scale[2] = 1.0f;
+	ezecsSetFggMaterial(scene, &lineMaterial, triangle);
+	FggTransform* triangleTransform = ezecsAddFggTransform(scene, triangle);
+	triangleTransform->scale[0] = 1.0f;
+	triangleTransform->scale[1] = 1.0f;
+	triangleTransform->scale[2] = 1.0f;
 
 	fggSceneInit(core, scene);
 	fggInitCommands(&core);
@@ -145,15 +181,17 @@ int main() {
 
 		fggSetView(pConst[1]);
 
-		//rayMesh->pVertices[0] *= (float)sin((float)time.now);
-		prismTransform->position[2] = -0.5*(float)sin((float)time.now);
-		prismTransform->rotation[1] += 1.0f;
+		triangleMesh->pVertices[0] = (float)sin((float)time.now);
+		handTransform->rotation[1] += 50.0f * time.deltaTime;
+		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
+		textTransform->rotation[1] -= 100 * time.deltaTime;
+
 		fggSceneUpdate(core, scene);
 	
 		fggFrameEnd(core, imageIndex);
 	}
 	
-	//plyFree(&prismply);
+	//plyFree(&handply);
 	fggSceneRelease(core, scene);
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);
