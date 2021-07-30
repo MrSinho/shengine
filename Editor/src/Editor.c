@@ -4,9 +4,10 @@
 #include <stdlib.h>
 
 void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, void** ppPushConstants, FggMaterial* pMaterial) {
+#ifndef NDEBUG
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
-	
+#endif
 	FggMaterial mat = {
 		"../Shaders/bin/Mesh.vert.spv",	//vertexShaderPath;
 		"../Shaders/bin/Mesh.frag.spv",	//fragmentShaderPath;	
@@ -30,8 +31,10 @@ void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 }
 
 void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, void** ppPushConstants, FggMaterial* pMaterial) {
+#ifndef NDEBUG
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Line.vert.spv");
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Line.frag.spv");
+#endif
 
 	FggMaterial mat = {
 		"../Shaders/bin/Line.vert.spv",	//vertexShaderPath;
