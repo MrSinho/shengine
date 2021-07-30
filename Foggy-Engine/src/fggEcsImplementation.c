@@ -91,11 +91,11 @@ void fggSceneUpdate(const FggVkCore core, const FggVkFixedStates fStates, const 
 		if (ezecsHasFggTransform(scene, entity)) {
 			FggTransform* t = ezecsGetFggTransform(scene, entity);
 			glm_mat4_identity(t->model);
+			glm_translate(t->model, t->position);
 			glm_scale(t->model, t->scale);
 			glm_rotate(t->model, t->rotation[0] * (float)GLM_PI / 180.0f, (vec3) { 1.0f, 0.0f, 0.0f });
 			glm_rotate(t->model, t->rotation[1] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 1.0f, 0.0f });
 			glm_rotate(t->model, t->rotation[2] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 0.0f, 1.0f });
-			glm_translate(t->model, t->position);
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* m = ezecsGetFggMaterial(scene, entity);
 				fggMapMemory(core.device, m->pipelineData.uniformBufferMemory, sizeof(mat4), t->model);

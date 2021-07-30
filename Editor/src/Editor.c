@@ -32,7 +32,7 @@ void fggSetupMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, 
 int main() {
 
 	FggTime time = { 0 };
-	FggVkCore core = fggVkCoreInitPrerequisites(600, 600, "Foggy-Engine Editor");
+	FggVkCore core = fggVkCoreInitPrerequisites(1280, 720, "Foggy-Engine Editor");
 
 	fggInitVulkan(&core);
 	fggInitSwapchainData(&core);
@@ -42,7 +42,7 @@ int main() {
 	fggSetSyncObjects(&core);
 
 	FggVkFixedStates fixedStates = { 0 };
-	FggFixedStateFlags fixedStateFlags = FGG_FIXED_STATES_POLYGON_BIT | 
+	FggFixedStateFlags fixedStateFlags = FGG_FIXED_STATES_WIREFRAME_BIT | 
 										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
 										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
 										 FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
@@ -83,6 +83,9 @@ int main() {
 	geometryTransform->scale[0] = 1.0f;
 	geometryTransform->scale[1] = 1.0f;
 	geometryTransform->scale[2] = 1.0f;
+	geometryTransform->position[0] = 1.0f;
+	geometryTransform->position[2] = -3.0f;
+	geometryTransform->rotation[1] = -100.0f;
 
 	fggSceneInit(core, fixedStates, scene);
 	fggInitCommands(&core);
