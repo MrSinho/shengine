@@ -39,7 +39,7 @@ void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 	FggMaterial mat = {
 		"../Shaders/bin/Line.vert.spv",	//vertexShaderPath;
 		"../Shaders/bin/Line.frag.spv",	//fragmentShaderPath;	
-		0,										//pipelineData;
+		0,								//pipelineData;
 	};
 
 	fggAllocateUniformBufferData(core, sizeof(mat4), &mat.pipelineData);
@@ -61,7 +61,7 @@ void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 int main() {
 
 	FggTime time = { 0 };
-	FggVkCore core = fggVkCoreInitPrerequisites(720, 480, "Foggy-Engine Editor");
+	FggVkCore core = fggVkCoreInitPrerequisites(1920, 1080, "Foggy-Engine Editor");
 
 	fggInitVulkan(&core);
 	fggInitSwapchainData(&core);
