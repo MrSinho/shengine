@@ -19,7 +19,7 @@ extern void fggFrameBegin(const FggVkCore core, uint32_t* swapchainImageIndex);
 
 extern void fggBindPipeline(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData);
 
-extern void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData);
+extern void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const void* pPushConstantsData);
 
 extern void fggBindVertexBuffers(const FggVkCore core, const FggMesh mesh);
 

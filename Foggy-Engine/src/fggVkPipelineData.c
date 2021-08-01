@@ -96,11 +96,10 @@ void fggAllocateDescriptorSets(const FggVkCore core, FggVkPipelineData* pPipeDat
 	pPipeData->writeDescriptorSet = writeDescriptorSet;
 }
 
-void fggSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, void** ppData, FggVkPipelineData* pPipeData) {
+void fggSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, FggVkPipelineData* pPipeData) {
 	pPipeData->pushConstantRange.offset		= offset;
 	pPipeData->pushConstantRange.size		= size;
 	pPipeData->pushConstantRange.stageFlags = shaderStageFlags;
-	pPipeData->ppPushConstantData = ppData;
 }
 
 void fggSetupShaders(const FggVkCore core, const char* vertexspv, const char* fragmentspv, FggVkPipelineData* pipeData) {

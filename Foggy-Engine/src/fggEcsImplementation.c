@@ -49,7 +49,23 @@ void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
 
 void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 
+	FggCamera camera = { 0 };
+
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
+
+		if (ezecsHasFggTransform(scene, entity)) {
+			FggTransform* t = ezecsGetFggTransform(scene, entity);
+			glm_mat4_identity(t->model);
+			glm_translate(t->model, t->position);
+			glm_scale(t->model, t->scale);
+			glm_rotate(t->model, t->rotation[0] * (float)GLM_PI / 180.0f, (vec3) { 1.0f, 0.0f, 0.0f });
+			glm_rotate(t->model, t->rotation[1] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 1.0f, 0.0f });
+			glm_rotate(t->model, t->rotation[2] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 0.0f, 1.0f });
+			if (ezecsHasFggMaterial(scene, entity)) {
+				FggMaterial* m = ezecsGetFggMaterial(scene, entity);
+				fggMapMemory(core.device, m->pipelineData.uniformBufferMemory, sizeof(mat4), t->model);
+			}
+		}
 
 		if (ezecsHasFggMesh(scene, entity)) {
 			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
@@ -70,36 +86,26 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 				fggBindIndexBuffers(core, *mesh);
 			}
 
+			if (ezecsHasFggCamera(scene, entity)) {
+				camera = *ezecsGetFggCamera(scene, entity);
+			}
 
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
 				fggBindPipeline(core.pCmdBuffers[0], mat->pipelineData);
 
-				//Push constants
-				if (mat->pipelineData.setupFlags & FGG_PIPELINE_SETUP_PUSH_CONSTANTS_BIT) {
-					fggPushConstants(core.pCmdBuffers[0], mat->pipelineData);
-				}
+				//push constants
+				fggSetProjection(core.window, camera.fov, camera.nc, camera.fc, camera.projection);
+				fggSetView(camera.view);
+				vec4* pConst[2] = { camera.projection, camera.view };
+				fggPushConstants(core.pCmdBuffers[0], mat->pipelineData, &pConst[0][0]);
+
 				//Bind descriptor sets
 				if (mat->pipelineData.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
 					fggBindDescriptorSets(core, mat->pipelineData);
 				}
 				fggDraw(core.pCmdBuffers[0], mat->pipelineData.vertexStride / 4, *mesh);
 			}
-		}
-
-		if (ezecsHasFggTransform(scene, entity)) {
-			FggTransform* t = ezecsGetFggTransform(scene, entity);
-			glm_mat4_identity(t->model);
-			glm_translate(t->model, t->position);
-			glm_scale(t->model, t->scale);
-			glm_rotate(t->model, t->rotation[0] * (float)GLM_PI / 180.0f, (vec3) { 1.0f, 0.0f, 0.0f });
-			glm_rotate(t->model, t->rotation[1] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 1.0f, 0.0f });
-			glm_rotate(t->model, t->rotation[2] * (float)GLM_PI / 180.0f, (vec3) { 0.0f, 0.0f, 1.0f });
-			if (ezecsHasFggMaterial(scene, entity)) {
-				FggMaterial* m = ezecsGetFggMaterial(scene, entity);
-				fggMapMemory(core.device, m->pipelineData.uniformBufferMemory, sizeof(mat4), t->model);
-			}
-
 		}
 
 	}

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, void** ppPushConstants, FggMaterial* pMaterial) {
+void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, FggMaterial* pMaterial) {
 #ifndef NDEBUG
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
@@ -19,8 +19,7 @@ void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 	fggCreateDescriptorPool(core, &mat.pipelineData);
 	fggAllocateDescriptorSets(core, &mat.pipelineData);
 
-	fggSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mat4)*2, ppPushConstants, &mat.pipelineData);
-
+	fggSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mat4)*2, &mat.pipelineData);
 
 	fggSetupShaders(core, mat.vertexShaderPath, mat.fragmentShaderPath, &mat.pipelineData);
 	
@@ -30,7 +29,7 @@ void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 	*pMaterial = mat;
 }
 
-void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, void** ppPushConstants, FggMaterial* pMaterial) {
+void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, FggMaterial* pMaterial) {
 #ifndef NDEBUG
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Line.vert.spv");
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Line.frag.spv");
@@ -47,7 +46,7 @@ void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 	fggCreateDescriptorPool(core, &mat.pipelineData);
 	fggAllocateDescriptorSets(core, &mat.pipelineData);
 
-	fggSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mat4) * 2, ppPushConstants, &mat.pipelineData);
+	fggSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mat4) * 2, &mat.pipelineData);
 
 
 	fggSetupShaders(core, mat.vertexShaderPath, mat.fragmentShaderPath, &mat.pipelineData);
@@ -61,7 +60,7 @@ void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 int main() {
 
 	FggTime time = { 0 };
-	FggVkCore core = fggVkCoreInitPrerequisites(1920, 1080, "Foggy-Engine Editor");
+	FggVkCore core = fggVkCoreInitPrerequisites(720, 480, "Foggy-Engine Editor");
 
 	fggInitVulkan(&core);
 	fggInitSwapchainData(&core);
@@ -83,12 +82,12 @@ int main() {
 	//MATERIALS
 	FggMaterial meshMaterial, lineMaterial = { 0 };
 	
-	mat4 pConst[2] = { GLM_MAT4_IDENTITY_INIT, GLM_MAT4_IDENTITY_INIT };
-	fggSetupBaseMaterial(core, meshFStates, (void**)pConst, &meshMaterial);
-	fggSetupLineMaterial(core, lineFStates, (void**)pConst, &lineMaterial);
+	fggSetupBaseMaterial(core, meshFStates, &meshMaterial);
+	fggSetupLineMaterial(core, lineFStates, &lineMaterial);
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
+
 
 	//hand
 	PlyFileData handply = { 0 };
@@ -121,7 +120,7 @@ int main() {
 	lucyMesh->indexCount = lucyply.indexCount;
 	lucyMesh->pIndices = lucyply.pIndices;
 	FggMaterial newmat = { 0 };
-	fggSetupBaseMaterial(core, meshFStates, (void**)pConst, &newmat);
+	fggSetupBaseMaterial(core, meshFStates, &newmat);
 	ezecsSetFggMaterial(scene, &newmat, lucy);
 	lucyTransform->scale[0] = 1.0f;
 	lucyTransform->scale[1] = 1.0f;
@@ -142,7 +141,7 @@ int main() {
 	textMesh->indexCount = textply.indexCount;
 	textMesh->pIndices = textply.pIndices;
 	FggMaterial newmat1 = { 0 };
-	fggSetupBaseMaterial(core, meshFStates, (void**)pConst, &newmat1);
+	fggSetupBaseMaterial(core, meshFStates, &newmat1);
 	ezecsSetFggMaterial(scene, &newmat1, text);
 	textTransform->scale[0] = 1.0f;
 	textTransform->scale[1] = 1.0f;
@@ -169,6 +168,19 @@ int main() {
 	triangleTransform->scale[1] = 1.0f;
 	triangleTransform->scale[2] = 1.0f;
 
+	//camera
+	uint32_t camEntity = ezecsCreateEntity();
+	FggCamera cam = {
+		45.0f,	//fov;
+		0.1f,	//nc;
+		150.0f,	//fc;
+		{0.0f},	//projection;
+		{0.0f},	//view;
+	};
+	ezecsSetFggCamera(scene, &cam, camEntity);
+	FggTransform *camTransform = ezecsAddFggTransform(scene, camEntity);
+
+
 	fggSceneInit(core, scene);
 	fggInitCommands(&core);
 
@@ -180,10 +192,6 @@ int main() {
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 	
-		fggSetProjection(core.window, pConst[0]);
-
-		fggSetView(pConst[1]);
-
 		triangleMesh->pVertices[0] = (float)sin((float)time.now);
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;

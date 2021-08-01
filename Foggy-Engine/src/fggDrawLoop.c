@@ -55,9 +55,9 @@ void fggBindIndexBuffers(const FggVkCore core, const FggMesh mesh) {
 	vkCmdBindIndexBuffer(core.pCmdBuffers[0], mesh.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 }
 
-void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData) {
-	if (pipeData.pushConstantRange.size > 0 || pipeData.ppPushConstantData != NULL) {
-		vkCmdPushConstants(graphicsCmdBuffer, pipeData.mainPipelineLayout, pipeData.pushConstantRange.stageFlags, pipeData.pushConstantRange.offset, pipeData.pushConstantRange.size, pipeData.ppPushConstantData);
+void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipelineData pipeData, const void* pPushConstantsData) {
+	if (pipeData.pushConstantRange.size > 0 || pPushConstantsData != NULL) {
+		vkCmdPushConstants(graphicsCmdBuffer, pipeData.mainPipelineLayout, pipeData.pushConstantRange.stageFlags, pipeData.pushConstantRange.offset, pipeData.pushConstantRange.size, pPushConstantsData);
 	}
 }
 

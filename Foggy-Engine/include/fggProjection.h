@@ -8,6 +8,6 @@
 typedef struct FggWindow FggWindow;
 
 
-extern void fggSetProjection(const FggWindow window, mat4 projection);
+extern void fggSetProjection(const FggWindow window, float fov, float nc, float fc, mat4 projection);
 
 #endif

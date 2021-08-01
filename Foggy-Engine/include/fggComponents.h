@@ -5,6 +5,6 @@
 #include "fggTransform.h"
 #include "fggMesh.h"
 #include "fggMaterial.h"
-
+#include "fggCamera.h"
 
 #endif

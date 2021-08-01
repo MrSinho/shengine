@@ -58,7 +58,6 @@ typedef struct FggVkPipelineData {
 
 	/*Push constants*/
 	VkPushConstantRange		pushConstantRange;
-	void**					ppPushConstantData;
 
 	/*Descriptor stuff*/
 	VkDescriptorSetLayout descriptorSetLayout;
@@ -106,7 +105,7 @@ extern void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* input
 
 
 
-extern void fggSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, void** ppData, FggVkPipelineData* pPipeData);
+extern void fggSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, FggVkPipelineData* pPipeData);
 
 
 extern void fggAllocateUniformBufferData(const FggVkCore core, const uint32_t bufferSize, FggVkPipelineData* pPipeData);
