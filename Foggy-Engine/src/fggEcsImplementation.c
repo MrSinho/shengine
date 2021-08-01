@@ -6,6 +6,7 @@
 #include "fggProjection.h"
 #include "fggView.h"
 #include "fggDrawLoop.h"
+#include "FggEuler.h"
 
 #include "fggCglmImplementation.h"
 
@@ -65,6 +66,15 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 				FggMaterial* m = ezecsGetFggMaterial(scene, entity);
 				fggMapMemory(core.device, m->pipelineData.uniformBufferMemory, sizeof(mat4), t->model);
 			}
+			fggDegreesToVector(t->rotation, t->front);
+			glm_normalize(t->front);
+
+			if (ezecsHasFggCamera(scene, entity)) {
+				camera = *ezecsGetFggCamera(scene, entity);
+				vec3 up = { 0.0f, 0.0f, 0.0f };
+				fggSetProjection(core.window, camera.fov, camera.nc, camera.fc, camera.projection);
+				fggSetView(camera.view);
+			}
 		}
 
 		if (ezecsHasFggMesh(scene, entity)) {
@@ -86,17 +96,11 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 				fggBindIndexBuffers(core, *mesh);
 			}
 
-			if (ezecsHasFggCamera(scene, entity)) {
-				camera = *ezecsGetFggCamera(scene, entity);
-			}
-
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
 				fggBindPipeline(core.pCmdBuffers[0], mat->pipelineData);
 
 				//push constants
-				fggSetProjection(core.window, camera.fov, camera.nc, camera.fc, camera.projection);
-				fggSetView(camera.view);
 				vec4* pConst[2] = { camera.projection, camera.view };
 				fggPushConstants(core.pCmdBuffers[0], mat->pipelineData, &pConst[0][0]);
 
