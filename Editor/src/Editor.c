@@ -115,7 +115,6 @@ int main() {
 	};
 	ezecsSetFggCamera(scene, &cam, camEntity);
 	FggTransform* camTransform = ezecsAddFggTransform(scene, camEntity);
-	camTransform->rotation[1] = -90.0f;
 	camTransform->position[2] = 2.0f;
 
 	//hand
