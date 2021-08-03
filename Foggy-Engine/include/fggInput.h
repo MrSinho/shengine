@@ -153,4 +153,8 @@ extern int fggIsMouseButtonPressed(const FggWindow window, int button);
 
 extern int fggIsMouseButtonReleased(const FggWindow window, int button);
 
+extern void fggGetCursorPosition(const FggWindow window, double* x, double* y);
+
+extern void fggMouseOffset(const FggWindow window, double* pdx, double* pdy);
+
 #endif

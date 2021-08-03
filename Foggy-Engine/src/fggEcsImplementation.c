@@ -7,6 +7,7 @@
 #include "fggView.h"
 #include "fggDrawLoop.h"
 #include "FggEuler.h"
+#include "fggInput.h"
 
 #include "fggCglmImplementation.h"
 
@@ -47,7 +48,7 @@ void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
 
 }
 
-void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
+void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene scene) {
 
 	FggCamera camera = { 0 };
 
@@ -66,13 +67,69 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 				fggMapMemory(core.device, m->pipelineData.uniformBufferMemory, sizeof(mat4), t->model);
 			}
 			//local vectors
+			
 			fggDegreesToVector(t->rotation, t->front);
+			//vec3 leftRot = { 0.0f, 0.0f, 0.0f };
+			//glm_vec3_copy(t->rotation, leftRot);
+			//leftRot[1] += 90.0f;
+			//fggDegreesToVector(leftRot, t->left);
+			//
+			//vec3 upRot = { 0.0f, 0.0f, 0.0f };
+			//glm_vec3_copy(t->rotation, upRot);
+			//upRot[0] += 90.0f;
+			//fggDegreesToVector(upRot, t->up);
+			
+			glm_cross((vec3) { 0.0f, 1.0f, 0.0f }, t->front, t->left);
+			glm_normalize(t->left);
+			
+			glm_cross(t->front, t->left, t->up);
+			glm_normalize(t->up);
 
 			if (ezecsHasFggCamera(scene, entity)) {
 				camera = *ezecsGetFggCamera(scene, entity);
-				vec3 up = { 0.0f, 0.0f, 0.0f };
+
+				if (camera.flags & FGG_CAMERA_SETUP_FREE_FLIGHT_BIT) {
+					vec3 displacement = { 0.0f, 0.0f, 0.0f };
+					if (fggIsKeyPressed(core.window, KEY_W)) {
+						glm_vec3_copy(t->front, displacement);
+					}
+					else if (fggIsKeyPressed(core.window, KEY_A)) {
+						glm_vec3_copy(t->left, displacement);
+					}
+					else if (fggIsKeyPressed(core.window, KEY_S)) {
+						glm_vec3_copy(t->front, displacement);
+						displacement[0] *= -1.0f;
+						displacement[1] *= -1.0f;
+						displacement[2] *= -1.0f;
+					}
+					else if (fggIsKeyPressed(core.window, KEY_D)) {
+						glm_vec3_copy(t->left, displacement);
+						displacement[0] *= -1.0f;
+						displacement[1] *= -1.0f;
+						displacement[2] *= -1.0f;
+					}
+					else if (fggIsKeyPressed(core.window, KEY_Q)) {
+						glm_vec3_copy(t->up, displacement);
+						displacement[0] *= -1.0f;
+						displacement[1] *= -1.0f;
+						displacement[2] *= -1.0f;
+					}
+					else if (fggIsKeyPressed(core.window, KEY_E)) {
+						glm_vec3_copy(t->up, displacement);
+					}
+					displacement[0] *= 5.0f * time.deltaTime;
+					displacement[1] *= 5.0f * time.deltaTime;
+					displacement[2] *= 5.0f * time.deltaTime;
+					glm_vec3_add(t->position, displacement, t->position);
+				}
+				//if (fggIsMouseButtonPressed(core.window, MOUSE_BUTTON_2)) {
+				//	double dx, dy = 0.0;
+				//	fggMouseOffset(core.window, &dx, &dy);
+				//	t->rotation[0] += (float)dy * time.deltaTime;
+				//	t->rotation[1] += (float)dx * time.deltaTime;
+				//}
 				fggSetProjection(core.window, camera.fov, camera.nc, camera.fc, camera.projection);
-				fggSetView(t->position, camera.view);
+				fggSetView(t->position, t->front, t->up, camera.view);
 			}
 		}
 

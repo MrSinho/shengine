@@ -9,7 +9,7 @@
 #include <EZ_ECS.h>
 
 #include "fggVkCore.h"
-
+#include "fggTime.h"
 #include "fggProjection.h"
 
 
@@ -18,7 +18,7 @@ typedef struct FggVkFixedStates FggVkFixedStates;
 
 extern void fggSceneInit(const FggVkCore core, const ezecsScene scene);
 
-extern void fggSceneUpdate(const FggVkCore core, const ezecsScene scene);
+extern void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene scene);
 
 extern void fggSceneRelease(const FggVkCore core, const ezecsScene scene);
 

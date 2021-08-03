@@ -106,14 +106,17 @@ int main() {
 	//camera
 	uint32_t camEntity = ezecsCreateEntity();
 	FggCamera cam = {
-		45.0f,	//fov;
-		0.1f,	//nc;
-		150.0f,	//fc;
-		{0.0f},	//projection;
-		{0.0f},	//view;
+		45.0f,								//fov;
+		0.1f,								//nc;
+		150.0f,								//fc;
+		{0.0f},								//projection;
+		{0.0f},								//view;
+		FGG_CAMERA_SETUP_FREE_FLIGHT_BIT,	//flags
 	};
 	ezecsSetFggCamera(scene, &cam, camEntity);
 	FggTransform* camTransform = ezecsAddFggTransform(scene, camEntity);
+	camTransform->rotation[1] = -90.0f;
+	camTransform->position[2] = 2.0f;
 
 	//hand
 	PlyFileData handply = { 0 };
@@ -212,24 +215,30 @@ int main() {
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 			
-		camTransform->position[2] = (float)sin((float)time.now);
-
 		lineMesh->pVertices[0] = (float)sin(time.now);
 		lineMesh->pVertices[12] = (float)sin(time.now);
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;
-		camTransform->position[2] = (float)sin(time.now);
+
+		//camTransform->rotation[1] += 1.0f * time.deltaTime;
+		//printf("%f\n", camTransform->rotation[1]);
+		//puts("left");
+		//printf("%f, %f, %f\n", camTransform->left[0], camTransform->left[1], camTransform->left[2]);
+		//
+		//puts("up");
+		//printf("%f, %f, %f\n", camTransform->up[0], camTransform->up[1], camTransform->up[2]);
+		//
 		//puts("front");
-		//printf("%f, %f, %f\n", lucyTransform->front[0], lucyTransform->front[1], lucyTransform->front[2]);
+		//printf("%f, %f, %f\n", camTransform->front[0], camTransform->front[1], camTransform->front[2]);
 
-
-		fggSceneUpdate(core, scene);
+		fggSceneUpdate(core, time, scene);
 	
 		fggFrameEnd(core, imageIndex);
 	}
 	
-	//plyFree(&handply);
+	plyFree(&handply);
+	plyFree(&lucyply);
 	fggSceneRelease(core, scene);
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);
