@@ -66,14 +66,15 @@ void fggSceneUpdate(const FggVkCore core, const ezecsScene scene) {
 				FggMaterial* m = ezecsGetFggMaterial(scene, entity);
 				fggMapMemory(core.device, m->pipelineData.uniformBufferMemory, sizeof(mat4), t->model);
 			}
-			fggDegreesToVector(t->rotation, t->front);
-			glm_normalize(t->front);
+			//fggDegreesToVector(t->rotation, t->front);
+			//glm_normalize(t->front);
+
 
 			if (ezecsHasFggCamera(scene, entity)) {
 				camera = *ezecsGetFggCamera(scene, entity);
 				vec3 up = { 0.0f, 0.0f, 0.0f };
 				fggSetProjection(core.window, camera.fov, camera.nc, camera.fc, camera.projection);
-				fggSetView(camera.view);
+				fggSetView(t->position, camera.view);
 			}
 		}
 

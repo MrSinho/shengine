@@ -3,6 +3,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void fggGenerateGraphIndices(FggMesh* mesh) {
+	mesh->indexCount = mesh->vertexCount / 3 * 2 - 2;
+	mesh->pIndices = calloc(mesh->indexCount, sizeof(uint32_t));
+	if (mesh->pIndices == NULL) { return 0; }
+	mesh->pIndices[0] = 0;
+	mesh->pIndices[mesh->indexCount-1] = mesh->vertexCount / 3 -1;
+	uint32_t vertex = 1;
+	for (uint32_t i = 1; i < mesh->indexCount-1; i+=2) {
+		mesh->pIndices[i] = vertex;
+		mesh->pIndices[i+1] = vertex;
+		vertex++;
+	}
+}
+
 void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, FggMaterial* pMaterial) {
 #ifndef NDEBUG
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
@@ -75,9 +89,10 @@ int main() {
 										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
 										 FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
 	fggSetFixedStates(core, meshFStateFlags, &meshFStates);
-	FggFixedStateFlags triangleStateFlags = FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
+	FggFixedStateFlags lineStateFlags = FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
+											FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST |
 											FGG_FIXED_STATES_VERTEX_POSITIONS_BIT;
-	fggSetFixedStates(core, triangleStateFlags, &lineFStates);
+	fggSetFixedStates(core, lineStateFlags, &lineFStates);
 
 	//MATERIALS
 	FggMaterial meshMaterial, lineMaterial = { 0 };
@@ -88,6 +103,17 @@ int main() {
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
 
+	//camera
+	uint32_t camEntity = ezecsCreateEntity();
+	FggCamera cam = {
+		45.0f,	//fov;
+		0.1f,	//nc;
+		150.0f,	//fc;
+		{0.0f},	//projection;
+		{0.0f},	//view;
+	};
+	ezecsSetFggCamera(scene, &cam, camEntity);
+	FggTransform* camTransform = ezecsAddFggTransform(scene, camEntity);
 
 	//hand
 	PlyFileData handply = { 0 };
@@ -147,38 +173,35 @@ int main() {
 	textTransform->scale[1] = 1.0f;
 	textTransform->scale[2] = 1.0f;
 
-	//triangle
-	float vertices[12] = {
+	//line
+	float vertices[15] = {
 		0.0f, -1.0f, 0.0f, 
-		1.0f,  1.0f, 0.0f, 
+		1.0f,  1.0f, 0.0f,
 		-1.0f,  1.0f, 0.0f,
+		0.0f, -0.8f, 0.0f,
+		0.0f,  0.0f, 0.0f,
 	};
-	uint32_t triangle = ezecsCreateEntity();
-	FggMesh* triangleMesh = ezecsAddFggMesh(scene, triangle);
-	triangleMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
-	triangleMesh->vertexCount = sizeof(vertices) / sizeof(float);
-	triangleMesh->pVertices = calloc(triangleMesh->vertexCount, sizeof(uint32_t));
-	if (triangleMesh->pVertices == NULL) { return EXIT_FAILURE; }
-	for (uint32_t i = 0; i < triangleMesh->vertexCount; i++) {
-		triangleMesh->pVertices[i] = vertices[i];
-	}
-	ezecsSetFggMaterial(scene, &lineMaterial, triangle);
-	FggTransform* triangleTransform = ezecsAddFggTransform(scene, triangle);
-	triangleTransform->scale[0] = 1.0f;
-	triangleTransform->scale[1] = 1.0f;
-	triangleTransform->scale[2] = 1.0f;
+	uint32_t indices[4] = {
+		0, 1, 1, 2
+	};
+	uint32_t line = ezecsCreateEntity();
+	FggMesh* lineMesh = ezecsAddFggMesh(scene, line);
+	lineMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
+	lineMesh->vertexCount = sizeof(vertices) / sizeof(float);
+	lineMesh->pVertices = calloc(lineMesh->vertexCount, sizeof(uint32_t));
+	fggGenerateGraphIndices(lineMesh);
 
-	//camera
-	uint32_t camEntity = ezecsCreateEntity();
-	FggCamera cam = {
-		45.0f,	//fov;
-		0.1f,	//nc;
-		150.0f,	//fc;
-		{0.0f},	//projection;
-		{0.0f},	//view;
-	};
-	ezecsSetFggCamera(scene, &cam, camEntity);
-	FggTransform *camTransform = ezecsAddFggTransform(scene, camEntity);
+	if (lineMesh->pVertices == NULL) { return EXIT_FAILURE; }
+	for (uint32_t i = 0; i < lineMesh->vertexCount; i++) {
+		lineMesh->pVertices[i] = vertices[i];
+	}
+	ezecsSetFggMaterial(scene, &lineMaterial, line);
+	FggTransform* lineTransform = ezecsAddFggTransform(scene, line);
+	lineTransform->scale[0] = 1.0f;
+	lineTransform->scale[1] = 1.0f;
+	lineTransform->scale[2] = 1.0f;
+
+	
 
 
 	fggSceneInit(core, scene);
@@ -191,8 +214,11 @@ int main() {
 	
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
-	
-		triangleMesh->pVertices[0] = (float)sin((float)time.now);
+			
+		camTransform->position[2] = (float)sin((float)time.now);
+
+		lineMesh->pVertices[0] = (float)sin((float)time.now);
+		lineMesh->pVertices[12] = (float)sin((float)time.now);
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;

@@ -8,6 +8,4 @@ extern void fggDegreesToVector(vec3 rotation);
 
 extern float fggDegreesToRadians(float rot);
 
-extern void getUp();
-
 #endif

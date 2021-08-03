@@ -4,6 +4,6 @@
 #include "fggCglmImplementation.h"
 
 
-extern void fggSetView(mat4 view);
+extern void fggSetView(vec3 position, mat4 view);
 
 #endif
