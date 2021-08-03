@@ -4,7 +4,7 @@
 #include "fggCglmImplementation.h"
 
 
-extern void fggDegreesToVector(vec3 rotation);
+extern void fggDegreesToVector(vec3 rotation, vec3 front);
 
 extern float fggDegreesToRadians(float rot);
 

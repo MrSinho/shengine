@@ -131,7 +131,7 @@ int main() {
 	handTransform->scale[1] = 1.0f;
 	handTransform->scale[2] = 1.0f;
 	handTransform->position[0] = 0.0f;
-	handTransform->position[1] = -1.3f;
+	handTransform->position[1] = 1.3f;
 	handTransform->position[2] = -5.0f;
 	
 	//lucy
@@ -181,9 +181,6 @@ int main() {
 		0.0f, -0.8f, 0.0f,
 		0.0f,  0.0f, 0.0f,
 	};
-	uint32_t indices[4] = {
-		0, 1, 1, 2
-	};
 	uint32_t line = ezecsCreateEntity();
 	FggMesh* lineMesh = ezecsAddFggMesh(scene, line);
 	lineMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
@@ -217,11 +214,15 @@ int main() {
 			
 		camTransform->position[2] = (float)sin((float)time.now);
 
-		lineMesh->pVertices[0] = (float)sin((float)time.now);
-		lineMesh->pVertices[12] = (float)sin((float)time.now);
+		lineMesh->pVertices[0] = (float)sin(time.now);
+		lineMesh->pVertices[12] = (float)sin(time.now);
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;
+		camTransform->position[2] = (float)sin(time.now);
+		//puts("front");
+		//printf("%f, %f, %f\n", lucyTransform->front[0], lucyTransform->front[1], lucyTransform->front[2]);
+
 
 		fggSceneUpdate(core, scene);
 	
