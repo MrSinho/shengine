@@ -6,7 +6,7 @@
 void fggGenerateGraphIndices(FggMesh* mesh) {
 	mesh->indexCount = mesh->vertexCount / 3 * 2 - 2;
 	mesh->pIndices = calloc(mesh->indexCount, sizeof(uint32_t));
-	if (mesh->pIndices == NULL) { return 0; }
+	if (mesh->pIndices == NULL) { return; }
 	mesh->pIndices[0] = 0;
 	mesh->pIndices[mesh->indexCount-1] = mesh->vertexCount / 3 -1;
 	uint32_t vertex = 1;
