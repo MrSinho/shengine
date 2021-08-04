@@ -30,6 +30,19 @@ typedef struct FggMesh {
 
 } FggMesh;
 
+static void fggGenerateGraphIndices(FggMesh* mesh) {
+	mesh->indexCount = mesh->vertexCount / 3 * 2 - 2;
+	mesh->pIndices = calloc(mesh->indexCount, sizeof(uint32_t));
+	if (mesh->pIndices == NULL) { return; }
+	mesh->pIndices[0] = 0;
+	mesh->pIndices[mesh->indexCount - 1] = mesh->vertexCount / 3 - 1;
+	uint32_t vertex = 1;
+	for (uint32_t i = 1; i < mesh->indexCount - 1; i += 2) {
+		mesh->pIndices[i] = vertex;
+		mesh->pIndices[i + 1] = vertex;
+		vertex++;
+	}
+}
 
 
 EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMesh, 1)
