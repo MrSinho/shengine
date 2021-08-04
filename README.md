@@ -6,7 +6,7 @@ Linux: [![Build Status](https://travis-ci.com/MrSinho/Foggy-Engine.svg?token=WEQ
 
 The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
-![test0](Saved/Pictures/test0.gif)
+![test0](Saved/Pictures/Ive_been_to_Verdun.png)
 
 ## Current features (tested):
  - Entity Component System using [EZ-ECS](https://github.com/MrSinho/EZ-ECS) by MrSinho

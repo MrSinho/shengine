@@ -71,6 +71,21 @@ void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 	*pMaterial = mat;
 }
 
+float* lorenzAttractor(float a, float b, float c, float x, float y, float z) {
+	
+	float vertex[3];
+	float dx, dy, dz;
+
+	dx = (a * (y - x))		* 0.01f;
+	dy = (x * (b - z) - y)	* 0.01f;
+	dz = (x * y - c * z)	* 0.01f;
+	vertex[0] = x + dx;
+	vertex[1] = y + dy;
+	vertex[2] = z + dz;
+
+	return vertex;
+}
+
 int main() {
 
 	FggTime time = { 0 };
@@ -129,12 +144,12 @@ int main() {
 	handMesh->indexCount = handply.indexCount;
 	handMesh->pIndices = handply.pIndices;
 	ezecsSetFggMaterial(scene, &meshMaterial, hand);
-	handTransform->scale[0] = 1.0f;
-	handTransform->scale[1] = 1.0f;
-	handTransform->scale[2] = 1.0f;
-	handTransform->position[0] = 0.0f;
-	handTransform->position[1] = 1.3f;
-	handTransform->position[2] = -5.0f;
+	handTransform->scale[0] = 0.5f;
+	handTransform->scale[1] = 0.5f;
+	handTransform->scale[2] = 0.5f;
+	handTransform->position[0] = -3.5f;
+	handTransform->position[1] = -1.85f;
+	handTransform->position[2] = -6.0f;
 	
 	//lucy
 	PlyFileData lucyply = { 0 };
@@ -153,8 +168,8 @@ int main() {
 	lucyTransform->scale[0] = 1.0f;
 	lucyTransform->scale[1] = 1.0f;
 	lucyTransform->scale[2] = 1.0f;
-	lucyTransform->position[0] = 2.0f;
-	lucyTransform->position[1] = 0.0f;
+	lucyTransform->position[0] = 2.3f;
+	lucyTransform->position[1] = 1.0f;
 	lucyTransform->position[2] = -2.0f;
 	
 	//text
@@ -176,32 +191,58 @@ int main() {
 	textTransform->scale[2] = 1.0f;
 
 	//line
-	float vertices[15] = {
-		0.0f, -1.0f, 0.0f, 
-		1.0f,  1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f,
-		0.0f, -0.8f, 0.0f,
-		0.0f,  0.0f, 0.0f,
-	};
-	uint32_t line = ezecsCreateEntity();
-	FggMesh* lineMesh = ezecsAddFggMesh(scene, line);
-	lineMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
-	lineMesh->vertexCount = sizeof(vertices) / sizeof(float);
-	lineMesh->pVertices = calloc(lineMesh->vertexCount, sizeof(uint32_t));
-	fggGenerateGraphIndices(lineMesh);
+	//float vertices[15] = {
+	//	0.0f, -1.0f, 0.0f, 
+	//	1.0f,  1.0f, 0.0f,
+	//	-1.0f,  1.0f, 0.0f,
+	//	0.0f, -0.8f, 0.0f,
+	//	0.0f,  0.0f, 0.0f,
+	//};
+	//uint32_t line = ezecsCreateEntity();
+	//FggMesh* lineMesh = ezecsAddFggMesh(scene, line);
+	//lineMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
+	//lineMesh->vertexCount = sizeof(vertices) / sizeof(float);
+	//lineMesh->pVertices = calloc(lineMesh->vertexCount, sizeof(float));
+	//fggGenerateGraphIndices(lineMesh);
+	//
+	//if (lineMesh->pVertices == NULL) { return EXIT_FAILURE; }
+	//for (uint32_t i = 0; i < lineMesh->vertexCount; i++) {
+	//	lineMesh->pVertices[i] = vertices[i];
+	//}
+	//ezecsSetFggMaterial(scene, &lineMaterial, line);
+	//FggTransform* lineTransform = ezecsAddFggTransform(scene, line);
+	//lineTransform->scale[0] = 1.0f;
+	//lineTransform->scale[1] = 1.0f;
+	//lineTransform->scale[2] = 1.0f;
 
-	if (lineMesh->pVertices == NULL) { return EXIT_FAILURE; }
-	for (uint32_t i = 0; i < lineMesh->vertexCount; i++) {
-		lineMesh->pVertices[i] = vertices[i];
+	//graph 
+	uint32_t graph = ezecsCreateEntity();
+	FggMesh* graphMesh = ezecsAddFggMesh(scene, graph);
+	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	graphMesh->vertexCount = 5000 * 3;
+	graphMesh->pVertices = calloc(graphMesh->vertexCount, sizeof(float));
+	if (graphMesh->pVertices == NULL) { return EXIT_FAILURE; }
+	for (uint32_t i = 0; i < graphMesh->vertexCount; i+=3) {
+		float* vertex;
+		if (i == 0) {
+			vertex = lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, 0.0f, 0.0f);
+		}
+		else {
+			vertex = lorenzAttractor(10.0f, 28.0f, 2.66f, graphMesh->pVertices[i-3], graphMesh->pVertices[i-2], graphMesh->pVertices[i-1]);
+		}
+		graphMesh->pVertices[i]   = vertex[0];
+		graphMesh->pVertices[i+1] = vertex[1];
+		graphMesh->pVertices[i+2] = vertex[2];
 	}
-	ezecsSetFggMaterial(scene, &lineMaterial, line);
-	FggTransform* lineTransform = ezecsAddFggTransform(scene, line);
-	lineTransform->scale[0] = 1.0f;
-	lineTransform->scale[1] = 1.0f;
-	lineTransform->scale[2] = 1.0f;
-
-	
-
+	fggGenerateGraphIndices(graphMesh);
+	FggMaterial graphMat = { 0 };
+	fggSetupLineMaterial(core, lineFStates, &graphMat);
+	ezecsSetFggMaterial(scene, &graphMat, graph);
+	FggTransform* graphTransform = ezecsAddFggTransform(scene, graph);
+	graphTransform->rotation[1] = 180.0f;
+	graphTransform->scale[0] = 1.0f;
+	graphTransform->scale[1] = 1.0f;
+	graphTransform->scale[2] = 1.0f;
 
 	fggSceneInit(core, scene);
 	fggInitCommands(&core);
@@ -216,8 +257,8 @@ int main() {
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 			
-		lineMesh->pVertices[0] = (float)sin(time.now);
-		lineMesh->pVertices[12] = (float)sin(time.now);
+		//lineMesh->pVertices[0] = (float)sin(time.now);
+		//lineMesh->pVertices[12] = (float)sin(time.now);
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;
