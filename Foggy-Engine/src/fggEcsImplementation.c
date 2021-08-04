@@ -66,18 +66,7 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 				FggMaterial* m = ezecsGetFggMaterial(scene, entity);
 				fggMapMemory(core.device, m->pipelineData.uniformBufferMemory, sizeof(mat4), t->model);
 			}
-			//local vectors
-			
 			fggDegreesToVector(t->rotation, t->front);
-			//vec3 leftRot = { 0.0f, 0.0f, 0.0f };
-			//glm_vec3_copy(t->rotation, leftRot);
-			//leftRot[1] += 90.0f;
-			//fggDegreesToVector(leftRot, t->left);
-			//
-			//vec3 upRot = { 0.0f, 0.0f, 0.0f };
-			//glm_vec3_copy(t->rotation, upRot);
-			//upRot[0] += 90.0f;
-			//fggDegreesToVector(upRot, t->up);
 			
 			glm_cross((vec3) { 0.0f, 1.0f, 0.0f }, t->front, t->left);
 			glm_normalize(t->left);
@@ -93,28 +82,28 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 					if (fggIsKeyPressed(core.window, KEY_W)) {
 						glm_vec3_copy(t->front, displacement);
 					}
-					else if (fggIsKeyPressed(core.window, KEY_A)) {
+					if (fggIsKeyPressed(core.window, KEY_A)) {
 						glm_vec3_copy(t->left, displacement);
 					}
-					else if (fggIsKeyPressed(core.window, KEY_S)) {
+					if (fggIsKeyPressed(core.window, KEY_S)) {
 						glm_vec3_copy(t->front, displacement);
 						displacement[0] *= -1.0f;
 						displacement[1] *= -1.0f;
 						displacement[2] *= -1.0f;
 					}
-					else if (fggIsKeyPressed(core.window, KEY_D)) {
+					if (fggIsKeyPressed(core.window, KEY_D)) {
 						glm_vec3_copy(t->left, displacement);
 						displacement[0] *= -1.0f;
 						displacement[1] *= -1.0f;
 						displacement[2] *= -1.0f;
 					}
-					else if (fggIsKeyPressed(core.window, KEY_Q)) {
+					if (fggIsKeyPressed(core.window, KEY_E)) {
 						glm_vec3_copy(t->up, displacement);
 						displacement[0] *= -1.0f;
 						displacement[1] *= -1.0f;
 						displacement[2] *= -1.0f;
 					}
-					else if (fggIsKeyPressed(core.window, KEY_E)) {
+					if (fggIsKeyPressed(core.window, KEY_Q)) {
 						glm_vec3_copy(t->up, displacement);
 					}
 					displacement[0] *= 5.0f * time.deltaTime;
@@ -122,12 +111,22 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 					displacement[2] *= 5.0f * time.deltaTime;
 					glm_vec3_add(t->position, displacement, t->position);
 				}
-				//if (fggIsMouseButtonPressed(core.window, MOUSE_BUTTON_2)) {
-				//	double dx, dy = 0.0;
-				//	fggMouseOffset(core.window, &dx, &dy);
-				//	t->rotation[0] += (float)dy * time.deltaTime;
-				//	t->rotation[1] += (float)dx * time.deltaTime;
-				//}
+				if (fggIsMouseButtonPressed(core.window, MOUSE_BUTTON_RIGHT)) {
+					glfwSetInputMode(core.window.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+					double dx, dy = 0.0;
+					fggMouseOffset(core.window, &dx, &dy);
+					t->rotation[0] -= 0.6f * (float)dy * time.deltaTime;
+					t->rotation[1] -= 0.6f * (float)dx * time.deltaTime;
+					if (t->rotation[0] >= glm_rad(89.99999f)) {
+						t->rotation[0] = glm_rad(89.99999f);
+					}
+					if (t->rotation[0] <= glm_rad(-89.99999f)) {
+						t->rotation[0] = glm_rad(-89.99999f);
+					}
+				}
+				else if (fggIsMouseButtonReleased(core.window, MOUSE_BUTTON_RIGHT)) {
+					glfwSetInputMode(core.window.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				}
 				fggSetProjection(core.window, camera.fov, camera.nc, camera.fc, camera.projection);
 				fggSetView(t->position, t->front, t->up, camera.view);
 			}

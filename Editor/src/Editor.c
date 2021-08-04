@@ -210,7 +210,9 @@ int main() {
 		fggPollEvents();
 		fggGetTime(&time);
 		fggFrameReset(core);
-	
+		
+		fggGetCursorPosition(core.window, &core.window.cursorPosX, &core.window.cursorPosY);
+
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 			
@@ -219,17 +221,6 @@ int main() {
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;
-
-		//camTransform->rotation[1] += 1.0f * time.deltaTime;
-		//printf("%f\n", camTransform->rotation[1]);
-		//puts("left");
-		//printf("%f, %f, %f\n", camTransform->left[0], camTransform->left[1], camTransform->left[2]);
-		//
-		//puts("up");
-		//printf("%f, %f, %f\n", camTransform->up[0], camTransform->up[1], camTransform->up[2]);
-		//
-		//puts("front");
-		//printf("%f, %f, %f\n", camTransform->front[0], camTransform->front[1], camTransform->front[2]);
 
 		fggSceneUpdate(core, time, scene);
 	

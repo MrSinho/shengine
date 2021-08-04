@@ -24,17 +24,16 @@ int fggIsMouseButtonReleased(const FggWindow window, int button) {
 void fggGetCursorPosition(const FggWindow window, double* pX, double* pY) {
 	static double x, y;
 	glfwGetCursorPos(window.window, &x, &y);
-	*pX = x;
-	*pY = y;
+	if (pX != NULL && pY != NULL) {
+		*pX = x;
+		*pY = y;
+	}
 }
 
 void fggMouseOffset(const FggWindow window, double* pdx, double* pdy) {
-	double lastX, lastY;
-	glfwGetCursorPos(window.window, &lastX, &lastY);
-
 	double x, y;
 	glfwGetCursorPos(window.window, &x, &y);
 
-	*pdx = lastX - x;
-	*pdy = lastY - y;
+	*pdx = window.cursorPosX - x;
+	*pdy = window.cursorPosY - y;
 }
