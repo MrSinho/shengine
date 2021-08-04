@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, FggMaterial* pMaterial) {
 #ifndef NDEBUG
@@ -60,7 +60,8 @@ void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 
 float* lorenzAttractor(float a, float b, float c, float x, float y, float z) {
 	
-	float vertex[3];
+	float* vertex = calloc(3, sizeof(float));
+	if (vertex == NULL) { return NULL; }
 	float dx, dy, dz;
 
 	dx = (a * (y - x))		* 0.01f;
@@ -210,13 +211,16 @@ int main() {
 	graphMesh->pVertices = calloc(graphMesh->vertexCount, sizeof(float));
 	if (graphMesh->pVertices == NULL) { return EXIT_FAILURE; }
 	for (uint32_t i = 0; i < graphMesh->vertexCount; i+=3) {
-		float* vertex;
+		float* hvertex;
+		float vertex[3];
 		if (i == 0) {
-			vertex = lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, 0.0f, 0.0f);
+			hvertex = lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, 0.0f, 0.0f);
 		}
 		else {
-			vertex = lorenzAttractor(10.0f, 28.0f, 2.66f, graphMesh->pVertices[i-3], graphMesh->pVertices[i-2], graphMesh->pVertices[i-1]);
+			hvertex = lorenzAttractor(10.0f, 28.0f, 2.66f, graphMesh->pVertices[i-3], graphMesh->pVertices[i-2], graphMesh->pVertices[i-1]);
 		}
+		memcpy(vertex, hvertex, sizeof(float) * 3);
+		free(hvertex);
 		graphMesh->pVertices[i]   = vertex[0];
 		graphMesh->pVertices[i+1] = vertex[1];
 		graphMesh->pVertices[i+2] = vertex[2];
