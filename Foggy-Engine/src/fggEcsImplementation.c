@@ -202,11 +202,13 @@ void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
 			if (mesh->vertexCount > 0 && mesh->pVertices != NULL) {
 				fggClearBufferMemory(core.device, mesh->vertexBuffer, mesh->vertexBufferMemory);
 				free(mesh->pVertices);
+				mesh->pVertices = NULL;
 				mesh->vertexCount = 0;
 			}
 			if (mesh->indexCount > 0 && mesh->indexBuffer != NULL) {
 				fggClearBufferMemory(core.device, mesh->indexBuffer, mesh->indexBufferMemory);
 				free(mesh->pIndices);
+				mesh->pIndices = NULL;
 				mesh->indexCount = 0;
 			}
 			mesh = NULL;
