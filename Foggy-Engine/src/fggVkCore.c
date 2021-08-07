@@ -606,8 +606,10 @@ void fggCmdRelease(FggVkCore* core) {
 	vkDestroySemaphore(core->device, core->renderSemaphore, NULL);
 	vkDestroyFence(core->device, core->renderFence, NULL);
 
+	vkFreeCommandBuffers(core->device, core->pCmdPools[0], 1, &core->pCmdBuffers[0]);
 	vkDestroyCommandPool(core->device, core->pCmdPools[0], NULL);
 	if (core->presentQueueIndex != core->graphicsQueueIndex) {
+		vkFreeCommandBuffers(core->device, core->pCmdPools[1], 1, &core->pCmdBuffers[1]);
 		vkDestroyCommandPool(core->device, core->pCmdPools[1], NULL);
 	}
 

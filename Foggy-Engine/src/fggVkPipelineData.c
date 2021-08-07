@@ -434,5 +434,6 @@ void fggDestroyPipeline(const FggVkCore core, FggVkPipelineData* pPipeData) {
 	vkDestroyShaderModule(core.device, pPipeData->pShaderModules[1], NULL);
 
 	free(pPipeData->pShaderStages);
+	free(pPipeData->pShaderModules);
 
 }

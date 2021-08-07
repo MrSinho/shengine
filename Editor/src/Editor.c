@@ -196,6 +196,7 @@ int main() {
 	planeMesh->indexCount = planePly.indexCount;
 	planeMesh->pIndices = planePly.pIndices;
 	ezecsSetFggMaterial(scene, &planeMat, plane);
+	planeTransform->position[1] = -4.0f;
 	planeTransform->scale[0] = 1.0f;
 	planeTransform->scale[1] = 1.0f;
 	planeTransform->scale[2] = 1.0f;
