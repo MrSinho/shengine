@@ -4,13 +4,13 @@ void fggSetupMaterial(const FggVkCore core, const char* vPath, const char* fPath
 	FggMaterial mat = {
 		vPath,			//vertexShaderPath;
 		fPath,			//fragmentShaderPath;	
-		&fixedStates,	//pFixedStates
+		fixedStates,	//pFixedStates
 		0,				//pipelineData;
 	};
 
 	FggPipelineSetupFlags pipeFlags = 0;
 
-	if (uniformSize != NULL && uniformStage != 0) {	
+	if (uniformSize != 0 && uniformStage != 0) {	
 		fggAllocateUniformBufferData(core, uniformSize, &mat.pipelineData);
 		fggDescriptorSetLayout(core, 0, uniformStage, &mat.pipelineData);
 		fggCreateDescriptorPool(core, &mat.pipelineData);
@@ -18,7 +18,7 @@ void fggSetupMaterial(const FggVkCore core, const char* vPath, const char* fPath
 		pipeFlags |= FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT;
 	}
 	
-	if (pConstSize != NULL && pConstStage != 0) {
+	if (pConstSize != 0 && pConstStage != 0) {
 		fggSetPushConstants(pConstStage, 0, pConstSize, &mat.pipelineData);
 		pipeFlags |= FGG_PIPELINE_SETUP_PUSH_CONSTANTS_BIT;
 	}
@@ -35,5 +35,5 @@ void fggCreateMaterialInstance(const FggVkCore core, const FggMaterial src, FggM
 		src.vertexShaderPath, src.fragmentShaderPath,
 		src.pipelineData.uniformBufferSize, src.pipelineData.descriptorSetLayoutBinding.stageFlags,
 		src.pipelineData.pushConstantRange.size, src.pipelineData.pushConstantRange.stageFlags,
-		*src.pFixedStates, dst);
+		src.fixedStates, dst);
 }

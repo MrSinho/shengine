@@ -22,7 +22,7 @@ typedef struct FggMaterial {
 	const char* 			vertexShaderPath;
 	const char* 			fragmentShaderPath;	
 
-	FggVkFixedStates*		pFixedStates;
+	FggVkFixedStates		fixedStates;
 	FggVkPipelineData		pipelineData;
 
 } FggMaterial;
