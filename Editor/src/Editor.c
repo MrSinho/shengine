@@ -89,10 +89,10 @@ void lorenzAttractor(float a, float b, float c, float dTime, FggMesh* mesh) {
 		float* hvertex;
 		float vertex[3];
 		if (i == 0) {
-			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, 0.01f, 0.01f, 0.0f, 0.0f);
+			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, dTime, 0.01f, 0.0f, 0.0f);
 		}
 		else {
-			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, 0.01f, mesh->pVertices[i - 3], mesh->pVertices[i - 2], mesh->pVertices[i - 1]);
+			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, dTime, mesh->pVertices[i - 3], mesh->pVertices[i - 2], mesh->pVertices[i - 1]);
 		}
 		memcpy(vertex, hvertex, sizeof(float) * 3);
 		free(hvertex);
@@ -235,7 +235,7 @@ int main() {
 		fggFrameBegin(core, &imageIndex);
 		
 		graphMesh->vertexCount += 3;
-		lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
+		lorenzAttractor(10.0f, 28.0f, 2.66f, time.deltaTime, graphMesh);
 
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
