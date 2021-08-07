@@ -4,58 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, FggMaterial* pMaterial) {
-#ifndef NDEBUG
-	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
-	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
-#endif
-	FggMaterial mat = {
-		"../Shaders/bin/Mesh.vert.spv",	//vertexShaderPath;
-		"../Shaders/bin/Mesh.frag.spv",	//fragmentShaderPath;	
-		&fixedStates,					//fStates
-		0,								//pipelineData;
-	};
-
-	fggAllocateUniformBufferData(core, sizeof(mat4), &mat.pipelineData);
-	fggDescriptorSetLayout(core, 0, VK_SHADER_STAGE_VERTEX_BIT, &mat.pipelineData);
-	fggCreateDescriptorPool(core, &mat.pipelineData);
-	fggAllocateDescriptorSets(core, &mat.pipelineData);
-
-	fggSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mat4)*2, &mat.pipelineData);
-
-	fggSetupShaders(core, mat.vertexShaderPath, mat.fragmentShaderPath, &mat.pipelineData);
-	
-	FggPipelineSetupFlags pipeFlags = FGG_PIPELINE_SETUP_PUSH_CONSTANTS_BIT | FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT;
-	fggSetupGraphicsPipeline(core, fixedStates, pipeFlags, &mat.pipelineData);
-
-	*pMaterial = mat;
-}
-
-void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, FggMaterial* pMaterial) {
-
-
-	FggMaterial mat = {
-		"../Shaders/bin/Line.vert.spv",	//vertexShaderPath;
-		"../Shaders/bin/Line.frag.spv",	//fragmentShaderPath;	
-		0,								//pipelineData;
-	};
-
-	fggAllocateUniformBufferData(core, sizeof(mat4), &mat.pipelineData);
-	fggDescriptorSetLayout(core, 0, VK_SHADER_STAGE_VERTEX_BIT, &mat.pipelineData);
-	fggCreateDescriptorPool(core, &mat.pipelineData);
-	fggAllocateDescriptorSets(core, &mat.pipelineData);
-
-	fggSetPushConstants(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(mat4) * 2, &mat.pipelineData);
-
-
-	fggSetupShaders(core, mat.vertexShaderPath, mat.fragmentShaderPath, &mat.pipelineData);
-
-	FggPipelineSetupFlags pipeFlags = FGG_PIPELINE_SETUP_PUSH_CONSTANTS_BIT | FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT;
-	fggSetupGraphicsPipeline(core, fixedStates, pipeFlags, &mat.pipelineData);
-
-	*pMaterial = mat;
-}
-
 float* lorenzAttractorVertex(float a, float b, float c, float dTime, float x, float y, float z) {
 	
 	float* vertex = calloc(3, sizeof(float));
@@ -75,11 +23,9 @@ float* lorenzAttractorVertex(float a, float b, float c, float dTime, float x, fl
 void lorenzAttractor(float a, float b, float c, float dTime, FggMesh* mesh) {
 	if (mesh->pVertices != NULL) {
 		free(mesh->pVertices);
-		mesh->pVertices = NULL;
 	}
 	if (mesh->pIndices != NULL) {
 		free(mesh->pIndices); 
-		mesh->pIndices = NULL;
 	}
 	mesh->pVertices = calloc(mesh->vertexCount, sizeof(float));
 	if (mesh->pVertices == NULL) { return; }
@@ -181,7 +127,7 @@ int main() {
 	handMesh->pVertices = handply.pVertices;
 	handMesh->indexCount = handply.indexCount;
 	handMesh->pIndices = handply.pIndices;
-	ezecsSetFggMaterial(scene, &meshMaterial, hand);
+	ezecsSetFggMaterial(scene, &handMat, hand);
 	handTransform->scale[0] = 0.5f;
 	handTransform->scale[1] = 0.5f;
 	handTransform->scale[2] = 0.5f;
@@ -229,7 +175,7 @@ int main() {
 	uint32_t graph = ezecsCreateEntity();
 	FggMesh* graphMesh = ezecsAddFggMesh(scene, graph);
 	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	graphMesh->vertexCount = 5000;
+	graphMesh->vertexCount = 5000 * 3;
 	lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
 	ezecsSetFggMaterial(scene, &lineMaterial, graph);
 	FggTransform* graphTransform = ezecsAddFggTransform(scene, graph);
@@ -242,6 +188,7 @@ int main() {
 	PlyFileData planePly = { 0 };
 	plyLoadFile("../Assets/Meshes/plane.ply", &planePly, 0);
 	uint32_t plane = ezecsCreateEntity();
+	FggTransform* planeTransform = ezecsAddFggTransform(scene, plane);
 	FggMesh* planeMesh = ezecsAddFggMesh(scene, plane);
 	planeMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	planeMesh->vertexCount = planePly.vertexCount * planePly.vertexStride;
@@ -249,8 +196,6 @@ int main() {
 	planeMesh->indexCount = planePly.indexCount;
 	planeMesh->pIndices = planePly.pIndices;
 	ezecsSetFggMaterial(scene, &planeMat, plane);
-	FggTransform* planeTransform = ezecsAddFggTransform(scene, plane);
-	planeTransform->position[1] = 3.0f;
 	planeTransform->scale[0] = 1.0f;
 	planeTransform->scale[1] = 1.0f;
 	planeTransform->scale[2] = 1.0f;
@@ -276,10 +221,11 @@ int main() {
 		fggFrameEnd(core, imageIndex);
 	}
 	
+	fggSceneRelease(core, scene);
 	plyFree(&handply);
 	plyFree(&lucyply);
 	plyFree(&planePly);
-	fggSceneRelease(core, scene);
+
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);
 	fggCoreRelease(&core);
