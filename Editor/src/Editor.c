@@ -211,7 +211,7 @@ int main() {
 	uint32_t graph = ezecsCreateEntity();
 	FggMesh* graphMesh = ezecsAddFggMesh(scene, graph);
 	graphMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH | FGG_MESH_SETUP_RUNTIME_MESH;
-	graphMesh->vertexCount = 6;
+	graphMesh->vertexCount = 0;
 	FggMaterial graphMat = { 0 };
 	fggSetupLineMaterial(core, lineFStates, &graphMat);
 	ezecsSetFggMaterial(scene, &graphMat, graph);
