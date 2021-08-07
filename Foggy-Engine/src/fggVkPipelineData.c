@@ -24,16 +24,17 @@ void fggDescriptorSetLayout(const FggVkCore core, const uint32_t binding, const 
 		NULL								//pImmutableSamplers;
 	};
 
-	VkDescriptorSetLayoutCreateInfo descriptorSetLayout = {
+	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,	//sType;
 		NULL,													//pNext;
 		0,														//flags;
 		1,														//bindingCount;
 		&descriptorSetLayoutBinding								//pBindings;
 	};
+	pPipeData->descriptorSetLayoutBinding = descriptorSetLayoutBinding;
 
 	fggCheckVkResult(
-		vkCreateDescriptorSetLayout(core.device, &descriptorSetLayout, NULL, &pPipeData->descriptorSetLayout),
+		vkCreateDescriptorSetLayout(core.device, &descriptorSetLayoutCreateInfo, NULL, &pPipeData->descriptorSetLayout),
 		"error creating descriptor set layout"
 	);
 }

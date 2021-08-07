@@ -12,7 +12,8 @@ void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 	FggMaterial mat = {
 		"../Shaders/bin/Mesh.vert.spv",	//vertexShaderPath;
 		"../Shaders/bin/Mesh.frag.spv",	//fragmentShaderPath;	
-		0,										//pipelineData;
+		&fixedStates,					//fStates
+		0,								//pipelineData;
 	};
 
 	fggAllocateUniformBufferData(core, sizeof(mat4), &mat.pipelineData);
@@ -31,10 +32,7 @@ void fggSetupBaseMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 }
 
 void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStates, FggMaterial* pMaterial) {
-#ifndef NDEBUG
-	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Line.vert.spv");
-	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Line.frag.spv");
-#endif
+
 
 	FggMaterial mat = {
 		"../Shaders/bin/Line.vert.spv",	//vertexShaderPath;
@@ -126,11 +124,34 @@ int main() {
 											FGG_FIXED_STATES_VERTEX_POSITIONS_BIT;
 	fggSetFixedStates(core, lineStateFlags, &lineFStates);
 
+#ifndef NDEBUG
+	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
+	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
+	fggCompileGLSLShader("../Shaders/src/Line.vert", "../Shaders/bin/Line.vert.spv");
+	fggCompileGLSLShader("../Shaders/src/Line.frag", "../Shaders/bin/Line.frag.spv");
+#endif
+
 	//MATERIALS
-	FggMaterial meshMaterial, lineMaterial = { 0 };
+	FggMaterial meshMaterial, lineMaterial;
 	
-	fggSetupBaseMaterial(core, meshFStates, &meshMaterial);
-	fggSetupLineMaterial(core, lineFStates, &lineMaterial);
+	fggSetupMaterial(core, 
+		"../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", 
+		sizeof(mat4), VK_SHADER_STAGE_VERTEX_BIT,
+		sizeof(mat4) * 2, VK_SHADER_STAGE_VERTEX_BIT,
+		meshFStates, &meshMaterial
+		);
+	FggMaterial handMat, lucyMat, textMat, planeMat = { 0 };
+	fggCreateMaterialInstance(core, meshMaterial, &handMat);
+	fggCreateMaterialInstance(core, meshMaterial, &lucyMat);
+	fggCreateMaterialInstance(core, meshMaterial, &textMat);
+	fggCreateMaterialInstance(core, meshMaterial, &planeMat);
+
+	fggSetupMaterial(core,
+		"../Shaders/bin/Line.vert.spv", "../Shaders/bin/Line.frag.spv",
+		sizeof(mat4), VK_SHADER_STAGE_VERTEX_BIT,
+		sizeof(mat4) * 2, VK_SHADER_STAGE_VERTEX_BIT,
+		lineFStates, &lineMaterial
+	);
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
@@ -179,9 +200,7 @@ int main() {
 	lucyMesh->pVertices = lucyply.pVertices;
 	lucyMesh->indexCount = lucyply.indexCount;
 	lucyMesh->pIndices = lucyply.pIndices;
-	FggMaterial newmat = { 0 };
-	fggSetupBaseMaterial(core, meshFStates, &newmat);
-	ezecsSetFggMaterial(scene, &newmat, lucy);
+	ezecsSetFggMaterial(scene, &lucyMat, lucy);
 	lucyTransform->scale[0] = 1.0f;
 	lucyTransform->scale[1] = 1.0f;
 	lucyTransform->scale[2] = 1.0f;
@@ -200,27 +219,41 @@ int main() {
 	textMesh->pVertices = textply.pVertices;
 	textMesh->indexCount = textply.indexCount;
 	textMesh->pIndices = textply.pIndices;
-	FggMaterial newmat1 = { 0 };
-	fggSetupBaseMaterial(core, meshFStates, &newmat1);
-	ezecsSetFggMaterial(scene, &newmat1, text);
+	ezecsSetFggMaterial(scene, &textMat, text);
 	textTransform->scale[0] = 1.0f;
 	textTransform->scale[1] = 1.0f;
 	textTransform->scale[2] = 1.0f;
-
+	
+	
 	//graph 
 	uint32_t graph = ezecsCreateEntity();
 	FggMesh* graphMesh = ezecsAddFggMesh(scene, graph);
-	graphMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH | FGG_MESH_SETUP_RUNTIME_MESH;
-	graphMesh->vertexCount = 0;
-	FggMaterial graphMat = { 0 };
-	fggSetupLineMaterial(core, lineFStates, &graphMat);
-	ezecsSetFggMaterial(scene, &graphMat, graph);
+	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	graphMesh->vertexCount = 5000;
+	lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
+	ezecsSetFggMaterial(scene, &lineMaterial, graph);
 	FggTransform* graphTransform = ezecsAddFggTransform(scene, graph);
 	graphTransform->rotation[1] = 180.0f;
 	graphTransform->scale[0] = 1.0f;
 	graphTransform->scale[1] = 1.0f;
 	graphTransform->scale[2] = 1.0f;
-
+	
+	//plane
+	PlyFileData planePly = { 0 };
+	plyLoadFile("../Assets/Meshes/plane.ply", &planePly, 0);
+	uint32_t plane = ezecsCreateEntity();
+	FggMesh* planeMesh = ezecsAddFggMesh(scene, plane);
+	planeMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	planeMesh->vertexCount = planePly.vertexCount * planePly.vertexStride;
+	planeMesh->pVertices = planePly.pVertices;
+	planeMesh->indexCount = planePly.indexCount;
+	planeMesh->pIndices = planePly.pIndices;
+	ezecsSetFggMaterial(scene, &planeMat, plane);
+	FggTransform* planeTransform = ezecsAddFggTransform(scene, plane);
+	planeTransform->position[1] = 3.0f;
+	planeTransform->scale[0] = 1.0f;
+	planeTransform->scale[1] = 1.0f;
+	planeTransform->scale[2] = 1.0f;
 
 	fggSceneInit(core, scene);
 	fggInitCommands(&core);
@@ -234,9 +267,6 @@ int main() {
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 		
-		graphMesh->vertexCount += 3;
-		lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
-
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;
@@ -248,6 +278,7 @@ int main() {
 	
 	plyFree(&handply);
 	plyFree(&lucyply);
+	plyFree(&planePly);
 	fggSceneRelease(core, scene);
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);

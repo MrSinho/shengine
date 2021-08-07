@@ -22,6 +22,7 @@ typedef struct FggMaterial {
 	const char* 			vertexShaderPath;
 	const char* 			fragmentShaderPath;	
 
+	FggVkFixedStates*		pFixedStates;
 	FggVkPipelineData		pipelineData;
 
 } FggMaterial;
@@ -29,5 +30,15 @@ typedef struct FggMaterial {
 
 
 EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMaterial, 2)
+
+
+
+extern void fggSetupMaterial(const FggVkCore core, 
+	const char* vPath,			const char* fPath, 
+	const uint32_t uniformSize, const VkShaderStageFlags uniformStage, 
+	const uint32_t pConstSize,	const VkShaderStageFlags pConstStage, 
+	const FggVkFixedStates fixedStates, FggMaterial* pMaterial);
+
+extern void fggCreateMaterialInstance(const FggVkCore core, const FggMaterial src, FggMaterial* dst);
 
 #endif

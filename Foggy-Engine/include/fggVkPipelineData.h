@@ -60,6 +60,7 @@ typedef struct FggVkPipelineData {
 	VkPushConstantRange		pushConstantRange;
 
 	/*Descriptor stuff*/
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding;
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
 	VkDescriptorBufferInfo descriptorBufferInfo;
