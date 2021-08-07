@@ -23,7 +23,7 @@ void fggCreateBuffer(const VkDevice device, const uint32_t size, VkBufferUsageFl
 	};
 
 #ifndef NDEBUG
-	printf("creating buffer of %u bytes \n", size);
+	//printf("creating buffer of %u bytes \n", size);
 #endif	
 
 	fggCheckVkResult(

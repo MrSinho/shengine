@@ -235,7 +235,7 @@ int main() {
 		fggFrameBegin(core, &imageIndex);
 		
 		graphMesh->vertexCount += 3;
-		lorenzAttractor(10.0f, 28.0f, 2.66f, time.deltaTime, graphMesh);
+		lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
 
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
