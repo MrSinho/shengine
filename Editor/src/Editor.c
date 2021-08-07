@@ -58,20 +58,49 @@ void fggSetupLineMaterial(const FggVkCore core, const FggVkFixedStates fixedStat
 	*pMaterial = mat;
 }
 
-float* lorenzAttractor(float a, float b, float c, float x, float y, float z) {
+float* lorenzAttractorVertex(float a, float b, float c, float dTime, float x, float y, float z) {
 	
 	float* vertex = calloc(3, sizeof(float));
 	if (vertex == NULL) { return NULL; }
 	float dx, dy, dz;
 
-	dx = (a * (y - x))		* 0.01f;
-	dy = (x * (b - z) - y)	* 0.01f;
-	dz = (x * y - c * z)	* 0.01f;
+	dx = (a * (y - x))		* dTime;
+	dy = (x * (b - z) - y)	* dTime;
+	dz = (x * y - c * z)	* dTime;
 	vertex[0] = x + dx;
 	vertex[1] = y + dy;
 	vertex[2] = z + dz;
 
 	return vertex;
+}
+
+void lorenzAttractor(float a, float b, float c, float dTime, FggMesh* mesh) {
+	if (mesh->pVertices != NULL) {
+		free(mesh->pVertices);
+		mesh->pVertices = NULL;
+	}
+	if (mesh->pIndices != NULL) {
+		free(mesh->pIndices); 
+		mesh->pIndices = NULL;
+	}
+	mesh->pVertices = calloc(mesh->vertexCount, sizeof(float));
+	if (mesh->pVertices == NULL) { return; }
+	for (uint32_t i = 0; i < mesh->vertexCount; i += 3) {
+		float* hvertex;
+		float vertex[3];
+		if (i == 0) {
+			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, 0.01f, 0.01f, 0.0f, 0.0f);
+		}
+		else {
+			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, 0.01f, mesh->pVertices[i - 3], mesh->pVertices[i - 2], mesh->pVertices[i - 1]);
+		}
+		memcpy(vertex, hvertex, sizeof(float) * 3);
+		free(hvertex);
+		mesh->pVertices[i]		= vertex[0];
+		mesh->pVertices[i + 1]	= vertex[1];
+		mesh->pVertices[i + 2]	= vertex[2];
+	}
+	fggGenerateGraphIndices(mesh);
 }
 
 int main() {
@@ -178,54 +207,11 @@ int main() {
 	textTransform->scale[1] = 1.0f;
 	textTransform->scale[2] = 1.0f;
 
-	//line
-	//float vertices[15] = {
-	//	0.0f, -1.0f, 0.0f, 
-	//	1.0f,  1.0f, 0.0f,
-	//	-1.0f,  1.0f, 0.0f,
-	//	0.0f, -0.8f, 0.0f,
-	//	0.0f,  0.0f, 0.0f,
-	//};
-	//uint32_t line = ezecsCreateEntity();
-	//FggMesh* lineMesh = ezecsAddFggMesh(scene, line);
-	//lineMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH;
-	//lineMesh->vertexCount = sizeof(vertices) / sizeof(float);
-	//lineMesh->pVertices = calloc(lineMesh->vertexCount, sizeof(float));
-	//fggGenerateGraphIndices(lineMesh);
-	//
-	//if (lineMesh->pVertices == NULL) { return EXIT_FAILURE; }
-	//for (uint32_t i = 0; i < lineMesh->vertexCount; i++) {
-	//	lineMesh->pVertices[i] = vertices[i];
-	//}
-	//ezecsSetFggMaterial(scene, &lineMaterial, line);
-	//FggTransform* lineTransform = ezecsAddFggTransform(scene, line);
-	//lineTransform->scale[0] = 1.0f;
-	//lineTransform->scale[1] = 1.0f;
-	//lineTransform->scale[2] = 1.0f;
-
 	//graph 
 	uint32_t graph = ezecsCreateEntity();
 	FggMesh* graphMesh = ezecsAddFggMesh(scene, graph);
-	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	graphMesh->vertexCount = 5000 * 3;
-	graphMesh->pVertices = calloc(graphMesh->vertexCount, sizeof(float));
-	if (graphMesh->pVertices == NULL) { return EXIT_FAILURE; }
-	for (uint32_t i = 0; i < graphMesh->vertexCount; i+=3) {
-		float* hvertex;
-		float vertex[3];
-		if (i == 0) {
-			hvertex = lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, 0.0f, 0.0f);
-		}
-		else {
-			hvertex = lorenzAttractor(10.0f, 28.0f, 2.66f, graphMesh->pVertices[i-3], graphMesh->pVertices[i-2], graphMesh->pVertices[i-1]);
-		}
-		memcpy(vertex, hvertex, sizeof(float) * 3);
-		free(hvertex);
-		graphMesh->pVertices[i]   = vertex[0];
-		graphMesh->pVertices[i+1] = vertex[1];
-		graphMesh->pVertices[i+2] = vertex[2];
-	}
-	fggGenerateGraphIndices(graphMesh);
+	graphMesh->flags = FGG_MESH_SETUP_DYNAMIC_MESH | FGG_MESH_SETUP_RUNTIME_MESH;
+	graphMesh->vertexCount = 6;
 	FggMaterial graphMat = { 0 };
 	fggSetupLineMaterial(core, lineFStates, &graphMat);
 	ezecsSetFggMaterial(scene, &graphMat, graph);
@@ -235,6 +221,7 @@ int main() {
 	graphTransform->scale[1] = 1.0f;
 	graphTransform->scale[2] = 1.0f;
 
+
 	fggSceneInit(core, scene);
 	fggInitCommands(&core);
 
@@ -242,14 +229,14 @@ int main() {
 		fggPollEvents();
 		fggGetTime(&time);
 		fggFrameReset(core);
-		
 		fggGetCursorPosition(core.window, &core.window.cursorPosX, &core.window.cursorPosY);
 
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
-			
-		//lineMesh->pVertices[0] = (float)sin(time.now);
-		//lineMesh->pVertices[12] = (float)sin(time.now);
+		
+		graphMesh->vertexCount += 3;
+		lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
+
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;

@@ -67,7 +67,7 @@ void fggAllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDev
 	};
 
 #ifndef NDEBUG
-	printf("allocating %u bytes of memory\n", (uint32_t)memoryRequirements.size);
+	//printf("allocating %u bytes of memory\n", (uint32_t)memoryRequirements.size);
 #endif
 
 	fggCheckVkResult(
@@ -76,7 +76,7 @@ void fggAllocateMemory(const VkDevice device, const VkPhysicalDevice physicalDev
 	);
 
 #ifndef NDEBUG
-	printf("binding memory\n");
+	//printf("binding memory\n");
 #endif
 
 	fggCheckVkResult(

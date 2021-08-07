@@ -9,7 +9,8 @@
 
 typedef enum FggMeshSetupFlags {
 	FGG_MESH_SETUP_STATIC_MESH  = 0b001,
-	FGG_MESH_SETUP_DYNAMIC_MESH = 0b010
+	FGG_MESH_SETUP_DYNAMIC_MESH = 0b010,
+	FGG_MESH_SETUP_RUNTIME_MESH = 0b100,
 } FggMeshSetupFlags;
 
 typedef struct FggMesh {
@@ -32,6 +33,7 @@ typedef struct FggMesh {
 
 static void fggGenerateGraphIndices(FggMesh* mesh) {
 	mesh->indexCount = mesh->vertexCount / 3 * 2 - 2;
+	if (mesh->indexCount == 0) { return; }
 	mesh->pIndices = calloc(mesh->indexCount, sizeof(uint32_t));
 	if (mesh->pIndices == NULL) { return; }
 	mesh->pIndices[0] = 0;

@@ -19,11 +19,13 @@ void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
 			FggMesh* m = ezecsGetFggMesh(scene, entity);
 
 			//Allocate memory
-			if (m->vertexCount > 0 && m->pVertices != NULL) {
-				fggAllocateMeshVertexData(core, m);
-			}
-			if (m->indexCount > 0 && m->pIndices != NULL) {
-				fggAllocateMeshIndexData(core, m);
+			if (!(m->flags & FGG_MESH_SETUP_RUNTIME_MESH)) {
+				if (m->vertexCount > 0 && m->pVertices != NULL) {
+					fggAllocateMeshVertexData(core, m);
+				}
+				if (m->indexCount > 0 && m->pIndices != NULL) {
+					fggAllocateMeshIndexData(core, m);
+				}
 			}
 
 			//Map memory
@@ -137,12 +139,21 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 
 			//Map memory
 			if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH) {
+				if (mesh->flags & FGG_MESH_SETUP_RUNTIME_MESH) {
+					if (mesh->vertexCount >= 0 && mesh->pVertices != NULL) {
+						fggAllocateMeshVertexData(core, mesh);
+					}
+					if (mesh->indexCount >= 0 && mesh->pIndices != NULL) {
+						fggAllocateMeshIndexData(core, mesh);
+					}
+				}
 				fggMapVertexBufferMemory(core, mesh);
 				if (mesh->indexCount > 0) {
 					fggMapIndexBufferMemory(core, mesh);
 				}
 			}
 
+			
 			//Bind vertex and index buffers
 			if (mesh->vertexCount > 0 && mesh->vertexBuffer != NULL) {
 				fggBindVertexBuffers(core, *mesh);
@@ -164,6 +175,15 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 					fggBindDescriptorSets(core, mat->pipelineData);
 				}
 				fggDraw(core.pCmdBuffers[0], mat->pipelineData.vertexStride / 4, *mesh);
+			}
+
+			if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH & FGG_MESH_SETUP_RUNTIME_MESH) {
+				if (mesh->vertexCount >= 0 && mesh->pVertices != NULL) {
+					fggClearBufferMemory(core.device, mesh->vertexBuffer, mesh->vertexBufferMemory);
+				}
+				if (mesh->indexCount >= 0 && mesh->pIndices != NULL) {
+					fggClearBufferMemory(core.device, mesh->indexBuffer, mesh->indexBufferMemory);
+				}
 			}
 		}
 
