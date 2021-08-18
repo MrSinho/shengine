@@ -224,18 +224,22 @@ int main() {
 	}
 	
 	uint32_t transSizes[6]   = { 12, 12, 12, 12, 12, 12 };
-	uint32_t transStrides[6] = { 64, 64+12, 64+24, 64+36, 64+48, 64+60 };
-	FggIOSettings transExp = {
+	uint32_t transStrides[6] = { 64, 64 + 12, 64 + 24, 64 + 36, 64 + 48, 64 + 60 };
+	FggIOSettings transio = {
 
 		6,						//attributeCount;
 		transSizes,				//pAttributesSize;
 		transStrides,			//pAttributesStride;
-		(void**)graphTransform	//pData;
+
+		(void*)graphTransform	//pData;
 
 	};
 
-	fggExport(transExp, FGG_IO_FILE, "../Saved/Export/exp.fgg");
-
+	//test with import export components
+	fggExport(transio, FGG_IO_FILE, "../Saved/Export/exp.fgg");
+	FggTransform myTrans = { 0 };
+	fggImport(transio, FGG_IO_FILE, "../Saved/Export/exp.fgg", &myTrans);
+	myTrans;
 	fggDestroyPipeline(core, &meshMaterial.pipelineData);
 
 	fggSceneRelease(core, scene);
