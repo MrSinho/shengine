@@ -10,6 +10,9 @@ option(CGLM_USE_C99 "" ON)
 add_subdirectory(Externals/cglm EXCLUDE_FROM_ALL)
 set(PLY_BUILD_EXAMPLE OFF CACHE BOOL "")
 add_subdirectory(Externals/PlyImporter EXCLUDE_FROM_ALL)
+if (WIN32)
+    
+endif()
 
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)
