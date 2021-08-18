@@ -16,3 +16,6 @@
 [submodule "Externals/PlyImporter"]
 	path = Externals/PlyImporter
 	url = https://www.github.com/MrSinho/PlyImporter.git
+[submodule "Externals/libusb"]
+	path = Externals/libusb
+	url = https://github.com/libusb/libusb.git

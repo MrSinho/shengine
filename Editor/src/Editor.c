@@ -1,4 +1,5 @@
 #include <FGG_API.h>
+#include "fggIO.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -222,6 +223,21 @@ int main() {
 		fggFrameEnd(core, imageIndex);
 	}
 	
+	uint32_t transSizes[6]   = { 12, 12, 12, 12, 12, 12 };
+	uint32_t transStrides[6] = { 64, 64+12, 64+24, 64+36, 64+48, 64+60 };
+	FggIOSettings transExp = {
+
+		6,						//attributeCount;
+		transSizes,				//pAttributesSize;
+		transStrides,			//pAttributesStride;
+		(void**)graphTransform	//pData;
+
+	};
+
+	fggExport(transExp, FGG_IO_FILE, "../Saved/Export/exp.fgg");
+
+	fggDestroyPipeline(core, &meshMaterial.pipelineData);
+
 	fggSceneRelease(core, scene);
 	plyFree(&handply);
 	plyFree(&lucyply);
