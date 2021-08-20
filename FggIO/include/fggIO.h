@@ -3,26 +3,29 @@
 
 #include <stdint.h>
 
+typedef struct FggIOSerialSettings {
 
-#define FGG_IO_USB_SERIAL	0
-#define FGG_IO_FILE			1
+	const char* comPort;
+	uint32_t baudRate;
 
-
+} FggIOSerialSettings;
 
 typedef struct FggIOSettings {
 
-	uint32_t attributeCount;
+	uint32_t  attributeCount;
 	uint32_t* pAttributesSize;
 	uint32_t* pAttributesStride;
-
-	void* pData;
+	uint32_t* pBinAttributesSize;
 
 } FggIOSettings;
 
 
+extern void fggIOSerialSetup(const FggIOSerialSettings srl, const char* output);
 
-extern void fggExport(FggIOSettings io, uint32_t src, const char* fn);
+extern void fggIOSerialRead();
 
-extern void fggImport(FggIOSettings io, uint32_t src, const char* fn, void* dst);
+extern void fggExport(const FggIOSettings io, void* src, const char* fn);
+
+extern void fggImport(const FggIOSettings io, const char* fn, void* dst);
 
 #endif

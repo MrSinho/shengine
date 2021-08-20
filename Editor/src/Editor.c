@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 float* lorenzAttractorVertex(float a, float b, float c, float dTime, float x, float y, float z) {
 	
 	float* vertex = calloc(3, sizeof(float));
@@ -204,8 +205,23 @@ int main() {
 
 	fggSceneInit(core, scene);
 	fggInitCommands(&core);
+	
+	uint32_t transSizes[3] = { 12, 12, 12 };
+	uint32_t transStrides[3] = { 64, 64 + 12, 64 + 24 };
+	uint32_t transbinSize[3] = { 12, 12, 12 };
+	FggIOSettings transIO = {
+		3,						//attributeCount;
+		transSizes,				//pAttributesSize;
+		transStrides,			//pAttributesStride;
+		transbinSize			//pBinAttributesStride
+	};
+
+	FggIOSerialSettings srl = { "COM4", 9600 };
+	fggIOSerialSetup(srl, "../Saved/Serial/output.fgg");
+	fggIOSerialRead();
 
 	while (fggIsWindowActive(core.window.window)) {
+
 		fggPollEvents();
 		fggGetTime(&time);
 		fggFrameReset(core);
@@ -217,29 +233,13 @@ int main() {
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;
+		fggImport(transIO, "../Saved/Serial/output.fgg", graphTransform);
 
 		fggSceneUpdate(core, time, scene);
 	
 		fggFrameEnd(core, imageIndex);
 	}
-	
-	uint32_t transSizes[6]   = { 12, 12, 12, 12, 12, 12 };
-	uint32_t transStrides[6] = { 64, 64 + 12, 64 + 24, 64 + 36, 64 + 48, 64 + 60 };
-	FggIOSettings transio = {
 
-		6,						//attributeCount;
-		transSizes,				//pAttributesSize;
-		transStrides,			//pAttributesStride;
-
-		(void*)graphTransform	//pData;
-
-	};
-
-	//test with import export components
-	fggExport(transio, FGG_IO_FILE, "../Saved/Export/exp.fgg");
-	FggTransform myTrans = { 0 };
-	fggImport(transio, FGG_IO_FILE, "../Saved/Export/exp.fgg", &myTrans);
-	myTrans;
 	fggDestroyPipeline(core, &meshMaterial.pipelineData);
 
 	fggSceneRelease(core, scene);
