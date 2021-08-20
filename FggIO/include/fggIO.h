@@ -15,7 +15,7 @@ typedef struct FggIOSettings {
 	uint32_t  attributeCount;
 	uint32_t* pAttributesSize;
 	uint32_t* pAttributesStride;
-	uint32_t* pBinAttributesSize;
+	uint32_t* pBinAttributesStride;
 
 } FggIOSettings;
 

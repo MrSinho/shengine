@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SERVOS
 
 float* lorenzAttractorVertex(float a, float b, float c, float dTime, float x, float y, float z) {
 	
@@ -61,12 +62,17 @@ int main() {
 	fggSetFramebuffers(&core);
 	fggSetSyncObjects(&core);
 
-	FggVkFixedStates meshFStates, lineFStates = { 0 };
+	FggVkFixedStates meshFStates, wireframeFStates, lineFStates = { 0 };
 	FggFixedStateFlags meshFStateFlags = FGG_FIXED_STATES_POLYGON_MODE_FACE_BIT |
 										 FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
 										 FGG_FIXED_STATES_VERTEX_NORMALS_BIT | 
 										 FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
 	fggSetFixedStates(core, meshFStateFlags, &meshFStates);
+	FggFixedStateFlags wireframeFStateFlags =	FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
+												FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
+												FGG_FIXED_STATES_VERTEX_NORMALS_BIT |
+												FGG_FIXED_STATES_VERTEX_TCOORDS_BIT;
+	fggSetFixedStates(core, wireframeFStateFlags, &wireframeFStates);
 	FggFixedStateFlags lineStateFlags = FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
 											FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST |
 											FGG_FIXED_STATES_VERTEX_POSITIONS_BIT;
@@ -80,7 +86,7 @@ int main() {
 #endif
 
 	//MATERIALS
-	FggMaterial meshMaterial, lineMaterial;
+	FggMaterial meshMaterial, wireframeMaterial, lineMaterial;
 	
 	fggSetupMaterial(core, 
 		"../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv", 
@@ -88,11 +94,13 @@ int main() {
 		sizeof(mat4) * 2, VK_SHADER_STAGE_VERTEX_BIT,
 		meshFStates, &meshMaterial
 		);
-	FggMaterial handMat, lucyMat, textMat, planeMat = { 0 };
-	fggCreateMaterialInstance(core, meshMaterial, &handMat);
-	fggCreateMaterialInstance(core, meshMaterial, &lucyMat);
-	fggCreateMaterialInstance(core, meshMaterial, &textMat);
-	fggCreateMaterialInstance(core, meshMaterial, &planeMat);
+
+	fggSetupMaterial(core,
+		"../Shaders/bin/Mesh.vert.spv", "../Shaders/bin/Mesh.frag.spv",
+		sizeof(mat4), VK_SHADER_STAGE_VERTEX_BIT,
+		sizeof(mat4) * 2, VK_SHADER_STAGE_VERTEX_BIT,
+		wireframeFStates, &wireframeMaterial
+	);
 
 	fggSetupMaterial(core,
 		"../Shaders/bin/Line.vert.spv", "../Shaders/bin/Line.frag.spv",
@@ -100,6 +108,24 @@ int main() {
 		sizeof(mat4) * 2, VK_SHADER_STAGE_VERTEX_BIT,
 		lineFStates, &lineMaterial
 	);
+	
+#ifdef RANDOM
+	FggMaterial handMat, lucyMat, textMat, planeMat;
+	fggCreateMaterialInstance(core, meshMaterial, &handMat);
+	fggCreateMaterialInstance(core, meshMaterial, &lucyMat);
+	fggCreateMaterialInstance(core, meshMaterial, &textMat);
+	fggCreateMaterialInstance(core, meshMaterial, &planeMat);
+#endif
+
+#ifdef SERVOS
+	FggMaterial servo0Mat, cross0Mat, servo1Mat, cross1Mat = { 0 };
+	fggCreateMaterialInstance(core, wireframeMaterial, &servo0Mat);
+	fggCreateMaterialInstance(core, wireframeMaterial, &cross0Mat);
+	fggCreateMaterialInstance(core, wireframeMaterial, &servo1Mat);
+	fggCreateMaterialInstance(core, wireframeMaterial, &cross1Mat);
+#endif
+
+	
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
@@ -118,6 +144,7 @@ int main() {
 	FggTransform* camTransform = ezecsAddFggTransform(scene, camEntity);
 	camTransform->position[2] = 2.0f;
 
+#ifdef RANDOM
 	//hand
 	PlyFileData handply = { 0 };
 	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &handply, 0);
@@ -203,22 +230,86 @@ int main() {
 	planeTransform->scale[1] = 1.0f;
 	planeTransform->scale[2] = 1.0f;
 
-	fggSceneInit(core, scene);
-	fggInitCommands(&core);
-	
-	uint32_t transSizes[3] = { 12, 12, 12 };
-	uint32_t transStrides[3] = { 64, 64 + 12, 64 + 24 };
-	uint32_t transbinSize[3] = { 12, 12, 12 };
+#endif
+
+#ifdef SERVOS
+	PlyFileData servoply = { 0 };
+	plyLoadFile("../Assets/Meshes/Servo/servoMotor.ply", &servoply, 0);
+	FggMesh servoMesh = {
+		servoply.vertexCount * servoply.vertexStride,
+		servoply.pVertices,
+		servoply.indexCount,
+		servoply.pIndices,
+		FGG_MESH_SETUP_STATIC_MESH,
+		0, 0, 0, 0
+	};
+	PlyFileData crossply = { 0 };
+	plyLoadFile("../Assets/Meshes/Servo/servoMotorCross.ply", &crossply, 0);
+	FggMesh crossMesh = {
+		crossply.vertexCount * crossply.vertexStride,
+		crossply.pVertices,
+		crossply.indexCount,
+		crossply.pIndices,
+		FGG_MESH_SETUP_STATIC_MESH,
+		0, 0, 0, 0
+	};
+
+	//servo0
+	uint32_t servo0 = ezecsCreateEntity();
+	ezecsSetFggMesh(scene, &servoMesh, servo0);
+	FggTransform* servo0Transform = ezecsAddFggTransform(scene, servo0);
+	servo0Transform->scale[0] = 1.0f;
+	servo0Transform->scale[1] = 1.0f;
+	servo0Transform->scale[2] = 1.0f;
+	ezecsSetFggMaterial(scene, &servo0Mat, servo0);
+
+	//cross0
+	uint32_t cross0 = ezecsCreateEntity();
+	FggMesh* cross0Mesh = ezecsAddFggMesh(scene, cross0);
+	cross0Mesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	cross0Mesh->vertexCount = crossply.vertexCount * crossply.vertexStride;
+	cross0Mesh->pVertices = crossply.pVertices;
+	cross0Mesh->indexCount = crossply.indexCount;
+	cross0Mesh->pIndices = crossply.pIndices;
+	FggTransform* cross0Transform = ezecsAddFggTransform(scene, cross0);
+	cross0Transform->position[0] = 0.316788f;
+	cross0Transform->position[1] = -1.65641f;
+	cross0Transform->position[2] = 0.013092;
+	cross0Transform->scale[0] = 1.0f;
+	cross0Transform->scale[1] = 1.0f;
+	cross0Transform->scale[2] = 1.0f;
+	ezecsSetFggMaterial(scene, &cross0Mat, cross0);
+
+	//servo1
+	//uint32_t servo1 = ezecsCreateEntity();
+	//ezecsSetFggMesh(scene, &servoMesh, servo1);
+	//FggTransform* servo1Transform = ezecsAddFggTransform(scene, servo1);
+	//servo1Transform->position[0] = -0.321191;
+	//servo1Transform->position[1] = 2.04666;
+	//servo1Transform->position[2] = -0.5176;
+	//servo1Transform->scale[0] = 1.0f;
+	//servo1Transform->scale[1] = 1.0f;
+	//servo1Transform->scale[2] = 1.0f;
+	//ezecsSetFggMaterial(scene, &servo1Mat, servo1);
+
+	uint32_t transSizes[1] = { 12 };
+	uint32_t transStrides[1] = { 64 + 12 };
+	uint32_t transbinStride[1] = { 12 };
+
 	FggIOSettings transIO = {
-		3,						//attributeCount;
+		1,						//attributeCount;
 		transSizes,				//pAttributesSize;
 		transStrides,			//pAttributesStride;
-		transbinSize			//pBinAttributesStride
+		transbinStride			//pBinAttributesStride
 	};
 
 	FggIOSerialSettings srl = { "COM4", 9600 };
 	fggIOSerialSetup(srl, "../Saved/Serial/output.fgg");
 	fggIOSerialRead();
+#endif
+
+	fggSceneInit(core, scene);
+	fggInitCommands(&core);
 
 	while (fggIsWindowActive(core.window.window)) {
 
@@ -230,22 +321,34 @@ int main() {
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
 		
+#ifdef RANDOM
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;
-		fggImport(transIO, "../Saved/Serial/output.fgg", graphTransform);
+#endif
 
+#ifdef SERVOS
+		fggImport(transIO, "../Saved/Serial/output.fgg", cross0Transform);
+#endif
 		fggSceneUpdate(core, time, scene);
 	
 		fggFrameEnd(core, imageIndex);
 	}
 
 	fggDestroyPipeline(core, &meshMaterial.pipelineData);
+	fggDestroyPipeline(core, &lineMaterial.pipelineData);
 
 	fggSceneRelease(core, scene);
+
+#ifdef RANDOM
 	plyFree(&handply);
 	plyFree(&lucyply);
 	plyFree(&planePly);
+#endif
+
+#ifdef SERVOS
+	plyFree(&servoply);
+#endif
 
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);

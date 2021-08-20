@@ -21,13 +21,13 @@ typedef struct FggMesh {
 	uint32_t		indexCount;
 	uint32_t*		pIndices;
 
+	FggMeshSetupFlags flags;
+
 	VkBuffer 		vertexBuffer;
 	VkDeviceMemory 	vertexBufferMemory;
 
 	VkBuffer		indexBuffer;
 	VkDeviceMemory	indexBufferMemory;
-
-	FggMeshSetupFlags flags;
 
 } FggMesh;
 

@@ -64,9 +64,9 @@ void fggImport(const FggIOSettings io, const char* fn, void* dst) {
 	
 	for (uint32_t i = 0; i < io.attributeCount; i++) {
 	
+		offset = io.pBinAttributesStride[i];
 		fseek(stream, offset, SEEK_SET);
 		fread((void*)((char*)dst + io.pAttributesStride[i]), io.pAttributesSize[i], 1, stream);
-		offset += io.pBinAttributesSize[i];
 		
 	}
 
