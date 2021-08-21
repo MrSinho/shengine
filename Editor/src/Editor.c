@@ -6,6 +6,14 @@
 #include <string.h>
 
 #define SERVOS
+#define RANDOM
+//#define LORENZ
+
+#ifdef RANDOM
+#define LORENZ
+#endif
+
+#ifdef LORENZ
 
 float* lorenzAttractorVertex(float a, float b, float c, float dTime, float x, float y, float z) {
 	
@@ -49,6 +57,8 @@ void lorenzAttractor(float a, float b, float c, float dTime, FggMesh* mesh) {
 	}
 	fggGenerateGraphIndices(mesh);
 }
+
+#endif
 
 int main() {
 
@@ -198,21 +208,7 @@ int main() {
 	textTransform->scale[0] = 1.0f;
 	textTransform->scale[1] = 1.0f;
 	textTransform->scale[2] = 1.0f;
-	
-	
-	//graph 
-	uint32_t graph = ezecsCreateEntity();
-	FggMesh* graphMesh = ezecsAddFggMesh(scene, graph);
-	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	graphMesh->vertexCount = 5000 * 3;
-	lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
-	ezecsSetFggMaterial(scene, &lineMaterial, graph);
-	FggTransform* graphTransform = ezecsAddFggTransform(scene, graph);
-	graphTransform->rotation[1] = 180.0f;
-	graphTransform->scale[0] = 1.0f;
-	graphTransform->scale[1] = 1.0f;
-	graphTransform->scale[2] = 1.0f;
-	
+
 	//plane
 	PlyFileData planePly = { 0 };
 	plyLoadFile("../Assets/Meshes/plane.ply", &planePly, 0);
@@ -230,6 +226,21 @@ int main() {
 	planeTransform->scale[1] = 1.0f;
 	planeTransform->scale[2] = 1.0f;
 
+#endif
+
+#ifdef LORENZ
+	//graph 
+	uint32_t graph = ezecsCreateEntity();
+	FggMesh* graphMesh = ezecsAddFggMesh(scene, graph);
+	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	graphMesh->vertexCount = 5000 * 3;
+	lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
+	ezecsSetFggMaterial(scene, &lineMaterial, graph);
+	FggTransform* graphTransform = ezecsAddFggTransform(scene, graph);
+	graphTransform->rotation[1] = 180.0f;
+	graphTransform->scale[0] = 1.0f;
+	graphTransform->scale[1] = 1.0f;
+	graphTransform->scale[2] = 1.0f;
 #endif
 
 #ifdef SERVOS
@@ -274,7 +285,7 @@ int main() {
 	FggTransform* cross0Transform = ezecsAddFggTransform(scene, cross0);
 	cross0Transform->position[0] = 0.316788f;
 	cross0Transform->position[1] = -1.65641f;
-	cross0Transform->position[2] = 0.013092;
+	cross0Transform->position[2] = 0.013092f;
 	cross0Transform->scale[0] = 1.0f;
 	cross0Transform->scale[1] = 1.0f;
 	cross0Transform->scale[2] = 1.0f;
