@@ -412,14 +412,14 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		pPipeData->mainPipelineLayout,						//layout;
 		core.renderPass,									//renderPass;
 		0,													//subpass;
-		NULL,												//basePipelineHandle;
+		0,													//basePipelineHandle;
 		0													//basePipelineIndex;
 	};
 
 	pPipeData->vertexStride = fStates.vertexInputStateInfo.pVertexBindingDescriptions->stride;
 
 	fggCheckVkResult(
-		vkCreateGraphicsPipelines(core.device, NULL, 1, &graphicsPipelineCreateInfo, NULL, &pPipeData->pipeline),
+		vkCreateGraphicsPipelines(core.device, 0, 1, &graphicsPipelineCreateInfo, NULL, &pPipeData->pipeline),
 		"error creating graphics pipeline"
 	);
 }

@@ -6,13 +6,11 @@
 
 #pragma warning (disable: 4996)
 #pragma warning (disable: 6385)
-#ifdef __GNUC__
-	#pragma GCC diagnostic ignored "-Wstringop-overflow"
-#endif
+
 const char *fggReadCode(const char* path, uint32_t *pCodeSize, const char *mode) {
-	
+
 	FILE* stream = fopen(path, mode);
-	
+
 	if (stream == NULL) {
 		return (void*)(0);
 	}
@@ -66,7 +64,7 @@ void fggCheckVkResult(VkResult result, const char* errormsg) {
 	if (result != VK_SUCCESS) {
 #ifndef NDEBUG
 		printf("%s, %s \n", errormsg, fggTranslateVkResult(result));
-#endif	
+#endif
 		system("pause");
 		exit(-1);
 	}
@@ -113,10 +111,10 @@ void fggCompileGLSLShader(const char* input, const char* output) {
 	char cmd[256] = { 0 };
 	const char* o = " -o ";
 	strcpy(cmd, "glslc ");
-	strncat(cmd, input, strlen(input));
-	strncat(cmd, o, strlen(o));
-	strncat(cmd, output, strlen(output));
-#ifndef NDEBUG	
+	strcat(cmd, input);
+	strcat(cmd, o);
+	strcat(cmd, output);
+#ifndef NDEBUG
 	puts(cmd);
 #endif
 	int rtrn = system(cmd);

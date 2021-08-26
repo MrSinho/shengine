@@ -20,31 +20,31 @@
 FggVkCore fggVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char *title) {
 	
 	FggVkCore core = {	
-		VK_NULL_HANDLE,				//instance;
-		VK_NULL_HANDLE,				//physicalDevice;
-		VK_NULL_HANDLE,				//device;
+		0,							//instance;
+		0,							//physicalDevice;
+		0,							//device;
 		{NULL,
 		width, 
 		height, 
 		title},						//window;
-		VK_NULL_HANDLE,				//surface;
+		0,							//surface;
 		VK_QUEUE_GRAPHICS_BIT,		//requiredQueueFlag;
 		1,							//queueFamilyIndexCount
 		0,							//graphicsQueueIndex;
 		0,							//presentQueueIndex;
-		VK_NULL_HANDLE,				//graphicsQueue;
-		VK_NULL_HANDLE,				//pCmdPools;
-		VK_NULL_HANDLE,				//pCmdBuffers;
-		VK_NULL_HANDLE,				//swapchain;
+		0,							//graphicsQueue;
+		NULL,						//pCmdPools;
+		0,							//pCmdBuffers;
+		0,							//swapchain;
 		VK_FORMAT_R8G8B8A8_UNORM,	//imageFormat;
 		0,							//swapchainImageCount;
-		VK_NULL_HANDLE,				//pSwapchainImages;
-		0,							//pSwapchainImageViews;
-		VK_NULL_HANDLE,				//pFramebuffers;
-		VK_NULL_HANDLE,				//renderPass;
-		VK_NULL_HANDLE,				//renderSemaphore;
-		VK_NULL_HANDLE,				//presentSemaphore;
-		VK_NULL_HANDLE,				//renderFence;
+		NULL,						//pSwapchainImages;
+		NULL,						//pSwapchainImageViews;
+		NULL,						//pFramebuffers;
+		0,							//renderPass;
+		0,							//renderSemaphore;
+		0,							//presentSemaphore;
+		0,							//renderFence;
 	};
 
 	fggInitGLFW(&core.window);
@@ -263,11 +263,15 @@ void fggSetLogicalDevice(FggVkCore *core) {
 		0, 										//enabledLayerCount;
 		NULL,									//ppEnabledLayerNames;
 		1, 										//enabledExtensionCount;
-		&swapchainExtensionName,							//ppEnabledExtensionNames;
+		&swapchainExtensionName,				//ppEnabledExtensionNames;
 		NULL									//pEnabledFeatures;
 	};
 
 #ifndef NDEBUG
+	deviceCreateInfo.enabledLayerCount = 1;
+	const char* khronos_validation = "VK_LAYER_KHRONOS_validation";
+	deviceCreateInfo.ppEnabledLayerNames = &khronos_validation;
+
 	puts("creating logical device");
 #endif
 
@@ -315,7 +319,7 @@ void fggCreateSwapchain(FggVkCore* core) {
 		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,				//compositeAlpha;
 		VK_PRESENT_MODE_FIFO_KHR,						//presentMode;
 		1,												//clipped;
-		NULL,											//oldSwapchain;
+		0,												//oldSwapchain;
 	};
 
 	//FORMAT CHECK
@@ -436,7 +440,7 @@ VkCommandPool fggCreateCmdPool(const VkDevice device, uint32_t queueFamilyIndex)
 	puts("creating command pool");
 #endif
 
-	VkCommandPool cmdPool = NULL;
+	VkCommandPool cmdPool = 0;
 	fggCheckVkResult(
 		vkCreateCommandPool(device, &cmdPoolCreateInfo, NULL, &cmdPool), 
 		"error creating command pool"

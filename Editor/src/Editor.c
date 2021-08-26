@@ -1,5 +1,4 @@
 #include <FGG_API.h>
-#include "fggIO.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +6,7 @@
 
 #define SERVOS
 #define RANDOM
-//#define LORENZ
+#define LORENZ
 
 #ifdef RANDOM
 #define LORENZ
@@ -93,7 +92,7 @@ int main() {
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
 	fggCompileGLSLShader("../Shaders/src/Line.vert", "../Shaders/bin/Line.vert.spv");
 	fggCompileGLSLShader("../Shaders/src/Line.frag", "../Shaders/bin/Line.frag.spv");
-#endif
+#endif // NDEBUG
 
 	//MATERIALS
 	FggMaterial meshMaterial, wireframeMaterial, lineMaterial;
@@ -125,7 +124,7 @@ int main() {
 	fggCreateMaterialInstance(core, meshMaterial, &lucyMat);
 	fggCreateMaterialInstance(core, meshMaterial, &textMat);
 	fggCreateMaterialInstance(core, meshMaterial, &planeMat);
-#endif
+#endif // RANDOM
 
 #ifdef SERVOS
 	FggMaterial servo0Mat, cross0Mat, servo1Mat, cross1Mat = { 0 };
@@ -133,7 +132,7 @@ int main() {
 	fggCreateMaterialInstance(core, wireframeMaterial, &cross0Mat);
 	fggCreateMaterialInstance(core, wireframeMaterial, &servo1Mat);
 	fggCreateMaterialInstance(core, wireframeMaterial, &cross1Mat);
-#endif
+#endif // SERVOS
 
 	
 
@@ -226,7 +225,7 @@ int main() {
 	planeTransform->scale[1] = 1.0f;
 	planeTransform->scale[2] = 1.0f;
 
-#endif
+#endif // RANDOM
 
 #ifdef LORENZ
 	//graph 
@@ -241,7 +240,7 @@ int main() {
 	graphTransform->scale[0] = 1.0f;
 	graphTransform->scale[1] = 1.0f;
 	graphTransform->scale[2] = 1.0f;
-#endif
+#endif // LORENZ
 
 #ifdef SERVOS
 	PlyFileData servoply = { 0 };
@@ -307,17 +306,7 @@ int main() {
 	uint32_t transStrides[1] = { 64 + 12 };
 	uint32_t transbinStride[1] = { 12 };
 
-	FggIOSettings transIO = {
-		1,						//attributeCount;
-		transSizes,				//pAttributesSize;
-		transStrides,			//pAttributesStride;
-		transbinStride			//pBinAttributesStride
-	};
-
-	FggIOSerialSettings srl = { "COM4", 9600 };
-	fggIOSerialSetup(srl, "../Saved/Serial/output.fgg");
-	fggIOSerialRead();
-#endif
+#endif // SERVOS
 
 	fggSceneInit(core, scene);
 	fggInitCommands(&core);
@@ -336,11 +325,10 @@ int main() {
 		handTransform->rotation[1] += 50.0f * time.deltaTime;
 		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
 		textTransform->rotation[1] -= 100 * time.deltaTime;
-#endif
+#endif // RANDOM
 
 #ifdef SERVOS
-		fggImport(transIO, "../Saved/Serial/output.fgg", cross0Transform);
-#endif
+#endif // SERVOS
 		fggSceneUpdate(core, time, scene);
 	
 		fggFrameEnd(core, imageIndex);
@@ -355,11 +343,11 @@ int main() {
 	plyFree(&handply);
 	plyFree(&lucyply);
 	plyFree(&planePly);
-#endif
+#endif // RANDOM
 
 #ifdef SERVOS
 	plyFree(&servoply);
-#endif
+#endif // SERVOS
 
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);

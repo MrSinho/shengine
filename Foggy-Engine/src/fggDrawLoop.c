@@ -11,9 +11,9 @@ void fggFrameReset(const FggVkCore core) {
 	vkResetCommandBuffer(core.pCmdBuffers[0], 0);
 }
 
-void fggFrameBegin(const FggVkCore core, uint32_t* swapchainImageIndex) {
+void fggFrameBegin(const FggVkCore core, uint32_t* pSwapchainImageIndex) {
 
-	vkAcquireNextImageKHR(core.device, core.swapchain, 1000000000, core.presentSemaphore, NULL, swapchainImageIndex);
+	vkAcquireNextImageKHR(core.device, core.swapchain, 1000000000, core.presentSemaphore, 0, pSwapchainImageIndex);
 
 	VkCommandBufferBeginInfo cmdBufferBeginInfo = {
 		VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,	//sType;
@@ -27,7 +27,7 @@ void fggFrameBegin(const FggVkCore core, uint32_t* swapchainImageIndex) {
 		VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,		//sType;
 		NULL,											//pNext;
 		core.renderPass,								//renderPass;
-		core.pFramebuffers[*swapchainImageIndex],		//framebuffer;
+		core.pFramebuffers[*pSwapchainImageIndex],		//framebuffer;
 		{												//
 			{0, 0},										//
 			{core.window.width, core.window.height}	//

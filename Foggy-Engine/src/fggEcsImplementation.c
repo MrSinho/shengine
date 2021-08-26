@@ -155,10 +155,10 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 
 			
 			//Bind vertex and index buffers
-			if (mesh->vertexCount > 0 && mesh->vertexBuffer != NULL) {
+			if (mesh->vertexCount > 0) {
 				fggBindVertexBuffers(core, *mesh);
 			}
-			if (mesh->indexCount > 0 && mesh->indexBuffer != NULL) {
+			if (mesh->indexCount > 0) {
 				fggBindIndexBuffers(core, *mesh);
 			}
 
@@ -205,7 +205,7 @@ void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
 				mesh->pVertices = NULL;
 				mesh->vertexCount = 0;
 			}
-			if (mesh->indexCount > 0 && mesh->indexBuffer != NULL) {
+			if (mesh->indexCount > 0) {
 				fggClearBufferMemory(core.device, mesh->indexBuffer, mesh->indexBufferMemory);
 				free(mesh->pIndices);
 				mesh->pIndices = NULL;
