@@ -268,10 +268,6 @@ void fggSetLogicalDevice(FggVkCore *core) {
 	};
 
 #ifndef NDEBUG
-	deviceCreateInfo.enabledLayerCount = 1;
-	const char* khronos_validation = "VK_LAYER_KHRONOS_validation";
-	deviceCreateInfo.ppEnabledLayerNames = &khronos_validation;
-
 	puts("creating logical device");
 #endif
 
