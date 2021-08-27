@@ -134,7 +134,10 @@ int main() {
 	fggCreateMaterialInstance(core, wireframeMaterial, &cross1Mat);
 #endif // SERVOS
 
-	
+#ifdef LORENZ
+	FggMaterial lorenzMaterial = { 0 };
+	fggCreateMaterialInstance(core, lineMaterial, &lorenzMaterial);
+#endif // LORENZ
 
 	ezecsScene scene = { 0 };
 	ezecsCreateScene(scene);
@@ -234,7 +237,7 @@ int main() {
 	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	graphMesh->vertexCount = 5000 * 3;
 	lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
-	ezecsSetFggMaterial(scene, &lineMaterial, graph);
+	ezecsSetFggMaterial(scene, &lorenzMaterial, graph);
 	FggTransform* graphTransform = ezecsAddFggTransform(scene, graph);
 	graphTransform->rotation[1] = 180.0f;
 	graphTransform->scale[0] = 1.0f;
@@ -335,6 +338,7 @@ int main() {
 	}
 
 	fggDestroyPipeline(core, &meshMaterial.pipelineData);
+	fggDestroyPipeline(core, &wireframeMaterial.pipelineData);
 	fggDestroyPipeline(core, &lineMaterial.pipelineData);
 
 	fggSceneRelease(core, scene);
