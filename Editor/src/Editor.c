@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SERVOS
+//#define SERVOS
 #define RANDOM
 #define LORENZ
 
