@@ -18,7 +18,7 @@ typedef struct FggVkCore {
 	
 	/*Initialization stuff*/
 	VkInstance instance;
-	VkPhysicalDevice physicalDevice;
+	VkPhysicalDevice physical_device;
 	VkDevice device;
 	
 	/*Window and surface stuff*/
@@ -26,29 +26,29 @@ typedef struct FggVkCore {
 	VkSurfaceKHR surface;
 
 	/*Queues*/
-	VkQueueFlags requiredQueueFlag;
-	uint32_t queueFamilyIndexCount;
-	uint32_t graphicsQueueIndex;
-	uint32_t presentQueueIndex;
-	VkQueue graphicsQueue;
+	VkQueueFlags required_queue_flag;
+	uint32_t queue_family_index_count;
+	uint32_t graphics_queue_index;
+	uint32_t present_queue_index;
+	VkQueue graphics_queue;
 
 	/*Commands*/
-	VkCommandPool* pCmdPools;
-	VkCommandBuffer* pCmdBuffers;
+	VkCommandPool* p_cmd_pools;
+	VkCommandBuffer* p_cmd_buffers;
 
 	/*Swapchain*/
 	VkSwapchainKHR swapchain;
-	VkFormat imageFormat;
-	uint32_t swapchainImageCount;
-	VkImage* pSwapchainImages;
-	VkImageView* pSwapchainImageViews;
-	VkFramebuffer* pFramebuffers;
+	VkFormat image_format;
+	uint32_t swapchain_image_count;
+	VkImage* p_swapchain_images;
+	VkImageView* p_swapchain_image_views;
+	VkFramebuffer* p_frame_buffers;
 
 	/*Render pass + sync objects*/
-	VkRenderPass renderPass;
-	VkSemaphore renderSemaphore;
-	VkSemaphore presentSemaphore;
-	VkFence renderFence;
+	VkRenderPass render_pass;
+	VkSemaphore render_semaphore;
+	VkSemaphore present_semaphore;
+	VkFence render_fence;
 
 } FggVkCore;
 

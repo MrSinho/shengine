@@ -5,9 +5,9 @@ typedef struct FggTime
 {
 	double now;
 
-	float deltaTime;
+	float delta_time;
 
-	float lastTime;
+	float last_time;
 
 } FggTime;
 

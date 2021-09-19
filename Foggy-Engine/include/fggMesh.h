@@ -15,33 +15,33 @@ typedef enum FggMeshSetupFlags {
 
 typedef struct FggMesh {
 
-	uint32_t		vertexCount;
-	float*			pVertices;
+	uint32_t		vertex_count;
+	float*			p_vertices;
 
-	uint32_t		indexCount;
-	uint32_t*		pIndices;
+	uint32_t		index_count;
+	uint32_t*		p_indices;
 
 	FggMeshSetupFlags flags;
 
-	VkBuffer 		vertexBuffer;
-	VkDeviceMemory 	vertexBufferMemory;
+	VkBuffer 		vertex_buffer;
+	VkDeviceMemory 	vertex_buffer_memory;
 
-	VkBuffer		indexBuffer;
-	VkDeviceMemory	indexBufferMemory;
+	VkBuffer		index_buffer;
+	VkDeviceMemory	index_buffer_memory;
 
 } FggMesh;
 
 static void fggGenerateGraphIndices(FggMesh* mesh) {
-	mesh->indexCount = mesh->vertexCount / 3 * 2 - 2;
-	if (mesh->indexCount == 0) { return; }
-	mesh->pIndices = calloc(mesh->indexCount, sizeof(uint32_t));
-	if (mesh->pIndices == NULL) { return; }
-	mesh->pIndices[0] = 0;
-	mesh->pIndices[mesh->indexCount - 1] = mesh->vertexCount / 3 - 1;
+	mesh->index_count = mesh->vertex_count / 3 * 2 - 2;
+	if (mesh->index_count == 0) { return; }
+	mesh->p_indices = calloc(mesh->index_count, sizeof(uint32_t));
+	if (mesh->p_indices == NULL) { return; }
+	mesh->p_indices[0] = 0;
+	mesh->p_indices[mesh->index_count - 1] = mesh->vertex_count / 3 - 1;
 	uint32_t vertex = 1;
-	for (uint32_t i = 1; i < mesh->indexCount - 1; i += 2) {
-		mesh->pIndices[i] = vertex;
-		mesh->pIndices[i + 1] = vertex;
+	for (uint32_t i = 1; i < mesh->index_count - 1; i += 2) {
+		mesh->p_indices[i] = vertex;
+		mesh->p_indices[i + 1] = vertex;
 		vertex++;
 	}
 }

@@ -11,7 +11,7 @@
 void fggAllocateUniformBufferData(const FggVkCore core, const uint32_t bufferSize, FggVkPipelineData* pPipeData) {
 	pPipeData->uniformBufferSize = bufferSize;
 	fggCreateBuffer(core.device, pPipeData->uniformBufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, &pPipeData->uniformBuffer);
-	fggAllocateMemory(core.device, core.physicalDevice, pPipeData->uniformBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &pPipeData->uniformBufferMemory);
+	fggAllocateMemory(core.device, core.physical_device, pPipeData->uniformBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &pPipeData->uniformBufferMemory);
 }
 
 void fggDescriptorSetLayout(const FggVkCore core, const uint32_t binding, const VkShaderStageFlags shaderStageFlags, FggVkPipelineData* pPipeData) {
@@ -42,14 +42,14 @@ void fggDescriptorSetLayout(const FggVkCore core, const uint32_t binding, const 
 void fggCreateDescriptorPool(const FggVkCore core, FggVkPipelineData* pPipeData) {
 	VkDescriptorPoolSize descriptorPoolSize = {
 		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,	//type;
-		core.swapchainImageCount			//descriptorCount;
+		core.swapchain_image_count			//descriptorCount;
 	};
 
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,	//sType;
 		NULL,											//pNext;
 		0,												//flags;
-		core.swapchainImageCount,						//maxSets;
+		core.swapchain_image_count,						//maxSets;
 		1,												//poolSizeCount;
 		&descriptorPoolSize								//pPoolSizes;
 	};
@@ -410,7 +410,7 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		&fStates.colorBlendState,							//pColorBlendState;
 		NULL,												//pDynamicState;
 		pPipeData->mainPipelineLayout,						//layout;
-		core.renderPass,									//renderPass;
+		core.render_pass,									//renderPass;
 		0,													//subpass;
 		0,													//basePipelineHandle;
 		0													//basePipelineIndex;

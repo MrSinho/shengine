@@ -20,20 +20,20 @@ void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
 
 			//Allocate memory
 			if (!(m->flags & FGG_MESH_SETUP_RUNTIME_MESH)) {
-				if (m->vertexCount > 0 && m->pVertices != NULL) {
+				if (m->vertex_count > 0 && m->p_vertices != NULL) {
 					fggAllocateMeshVertexData(core, m);
 				}
-				if (m->indexCount > 0 && m->pIndices != NULL) {
+				if (m->index_count > 0 && m->p_indices != NULL) {
 					fggAllocateMeshIndexData(core, m);
 				}
 			}
 
 			//Map memory
 			if (m->flags & FGG_MESH_SETUP_STATIC_MESH) {
-				if (m->vertexCount > 0 && m->pVertices != NULL) {
+				if (m->vertex_count > 0 && m->p_vertices != NULL) {
 					fggMapVertexBufferMemory(core, m);
 				}
-				if (m->indexCount > 0 && m->pIndices != NULL) {
+				if (m->index_count > 0 && m->p_indices != NULL) {
 					fggMapIndexBufferMemory(core, m);
 				}
 			}
@@ -140,49 +140,49 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 			//Map memory
 			if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH) {
 				if (mesh->flags & FGG_MESH_SETUP_RUNTIME_MESH) {
-					if (mesh->vertexCount >= 0 && mesh->pVertices != NULL) {
+					if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
 						fggAllocateMeshVertexData(core, mesh);
 					}
-					if (mesh->indexCount >= 0 && mesh->pIndices != NULL) {
+					if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
 						fggAllocateMeshIndexData(core, mesh);
 					}
 				}
 				fggMapVertexBufferMemory(core, mesh);
-				if (mesh->indexCount > 0) {
+				if (mesh->index_count > 0) {
 					fggMapIndexBufferMemory(core, mesh);
 				}
 			}
 
 			
 			//Bind vertex and index buffers
-			if (mesh->vertexCount > 0) {
+			if (mesh->vertex_count > 0) {
 				fggBindVertexBuffers(core, *mesh);
 			}
-			if (mesh->indexCount > 0) {
+			if (mesh->index_count > 0) {
 				fggBindIndexBuffers(core, *mesh);
 			}
 
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
-				fggBindPipeline(core.pCmdBuffers[0], mat->pipelineData);
+				fggBindPipeline(core.p_cmd_buffers[0], mat->pipelineData);
 
 				//push constants
 				vec4* pConst[2] = { camera.projection, camera.view };
-				fggPushConstants(core.pCmdBuffers[0], mat->pipelineData, &pConst[0][0]);
+				fggPushConstants(core.p_cmd_buffers[0], mat->pipelineData, &pConst[0][0]);
 
 				//Bind descriptor sets
 				if (mat->pipelineData.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
 					fggBindDescriptorSets(core, mat->pipelineData);
 				}
-				fggDraw(core.pCmdBuffers[0], mat->pipelineData.vertexStride / 4, *mesh);
+				fggDraw(core.p_cmd_buffers[0], mat->pipelineData.vertexStride / 4, *mesh);
 			}
 
 			if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH & FGG_MESH_SETUP_RUNTIME_MESH) {
-				if (mesh->vertexCount >= 0 && mesh->pVertices != NULL) {
-					fggClearBufferMemory(core.device, mesh->vertexBuffer, mesh->vertexBufferMemory);
+				if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
+					fggClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
 				}
-				if (mesh->indexCount >= 0 && mesh->pIndices != NULL) {
-					fggClearBufferMemory(core.device, mesh->indexBuffer, mesh->indexBufferMemory);
+				if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
+					fggClearBufferMemory(core.device, mesh->index_buffer, mesh->index_buffer_memory);
 				}
 			}
 		}
@@ -199,17 +199,17 @@ void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
 
 		if (ezecsHasFggMesh(scene, entity)) {
 			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
-			if (mesh->vertexCount > 0 && mesh->pVertices != NULL) {
-				fggClearBufferMemory(core.device, mesh->vertexBuffer, mesh->vertexBufferMemory);
-				free(mesh->pVertices);
-				mesh->pVertices = NULL;
-				mesh->vertexCount = 0;
+			if (mesh->vertex_count > 0 && mesh->p_vertices != NULL) {
+				fggClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
+				free(mesh->p_vertices);
+				mesh->p_vertices = NULL;
+				mesh->vertex_count = 0;
 			}
-			if (mesh->indexCount > 0) {
-				fggClearBufferMemory(core.device, mesh->indexBuffer, mesh->indexBufferMemory);
-				free(mesh->pIndices);
-				mesh->pIndices = NULL;
-				mesh->indexCount = 0;
+			if (mesh->index_count > 0) {
+				fggClearBufferMemory(core.device, mesh->index_buffer, mesh->index_buffer_memory);
+				free(mesh->p_indices);
+				mesh->p_indices = NULL;
+				mesh->index_count = 0;
 			}
 			mesh = NULL;
 			if (ezecsHasFggMaterial(scene, entity)) {

@@ -31,28 +31,28 @@ float* lorenzAttractorVertex(float a, float b, float c, float dTime, float x, fl
 }
 
 void lorenzAttractor(float a, float b, float c, float dTime, FggMesh* mesh) {
-	if (mesh->pVertices != NULL) {
-		free(mesh->pVertices);
+	if (mesh->p_vertices != NULL) {
+		free(mesh->p_vertices);
 	}
-	if (mesh->pIndices != NULL) {
-		free(mesh->pIndices); 
+	if (mesh->p_indices != NULL) {
+		free(mesh->p_indices); 
 	}
-	mesh->pVertices = calloc(mesh->vertexCount, sizeof(float));
-	if (mesh->pVertices == NULL) { return; }
-	for (uint32_t i = 0; i < mesh->vertexCount; i += 3) {
+	mesh->p_vertices = calloc(mesh->vertex_count, sizeof(float));
+	if (mesh->p_vertices == NULL) { return; }
+	for (uint32_t i = 0; i < mesh->vertex_count; i += 3) {
 		float* hvertex;
 		float vertex[3];
 		if (i == 0) {
 			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, dTime, 0.01f, 0.0f, 0.0f);
 		}
 		else {
-			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, dTime, mesh->pVertices[i - 3], mesh->pVertices[i - 2], mesh->pVertices[i - 1]);
+			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, dTime, mesh->p_vertices[i - 3], mesh->p_vertices[i - 2], mesh->p_vertices[i - 1]);
 		}
 		memcpy(vertex, hvertex, sizeof(float) * 3);
 		free(hvertex);
-		mesh->pVertices[i]		= vertex[0];
-		mesh->pVertices[i + 1]	= vertex[1];
-		mesh->pVertices[i + 2]	= vertex[2];
+		mesh->p_vertices[i]		= vertex[0];
+		mesh->p_vertices[i + 1]	= vertex[1];
+		mesh->p_vertices[i + 2]	= vertex[2];
 	}
 	fggGenerateGraphIndices(mesh);
 }
@@ -164,10 +164,10 @@ int main() {
 	FggTransform* handTransform = ezecsAddFggTransform(scene, hand);
 	FggMesh* handMesh = ezecsAddFggMesh(scene, hand);
 	handMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	handMesh->vertexCount = handply.vertexCount * handply.vertexStride;
-	handMesh->pVertices = handply.pVertices;
-	handMesh->indexCount = handply.indexCount;
-	handMesh->pIndices = handply.pIndices;
+	handMesh->vertex_count = handply.vertexCount * handply.vertexStride;
+	handMesh->p_vertices = handply.pVertices;
+	handMesh->index_count = handply.indexCount;
+	handMesh->p_indices = handply.pIndices;
 	ezecsSetFggMaterial(scene, &handMat, hand);
 	handTransform->scale[0] = 0.5f;
 	handTransform->scale[1] = 0.5f;
@@ -183,10 +183,10 @@ int main() {
 	FggTransform* lucyTransform = ezecsAddFggTransform(scene, lucy);
 	FggMesh* lucyMesh = ezecsAddFggMesh(scene, lucy);
 	lucyMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	lucyMesh->vertexCount = lucyply.vertexCount * lucyply.vertexStride;
-	lucyMesh->pVertices = lucyply.pVertices;
-	lucyMesh->indexCount = lucyply.indexCount;
-	lucyMesh->pIndices = lucyply.pIndices;
+	lucyMesh->vertex_count = lucyply.vertexCount * lucyply.vertexStride;
+	lucyMesh->p_vertices = lucyply.pVertices;
+	lucyMesh->index_count = lucyply.indexCount;
+	lucyMesh->p_indices = lucyply.pIndices;
 	ezecsSetFggMaterial(scene, &lucyMat, lucy);
 	lucyTransform->scale[0] = 1.0f;
 	lucyTransform->scale[1] = 1.0f;
@@ -202,10 +202,10 @@ int main() {
 	FggTransform* textTransform = ezecsAddFggTransform(scene, text);
 	FggMesh* textMesh = ezecsAddFggMesh(scene, text);
 	textMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	textMesh->vertexCount = textply.vertexCount * textply.vertexStride;
-	textMesh->pVertices = textply.pVertices;
-	textMesh->indexCount = textply.indexCount;
-	textMesh->pIndices = textply.pIndices;
+	textMesh->vertex_count = textply.vertexCount * textply.vertexStride;
+	textMesh->p_vertices = textply.pVertices;
+	textMesh->index_count = textply.indexCount;
+	textMesh->p_indices = textply.pIndices;
 	ezecsSetFggMaterial(scene, &textMat, text);
 	textTransform->scale[0] = 1.0f;
 	textTransform->scale[1] = 1.0f;
@@ -218,10 +218,10 @@ int main() {
 	FggTransform* planeTransform = ezecsAddFggTransform(scene, plane);
 	FggMesh* planeMesh = ezecsAddFggMesh(scene, plane);
 	planeMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	planeMesh->vertexCount = planePly.vertexCount * planePly.vertexStride;
-	planeMesh->pVertices = planePly.pVertices;
-	planeMesh->indexCount = planePly.indexCount;
-	planeMesh->pIndices = planePly.pIndices;
+	planeMesh->vertex_count = planePly.vertexCount * planePly.vertexStride;
+	planeMesh->p_vertices = planePly.pVertices;
+	planeMesh->index_count = planePly.indexCount;
+	planeMesh->p_indices = planePly.pIndices;
 	ezecsSetFggMaterial(scene, &planeMat, plane);
 	planeTransform->position[1] = -4.0f;
 	planeTransform->scale[0] = 1.0f;
@@ -235,7 +235,7 @@ int main() {
 	uint32_t graph = ezecsCreateEntity();
 	FggMesh* graphMesh = ezecsAddFggMesh(scene, graph);
 	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	graphMesh->vertexCount = 5000 * 3;
+	graphMesh->vertex_count = 5000 * 3;
 	lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
 	ezecsSetFggMaterial(scene, &lorenzMaterial, graph);
 	FggTransform* graphTransform = ezecsAddFggTransform(scene, graph);
@@ -249,20 +249,20 @@ int main() {
 	PlyFileData servoply = { 0 };
 	plyLoadFile("../Assets/Meshes/Servo/servoMotor.ply", &servoply, 0);
 	FggMesh servoMesh = {
-		servoply.vertexCount * servoply.vertexStride,
-		servoply.pVertices,
-		servoply.indexCount,
-		servoply.pIndices,
+		servoply.vertex_count * servoply.vertexStride,
+		servoply.p_vertices,
+		servoply.index_count,
+		servoply.p_indices,
 		FGG_MESH_SETUP_STATIC_MESH,
 		0, 0, 0, 0
 	};
 	PlyFileData crossply = { 0 };
 	plyLoadFile("../Assets/Meshes/Servo/servoMotorCross.ply", &crossply, 0);
 	FggMesh crossMesh = {
-		crossply.vertexCount * crossply.vertexStride,
-		crossply.pVertices,
-		crossply.indexCount,
-		crossply.pIndices,
+		crossply.vertex_count * crossply.vertexStride,
+		crossply.p_vertices,
+		crossply.index_count,
+		crossply.p_indices,
 		FGG_MESH_SETUP_STATIC_MESH,
 		0, 0, 0, 0
 	};
@@ -280,10 +280,10 @@ int main() {
 	uint32_t cross0 = ezecsCreateEntity();
 	FggMesh* cross0Mesh = ezecsAddFggMesh(scene, cross0);
 	cross0Mesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	cross0Mesh->vertexCount = crossply.vertexCount * crossply.vertexStride;
-	cross0Mesh->pVertices = crossply.pVertices;
-	cross0Mesh->indexCount = crossply.indexCount;
-	cross0Mesh->pIndices = crossply.pIndices;
+	cross0Mesh->vertex_count = crossply.vertex_count * crossply.vertexStride;
+	cross0Mesh->p_vertices = crossply.p_vertices;
+	cross0Mesh->index_count = crossply.index_count;
+	cross0Mesh->p_indices = crossply.p_indices;
 	FggTransform* cross0Transform = ezecsAddFggTransform(scene, cross0);
 	cross0Transform->position[0] = 0.316788f;
 	cross0Transform->position[1] = -1.65641f;
@@ -325,9 +325,9 @@ int main() {
 		fggFrameBegin(core, &imageIndex);
 		
 #ifdef RANDOM
-		handTransform->rotation[1] += 50.0f * time.deltaTime;
-		lucyTransform->rotation[1] += 25.0f * time.deltaTime;
-		textTransform->rotation[1] -= 100 * time.deltaTime;
+		handTransform->rotation[1] += 50.0f * time.delta_time;
+		lucyTransform->rotation[1] += 25.0f * time.delta_time;
+		textTransform->rotation[1] -= 100 * time.delta_time;
 #endif // RANDOM
 
 #ifdef SERVOS

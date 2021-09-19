@@ -6,8 +6,8 @@
 void fggGetTime(FggTime* time)
 {
 	time->now = glfwGetTime();
-	time->deltaTime = (float)time->now - time->lastTime;
-	time->lastTime = (float)time->now;
+	time->delta_time = (float)time->now - time->last_time;
+	time->last_time = (float)time->now;
 }
 
 void fggSetTime(double now, FggTime *time)
