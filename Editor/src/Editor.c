@@ -321,8 +321,8 @@ int main() {
 		fggFrameReset(core);
 		fggGetCursorPosition(core.window, &core.window.cursor_pos_x, &core.window.cursor_pos_y);
 
-		uint32_t imageIndex = 0;
-		fggFrameBegin(core, &imageIndex);
+		uint32_t image_index = 0;
+		fggFrameBegin(core, &image_index);
 		
 #ifdef RANDOM
 		handTransform->rotation[1] += 50.0f * time.delta_time;
@@ -334,7 +334,7 @@ int main() {
 #endif // SERVOS
 		fggSceneUpdate(core, time, scene);
 	
-		fggFrameEnd(core, imageIndex);
+		fggFrameEnd(core, image_index);
 	}
 
 	fggDestroyPipeline(core, &meshMaterial.pipeline_data);
