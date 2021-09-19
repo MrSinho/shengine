@@ -20,24 +20,24 @@ typedef enum FggFixedStateFlags {
 
 typedef struct FggVkFixedStates {
 	
-	VkVertexInputBindingDescription vertexBindingDescription;
-	uint32_t vertexInputAttributeDescriptionCount;
-	VkVertexInputAttributeDescription* pVertexInputAssemblyDescriptions;
-	VkPipelineVertexInputStateCreateInfo vertexInputStateInfo;
-	VkPipelineInputAssemblyStateCreateInfo inputAssembly;
+	VkVertexInputBindingDescription vertex_binding_description;
+	uint32_t vertex_input_attribute_description_count;
+	VkVertexInputAttributeDescription* p_vertex_input_assembly_descriptions;
+	VkPipelineVertexInputStateCreateInfo vertex_input_state_info;
+	VkPipelineInputAssemblyStateCreateInfo input_assembly;
 
 	VkViewport viewport;
 	VkRect2D scissor;
-	VkPipelineViewportStateCreateInfo viewportState;
+	VkPipelineViewportStateCreateInfo viewport_state;
 
 	VkPipelineRasterizationStateCreateInfo rasterizer;
 
-	VkPipelineColorBlendAttachmentState colorBlendAttachment;
-	VkPipelineColorBlendStateCreateInfo colorBlendState;
+	VkPipelineColorBlendAttachmentState color_blend_attachment;
+	VkPipelineColorBlendStateCreateInfo color_blend_state;
 
-	VkPipelineMultisampleStateCreateInfo multisampleStateInfo;
+	VkPipelineMultisampleStateCreateInfo multisample_state_info;
 
-	FggFixedStateFlags fixedStateFlags;
+	FggFixedStateFlags fixed_state_flags;
 
 } FggVkFixedStates;
 
@@ -86,7 +86,7 @@ extern void fggCreateRasterizer(VkPipelineRasterizationStateCreateInfo* rasteriz
 
 extern void fggSetMultisampleState(VkPipelineMultisampleStateCreateInfo* multisampleState);
 
-extern void fggColorBlendSettings(VkPipelineColorBlendAttachmentState* colorAttachment, VkPipelineColorBlendStateCreateInfo* colorBlendState);
+extern void fggColorBlendSettings(VkPipelineColorBlendAttachmentState* colorAttachment, VkPipelineColorBlendStateCreateInfo* color_blend_state);
 
 extern void fggSetViewport(const FggWindow window, VkViewport *vprt, VkRect2D* scssr, VkPipelineViewportStateCreateInfo* vprtState);
 
@@ -100,9 +100,9 @@ extern void fggCreateShaderStage(const VkDevice device, const VkShaderModule shM
 
 
 
-extern void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t* vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription* pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo* vi, FggFixedStateFlags flags);
+extern void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t* vertex_input_attribute_description_count, VkVertexInputAttributeDescription* pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo* vi, FggFixedStateFlags flags);
 
-extern void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable);
+extern void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* input_assembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable);
 
 
 

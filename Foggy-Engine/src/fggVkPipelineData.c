@@ -162,11 +162,11 @@ void fggCreateShaderStage(const VkDevice device, const VkShaderModule shModule, 
 
 }
 
-void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t *vertexInputAttributeDescriptionCount, VkVertexInputAttributeDescription *pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo *vi, FggFixedStateFlags flags) {
+void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescription, uint32_t *vertex_input_attribute_description_count, VkVertexInputAttributeDescription *pVertexInputAttributeDescriptions, VkPipelineVertexInputStateCreateInfo *vi, FggFixedStateFlags flags) {
 	
-	*vertexInputAttributeDescriptionCount = 0;
+	*vertex_input_attribute_description_count = 0;
 	
-	VkVertexInputBindingDescription vertexBindingDescription = {
+	VkVertexInputBindingDescription vertex_binding_description = {
 		0,									//binding;
 		0,									//stride;
 		VK_VERTEX_INPUT_RATE_VERTEX 		//inputRate;
@@ -180,8 +180,8 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 		0							//offset;
 	};
 	if (flags & FGG_FIXED_STATES_VERTEX_POSITIONS_BIT) {
-		*vertexInputAttributeDescriptionCount += 1;
-		vertexBindingDescription.stride += sizeof(float) * 3;
+		*vertex_input_attribute_description_count += 1;
+		vertex_binding_description.stride += sizeof(float) * 3;
 	}
 	
 	VkVertexInputAttributeDescription normalInputAttributeDescription = {
@@ -191,8 +191,8 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 		sizeof(float) * 5				//offset;
 	};
 	if (flags & FGG_FIXED_STATES_VERTEX_NORMALS_BIT) {
-		*vertexInputAttributeDescriptionCount += 1;
-		vertexBindingDescription.stride += sizeof(float) * 3;
+		*vertex_input_attribute_description_count += 1;
+		vertex_binding_description.stride += sizeof(float) * 3;
 	}
 
 	VkVertexInputAttributeDescription uvInputAttributeDescription = {
@@ -202,11 +202,11 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 		sizeof(float)*3				//offset;
 	};
 	if (flags & FGG_FIXED_STATES_VERTEX_TCOORDS_BIT) {
-		*vertexInputAttributeDescriptionCount += 1;
-		vertexBindingDescription.stride += sizeof(float) * 2;
+		*vertex_input_attribute_description_count += 1;
+		vertex_binding_description.stride += sizeof(float) * 2;
 	}
 
-	pVertexInputAttributeDescriptions = (VkVertexInputAttributeDescription*)malloc(*vertexInputAttributeDescriptionCount * sizeof(VkVertexInputAttributeDescription));
+	pVertexInputAttributeDescriptions = (VkVertexInputAttributeDescription*)malloc(*vertex_input_attribute_description_count * sizeof(VkVertexInputAttributeDescription));
 	if (pVertexInputAttributeDescriptions != NULL) {
 		if (flags & FGG_FIXED_STATES_VERTEX_POSITIONS_BIT) {
 			pVertexInputAttributeDescriptions[0] = positionInputAttributeDescription;
@@ -220,20 +220,20 @@ void fggSetVertexInputState(VkVertexInputBindingDescription* vertexBindDescripti
 	}
 	else { exit(EXIT_FAILURE); }
 
-	*vertexBindDescription = vertexBindingDescription;
+	*vertexBindDescription = vertex_binding_description;
 	VkPipelineVertexInputStateCreateInfo vertexInput = {
 		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,//sType;
 		NULL,								  //pNext;
 		0,									  //flags;
 		1,									  //vertexBindingDescriptionCount;
 		vertexBindDescription,				  //pVertexBindingDescriptions;
-		*vertexInputAttributeDescriptionCount,//vertexAttributeDescriptionCount;
+		*vertex_input_attribute_description_count,//vertexAttributeDescriptionCount;
 		pVertexInputAttributeDescriptions,	  //pVertexAttributeDescriptions;
 	};
 	*vi = vertexInput;
 }
 
-void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable) {
+void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* input_assembly, VkPrimitiveTopology primitiveTopology, VkBool32 primitiveRestartEnable) {
 	VkPipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,	//sType;
 		NULL,															//pNext;
@@ -241,7 +241,7 @@ void fggCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* inputAssembl
 		primitiveTopology,												//topology;
 		primitiveRestartEnable											//primitiveRestartEnable;
 	};																	
-	*inputAssembly = inputAssemblyStateCreateInfo;
+	*input_assembly = inputAssemblyStateCreateInfo;
 }
 
 void fggCreateRasterizer(VkPipelineRasterizationStateCreateInfo *rasterizer) {
@@ -280,7 +280,7 @@ void fggSetMultisampleState(VkPipelineMultisampleStateCreateInfo *multisampleSta
 	*multisampleState = multisampleStateCreateInfo;
 }
 
-void fggColorBlendSettings(VkPipelineColorBlendAttachmentState *colorBlendAttachment, VkPipelineColorBlendStateCreateInfo* colorBlendState) {
+void fggColorBlendSettings(VkPipelineColorBlendAttachmentState *color_blend_attachment, VkPipelineColorBlendStateCreateInfo* color_blend_state) {
 	VkPipelineColorBlendAttachmentState colorBlendAttachmentState = {
 		VK_FALSE,							//blendEnable;
 		0.0f,								//srcColorBlendFactor;
@@ -294,7 +294,7 @@ void fggColorBlendSettings(VkPipelineColorBlendAttachmentState *colorBlendAttach
 		VK_COLOR_COMPONENT_B_BIT |
 		VK_COLOR_COMPONENT_A_BIT 			//colorWriteMask;
 	};
-	*colorBlendAttachment = colorBlendAttachmentState;
+	*color_blend_attachment = colorBlendAttachmentState;
 
 	VkPipelineColorBlendStateCreateInfo colorBlendStateCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
@@ -303,10 +303,10 @@ void fggColorBlendSettings(VkPipelineColorBlendAttachmentState *colorBlendAttach
 		VK_FALSE,
 		VK_LOGIC_OP_COPY,
 		1,
-		colorBlendAttachment,
+		color_blend_attachment,
 		{0.0f, 0.0f, 0.0f}
 	};
-	*colorBlendState = colorBlendStateCreateInfo;
+	*color_blend_state = colorBlendStateCreateInfo;
 }
 
 void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, VkPipelineViewportStateCreateInfo* vprtState) {
@@ -340,14 +340,14 @@ void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, V
 
 void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixedStates* fStates) {
 	
-	fggSetVertexInputState(&fStates->vertexBindingDescription, &fStates->vertexInputAttributeDescriptionCount, fStates->pVertexInputAssemblyDescriptions, &fStates->vertexInputStateInfo, flags);
+	fggSetVertexInputState(&fStates->vertex_binding_description, &fStates->vertex_input_attribute_description_count, fStates->p_vertex_input_assembly_descriptions, &fStates->vertex_input_state_info, flags);
 	
-	fggCreateInputAssembly(&fStates->inputAssembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
+	fggCreateInputAssembly(&fStates->input_assembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
 	if (flags & FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST) {
-		fStates->inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+		fStates->input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
 	}
 	if (flags & FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST) {
-		fStates->inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+		fStates->input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 	}
 	
 	fggCreateRasterizer(&fStates->rasterizer);
@@ -359,9 +359,9 @@ void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixe
 	}
 	
 
-	fggSetMultisampleState(&fStates->multisampleStateInfo);
-	fggColorBlendSettings(&fStates->colorBlendAttachment, &fStates->colorBlendState);
-	fggSetViewport(core.window, &fStates->viewport, &fStates->scissor, &fStates->viewportState);
+	fggSetMultisampleState(&fStates->multisample_state_info);
+	fggColorBlendSettings(&fStates->color_blend_attachment, &fStates->color_blend_state);
+	fggSetViewport(core.window, &fStates->viewport, &fStates->scissor, &fStates->viewport_state);
 
 }
 
@@ -400,14 +400,14 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		0,													//flags;
 		pPipeData->shaderStageCount,						//stageCount;
 		pPipeData->pShaderStages,							//pStages;
-		&fStates.vertexInputStateInfo,						//pVertexInputState;
-		&fStates.inputAssembly,								//pInputAssemblyState;
+		&fStates.vertex_input_state_info,						//pVertexInputState;
+		&fStates.input_assembly,								//pInputAssemblyState;
 		NULL,												//pTessellationState;
-		&fStates.viewportState,								//pViewportState;
+		&fStates.viewport_state,								//pViewportState;
 		&fStates.rasterizer,								//pRasterizationState;
-		&fStates.multisampleStateInfo,						//pMultisampleState;
+		&fStates.multisample_state_info,						//pMultisampleState;
 		NULL,												//pDepthStencilState;
-		&fStates.colorBlendState,							//pColorBlendState;
+		&fStates.color_blend_state,							//pColorBlendState;
 		NULL,												//pDynamicState;
 		pPipeData->mainPipelineLayout,						//layout;
 		core.render_pass,									//renderPass;
@@ -416,7 +416,7 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		0													//basePipelineIndex;
 	};
 
-	pPipeData->vertexStride = fStates.vertexInputStateInfo.pVertexBindingDescriptions->stride;
+	pPipeData->vertexStride = fStates.vertex_input_state_info.pVertexBindingDescriptions->stride;
 
 	fggCheckVkResult(
 		vkCreateGraphicsPipelines(core.device, 0, 1, &graphicsPipelineCreateInfo, NULL, &pPipeData->pipeline),

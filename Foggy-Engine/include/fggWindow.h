@@ -13,8 +13,8 @@ typedef struct FggWindow {
 	uint32_t width, height;
 	const char* title;
 
-	double cursorPosX;
-	double cursorPosY;
+	double cursor_pos_x;
+	double cursor_pos_y;
 
 } FggWindow;
 

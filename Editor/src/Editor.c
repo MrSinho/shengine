@@ -319,7 +319,7 @@ int main() {
 		fggPollEvents();
 		fggGetTime(&time);
 		fggFrameReset(core);
-		fggGetCursorPosition(core.window, &core.window.cursorPosX, &core.window.cursorPosY);
+		fggGetCursorPosition(core.window, &core.window.cursor_pos_x, &core.window.cursor_pos_y);
 
 		uint32_t imageIndex = 0;
 		fggFrameBegin(core, &imageIndex);
@@ -337,9 +337,9 @@ int main() {
 		fggFrameEnd(core, imageIndex);
 	}
 
-	fggDestroyPipeline(core, &meshMaterial.pipelineData);
-	fggDestroyPipeline(core, &wireframeMaterial.pipelineData);
-	fggDestroyPipeline(core, &lineMaterial.pipelineData);
+	fggDestroyPipeline(core, &meshMaterial.pipeline_data);
+	fggDestroyPipeline(core, &wireframeMaterial.pipeline_data);
+	fggDestroyPipeline(core, &lineMaterial.pipeline_data);
 
 	fggSceneRelease(core, scene);
 

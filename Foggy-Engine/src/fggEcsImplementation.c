@@ -66,7 +66,7 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 			glm_rotate(t->model, glm_rad(t->rotation[2]), (vec3) { 0.0f, 0.0f, 1.0f });
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* m = ezecsGetFggMaterial(scene, entity);
-				fggMapMemory(core.device, m->pipelineData.uniformBufferMemory, sizeof(mat4), t->model);
+				fggMapMemory(core.device, m->pipeline_data.uniformBufferMemory, sizeof(mat4), t->model);
 			}
 			fggDegreesToVector(t->rotation, t->front);
 			
@@ -108,17 +108,17 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 					if (fggIsKeyPressed(core.window, KEY_Q)) {
 						glm_vec3_copy(t->up, displacement);
 					}
-					displacement[0] *= 5.0f * time.deltaTime;
-					displacement[1] *= 5.0f * time.deltaTime;
-					displacement[2] *= 5.0f * time.deltaTime;
+					displacement[0] *= 5.0f * time.delta_time;
+					displacement[1] *= 5.0f * time.delta_time;
+					displacement[2] *= 5.0f * time.delta_time;
 					glm_vec3_add(t->position, displacement, t->position);
 				}
 				if (fggIsMouseButtonPressed(core.window, MOUSE_BUTTON_RIGHT)) {
 					glfwSetInputMode(core.window.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 					double dx, dy = 0.0;
 					fggMouseOffset(core.window, &dx, &dy);
-					t->rotation[0] -= 0.6f * (float)dy * time.deltaTime;
-					t->rotation[1] -= 0.6f * (float)dx * time.deltaTime;
+					t->rotation[0] -= 0.6f * (float)dy * time.delta_time;
+					t->rotation[1] -= 0.6f * (float)dx * time.delta_time;
 					if (t->rotation[0] >= glm_rad(89.99999f)) {
 						t->rotation[0] = glm_rad(89.99999f);
 					}
@@ -164,17 +164,17 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
-				fggBindPipeline(core.p_cmd_buffers[0], mat->pipelineData);
+				fggBindPipeline(core.p_cmd_buffers[0], mat->pipeline_data);
 
 				//push constants
 				vec4* pConst[2] = { camera.projection, camera.view };
-				fggPushConstants(core.p_cmd_buffers[0], mat->pipelineData, &pConst[0][0]);
+				fggPushConstants(core.p_cmd_buffers[0], mat->pipeline_data, &pConst[0][0]);
 
 				//Bind descriptor sets
-				if (mat->pipelineData.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
-					fggBindDescriptorSets(core, mat->pipelineData);
+				if (mat->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
+					fggBindDescriptorSets(core, mat->pipeline_data);
 				}
-				fggDraw(core.p_cmd_buffers[0], mat->pipelineData.vertexStride / 4, *mesh);
+				fggDraw(core.p_cmd_buffers[0], mat->pipeline_data.vertexStride / 4, *mesh);
 			}
 
 			if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH & FGG_MESH_SETUP_RUNTIME_MESH) {
@@ -214,7 +214,7 @@ void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
 			mesh = NULL;
 			if (ezecsHasFggMaterial(scene, entity)) {
 				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
-				fggDestroyPipeline(core, &mat->pipelineData);
+				fggDestroyPipeline(core, &mat->pipeline_data);
 				mat = NULL;
 			}
 		}

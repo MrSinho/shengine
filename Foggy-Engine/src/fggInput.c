@@ -34,6 +34,6 @@ void fggMouseOffset(const FggWindow window, double* pdx, double* pdy) {
 	double x, y;
 	glfwGetCursorPos(window.window, &x, &y);
 
-	*pdx = window.cursorPosX - x;
-	*pdy = window.cursorPosY - y;
+	*pdx = window.cursor_pos_x - x;
+	*pdy = window.cursor_pos_y - y;
 }

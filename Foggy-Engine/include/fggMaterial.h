@@ -19,11 +19,11 @@ typedef enum FggShaderStageFlags {
 
 typedef struct FggMaterial {
 
-	const char* 			vertexShaderPath;
-	const char* 			fragmentShaderPath;	
+	const char* 			vertex_shader_path;
+	const char* 			fragment_shader_path;	
 
-	FggVkFixedStates		fixedStates;
-	FggVkPipelineData		pipelineData;
+	FggVkFixedStates		fixed_states;
+	FggVkPipelineData		pipeline_data;
 
 } FggMaterial;
 
@@ -37,7 +37,7 @@ extern void fggSetupMaterial(const FggVkCore core,
 	const char* vPath,			const char* fPath, 
 	const uint32_t uniformSize, const VkShaderStageFlags uniformStage, 
 	const uint32_t pConstSize,	const VkShaderStageFlags pConstStage, 
-	const FggVkFixedStates fixedStates, FggMaterial* pMaterial);
+	const FggVkFixedStates fixed_states, FggMaterial* pMaterial);
 
 extern void fggCreateMaterialInstance(const FggVkCore core, const FggMaterial src, FggMaterial* dst);
 
