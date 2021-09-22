@@ -70,6 +70,7 @@ int main() {
 	fggCreateRenderPass(&core);
 	fggSetFramebuffers(&core);
 	fggSetSyncObjects(&core);
+	fggInitCommands(&core);
 
 	FggVkFixedStates meshFStates, wireframeFStates, lineFStates = { 0 };
 	FggFixedStateFlags meshFStateFlags = FGG_FIXED_STATES_POLYGON_MODE_FACE_BIT |
@@ -312,7 +313,6 @@ int main() {
 #endif // SERVOS
 
 	fggSceneInit(core, scene);
-	fggInitCommands(&core);
 
 	while (fggIsWindowActive(core.window.window)) {
 
