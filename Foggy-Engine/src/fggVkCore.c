@@ -455,7 +455,7 @@ void fggCreateSwapchain(FggVkCore* core) {
         }
     }
 
-    VkSwapchainCreateInfoKHR swapchain_ci = {};
+    VkSwapchainCreateInfoKHR swapchain_ci = { 0 };
     swapchain_ci.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
     swapchain_ci.pNext = NULL;
     swapchain_ci.surface = core->surface;
