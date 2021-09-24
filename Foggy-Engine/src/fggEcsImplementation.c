@@ -9,7 +9,7 @@
 #include "FggEuler.h"
 #include "fggInput.h"
 
-#include "fggCglmImplementation.h"
+#include <string.h>
 
 
 void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
@@ -53,6 +53,10 @@ void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
 void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene scene) {
 
 	FggCamera camera = { 0 };
+	uint32_t uniform_buffer_index = 0;
+	void* p_uniform_buffer = calloc(256, 1);
+	uint32_t push_constants_index = 0;
+	void* p_push_constants = calloc(core.physical_device_properties.limits.maxPushConstantsSize, 1);
 
 	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
 
@@ -64,10 +68,6 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 			glm_rotate(t->model, glm_rad(t->rotation[0]), (vec3) { 1.0f, 0.0f, 0.0f });
 			glm_rotate(t->model, glm_rad(t->rotation[1]), (vec3) { 0.0f, 1.0f, 0.0f });
 			glm_rotate(t->model, glm_rad(t->rotation[2]), (vec3) { 0.0f, 0.0f, 1.0f });
-			if (ezecsHasFggMaterial(scene, entity)) {
-				FggMaterial* m = ezecsGetFggMaterial(scene, entity);
-				fggMapMemory(core.device, m->pipeline_data.uniformBufferMemory, sizeof(mat4), t->model);
-			}
 			fggDegreesToVector(t->rotation, t->front);
 			
 			glm_cross((vec3) { 0.0f, 1.0f, 0.0f }, t->front, t->left);
@@ -134,61 +134,38 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 			}
 		}
 
-		if (ezecsHasFggMesh(scene, entity)) {
+		if (ezecsHasFggMesh(scene, entity) && ezecsHasFggMaterial(scene, entity)) {
+			FggMaterial* material = ezecsGetFggMaterial(scene, entity);
 			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
-
-			//Map memory
-			if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH) {
-				if (mesh->flags & FGG_MESH_SETUP_RUNTIME_MESH) {
-					if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
-						fggAllocateMeshVertexData(core, mesh);
-					}
-					if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
-						fggAllocateMeshIndexData(core, mesh);
-					}
-				}
-				fggMapVertexBufferMemory(core, mesh);
-				if (mesh->index_count > 0) {
-					fggMapIndexBufferMemory(core, mesh);
+			// push constants check
+			if (material->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
+				if (camera.flags != 0) {
+					vec4* p_cam_const[2] = { camera.projection, camera.view };
+					memcpy((void*)&((char*)p_push_constants)[push_constants_index], &p_cam_const[0][0], sizeof(mat4)*2);
+					push_constants_index += sizeof(mat4)*2 - 1;
 				}
 			}
-
-			
-			//Bind vertex and index buffers
-			if (mesh->vertex_count > 0) {
-				fggBindVertexBuffers(core, *mesh);
-			}
-			if (mesh->index_count > 0) {
-				fggBindIndexBuffers(core, *mesh);
-			}
-
-			if (ezecsHasFggMaterial(scene, entity)) {
-				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
-				fggBindPipeline(core.p_cmd_buffers[0], mat->pipeline_data);
-
-				//push constants
-				vec4* pConst[2] = { camera.projection, camera.view };
-				fggPushConstants(core.p_cmd_buffers[0], mat->pipeline_data, &pConst[0][0]);
-
-				//Bind descriptor sets
-				if (mat->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
-					fggBindDescriptorSets(core, mat->pipeline_data);
-				}
-				fggDraw(core.p_cmd_buffers[0], mat->pipeline_data.vertexStride / 4, *mesh);
-			}
-
-			if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH & FGG_MESH_SETUP_RUNTIME_MESH) {
-				if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
-					fggClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
-				}
-				if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
-					fggClearBufferMemory(core.device, mesh->index_buffer, mesh->index_buffer_memory);
+			// uniform buffer check
+			if (material->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
+				if (ezecsHasFggTransform(scene, entity)) {
+					FggTransform* transform = ezecsGetFggTransform(scene, entity);
+					memcpy((void*)&((char*)p_uniform_buffer)[uniform_buffer_index], transform->model, sizeof(mat4));
+					uniform_buffer_index += sizeof(mat4) - 1;
 				}
 			}
+			fggRenderMesh(core, material->pipeline_data, 
+				push_constants_index + 1, p_push_constants,
+				uniform_buffer_index + 1, p_uniform_buffer,
+				mesh);
 		}
+
+		push_constants_index = 0;
+		uniform_buffer_index = 0;
 
 	}
 
+	free(p_uniform_buffer);
+	free(p_push_constants);
 }
 
 void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {

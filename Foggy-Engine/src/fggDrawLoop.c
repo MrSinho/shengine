@@ -114,3 +114,56 @@ void fggFrameEnd(const FggVkCore core, const uint32_t swapchainImageIndex) {
 
 	vkQueuePresentKHR(core.graphics_queue, &presentInfo);
 }
+
+void fggRenderMesh(const FggVkCore core, const FggVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniform_size, void* p_uniform, FggMesh* mesh) {
+
+	//Map mesh buffers
+	if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH) {
+		if (mesh->flags & FGG_MESH_SETUP_RUNTIME_MESH) {
+			if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
+				fggAllocateMeshVertexData(core, mesh);
+			}
+			if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
+				fggAllocateMeshIndexData(core, mesh);
+			}
+		}
+		fggMapVertexBufferMemory(core, mesh);
+		if (mesh->index_count > 0) {
+			fggMapIndexBufferMemory(core, mesh);
+		}
+	}
+
+	//Bind vertex and index buffers
+	if (mesh->vertex_count > 0) {
+		fggBindVertexBuffers(core, *mesh);
+	}
+	if (mesh->index_count > 0) {
+		fggBindIndexBuffers(core, *mesh);
+	}
+
+	fggBindPipeline(core.p_cmd_buffers[0], pipe_data);
+
+	//push constants
+	if (push_const_size != 0 && p_push_const != NULL) {
+		fggPushConstants(core.p_cmd_buffers[0], pipe_data, p_push_const);
+	}
+
+	// bind uniform memory
+	if (uniform_size != 0 && p_uniform != NULL) {
+		fggMapMemory(core.device, pipe_data.uniformBufferMemory, uniform_size, p_uniform);
+		fggBindDescriptorSets(core, pipe_data);
+	}
+	
+	fggDraw(core.p_cmd_buffers[0], pipe_data.vertexStride / 4, *mesh);
+
+	// dynamic mesh
+	if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH & FGG_MESH_SETUP_RUNTIME_MESH) {
+		if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
+			fggClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
+		}
+		if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
+			fggClearBufferMemory(core.device, mesh->index_buffer, mesh->index_buffer_memory);
+		}
+	}
+
+}

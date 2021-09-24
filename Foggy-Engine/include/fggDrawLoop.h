@@ -31,4 +31,7 @@ extern void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const uint32_t stri
 
 extern void fggFrameEnd(const FggVkCore core, const uint32_t swapchainImageIndex);
 
+
+extern void fggRenderMesh(const FggVkCore core, const FggVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniform_size, void* p_uniform, FggMesh* mesh);
+
 #endif

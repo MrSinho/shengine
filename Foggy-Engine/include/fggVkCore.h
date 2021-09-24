@@ -19,6 +19,7 @@ typedef struct FggVkCore {
 	/*Initialization stuff*/
 	VkInstance instance;
 	VkPhysicalDevice physical_device;
+	VkPhysicalDeviceProperties physical_device_properties;
 	VkDevice device;
 	
 	/*Window and surface stuff*/

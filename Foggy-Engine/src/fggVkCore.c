@@ -19,33 +19,17 @@
 
 FggVkCore fggVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char *title) {
 	
-	FggVkCore core = {	
-		0,							//instance;
-		0,							//physical_device;
-		0,							//device;
-		{NULL,
+	FggWindow window = {
+		NULL,
 		width, 
 		height, 
-		title},						//window;
-		0,							//surface;
-		VK_QUEUE_GRAPHICS_BIT,		//requiredQueueFlag;
-		1,							//queue_family_index_count
-		0,							//graphics_queue_index;
-		0,							//present_queue_index;
-		0,							//graphicsQueue;
-		NULL,						//p_cmd_pools;
-		0,							//p_cmd_buffer;
-		0,							//swapchain;
-		VK_FORMAT_R8G8B8A8_UNORM,	//imageFormat;
-		0,							//swapchain_image_count;
-		NULL,						//p_swapchain_images;
-		NULL,						//p_swapchain_image_views;
-		NULL,						//p_frame_buffers;
-		0,							//renderPass;
-		0,							//render_semaphore;
-		0,							//presentSemaphore;
-		0,							//render_fence;
+		title
 	};
+
+	FggVkCore core = { 0 };
+	core.required_queue_flag = VK_QUEUE_GRAPHICS_BIT;
+	core.image_format = VK_FORMAT_R8G8B8A8_UNORM;
+	core.window = window;
 
 	fggInitGLFW(&core.window);
 	
@@ -221,13 +205,15 @@ void fggSetPhysicalDevice(FggVkCore* core) {
 	free(surfaceQueueFamilyIndices);
 	free(pDevices);
 
+	vkGetPhysicalDeviceProperties(core->physical_device, &core->physical_device_properties);
+
 #ifndef NDEBUG
-		VkPhysicalDeviceProperties physical_device_properties;
-		vkGetPhysicalDeviceProperties(core->physical_device, &physical_device_properties);
-		printf("using %s \n", physical_device_properties.deviceName);
+		printf("using %s \n", core->physical_device_properties.deviceName);
 #endif
 
 }
+
+
 
 /*
 *	Logical device creation + command buffers
