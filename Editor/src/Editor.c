@@ -140,11 +140,11 @@ int main() {
 	fggCreateMaterialInstance(core, lineMaterial, &lorenzMaterial);
 #endif // LORENZ
 
-	ezecsScene scene = { 0 };
-	ezecsCreateScene(scene);
+	FggScene scene = { 0 };
+	fggCreateScene(scene);
 
 	//camera
-	uint32_t camEntity = ezecsCreateEntity();
+	uint32_t camEntity = fggCreateEntity();
 	FggCamera cam = {
 		45.0f,								//fov;
 		0.1f,								//nc;
@@ -153,23 +153,23 @@ int main() {
 		{0.0f},								//view;
 		FGG_CAMERA_SETUP_FREE_FLIGHT_BIT,	//flags
 	};
-	ezecsSetFggCamera(scene, &cam, camEntity);
-	FggTransform* camTransform = ezecsAddFggTransform(scene, camEntity);
+	fggSetFggCamera(scene, &cam, camEntity);
+	FggTransform* camTransform = fggAddFggTransform(scene, camEntity);
 	camTransform->position[2] = 2.0f;
 
 #ifdef RANDOM
 	//hand
 	PlyFileData handply = { 0 };
 	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &handply, 0);
-	uint32_t hand = ezecsCreateEntity();
-	FggTransform* handTransform = ezecsAddFggTransform(scene, hand);
-	FggMesh* handMesh = ezecsAddFggMesh(scene, hand);
+	uint32_t hand = fggCreateEntity();
+	FggTransform* handTransform = fggAddFggTransform(scene, hand);
+	FggMesh* handMesh = fggAddFggMesh(scene, hand);
 	handMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	handMesh->vertex_count = handply.vertexCount * handply.vertexStride;
 	handMesh->p_vertices = handply.pVertices;
 	handMesh->index_count = handply.indexCount;
 	handMesh->p_indices = handply.pIndices;
-	ezecsSetFggMaterial(scene, &handMat, hand);
+	fggSetFggMaterial(scene, &handMat, hand);
 	handTransform->scale[0] = 0.5f;
 	handTransform->scale[1] = 0.5f;
 	handTransform->scale[2] = 0.5f;
@@ -180,15 +180,15 @@ int main() {
 	//lucy
 	PlyFileData lucyply = { 0 };
 	plyLoadFile("../Assets/Meshes/stanfordLucy.ply", &lucyply, 0);
-	uint32_t lucy = ezecsCreateEntity();
-	FggTransform* lucyTransform = ezecsAddFggTransform(scene, lucy);
-	FggMesh* lucyMesh = ezecsAddFggMesh(scene, lucy);
+	uint32_t lucy = fggCreateEntity();
+	FggTransform* lucyTransform = fggAddFggTransform(scene, lucy);
+	FggMesh* lucyMesh = fggAddFggMesh(scene, lucy);
 	lucyMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	lucyMesh->vertex_count = lucyply.vertexCount * lucyply.vertexStride;
 	lucyMesh->p_vertices = lucyply.pVertices;
 	lucyMesh->index_count = lucyply.indexCount;
 	lucyMesh->p_indices = lucyply.pIndices;
-	ezecsSetFggMaterial(scene, &lucyMat, lucy);
+	fggSetFggMaterial(scene, &lucyMat, lucy);
 	lucyTransform->scale[0] = 1.0f;
 	lucyTransform->scale[1] = 1.0f;
 	lucyTransform->scale[2] = 1.0f;
@@ -199,15 +199,15 @@ int main() {
 	//text
 	PlyFileData textply = { 0 };
 	plyLoadFile("../Assets/Meshes/text.ply", &textply, 0);
-	uint32_t text = ezecsCreateEntity();
-	FggTransform* textTransform = ezecsAddFggTransform(scene, text);
-	FggMesh* textMesh = ezecsAddFggMesh(scene, text);
+	uint32_t text = fggCreateEntity();
+	FggTransform* textTransform = fggAddFggTransform(scene, text);
+	FggMesh* textMesh = fggAddFggMesh(scene, text);
 	textMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	textMesh->vertex_count = textply.vertexCount * textply.vertexStride;
 	textMesh->p_vertices = textply.pVertices;
 	textMesh->index_count = textply.indexCount;
 	textMesh->p_indices = textply.pIndices;
-	ezecsSetFggMaterial(scene, &textMat, text);
+	fggSetFggMaterial(scene, &textMat, text);
 	textTransform->scale[0] = 1.0f;
 	textTransform->scale[1] = 1.0f;
 	textTransform->scale[2] = 1.0f;
@@ -215,15 +215,15 @@ int main() {
 	//plane
 	PlyFileData planePly = { 0 };
 	plyLoadFile("../Assets/Meshes/plane.ply", &planePly, 0);
-	uint32_t plane = ezecsCreateEntity();
-	FggTransform* planeTransform = ezecsAddFggTransform(scene, plane);
-	FggMesh* planeMesh = ezecsAddFggMesh(scene, plane);
+	uint32_t plane = fggCreateEntity();
+	FggTransform* planeTransform = fggAddFggTransform(scene, plane);
+	FggMesh* planeMesh = fggAddFggMesh(scene, plane);
 	planeMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	planeMesh->vertex_count = planePly.vertexCount * planePly.vertexStride;
 	planeMesh->p_vertices = planePly.pVertices;
 	planeMesh->index_count = planePly.indexCount;
 	planeMesh->p_indices = planePly.pIndices;
-	ezecsSetFggMaterial(scene, &planeMat, plane);
+	fggSetFggMaterial(scene, &planeMat, plane);
 	planeTransform->position[1] = -4.0f;
 	planeTransform->scale[0] = 1.0f;
 	planeTransform->scale[1] = 1.0f;
@@ -233,13 +233,13 @@ int main() {
 
 #ifdef LORENZ
 	//graph 
-	uint32_t graph = ezecsCreateEntity();
-	FggMesh* graphMesh = ezecsAddFggMesh(scene, graph);
+	uint32_t graph = fggCreateEntity();
+	FggMesh* graphMesh = fggAddFggMesh(scene, graph);
 	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	graphMesh->vertex_count = 5000 * 3;
 	lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
-	ezecsSetFggMaterial(scene, &lorenzMaterial, graph);
-	FggTransform* graphTransform = ezecsAddFggTransform(scene, graph);
+	fggSetFggMaterial(scene, &lorenzMaterial, graph);
+	FggTransform* graphTransform = fggAddFggTransform(scene, graph);
 	graphTransform->rotation[1] = 180.0f;
 	graphTransform->scale[0] = 1.0f;
 	graphTransform->scale[1] = 1.0f;
@@ -269,42 +269,42 @@ int main() {
 	};
 
 	//servo0
-	uint32_t servo0 = ezecsCreateEntity();
-	ezecsSetFggMesh(scene, &servoMesh, servo0);
-	FggTransform* servo0Transform = ezecsAddFggTransform(scene, servo0);
+	uint32_t servo0 = fggCreateEntity();
+	fggSetFggMesh(scene, &servoMesh, servo0);
+	FggTransform* servo0Transform = fggAddFggTransform(scene, servo0);
 	servo0Transform->scale[0] = 1.0f;
 	servo0Transform->scale[1] = 1.0f;
 	servo0Transform->scale[2] = 1.0f;
-	ezecsSetFggMaterial(scene, &servo0Mat, servo0);
+	fggSetFggMaterial(scene, &servo0Mat, servo0);
 
 	//cross0
-	uint32_t cross0 = ezecsCreateEntity();
-	FggMesh* cross0Mesh = ezecsAddFggMesh(scene, cross0);
+	uint32_t cross0 = fggCreateEntity();
+	FggMesh* cross0Mesh = fggAddFggMesh(scene, cross0);
 	cross0Mesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	cross0Mesh->vertex_count = crossply.vertex_count * crossply.vertexStride;
 	cross0Mesh->p_vertices = crossply.p_vertices;
 	cross0Mesh->index_count = crossply.index_count;
 	cross0Mesh->p_indices = crossply.p_indices;
-	FggTransform* cross0Transform = ezecsAddFggTransform(scene, cross0);
+	FggTransform* cross0Transform = fggAddFggTransform(scene, cross0);
 	cross0Transform->position[0] = 0.316788f;
 	cross0Transform->position[1] = -1.65641f;
 	cross0Transform->position[2] = 0.013092f;
 	cross0Transform->scale[0] = 1.0f;
 	cross0Transform->scale[1] = 1.0f;
 	cross0Transform->scale[2] = 1.0f;
-	ezecsSetFggMaterial(scene, &cross0Mat, cross0);
+	fggSetFggMaterial(scene, &cross0Mat, cross0);
 
 	//servo1
-	//uint32_t servo1 = ezecsCreateEntity();
-	//ezecsSetFggMesh(scene, &servoMesh, servo1);
-	//FggTransform* servo1Transform = ezecsAddFggTransform(scene, servo1);
+	//uint32_t servo1 = fggCreateEntity();
+	//fggSetFggMesh(scene, &servoMesh, servo1);
+	//FggTransform* servo1Transform = fggAddFggTransform(scene, servo1);
 	//servo1Transform->position[0] = -0.321191;
 	//servo1Transform->position[1] = 2.04666;
 	//servo1Transform->position[2] = -0.5176;
 	//servo1Transform->scale[0] = 1.0f;
 	//servo1Transform->scale[1] = 1.0f;
 	//servo1Transform->scale[2] = 1.0f;
-	//ezecsSetFggMaterial(scene, &servo1Mat, servo1);
+	//fggSetFggMaterial(scene, &servo1Mat, servo1);
 
 	uint32_t transSizes[1] = { 12 };
 	uint32_t transStrides[1] = { 64 + 12 };

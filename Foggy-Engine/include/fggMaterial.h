@@ -29,7 +29,7 @@ typedef struct FggMaterial {
 
 
 
-EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMaterial, 2)
+FGG_ECS_MAKE_COMPONENT_DEFINITIONS(FggMaterial, 2)
 
 
 

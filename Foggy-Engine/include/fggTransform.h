@@ -21,6 +21,6 @@ typedef struct FggTransform {
 
 } FggTransform;
 
-EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggTransform, 0)
+FGG_ECS_MAKE_COMPONENT_DEFINITIONS(FggTransform, 0)
 
 #endif

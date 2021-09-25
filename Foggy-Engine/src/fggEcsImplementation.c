@@ -12,11 +12,11 @@
 #include <string.h>
 
 
-void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
+void fggSceneInit(const FggVkCore core, const FggScene scene) {
 
-	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
-		if (ezecsHasFggMesh(scene, entity)) {
-			FggMesh* m = ezecsGetFggMesh(scene, entity);
+	for (uint32_t entity = 0; entity < FGG_ECS_MAX_ENTITIES; entity++) {
+		if (fggHasFggMesh(scene, entity)) {
+			FggMesh* m = fggGetFggMesh(scene, entity);
 
 			//Allocate memory
 			if (!(m->flags & FGG_MESH_SETUP_RUNTIME_MESH)) {
@@ -39,18 +39,18 @@ void fggSceneInit(const FggVkCore core, const ezecsScene scene) {
 			}
 		}
 
-		if (ezecsHasFggMaterial(scene, entity)) {
-			FggMaterial* m = ezecsGetFggMaterial(scene, entity);
+		if (fggHasFggMaterial(scene, entity)) {
+			FggMaterial* m = fggGetFggMaterial(scene, entity);
 		}
 
-		if (ezecsHasFggTransform(scene, entity)) {
-			FggTransform* t = ezecsGetFggTransform(scene, entity);
+		if (fggHasFggTransform(scene, entity)) {
+			FggTransform* t = fggGetFggTransform(scene, entity);
 		}
 	}
 
 }
 
-void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene scene) {
+void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene scene) {
 
 	FggCamera camera = { 0 };
 	uint32_t uniform_buffer_index = 0;
@@ -58,10 +58,10 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 	uint32_t push_constants_index = 0;
 	void* p_push_constants = calloc(core.physical_device_properties.limits.maxPushConstantsSize, 1);
 
-	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
+	for (uint32_t entity = 0; entity < FGG_ECS_MAX_ENTITIES; entity++) {
 
-		if (ezecsHasFggTransform(scene, entity)) {
-			FggTransform* t = ezecsGetFggTransform(scene, entity);
+		if (fggHasFggTransform(scene, entity)) {
+			FggTransform* t = fggGetFggTransform(scene, entity);
 			glm_mat4_identity(t->model);
 			glm_translate(t->model, t->position);
 			glm_scale(t->model, t->scale);
@@ -76,8 +76,8 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 			glm_cross(t->front, t->left, t->up);
 			glm_normalize(t->up);
 
-			if (ezecsHasFggCamera(scene, entity)) {
-				camera = *ezecsGetFggCamera(scene, entity);
+			if (fggHasFggCamera(scene, entity)) {
+				camera = *fggGetFggCamera(scene, entity);
 
 				if (camera.flags & FGG_CAMERA_SETUP_FREE_FLIGHT_BIT) {
 					vec3 displacement = { 0.0f, 0.0f, 0.0f };
@@ -134,9 +134,9 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 			}
 		}
 
-		if (ezecsHasFggMesh(scene, entity) && ezecsHasFggMaterial(scene, entity)) {
-			FggMaterial* material = ezecsGetFggMaterial(scene, entity);
-			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
+		if (fggHasFggMesh(scene, entity) && fggHasFggMaterial(scene, entity)) {
+			FggMaterial* material = fggGetFggMaterial(scene, entity);
+			FggMesh* mesh = fggGetFggMesh(scene, entity);
 			// push constants check
 			if (material->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
 				if (camera.flags != 0) {
@@ -147,8 +147,8 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 			}
 			// uniform buffer check
 			if (material->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
-				if (ezecsHasFggTransform(scene, entity)) {
-					FggTransform* transform = ezecsGetFggTransform(scene, entity);
+				if (fggHasFggTransform(scene, entity)) {
+					FggTransform* transform = fggGetFggTransform(scene, entity);
 					memcpy((void*)&((char*)p_uniform_buffer)[uniform_buffer_index], transform->model, sizeof(mat4));
 					uniform_buffer_index += sizeof(mat4) - 1;
 				}
@@ -168,14 +168,14 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const ezecsScene s
 	free(p_push_constants);
 }
 
-void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
+void fggSceneRelease(const FggVkCore core, const FggScene scene) {
 
 	vkDeviceWaitIdle(core.device);
 
-	for (uint32_t entity = 0; entity < EZ_ECS_MAX_ENTITIES; entity++) {
+	for (uint32_t entity = 0; entity < FGG_ECS_MAX_ENTITIES; entity++) {
 
-		if (ezecsHasFggMesh(scene, entity)) {
-			FggMesh* mesh = ezecsGetFggMesh(scene, entity);
+		if (fggHasFggMesh(scene, entity)) {
+			FggMesh* mesh = fggGetFggMesh(scene, entity);
 			if (mesh->vertex_count > 0 && mesh->p_vertices != NULL) {
 				fggClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
 				free(mesh->p_vertices);
@@ -189,8 +189,8 @@ void fggSceneRelease(const FggVkCore core, const ezecsScene scene) {
 				mesh->index_count = 0;
 			}
 			mesh = NULL;
-			if (ezecsHasFggMaterial(scene, entity)) {
-				FggMaterial* mat = ezecsGetFggMaterial(scene, entity);
+			if (fggHasFggMaterial(scene, entity)) {
+				FggMaterial* mat = fggGetFggMaterial(scene, entity);
 				fggDestroyPipeline(core, &mat->pipeline_data);
 				mat = NULL;
 			}

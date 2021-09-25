@@ -47,6 +47,6 @@ static void fggGenerateGraphIndices(FggMesh* mesh) {
 }
 
 
-EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggMesh, 1)
+FGG_ECS_MAKE_COMPONENT_DEFINITIONS(FggMesh, 1)
 
 #endif

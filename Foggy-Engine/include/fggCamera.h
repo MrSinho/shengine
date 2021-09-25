@@ -20,7 +20,7 @@ typedef struct FggCamera{
 
 } FggCamera;
 
-EZ_ECS_MAKE_COMPONENT_DEFINITIONS(FggCamera, 3);
+FGG_ECS_MAKE_COMPONENT_DEFINITIONS(FggCamera, 3);
 
 
 #endif

@@ -43,7 +43,7 @@ add_library(Foggy-Engine STATIC ${ENGINE_SRC})
 target_include_directories(Foggy-Engine PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/Foggy-Engine/include
     ${CMAKE_CURRENT_SOURCE_DIR}/Externals/glfw/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/Externals/EZ-ECS/EZ-ECS/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/Externals/FggECS/FggECS/include
     ${Vulkan_INCLUDE_DIRS}
 )
 target_link_libraries(Foggy-Engine PUBLIC
