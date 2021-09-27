@@ -211,11 +211,11 @@ void fggSceneRelease(const FggVkCore core, const FggScene scene) {
 				mesh->index_count = 0;
 			}
 			mesh = NULL;
-			if (fggHasFggMaterial(scene, entity)) {
-				FggMaterial* mat = fggGetFggMaterial(scene, entity);
-				fggDestroyPipeline(core, &mat->pipeline_data);
-				mat = NULL;
-			}
+		}
+		if (fggHasFggMaterial(scene, entity)) {
+			FggMaterial* mat = fggGetFggMaterial(scene, entity);
+			fggDestroyPipeline(core, &mat->pipeline_data);
+			mat = NULL;
 		}
 
 	}

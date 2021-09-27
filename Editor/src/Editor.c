@@ -9,10 +9,6 @@
 #define LORENZ
 
 #ifdef RANDOM
-#define LORENZ
-#endif
-
-#ifdef LORENZ
 
 float* lorenzAttractorVertex(float a, float b, float c, float dTime, float x, float y, float z) {
 	
@@ -57,7 +53,7 @@ void lorenzAttractor(float a, float b, float c, float dTime, FggMesh* mesh) {
 	fggGenerateGraphIndices(mesh);
 }
 
-#endif
+#endif // RANDOM
 
 int main() {
 
