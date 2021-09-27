@@ -135,9 +135,9 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 			FggMesh* mesh = fggGetFggMesh(scene, entity);
 
 			uint32_t uniform_buffer_index = 0;
-			void* p_uniform_buffer;
+			void* p_uniform_buffer = NULL;
 			uint32_t push_constants_index = 0;
-			void* p_push_constants;
+			void* p_push_constants = NULL;
 
 			// push constants check
 			if (material->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
@@ -164,8 +164,8 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 			//	uniform_updated = p_main_material->pipeline_data.uniform_updated;
 			//	p_main_material->pipeline_data.uniform_updated = 1;
 			//}
-			if (!p_uniform_buffer) { break; }
-			if (!p_push_constants) { break; }
+			if (p_uniform_buffer == NULL) { break; }
+			if (p_push_constants == NULL) { break; }
 
 			fggRenderMesh(core, material->pipeline_data, 
 				push_constants_index, p_push_constants,
