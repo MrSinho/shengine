@@ -64,6 +64,8 @@ typedef struct FggVkPipelineData {
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
 	VkDescriptorBufferInfo descriptorBufferInfo;
+	//int	uniform_updated;
+	//int	shared_uniform;
 	VkWriteDescriptorSet writeDescriptorSet;
 	VkDescriptorSet descriptorSet;
 

@@ -63,7 +63,9 @@ void fggPushConstants(const VkCommandBuffer graphicsCmdBuffer, const FggVkPipeli
 
 void fggBindDescriptorSets(const FggVkCore core, FggVkPipelineData pipeData) {
 	pipeData.writeDescriptorSet.pBufferInfo = &pipeData.descriptorBufferInfo;
+	//if (!pipeData.shared_uniform|| !uniform_updated) {
 	vkUpdateDescriptorSets(core.device, 1, &pipeData.writeDescriptorSet, 0, NULL);
+	//}
 	vkCmdBindDescriptorSets(core.p_cmd_buffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData.mainPipelineLayout, 0, 1, &pipeData.descriptorSet, 0, NULL);
 }
 

@@ -25,6 +25,8 @@ typedef struct FggMaterial {
 	FggVkFixedStates		fixed_states;
 	FggVkPipelineData		pipeline_data;
 
+	//void*					p_main_material; //valid if it's a material instance
+
 } FggMaterial;
 
 
@@ -39,6 +41,6 @@ extern void fggSetupMaterial(const FggVkCore core,
 	const uint32_t pConstSize,	const VkShaderStageFlags pConstStage, 
 	const FggVkFixedStates fixed_states, FggMaterial* pMaterial);
 
-extern void fggCreateMaterialInstance(const FggVkCore core, const FggMaterial src, FggMaterial* dst);
+extern void fggCreateMaterialInstance(const FggVkCore core, FggMaterial* src, FggMaterial* dst);
 
 #endif

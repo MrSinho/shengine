@@ -53,10 +53,6 @@ void fggSceneInit(const FggVkCore core, const FggScene scene) {
 void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene scene) {
 
 	FggCamera camera = { 0 };
-	uint32_t uniform_buffer_index = 0;
-	void* p_uniform_buffer = calloc(256, 1);
-	uint32_t push_constants_index = 0;
-	void* p_push_constants = calloc(core.physical_device_properties.limits.maxPushConstantsSize, 1);
 
 	for (uint32_t entity = 0; entity < FGG_ECS_MAX_ENTITIES; entity++) {
 
@@ -137,35 +133,61 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 		if (fggHasFggMesh(scene, entity) && fggHasFggMaterial(scene, entity)) {
 			FggMaterial* material = fggGetFggMaterial(scene, entity);
 			FggMesh* mesh = fggGetFggMesh(scene, entity);
+
+			uint32_t uniform_buffer_index = 0;
+			void* p_uniform_buffer;
+			uint32_t push_constants_index = 0;
+			void* p_push_constants;
+
 			// push constants check
 			if (material->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
-				if (camera.flags != 0) {
+					p_push_constants = calloc(core.physical_device_properties.limits.maxPushConstantsSize, 1); if (camera.flags != 0) {
+					if (p_push_constants == NULL) { break; }
 					vec4* p_cam_const[2] = { camera.projection, camera.view };
 					memcpy((void*)&((char*)p_push_constants)[push_constants_index], &p_cam_const[0][0], sizeof(mat4)*2);
-					push_constants_index += sizeof(mat4)*2 - 1;
+					push_constants_index += sizeof(mat4)*2;
 				}
 			}
 			// uniform buffer check
 			if (material->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
 				if (fggHasFggTransform(scene, entity)) {
+					p_uniform_buffer = calloc(material->pipeline_data.uniformBufferSize, 1);
+					if (p_uniform_buffer == NULL) { break; }
 					FggTransform* transform = fggGetFggTransform(scene, entity);
 					memcpy((void*)&((char*)p_uniform_buffer)[uniform_buffer_index], transform->model, sizeof(mat4));
-					uniform_buffer_index += sizeof(mat4) - 1;
+					uniform_buffer_index += sizeof(mat4);
 				}
 			}
+			//int uniform_updated = 0;
+			//if (material->p_main_material != NULL) {
+			//	FggMaterial* p_main_material = material->p_main_material;
+			//	uniform_updated = p_main_material->pipeline_data.uniform_updated;
+			//	p_main_material->pipeline_data.uniform_updated = 1;
+			//}
+			if (!p_uniform_buffer) { break; }
+			if (!p_push_constants) { break; }
+
 			fggRenderMesh(core, material->pipeline_data, 
-				push_constants_index + 1, p_push_constants,
-				uniform_buffer_index + 1, p_uniform_buffer,
+				push_constants_index, p_push_constants,
+				uniform_buffer_index, p_uniform_buffer,
 				mesh);
+
+
+			if (p_uniform_buffer != NULL) {
+				free(p_uniform_buffer);
+			}
+			if (p_push_constants != NULL) {
+				free(p_push_constants);
+			}
+			push_constants_index = 0;
+			uniform_buffer_index = 0;
 		}
 
-		push_constants_index = 0;
-		uniform_buffer_index = 0;
+		
 
 	}
 
-	free(p_uniform_buffer);
-	free(p_push_constants);
+	
 }
 
 void fggSceneRelease(const FggVkCore core, const FggScene scene) {

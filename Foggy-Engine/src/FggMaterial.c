@@ -1,5 +1,7 @@
 #include "fggMaterial.h" 
 
+#include <memory.h>
+
 void fggSetupMaterial(const FggVkCore core, const char* vPath, const char* fPath, const uint32_t uniformSize, const VkShaderStageFlags uniformStage, const uint32_t pConstSize, const VkShaderStageFlags pConstStage, const FggVkFixedStates fixed_states, FggMaterial* pMaterial) {
 	FggMaterial mat = {
 		vPath,			//vertex_shader_path;
@@ -30,10 +32,19 @@ void fggSetupMaterial(const FggVkCore core, const char* vPath, const char* fPath
 	*pMaterial = mat;
 }
 
-void fggCreateMaterialInstance(const FggVkCore core, const FggMaterial src, FggMaterial* dst) {
+void fggCreateMaterialInstance(const FggVkCore core, FggMaterial* src, FggMaterial* dst) {
 	fggSetupMaterial(core,
-		src.vertex_shader_path, src.fragment_shader_path,
-		src.pipeline_data.uniformBufferSize, src.pipeline_data.descriptorSetLayoutBinding.stageFlags,
-		src.pipeline_data.pushConstantRange.size, src.pipeline_data.pushConstantRange.stageFlags,
-		src.fixed_states, dst);
+		src->vertex_shader_path, src->fragment_shader_path,
+		src->pipeline_data.uniformBufferSize, src->pipeline_data.descriptorSetLayoutBinding.stageFlags,
+		src->pipeline_data.pushConstantRange.size, src->pipeline_data.pushConstantRange.stageFlags,
+		src->fixed_states, dst);
+	//memcpy(dst, src, sizeof(FggMaterial));
+	//dst->pipeline_data.shared_uniform = 1;
+	//dst->p_main_material = src;
+	//src->material_instance_count++;
+	//
+	//FggMaterial* p_material_instances = (FggMaterial*)calloc(src->material_instance_count, sizeof(FggMaterial));
+	//if (p_material_instances == NULL) { return; }
+	//memcpy((void*)p_material_instances, src->p_material_instances, src->material_instance_count-1);
+	//p_material_instances[src->material_instance_count - 1] = *dst;
 }

@@ -118,27 +118,6 @@ int main() {
 		sizeof(mat4) * 2, VK_SHADER_STAGE_VERTEX_BIT,
 		lineFStates, &lineMaterial
 	);
-	
-#ifdef RANDOM
-	FggMaterial handMat, lucyMat, textMat, planeMat;
-	fggCreateMaterialInstance(core, meshMaterial, &handMat);
-	fggCreateMaterialInstance(core, meshMaterial, &lucyMat);
-	fggCreateMaterialInstance(core, meshMaterial, &textMat);
-	fggCreateMaterialInstance(core, meshMaterial, &planeMat);
-#endif // RANDOM
-
-#ifdef SERVOS
-	FggMaterial servo0Mat, cross0Mat, servo1Mat, cross1Mat = { 0 };
-	fggCreateMaterialInstance(core, wireframeMaterial, &servo0Mat);
-	fggCreateMaterialInstance(core, wireframeMaterial, &cross0Mat);
-	fggCreateMaterialInstance(core, wireframeMaterial, &servo1Mat);
-	fggCreateMaterialInstance(core, wireframeMaterial, &cross1Mat);
-#endif // SERVOS
-
-#ifdef LORENZ
-	FggMaterial lorenzMaterial = { 0 };
-	fggCreateMaterialInstance(core, lineMaterial, &lorenzMaterial);
-#endif // LORENZ
 
 	FggScene scene = { 0 };
 	fggCreateScene(scene);
@@ -169,7 +148,7 @@ int main() {
 	handMesh->p_vertices = handply.pVertices;
 	handMesh->index_count = handply.indexCount;
 	handMesh->p_indices = handply.pIndices;
-	fggSetFggMaterial(scene, &handMat, hand);
+	fggCreateMaterialInstance(core, &meshMaterial, fggAddFggMaterial(scene, hand));
 	handTransform->scale[0] = 0.5f;
 	handTransform->scale[1] = 0.5f;
 	handTransform->scale[2] = 0.5f;
@@ -188,7 +167,7 @@ int main() {
 	lucyMesh->p_vertices = lucyply.pVertices;
 	lucyMesh->index_count = lucyply.indexCount;
 	lucyMesh->p_indices = lucyply.pIndices;
-	fggSetFggMaterial(scene, &lucyMat, lucy);
+	fggCreateMaterialInstance(core, &meshMaterial, fggAddFggMaterial(scene, lucy));
 	lucyTransform->scale[0] = 1.0f;
 	lucyTransform->scale[1] = 1.0f;
 	lucyTransform->scale[2] = 1.0f;
@@ -207,7 +186,7 @@ int main() {
 	textMesh->p_vertices = textply.pVertices;
 	textMesh->index_count = textply.indexCount;
 	textMesh->p_indices = textply.pIndices;
-	fggSetFggMaterial(scene, &textMat, text);
+	fggCreateMaterialInstance(core, &meshMaterial, fggAddFggMaterial(scene, text));
 	textTransform->scale[0] = 1.0f;
 	textTransform->scale[1] = 1.0f;
 	textTransform->scale[2] = 1.0f;
@@ -223,94 +202,25 @@ int main() {
 	planeMesh->p_vertices = planePly.pVertices;
 	planeMesh->index_count = planePly.indexCount;
 	planeMesh->p_indices = planePly.pIndices;
-	fggSetFggMaterial(scene, &planeMat, plane);
+	fggCreateMaterialInstance(core, &meshMaterial, fggAddFggMaterial(scene, plane));
 	planeTransform->position[1] = -4.0f;
 	planeTransform->scale[0] = 1.0f;
 	planeTransform->scale[1] = 1.0f;
 	planeTransform->scale[2] = 1.0f;
 
-#endif // RANDOM
-
-#ifdef LORENZ
 	//graph 
 	uint32_t graph = fggCreateEntity();
 	FggMesh* graphMesh = fggAddFggMesh(scene, graph);
 	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	graphMesh->vertex_count = 5000 * 3;
 	lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
-	fggSetFggMaterial(scene, &lorenzMaterial, graph);
+	fggCreateMaterialInstance(core, &lineMaterial, fggAddFggMaterial(scene, graph));
 	FggTransform* graphTransform = fggAddFggTransform(scene, graph);
 	graphTransform->rotation[1] = 180.0f;
 	graphTransform->scale[0] = 1.0f;
 	graphTransform->scale[1] = 1.0f;
 	graphTransform->scale[2] = 1.0f;
-#endif // LORENZ
-
-#ifdef SERVOS
-	PlyFileData servoply = { 0 };
-	plyLoadFile("../Assets/Meshes/Servo/servoMotor.ply", &servoply, 0);
-	FggMesh servoMesh = {
-		servoply.vertex_count * servoply.vertexStride,
-		servoply.p_vertices,
-		servoply.index_count,
-		servoply.p_indices,
-		FGG_MESH_SETUP_STATIC_MESH,
-		0, 0, 0, 0
-	};
-	PlyFileData crossply = { 0 };
-	plyLoadFile("../Assets/Meshes/Servo/servoMotorCross.ply", &crossply, 0);
-	FggMesh crossMesh = {
-		crossply.vertex_count * crossply.vertexStride,
-		crossply.p_vertices,
-		crossply.index_count,
-		crossply.p_indices,
-		FGG_MESH_SETUP_STATIC_MESH,
-		0, 0, 0, 0
-	};
-
-	//servo0
-	uint32_t servo0 = fggCreateEntity();
-	fggSetFggMesh(scene, &servoMesh, servo0);
-	FggTransform* servo0Transform = fggAddFggTransform(scene, servo0);
-	servo0Transform->scale[0] = 1.0f;
-	servo0Transform->scale[1] = 1.0f;
-	servo0Transform->scale[2] = 1.0f;
-	fggSetFggMaterial(scene, &servo0Mat, servo0);
-
-	//cross0
-	uint32_t cross0 = fggCreateEntity();
-	FggMesh* cross0Mesh = fggAddFggMesh(scene, cross0);
-	cross0Mesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	cross0Mesh->vertex_count = crossply.vertex_count * crossply.vertexStride;
-	cross0Mesh->p_vertices = crossply.p_vertices;
-	cross0Mesh->index_count = crossply.index_count;
-	cross0Mesh->p_indices = crossply.p_indices;
-	FggTransform* cross0Transform = fggAddFggTransform(scene, cross0);
-	cross0Transform->position[0] = 0.316788f;
-	cross0Transform->position[1] = -1.65641f;
-	cross0Transform->position[2] = 0.013092f;
-	cross0Transform->scale[0] = 1.0f;
-	cross0Transform->scale[1] = 1.0f;
-	cross0Transform->scale[2] = 1.0f;
-	fggSetFggMaterial(scene, &cross0Mat, cross0);
-
-	//servo1
-	//uint32_t servo1 = fggCreateEntity();
-	//fggSetFggMesh(scene, &servoMesh, servo1);
-	//FggTransform* servo1Transform = fggAddFggTransform(scene, servo1);
-	//servo1Transform->position[0] = -0.321191;
-	//servo1Transform->position[1] = 2.04666;
-	//servo1Transform->position[2] = -0.5176;
-	//servo1Transform->scale[0] = 1.0f;
-	//servo1Transform->scale[1] = 1.0f;
-	//servo1Transform->scale[2] = 1.0f;
-	//fggSetFggMaterial(scene, &servo1Mat, servo1);
-
-	uint32_t transSizes[1] = { 12 };
-	uint32_t transStrides[1] = { 64 + 12 };
-	uint32_t transbinStride[1] = { 12 };
-
-#endif // SERVOS
+#endif // RANDOM
 
 	fggSceneInit(core, scene);
 
