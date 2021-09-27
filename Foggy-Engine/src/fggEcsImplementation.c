@@ -201,14 +201,14 @@ void fggSceneRelease(const FggVkCore core, const FggScene scene) {
 			FggMesh* mesh = fggGetFggMesh(scene, entity);
 			if (mesh->vertex_count > 0 && mesh->p_vertices != NULL) {
 				fggClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
-				free(mesh->p_vertices);
-				mesh->p_vertices = NULL;
+				//free(mesh->p_vertices);
+				//mesh->p_vertices = NULL;
 				mesh->vertex_count = 0;
 			}
 			if (mesh->index_count > 0) {
 				fggClearBufferMemory(core.device, mesh->index_buffer, mesh->index_buffer_memory);
-				free(mesh->p_indices);
-				mesh->p_indices = NULL;
+				//free(mesh->p_indices);
+				//mesh->p_indices = NULL;
 				mesh->index_count = 0;
 			}
 			mesh = NULL;
