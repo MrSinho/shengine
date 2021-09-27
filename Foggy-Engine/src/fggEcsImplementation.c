@@ -65,10 +65,10 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 			glm_rotate(t->model, glm_rad(t->rotation[1]), (vec3) { 0.0f, 1.0f, 0.0f });
 			glm_rotate(t->model, glm_rad(t->rotation[2]), (vec3) { 0.0f, 0.0f, 1.0f });
 			fggDegreesToVector(t->rotation, t->front);
-			
+
 			glm_cross((vec3) { 0.0f, 1.0f, 0.0f }, t->front, t->left);
 			glm_normalize(t->left);
-			
+
 			glm_cross(t->front, t->left, t->up);
 			glm_normalize(t->up);
 
@@ -140,12 +140,13 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 			void* p_push_constants = NULL;
 
 			// push constants check
-			if (material->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
-					p_push_constants = calloc(core.physical_device_properties.limits.maxPushConstantsSize, 1); if (camera.flags != 0) {
-					if (p_push_constants == NULL) { break; }
+			if (material->pipeline_data.setupFlags & FGG_PIPELINE_SETUP_PUSH_CONSTANTS_BIT) {
+				p_push_constants = calloc(core.physical_device_properties.limits.maxPushConstantsSize, 1);
+				if (p_push_constants == NULL) { break; }
+				if (camera.flags != 0) {
 					vec4* p_cam_const[2] = { camera.projection, camera.view };
-					memcpy((void*)&((char*)p_push_constants)[push_constants_index], &p_cam_const[0][0], sizeof(mat4)*2);
-					push_constants_index += sizeof(mat4)*2;
+					memcpy((void*)&((char*)p_push_constants)[push_constants_index], &p_cam_const[0][0], sizeof(mat4) * 2);
+					push_constants_index += sizeof(mat4) * 2;
 				}
 			}
 			// uniform buffer check
@@ -167,7 +168,7 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 			if (p_uniform_buffer == NULL) { break; }
 			if (p_push_constants == NULL) { break; }
 
-			fggRenderMesh(core, material->pipeline_data, 
+			fggRenderMesh(core, material->pipeline_data,
 				push_constants_index, p_push_constants,
 				uniform_buffer_index, p_uniform_buffer,
 				mesh);
@@ -183,11 +184,11 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 			uniform_buffer_index = 0;
 		}
 
-		
+
 
 	}
 
-	
+
 }
 
 void fggSceneRelease(const FggVkCore core, const FggScene scene) {

@@ -5,13 +5,14 @@
 #include "fggEcsImplementation.h"
 
 typedef enum FggCameraSetupFlags {
-	FGG_CAMERA_SETUP_FREE_FLIGHT_BIT = 0x01,
+	FGG_CAMERA_SETUP_FREE_FLIGHT_BIT	= 0x01,
+	FGG_CAMERA_SETUP_STATIC_BIT			= 0x02,
 } FggCameraSetupFlags;
 
-typedef struct FggCamera{
+typedef struct FggCamera {
 
 	float	fov;
-	float	nc; 
+	float	nc;
 	float	fc;
 	mat4	projection;
 	mat4	view;
