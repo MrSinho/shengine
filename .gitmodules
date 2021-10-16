@@ -10,3 +10,6 @@
 [submodule "Externals/FggECS"]
 	path = Externals/FggECS
 	url = https://github.com/MrSinho/FggECS
+[submodule "Externals/json-c"]
+	path = Externals/json-c
+	url = https://github.com/json-c/json-c

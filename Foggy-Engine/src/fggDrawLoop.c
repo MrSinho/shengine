@@ -3,6 +3,7 @@
 #include "fggVkCore.h"
 #include "fggVkPipelineData.h"
 #include "fggVkMemoryInfo.h"
+#include "fggMeshInfo.h"
 
 void fggFrameReset(const FggVkCore core) {
 	vkWaitForFences(core.device, 1, &core.render_fence, 1, 1000000000);
@@ -69,13 +70,13 @@ void fggBindDescriptorSets(const FggVkCore core, FggVkPipelineData pipeData) {
 	vkCmdBindDescriptorSets(core.p_cmd_buffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData.mainPipelineLayout, 0, 1, &pipeData.descriptorSet, 0, NULL);
 }
 
-void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const uint32_t stride, const FggMesh mesh) {
+void fggDraw(const VkCommandBuffer graphicsCmdBuffer, const uint32_t count, const uint32_t stride, const FggMesh mesh) {
 
-	if (mesh.index_count <= 0) {
-		vkCmdDraw(graphicsCmdBuffer, mesh.vertex_count / stride, 1, 0, 0);
+	if (mesh.index_buffer_memory == NULL) {
+		vkCmdDraw(graphicsCmdBuffer, count / stride, 1, 0, 0);
 	}
 	else {
-		vkCmdDrawIndexed(graphicsCmdBuffer, mesh.index_count, 1, 0, 0, 0);
+		vkCmdDrawIndexed(graphicsCmdBuffer, count, 1, 0, 0, 0);
 	}
 }
 
@@ -117,29 +118,29 @@ void fggFrameEnd(const FggVkCore core, const uint32_t swapchainImageIndex) {
 	vkQueuePresentKHR(core.graphics_queue, &presentInfo);
 }
 
-void fggRenderMesh(const FggVkCore core, const FggVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniform_size, void* p_uniform, FggMesh* mesh) {
+void fggRenderMesh(const FggVkCore core, const FggVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniform_size, void* p_uniform, const FggMeshInfo mesh_info, FggMesh* mesh) {
 
 	//Map mesh buffers
-	if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH) {
-		if (mesh->flags & FGG_MESH_SETUP_RUNTIME_MESH) {
-			if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
-				fggAllocateMeshVertexData(core, mesh);
-			}
-			if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
-				fggAllocateMeshIndexData(core, mesh);
-			}
-		}
-		fggMapVertexBufferMemory(core, mesh);
-		if (mesh->index_count > 0) {
-			fggMapIndexBufferMemory(core, mesh);
+	if (mesh_info.flags & FGG_MESH_SETUP_DYNAMIC_MESH) {
+		//if (mesh->flags & FGG_MESH_SETUP_RUNTIME_MESH) {
+		//	if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
+		//		fggAllocateMeshVertexData(core, mesh);
+		//	}
+		//	if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
+		//		fggAllocateMeshIndexData(core, mesh);
+		//	}
+		//}
+		fggMapVertexBufferMemory(core, mesh_info, mesh);
+		if (mesh->index_buffer_memory != NULL) {
+			fggMapIndexBufferMemory(core, mesh_info, mesh);
 		}
 	}
 
 	//Bind vertex and index buffers
-	if (mesh->vertex_count > 0) {
+	if (mesh->vertex_buffer_memory != NULL) {
 		fggBindVertexBuffers(core, *mesh);
 	}
-	if (mesh->index_count > 0) {
+	if (mesh->index_buffer_memory != NULL) {
 		fggBindIndexBuffers(core, *mesh);
 	}
 
@@ -156,16 +157,20 @@ void fggRenderMesh(const FggVkCore core, const FggVkPipelineData pipe_data, cons
 		fggBindDescriptorSets(core, pipe_data);
 	}
 	
-	fggDraw(core.p_cmd_buffers[0], pipe_data.vertexStride / 4, *mesh);
-
-	// dynamic mesh
-	if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH & FGG_MESH_SETUP_RUNTIME_MESH) {
-		if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
-			fggClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
-		}
-		if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
-			fggClearBufferMemory(core.device, mesh->index_buffer, mesh->index_buffer_memory);
-		}
+	if (mesh->index_buffer_memory != NULL) { //indexed
+		fggDraw(core.p_cmd_buffers[0], mesh_info.index_count, pipe_data.vertexStride / 4, *mesh);
+	}
+	else { //not indexed
+		fggDraw(core.p_cmd_buffers[0], mesh_info.vertex_count, pipe_data.vertexStride / 4, *mesh);
 	}
 
+	//if (mesh->flags & FGG_MESH_SETUP_DYNAMIC_MESH & FGG_MESH_SETUP_RUNTIME_MESH) {
+	//	if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
+	//		fggClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
+	//	}
+	//	if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
+	//		fggClearBufferMemory(core.device, mesh->index_buffer, mesh->index_buffer_memory);
+	//	}
+	//}
+	//
 }

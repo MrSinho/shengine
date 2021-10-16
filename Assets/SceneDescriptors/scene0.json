@@ -1,0 +1,59 @@
+{
+  "materials": [
+    {
+      "vertex_shader_path": "../Shaders/bin/Mesh.vert.spv",
+      "fragment_shader_path": "../Shaders/bin/Mesh.frag.spv",
+      "uniform_size": 64,
+      "uniform_stage": "SHADER_STAGE_VERTEX",
+      "push_constants_size": 128,
+      "push_constants_stage": "SHADER_STAGE_VERTEX",
+      "fixed_states": [
+        "FIXED_STATES_POLYGON_MODE_WIREFRAME",
+        "FIXED_STATES_VERTEX_POSITIONS",
+        "FIXED_STATES_VERTEX_NORMALS",
+        "FIXED_STATES_VERTEX_TCOORDS"
+      ]
+    },
+    {
+      "vs": "../Shaders/bin/Line.vert.spv",
+      "fs": "../Shaders/bin/Line.frag.spv",
+      "uniform_size": 64,
+      "uniform_stage": "SHADER_STAGE_VERTEX",
+      "push_constants_size": 128,
+      "push_constants_stage": "SHADER_STAGE_VERTEX",
+      "fixed_states": [
+        "POLYGON_MODE_WIREFRAME",
+        "PRIMITIVE_TOPOLOGY_LINE",
+        "VERTEX_POSITIONS"
+      ]
+    }
+  ],
+  "entities": [{
+      "camera": {
+        "fov": 45,
+        "nc": 0.1,
+        "fc": 150,
+        "flags": "CAMERA_SETUP_FREE_FLIGHT"
+      }
+    },
+    {
+      "mesh": {
+        "path": "../Assets/Meshes/stanfordHand.ply",
+        "flags": "MESH_SETUP_STATIC_MESH"
+      },
+      "transform": {
+        "position": [
+          -3.5,
+          -1.85,
+          -6
+        ],
+        "scale": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "material": 0
+    }
+  ]
+}

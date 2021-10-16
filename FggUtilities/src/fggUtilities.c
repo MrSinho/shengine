@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 #pragma warning (disable: 4996)
 #pragma warning (disable: 6385)
 
@@ -58,13 +59,21 @@ int fggCheckValidationLayer(const char* validationLayer) {
 
 #endif
 
-
+void fggCheckResult(int result, const char* errormsg) {
+	if (!result) {
+#ifndef NDEBUG
+		printf("FggError: %s\n", errormsg);
+#endif // NDEBUG
+		system("pause");
+		exit(-1);
+	}
+}
 
 void fggCheckVkResult(VkResult result, const char* errormsg) {
 	if (result != VK_SUCCESS) {
 #ifndef NDEBUG
-		printf("%s, %s \n", errormsg, fggTranslateVkResult(result));
-#endif
+		printf("FggError: %s, %s\n", errormsg, fggTranslateVkResult(result));
+#endif // NDEBUG
 		system("pause");
 		exit(-1);
 	}

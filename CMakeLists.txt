@@ -12,6 +12,7 @@ set(CGLM_STATIC ON)
 add_subdirectory(Externals/glfw)
 add_subdirectory(Externals/cglm)
 add_subdirectory(Externals/PlyImporter)
+add_subdirectory(Externals/json-c)
 
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)
@@ -26,7 +27,7 @@ if(FGG_USE_VULKAN_1_1)
     add_definitions(-DFGG_USE_VULKAN_1_1)
 endif(FGG_USE_VULKAN_1_1)
 
-#UTILITIES
+#FGGUTILITIES
 file(GLOB_RECURSE FGG_UTILITIES_SRC FggUtilities/src/*.c)
 add_library(FggUtilities STATIC ${FGG_UTILITIES_SRC})
 target_include_directories(FggUtilities PUBLIC
@@ -37,13 +38,25 @@ target_link_libraries(FggUtilities PUBLIC
     ${VULKAN_LIBRARIES}
 )
 
-#ENGINE
-file(GLOB_RECURSE ENGINE_SRC Foggy-Engine/src/*.c)
-add_library(Foggy-Engine STATIC ${ENGINE_SRC})
+#FGGSCENEMANAGER
+file(GLOB_RECURSE FGG_SCENE_MANAGER_SRC FggSceneManager/src/*.c)
+add_library(FggSceneManager ${FGG_SCENE_MANAGER_SRC})
+target_include_directories(FggSceneManager PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/FggEcsImplementation/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/FggSceneManager/include
+)
+target_link_libraries(FggSceneManager PUBLIC 
+    FggUtilities
+    json-c
+)
+
+#FOGGY-ENGINE
+file(GLOB_RECURSE FOGGY_ENGINE_SRC Foggy-Engine/src/*.c)
+add_library(Foggy-Engine STATIC ${FOGGY_ENGINE_SRC})
 target_include_directories(Foggy-Engine PUBLIC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/Foggy-Engine/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/Externals/glfw/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/FggEcsImplementation/include
     ${CMAKE_CURRENT_SOURCE_DIR}/Externals/FggECS/FggECS/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/Foggy-Engine/include
     ${Vulkan_INCLUDE_DIRS}
 )
 target_link_libraries(Foggy-Engine PUBLIC
@@ -52,13 +65,14 @@ target_link_libraries(Foggy-Engine PUBLIC
     FggUtilities
     cglm
     PlyImporter
+    FggSceneManager
 )
 
 #SHADERS
 message(STATUS "looking for glslc")
 find_program(GLSLC_FOUND glslc)
 if (NOT GLSLC_FOUND)
-    message(STATUS "glslc not found, required for shader compilation, install before executing the engine")
+    message(STATUS "glslc not found, required for shader compilation, install before executing the engine in debug mode")
 else()
     message(STATUS "found glslc")
 endif()

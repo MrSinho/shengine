@@ -1,7 +1,7 @@
 #ifndef FGG_CAMERA_H
 #define FGG_CAMERA_H
 
-#include "fggCglmImplementation.h"
+//#include "fggCglmImplementation.h"
 #include "fggEcsImplementation.h"
 
 typedef enum FggCameraSetupFlags {
@@ -14,8 +14,8 @@ typedef struct FggCamera {
 	float	fov;
 	float	nc;
 	float	fc;
-	mat4	projection;
-	mat4	view;
+	float	projection[4][4];
+	float	view[4][4];
 
 	FggCameraSetupFlags flags;
 

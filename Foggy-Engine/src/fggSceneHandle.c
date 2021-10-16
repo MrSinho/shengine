@@ -1,7 +1,8 @@
 #include "fggVkMemoryInfo.h"
 #include "fggVkPipelineData.h"
 
-#include "fggEcsImplementation.h"
+#include "fggSceneHandle.h"
+#include "fggComponentEmbedded.h"
 #include "fggComponents.h"
 #include "fggProjection.h"
 #include "fggView.h"
@@ -15,26 +16,27 @@
 void fggSceneInit(const FggVkCore core, const FggScene scene) {
 
 	for (uint32_t entity = 0; entity < FGG_ECS_MAX_ENTITIES; entity++) {
-		if (fggHasFggMesh(scene, entity)) {
-			FggMesh* m = fggGetFggMesh(scene, entity);
+		if (fggHasFggMeshInfo(scene, entity)) {
+			FggMeshInfo* mesh_info = fggGetFggMeshInfo(scene, entity);
+			FggMesh* mesh = fggAddFggMesh(scene, entity);
 
 			//Allocate memory
-			if (!(m->flags & FGG_MESH_SETUP_RUNTIME_MESH)) {
-				if (m->vertex_count > 0 && m->p_vertices != NULL) {
-					fggAllocateMeshVertexData(core, m);
+			if (!(mesh_info->flags & FGG_MESH_SETUP_RUNTIME_MESH)) {
+				if (mesh_info->vertex_count > 0 && mesh_info->p_vertices != NULL) {
+					fggAllocateMeshVertexData(core, *mesh_info, mesh);
 				}
-				if (m->index_count > 0 && m->p_indices != NULL) {
-					fggAllocateMeshIndexData(core, m);
+				if (mesh_info->index_count > 0 && mesh_info->p_indices != NULL) {
+					fggAllocateMeshIndexData(core, *mesh_info, mesh);
 				}
 			}
 
 			//Map memory
-			if (m->flags & FGG_MESH_SETUP_STATIC_MESH) {
-				if (m->vertex_count > 0 && m->p_vertices != NULL) {
-					fggMapVertexBufferMemory(core, m);
+			if (mesh_info->flags & FGG_MESH_SETUP_STATIC_MESH) {
+				if (mesh_info->vertex_count > 0 && mesh_info->p_vertices != NULL) {
+					fggMapVertexBufferMemory(core, *mesh_info, mesh);
 				}
-				if (m->index_count > 0 && m->p_indices != NULL) {
-					fggMapIndexBufferMemory(core, m);
+				if (mesh_info->index_count > 0 && mesh_info->p_indices != NULL) {
+					fggMapIndexBufferMemory(core, *mesh_info, mesh);
 				}
 			}
 		}
@@ -130,8 +132,9 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 			}
 		}
 
-		if (fggHasFggMesh(scene, entity) && fggHasFggMaterial(scene, entity)) {
+		if (fggHasFggMeshInfo(scene, entity) && fggHasFggMaterial(scene, entity)) {
 			FggMaterial* material = fggGetFggMaterial(scene, entity);
+			FggMeshInfo* mesh_info = fggGetFggMeshInfo(scene, entity);
 			FggMesh* mesh = fggGetFggMesh(scene, entity);
 
 			uint32_t uniform_buffer_index = 0;
@@ -171,7 +174,7 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 			fggRenderMesh(core, material->pipeline_data,
 				push_constants_index, p_push_constants,
 				uniform_buffer_index, p_uniform_buffer,
-				mesh);
+				*mesh_info, mesh);
 
 
 			if (p_uniform_buffer != NULL) {
@@ -199,20 +202,15 @@ void fggSceneRelease(const FggVkCore core, const FggScene scene) {
 
 		if (fggHasFggMesh(scene, entity)) {
 			FggMesh* mesh = fggGetFggMesh(scene, entity);
-			if (mesh->vertex_count > 0 && mesh->p_vertices != NULL) {
+			if (mesh->vertex_buffer_memory != NULL) {
 				fggClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
-				//free(mesh->p_vertices);
-				//mesh->p_vertices = NULL;
-				mesh->vertex_count = 0;
 			}
-			if (mesh->index_count > 0) {
+			if (mesh->index_buffer_memory != NULL) {
 				fggClearBufferMemory(core.device, mesh->index_buffer, mesh->index_buffer_memory);
-				//free(mesh->p_indices);
-				//mesh->p_indices = NULL;
-				mesh->index_count = 0;
 			}
 			mesh = NULL;
 		}
+
 		if (fggHasFggMaterial(scene, entity)) {
 			FggMaterial* mat = fggGetFggMaterial(scene, entity);
 			fggDestroyPipeline(core, &mat->pipeline_data);

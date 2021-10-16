@@ -8,7 +8,8 @@
 #include "fggProjection.h"
 #include "fggView.h"
 
-#include "fggEcsImplementation.h"
+#include "fggSceneHandle.h"
+#include "fggComponentEmbedded.h"
 #include "fggComponents.h"
 
 #include "PlyImporter.h"

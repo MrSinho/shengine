@@ -338,30 +338,30 @@ void fggSetViewport(const FggWindow window, VkViewport* vprt, VkRect2D* scssr, V
 	*vprtState = viewportStateCreateInfo;
 }
 
-void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixedStates* fStates) {
+void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixedStates* p_fixed_states) {
 	
-	fggSetVertexInputState(&fStates->vertex_binding_description, &fStates->vertex_input_attribute_description_count, fStates->p_vertex_input_assembly_descriptions, &fStates->vertex_input_state_info, flags);
+	fggSetVertexInputState(&p_fixed_states->vertex_binding_description, &p_fixed_states->vertex_input_attribute_description_count, p_fixed_states->p_vertex_input_assembly_descriptions, &p_fixed_states->vertex_input_state_info, flags);
 	
-	fggCreateInputAssembly(&fStates->input_assembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
+	fggCreateInputAssembly(&p_fixed_states->input_assembly, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, VK_FALSE);
 	if (flags & FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST) {
-		fStates->input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+		p_fixed_states->input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
 	}
 	if (flags & FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST) {
-		fStates->input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+		p_fixed_states->input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 	}
-	
-	fggCreateRasterizer(&fStates->rasterizer);
+
+	fggCreateRasterizer(&p_fixed_states->rasterizer);
 	if (flags & FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT) {
-		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
+		p_fixed_states->rasterizer.polygonMode = VK_POLYGON_MODE_LINE;
 	}
 	if (flags & FGG_FIXED_STATES_POLYGON_MODE_POINTS_BIT) {
-		fStates->rasterizer.polygonMode = VK_POLYGON_MODE_POINT;
+		p_fixed_states->rasterizer.polygonMode = VK_POLYGON_MODE_POINT;
 	}
 	
 
-	fggSetMultisampleState(&fStates->multisample_state_info);
-	fggColorBlendSettings(&fStates->color_blend_attachment, &fStates->color_blend_state);
-	fggSetViewport(core.window, &fStates->viewport, &fStates->scissor, &fStates->viewport_state);
+	fggSetMultisampleState(&p_fixed_states->multisample_state_info);
+	fggColorBlendSettings(&p_fixed_states->color_blend_attachment, &p_fixed_states->color_blend_state);
+	fggSetViewport(core.window, &p_fixed_states->viewport, &p_fixed_states->scissor, &p_fixed_states->viewport_state);
 
 }
 

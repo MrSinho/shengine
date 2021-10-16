@@ -1,7 +1,6 @@
 #ifndef FGG_TRANSFORM_H
 #define FGG_TRANSFORM_H
 
-#include "fggCglmImplementation.h"
 
 #include "fggEcsImplementation.h"
 
@@ -10,14 +9,14 @@
 
 typedef struct FggTransform {
 
-	mat4 model;
-	vec3 position;
-	vec3 rotation;
-	vec3 scale;
+	float model[4][4];
+	float position[3];
+	float rotation[3];
+	float scale[3];
 
-	vec3 front;
-	vec3 left;
-	vec3 up;
+	float front[3];
+	float left[3];
+	float up[3];
 
 } FggTransform;
 

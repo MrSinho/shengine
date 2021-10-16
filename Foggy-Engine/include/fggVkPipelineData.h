@@ -5,18 +5,7 @@
 
 #include "fggWindow.h"
 #include "fggMesh.h"
-
-typedef enum FggFixedStateFlags {
-	FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT			= 0x01,
-	FGG_FIXED_STATES_POLYGON_MODE_FACE_BIT				= 0x02,
-	FGG_FIXED_STATES_POLYGON_MODE_POINTS_BIT			= 0x04,
-	FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST	= 0x08,
-	FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST		= 0x10,
-	FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST		= 0x20,
-	FGG_FIXED_STATES_VERTEX_POSITIONS_BIT 				= 0x40,
-	FGG_FIXED_STATES_VERTEX_NORMALS_BIT 				= 0x80,
-	FGG_FIXED_STATES_VERTEX_TCOORDS_BIT 				= 0x100
-} FggFixedStateFlags;
+#include "fggMaterialInfo.h"
 
 typedef struct FggVkFixedStates {
 	
@@ -92,7 +81,7 @@ extern void fggColorBlendSettings(VkPipelineColorBlendAttachmentState* colorAtta
 
 extern void fggSetViewport(const FggWindow window, VkViewport *vprt, VkRect2D* scssr, VkPipelineViewportStateCreateInfo* vprtState);
 
-extern void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixedStates* pipeData);
+extern void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, FggVkFixedStates* p_fixed_states);
 
 
  

@@ -1,15 +1,12 @@
-#ifndef FGG_ECS_IMPLEMENTATION_H
-#define FGG_ECS_IMPLEMENTATION_H
+#ifndef FGG_SCENE_HANDLE_H
+#define FGG_SCENE_HANDLE_H
 
 
-#include <fggECS.h>
+#include <fggEcsImplementation.h>
 
 #include "fggVkCore.h"
 #include "fggTime.h"
-#include "fggProjection.h"
 
-
-typedef struct FggVkFixedStates FggVkFixedStates;
 
 
 extern void fggSceneInit(const FggVkCore core, const FggScene scene);

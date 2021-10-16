@@ -3,6 +3,7 @@
 #include "fggUtilities.h"
 
 #include "fggMesh.h"
+#include "fggMeshInfo.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,23 +33,23 @@ void fggCreateBuffer(const VkDevice device, const uint32_t size, VkBufferUsageFl
 	);
 }
 
-void fggAllocateMeshVertexData(const FggVkCore core, FggMesh *mesh) {
-	fggCreateBuffer(core.device, mesh->vertex_count * sizeof(mesh->p_vertices[0]), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, &mesh->vertex_buffer);
+void fggAllocateMeshVertexData(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh *mesh) {
+	fggCreateBuffer(core.device, mesh_info.vertex_count * sizeof(mesh_info.p_vertices[0]), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, &mesh->vertex_buffer);
 	fggAllocateMemory(core.device, core.physical_device, mesh->vertex_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &mesh->vertex_buffer_memory);
 }
 
-void fggMapVertexBufferMemory(const FggVkCore core, FggMesh* mesh) {
-	fggMapMemory(core.device, mesh->vertex_buffer_memory, mesh->vertex_count * sizeof(mesh->p_vertices[0]), (void*)mesh->p_vertices);
+void fggMapVertexBufferMemory(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh* mesh) {
+	fggMapMemory(core.device, mesh->vertex_buffer_memory, mesh_info.vertex_count * sizeof(mesh_info.p_vertices[0]), (void*)mesh_info.p_vertices);
 }
 
-void fggMapIndexBufferMemory(const FggVkCore core, FggMesh* mesh) {
-	fggMapMemory(core.device, mesh->vertex_buffer_memory, mesh->vertex_count * sizeof(mesh->p_vertices[0]), (void*)mesh->p_vertices);
+void fggMapIndexBufferMemory(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh* mesh) {
+	fggMapMemory(core.device, mesh->index_buffer_memory, mesh_info.index_count * sizeof(mesh_info.p_indices[0]), (void*)mesh_info.p_indices);
 }
 
-void fggAllocateMeshIndexData(const FggVkCore core, FggMesh* mesh) {
-	fggCreateBuffer(core.device, mesh->index_count * sizeof(mesh->p_indices[0]), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, &mesh->index_buffer);
+void fggAllocateMeshIndexData(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh* mesh) {
+	fggCreateBuffer(core.device, mesh_info.index_count * sizeof(mesh_info.p_indices[0]), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, &mesh->index_buffer);
 	fggAllocateMemory(core.device, core.physical_device, mesh->index_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &mesh->index_buffer_memory);
-	fggMapMemory(core.device, mesh->index_buffer_memory, mesh->index_count * sizeof(mesh->p_indices[0]), (void*)mesh->p_indices);
+	fggMapMemory(core.device, mesh->index_buffer_memory, mesh_info.index_count * sizeof(mesh_info.p_indices[0]), (void*)mesh_info.p_indices);
 }
 
 void fggAllocateMemory(const VkDevice device, const VkPhysicalDevice physical_device, const VkBuffer buffer, const uint32_t typeFlags, VkDeviceMemory *pMemory) {
