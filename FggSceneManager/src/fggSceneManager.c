@@ -1,6 +1,6 @@
 #include "fggSceneManager.h"
 #include "fggUtilities.h"
-#include "fggComponents.h"
+#include "fggCamera.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -65,7 +65,7 @@ uint32_t fggStringFlagToInt(const char* s_flag) {
     return 0;
 }
 
-void fggLoadScene(const char* path) {
+void fggLoadScene(const char* path, FggScene* p_scene) {
     FILE* stream = fopen(path, "r");
     if (stream == NULL) {
 #ifndef NDEBUG
@@ -86,7 +86,7 @@ void fggLoadScene(const char* path) {
     
     //MATERIALS
     json_object* json_materials = json_object_object_get(parser, "materials");
-    uint32_t material_info_count = json_object_array_length(json_materials);
+    uint32_t material_info_count = (uint32_t)json_object_array_length(json_materials);
     FggMaterialInfo* p_material_infos = calloc(material_info_count, sizeof(FggMaterialInfo));
     if (p_material_infos == NULL) { return; }
     for (uint32_t i = 0; i < material_info_count; i++) {
@@ -117,9 +117,38 @@ void fggLoadScene(const char* path) {
     }
     
     //ENTITIES
+    fggClearScene(p_scene);
     json_object* json_entities = json_object_object_get(parser, "entities");
     for (uint32_t i = 0; i < json_object_array_length(json_entities); i++) {
-        //uint32_t entity = fggCreateEntity();
+        uint32_t entity = fggCreateEntity(p_scene);
+        json_object* json_entity = json_object_array_get_idx(json_entities, i);
+        
+        json_object* json_transform = json_object_object_get(json_entity, "camera");
+        json_object* json_mesh = json_object_object_get(json_entity, "mesh");
+        json_object* json_camera = json_object_object_get(json_entity, "camera");
+        json_object* json_material = json_object_object_get(json_entity, "material");
+        
+        if (json_transform != NULL) {
+            FggCamera camera = {
+                (float)json_object_get_double(json_object_get(json_transform, "fov")),
+                (float)json_object_get_double(json_object_get(json_transform, "nc")),
+                (float)json_object_get_double(json_object_get(json_transform, "fc")),
+                fggStringFlagToInt(json_object_get_string(json_object_get(json_transform, "flags")))
+            };
+            FggCamera* p_camera = fggAddFggCamera(p_scene, entity);
+            *p_camera = camera;
+        }
+        if (json_mesh != NULL) {
+            //if () {
+            //
+            //}
+        }
+        if (json_camera != NULL) {
+
+        }
+        if (json_material != NULL) {
+
+        }
     }
 
 
@@ -128,13 +157,13 @@ void fggLoadScene(const char* path) {
     fclose(stream);
 }
 
-void fggListenSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle, FggScene scene) {
+void fggListenSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle, FggScene* p_scene) {
     fggGetFileStats(descriptor_handle->path, &descriptor_handle->stats1);
     if (memcmp(&descriptor_handle->stats0, &descriptor_handle->stats1, sizeof(FggFileStats)) != 0) {
         memcpy(&descriptor_handle->stats0, &descriptor_handle->stats1, sizeof(FggFileStats));
 #ifndef NDEBUG
         printf("Saved scene descriptor at %s\n", descriptor_handle->path);
 #endif
-        fggLoadScene(descriptor_handle->path);
+        fggLoadScene(descriptor_handle->path, p_scene);
     }
 }

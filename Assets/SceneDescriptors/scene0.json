@@ -15,8 +15,8 @@
       ]
     },
     {
-      "vs": "../Shaders/bin/Line.vert.spv",
-      "fs": "../Shaders/bin/Line.frag.spv",
+      "vertex_shader_path": "../Shaders/bin/Line.vert.spv",
+      "fragment_shader_path": "../Shaders/bin/Line.frag.spv",
       "uniform_size": 64,
       "uniform_stage": "SHADER_STAGE_VERTEX",
       "push_constants_size": 128,
@@ -28,7 +28,8 @@
       ]
     }
   ],
-  "entities": [{
+  "entities": [
+    {
       "camera": {
         "fov": 45,
         "nc": 0.1,

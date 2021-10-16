@@ -36,9 +36,9 @@ extern void fggGetFileStats(const char* path, FggFileStats* stats);
 
 extern void fggInitSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle);
 
-extern void fggLoadScene(const char* path);
+extern void fggLoadScene(const char* path, FggScene* p_scene);
 
-extern void fggListenSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle, FggScene scene);
+extern void fggListenSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle, FggScene* p_scene);
 
 extern void fggUpdateScene(FggScene scene);
 

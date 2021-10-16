@@ -13,9 +13,9 @@
 #include <string.h>
 
 
-void fggSceneInit(const FggVkCore core, const FggScene scene) {
+void fggSceneInit(const FggVkCore core, FggScene* scene) {
 
-	for (uint32_t entity = 0; entity < FGG_ECS_MAX_ENTITIES; entity++) {
+	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
 		if (fggHasFggMeshInfo(scene, entity)) {
 			FggMeshInfo* mesh_info = fggGetFggMeshInfo(scene, entity);
 			FggMesh* mesh = fggAddFggMesh(scene, entity);
@@ -52,7 +52,7 @@ void fggSceneInit(const FggVkCore core, const FggScene scene) {
 
 }
 
-void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene scene) {
+void fggSceneUpdate(const FggVkCore core, const FggTime time, FggScene* scene) {
 
 	FggCamera camera = { 0 };
 
@@ -194,7 +194,7 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene sce
 
 }
 
-void fggSceneRelease(const FggVkCore core, const FggScene scene) {
+void fggSceneRelease(const FggVkCore core, FggScene* scene) {
 
 	vkDeviceWaitIdle(core.device);
 

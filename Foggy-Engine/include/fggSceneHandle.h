@@ -9,10 +9,10 @@
 
 
 
-extern void fggSceneInit(const FggVkCore core, const FggScene scene);
+extern void fggSceneInit(const FggVkCore core, FggScene* scene);
 
-extern void fggSceneUpdate(const FggVkCore core, const FggTime time, const FggScene scene);
+extern void fggSceneUpdate(const FggVkCore core, const FggTime time, FggScene* scene);
 
-extern void fggSceneRelease(const FggVkCore core, const FggScene scene);
+extern void fggSceneRelease(const FggVkCore core, FggScene* scene);
 
 #endif

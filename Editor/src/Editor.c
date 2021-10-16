@@ -109,10 +109,10 @@ int main() {
 	fggSetupMaterial(core, lineMaterialInfo, &lineMaterial);
 
 	FggScene scene = { 0 };
-	fggCreateScene(scene);
+	fggCreateScene(&scene);
 
 	//camera
-	uint32_t camEntity = fggCreateEntity();
+	uint32_t camEntity = fggCreateEntity(&scene);
 	FggCamera cam = {
 		45.0f,								//fov;
 		0.1f,								//nc;
@@ -121,23 +121,23 @@ int main() {
 		{0.0f},								//view;
 		FGG_CAMERA_SETUP_FREE_FLIGHT_BIT,	//flags
 	};
-	fggSetFggCamera(scene, &cam, camEntity);
-	FggTransform* camTransform = fggAddFggTransform(scene, camEntity);
+	fggSetFggCamera(&scene, &cam, camEntity);
+	FggTransform* camTransform = fggAddFggTransform(&scene, camEntity);
 	camTransform->position[2] = 2.0f;
 
 #ifdef RANDOM
 	//hand
 	PlyFileData handply = { 0 };
 	plyLoadFile("../Assets/Meshes/stanfordHand.ply", &handply, 0);
-	uint32_t hand = fggCreateEntity();
-	FggTransform* handTransform = fggAddFggTransform(scene, hand);
-	FggMeshInfo* handMesh = fggAddFggMeshInfo(scene, hand);
+	uint32_t hand = fggCreateEntity(&scene);
+	FggTransform* handTransform = fggAddFggTransform(&scene, hand);
+	FggMeshInfo* handMesh = fggAddFggMeshInfo(&scene, hand);
 	handMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
 	handMesh->vertex_count = handply.vertexCount * handply.vertexStride;
 	handMesh->p_vertices = handply.pVertices;
 	handMesh->index_count = handply.indexCount;
 	handMesh->p_indices = handply.pIndices;
-	fggCreateMaterialInstance(core, &wireframeMaterial, fggAddFggMaterial(scene, hand));
+	fggCreateMaterialInstance(core, &wireframeMaterial, fggAddFggMaterial(&scene, hand));
 	handTransform->scale[0] = 0.5f;
 	handTransform->scale[1] = 0.5f;
 	handTransform->scale[2] = 0.5f;
@@ -146,55 +146,55 @@ int main() {
 	handTransform->position[2] = -6.0f;
 	
 	//lucy
-	PlyFileData lucyply = { 0 };
-	plyLoadFile("../Assets/Meshes/stanfordLucy.ply", &lucyply, 0);
-	uint32_t lucy = fggCreateEntity();
-	FggTransform* lucyTransform = fggAddFggTransform(scene, lucy);
-	FggMeshInfo* lucyMesh = fggAddFggMeshInfo(scene, lucy);
-	lucyMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	lucyMesh->vertex_count = lucyply.vertexCount * lucyply.vertexStride;
-	lucyMesh->p_vertices = lucyply.pVertices;
-	lucyMesh->index_count = lucyply.indexCount;
-	lucyMesh->p_indices = lucyply.pIndices;
-	fggCreateMaterialInstance(core, &wireframeMaterial, fggAddFggMaterial(scene, lucy));
-	lucyTransform->scale[0] = 1.0f;
-	lucyTransform->scale[1] = 1.0f;
-	lucyTransform->scale[2] = 1.0f;
-	lucyTransform->position[0] = 2.3f;
-	lucyTransform->position[1] = 1.0f;
-	lucyTransform->position[2] = -2.0f;
-	
-	//text
-	PlyFileData textply = { 0 };
-	plyLoadFile("../Assets/Meshes/text.ply", &textply, 0);
-	uint32_t text = fggCreateEntity();
-	FggTransform* textTransform = fggAddFggTransform(scene, text);
-	FggMeshInfo* textMesh = fggAddFggMeshInfo(scene, text);
-	textMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	textMesh->vertex_count = textply.vertexCount * textply.vertexStride;
-	textMesh->p_vertices = textply.pVertices;
-	textMesh->index_count = textply.indexCount;
-	textMesh->p_indices = textply.pIndices;
-	fggCreateMaterialInstance(core, &wireframeMaterial, fggAddFggMaterial(scene, text));
-	textTransform->scale[0] = 1.0f;
-	textTransform->scale[1] = 1.0f;
-	textTransform->scale[2] = 1.0f;
-
-	//graph 
-	uint32_t graph = fggCreateEntity();
-	FggMeshInfo* graphMesh = fggAddFggMeshInfo(scene, graph);
-	graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
-	graphMesh->vertex_count = 5000 * 3;
-	lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
-	fggCreateMaterialInstance(core, &lineMaterial, fggAddFggMaterial(scene, graph));
-	FggTransform* graphTransform = fggAddFggTransform(scene, graph);
-	graphTransform->rotation[1] = 180.0f;
-	graphTransform->scale[0] = 1.0f;
-	graphTransform->scale[1] = 1.0f;
-	graphTransform->scale[2] = 1.0f;
+	//PlyFileData lucyply = { 0 };
+	//plyLoadFile("../Assets/Meshes/stanfordLucy.ply", &lucyply, 0);
+	//uint32_t lucy = fggCreateEntity();
+	//FggTransform* lucyTransform = fggAddFggTransform(scene, lucy);
+	//FggMeshInfo* lucyMesh = fggAddFggMeshInfo(scene, lucy);
+	//lucyMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	//lucyMesh->vertex_count = lucyply.vertexCount * lucyply.vertexStride;
+	//lucyMesh->p_vertices = lucyply.pVertices;
+	//lucyMesh->index_count = lucyply.indexCount;
+	//lucyMesh->p_indices = lucyply.pIndices;
+	//fggCreateMaterialInstance(core, &wireframeMaterial, fggAddFggMaterial(scene, lucy));
+	//lucyTransform->scale[0] = 1.0f;
+	//lucyTransform->scale[1] = 1.0f;
+	//lucyTransform->scale[2] = 1.0f;
+	//lucyTransform->position[0] = 2.3f;
+	//lucyTransform->position[1] = 1.0f;
+	//lucyTransform->position[2] = -2.0f;
+	//
+	////text
+	//PlyFileData textply = { 0 };
+	//plyLoadFile("../Assets/Meshes/text.ply", &textply, 0);
+	//uint32_t text = fggCreateEntity();
+	//FggTransform* textTransform = fggAddFggTransform(scene, text);
+	//FggMeshInfo* textMesh = fggAddFggMeshInfo(scene, text);
+	//textMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	//textMesh->vertex_count = textply.vertexCount * textply.vertexStride;
+	//textMesh->p_vertices = textply.pVertices;
+	//textMesh->index_count = textply.indexCount;
+	//textMesh->p_indices = textply.pIndices;
+	//fggCreateMaterialInstance(core, &wireframeMaterial, fggAddFggMaterial(scene, text));
+	//textTransform->scale[0] = 1.0f;
+	//textTransform->scale[1] = 1.0f;
+	//textTransform->scale[2] = 1.0f;
+	//
+	////graph 
+	//uint32_t graph = fggCreateEntity();
+	//FggMeshInfo* graphMesh = fggAddFggMeshInfo(scene, graph);
+	//graphMesh->flags = FGG_MESH_SETUP_STATIC_MESH;
+	//graphMesh->vertex_count = 5000 * 3;
+	//lorenzAttractor(10.0f, 28.0f, 2.66f, 0.01f, graphMesh);
+	//fggCreateMaterialInstance(core, &lineMaterial, fggAddFggMaterial(scene, graph));
+	//FggTransform* graphTransform = fggAddFggTransform(scene, graph);
+	//graphTransform->rotation[1] = 180.0f;
+	//graphTransform->scale[0] = 1.0f;
+	//graphTransform->scale[1] = 1.0f;
+	//graphTransform->scale[2] = 1.0f;
 #endif // RANDOM
 
-	fggSceneInit(core, scene);
+	fggSceneInit(core, &scene);
 	FggSceneDescriptorHandle scene_descriptor = { "../Assets/SceneDescriptors/scene0.json"};
 	fggInitSceneDescriptor(&scene_descriptor);
 
@@ -204,20 +204,20 @@ int main() {
 		fggGetTime(&time);
 		fggFrameReset(core);
 		fggGetCursorPosition(core.window, &core.window.cursor_pos_x, &core.window.cursor_pos_y);
-		fggListenSceneDescriptor(&scene_descriptor, scene);
+		fggListenSceneDescriptor(&scene_descriptor, &scene);
 
 		uint32_t image_index = 0;
 		fggFrameBegin(core, &image_index);
 		
 #ifdef RANDOM
 		handTransform->rotation[1] += 50.0f * time.delta_time;
-		lucyTransform->rotation[1] += 25.0f * time.delta_time;
-		textTransform->rotation[1] -= 100 * time.delta_time;
+		//lucyTransform->rotation[1] += 25.0f * time.delta_time;
+		//textTransform->rotation[1] -= 100 * time.delta_time;
 #endif // RANDOM
 
 #ifdef SERVOS
 #endif // SERVOS
-		fggSceneUpdate(core, time, scene);
+		fggSceneUpdate(core, time, &scene);
 	
 		fggFrameEnd(core, image_index);
 	}
@@ -225,11 +225,11 @@ int main() {
 	fggDestroyPipeline(core, &wireframeMaterial.pipeline_data);
 	fggDestroyPipeline(core, &lineMaterial.pipeline_data);
 
-	fggSceneRelease(core, scene);
+	fggSceneRelease(core, &scene);
 
 #ifdef RANDOM
 	plyFree(&handply);
-	plyFree(&lucyply);
+	//plyFree(&lucyply);
 #endif // RANDOM
 
 #ifdef SERVOS
