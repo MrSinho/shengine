@@ -101,7 +101,8 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
     fread(buffer, descriptor_size, 1, stream);
     
     json_object* parser = json_tokener_parse(buffer);
-    
+    if (parser == NULL) { return; }
+
     //MATERIALS
     json_object* json_materials = json_object_object_get(parser, "materials");
     uint32_t material_info_count = (uint32_t)json_object_array_length(json_materials);
