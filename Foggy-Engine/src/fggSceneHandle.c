@@ -40,9 +40,13 @@ void fggSceneInit(const FggVkCore core, FggScene* scene) {
 				}
 			}
 		}
+
 		if (fggHasFggMaterialInfo(scene, entity)) {
-			FggMaterialInfo* material_info = fggGetFggMaterialInfo(scene, entity);
-			fggSetupMaterial(core, *material_info, fggAddFggMaterial(scene, entity));
+			fggSetupMaterial(core, *fggGetFggMaterialInfo(scene, entity), fggAddFggMaterial(scene, entity));
+		}
+
+		if (fggHasFggTransform(scene, entity)) {
+			FggTransform* t = fggGetFggTransform(scene, entity);
 		}
 	}
 
@@ -56,7 +60,6 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, FggScene* scene) {
 
 		if (fggHasFggTransform(scene, entity)) {
 			FggTransform* t = fggGetFggTransform(scene, entity);
-			t->position[1] *= -1.0f;
 			glm_mat4_identity(t->model);
 			glm_translate(t->model, t->position);
 			glm_scale(t->model, t->scale);
@@ -70,7 +73,7 @@ void fggSceneUpdate(const FggVkCore core, const FggTime time, FggScene* scene) {
 
 			glm_cross(t->front, t->left, t->up);
 			glm_normalize(t->up);
-			
+
 			if (fggHasFggCamera(scene, entity)) {
 				camera = *fggGetFggCamera(scene, entity);
 				if (camera.flags & FGG_CAMERA_SETUP_FREE_FLIGHT_BIT) {
@@ -194,7 +197,7 @@ void fggSceneRelease(const FggVkCore core, FggScene* scene) {
 
 	vkDeviceWaitIdle(core.device);
 
-	for (uint32_t entity = 0; entity < FGG_ECS_MAX_ENTITIES; entity++) {
+	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
 
 		if (fggHasFggMesh(scene, entity)) {
 			FggMesh* mesh = fggGetFggMesh(scene, entity);

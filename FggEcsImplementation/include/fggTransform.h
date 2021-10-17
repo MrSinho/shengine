@@ -13,6 +13,7 @@ typedef struct FggTransform {
 	float position[3];
 	float rotation[3];
 	float scale[3];
+
 	float front[3];
 	float left[3];
 	float up[3];

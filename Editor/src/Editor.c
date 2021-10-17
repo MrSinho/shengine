@@ -83,6 +83,7 @@ int main() {
 			FGG_FIXED_STATES_VERTEX_NORMALS_BIT |
 			FGG_FIXED_STATES_VERTEX_TCOORDS_BIT
 	};
+
 	FggMaterialInfo lineMaterialInfo = {
 		"../Shaders/bin/Line.vert.spv",
 		"../Shaders/bin/Line.frag.spv",
@@ -102,13 +103,18 @@ int main() {
 	fggCompileGLSLShader("../Shaders/src/Line.frag", "../Shaders/bin/Line.frag.spv");
 #endif // NDEBUG
 
-	FggSceneDescriptorHandle scene_descriptor = { "../Assets/SceneDescriptors/scene0.json" };
+	//MATERIALS
+	FggMaterial wireframeMaterial, lineMaterial = { 0 };
+	fggSetupMaterial(core, wireframeMaterialInfo, &wireframeMaterial);
+	fggSetupMaterial(core, lineMaterialInfo, &lineMaterial);
+
 	FggScene scene = { 0 };
 	fggCreateScene(&scene);
-	fggLoadScene(scene_descriptor.path, &scene);
-	fggSceneInit(core, &scene);
+	FggSceneDescriptorHandle scene_descriptor = { "../Assets/SceneDescriptors/scene0.json" };
 	fggInitSceneDescriptor(&scene_descriptor);
-
+	fggLoadScene(scene_descriptor.path, &scene);
+	
+	fggSceneInit(core, &scene);
 	while (fggIsWindowActive(core.window.window)) {
 
 		fggPollEvents();
@@ -123,11 +129,18 @@ int main() {
 
 		uint32_t image_index = 0;
 		fggFrameBegin(core, &image_index);
+		
 		fggSceneUpdate(core, time, &scene);
+	
 		fggFrameEnd(core, image_index);
 	}
 
+	fggDestroyPipeline(core, &wireframeMaterial.pipeline_data);
+	fggDestroyPipeline(core, &lineMaterial.pipeline_data);
+
 	fggSceneRelease(core, &scene);
+	
+
 	fggSurfaceRelease(&core);
 	fggCmdRelease(&core);
 	fggCoreRelease(&core);

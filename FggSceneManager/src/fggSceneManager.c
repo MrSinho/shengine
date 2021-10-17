@@ -2,6 +2,7 @@
 #include "fggUtilities.h"
 #include "fggCamera.h"
 #include "fggTransform.h"
+#include "fggMaterialInfo.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -99,7 +100,7 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
     char* buffer = calloc(descriptor_size, 1);
     if (buffer == NULL) { return; }
     fread(buffer, descriptor_size, 1, stream);
-    
+
     json_object* parser = json_tokener_parse(buffer);
     if (parser == NULL) { return; }
 
@@ -129,19 +130,19 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
         }
         p_material_infos[i] = material_info;
     }
-    
+
     //ENTITIES
     //fggClearScene(p_scene);
     json_object* json_entities = json_object_object_get(parser, "entities");
     for (uint32_t i = 0; i < json_object_array_length(json_entities); i++) {
         uint32_t entity = fggCreateEntity(p_scene);
         json_object* json_entity = json_object_array_get_idx(json_entities, i);
-        
+
         json_object* json_transform = json_object_object_get(json_entity, "transform");
         json_object* json_mesh = json_object_object_get(json_entity, "mesh");
         json_object* json_camera = json_object_object_get(json_entity, "camera");
         json_object* json_material = json_object_object_get(json_entity, "material");
-        
+
         if (json_transform != NULL) {
             json_object* json_position = json_object_object_get(json_transform, "position");
             float position[3] = { 0.0f };
@@ -217,7 +218,7 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
     }
 
 
-    
+
 
     free(p_material_infos);
     free(buffer);
