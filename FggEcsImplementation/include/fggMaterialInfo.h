@@ -39,6 +39,6 @@ typedef struct FggMaterialInfo {
 
 } FggMaterialInfo;
 
-//FGG_ECS_MAKE_COMPONENT_DEFINITIONS(FggMaterialInfo, 5)
+FGG_ECS_MAKE_COMPONENT_DEFINITIONS(FggMaterialInfo, 5)
 
 #endif // FGG_MATERIAL_INFO_H

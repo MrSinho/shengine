@@ -38,7 +38,7 @@ extern void fggInitSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle);
 
 extern void fggLoadScene(const char* path, FggScene* p_scene);
 
-extern void fggListenSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle, FggScene* p_scene);
+extern int fggListenSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle, FggScene* p_scene);
 
 extern void fggUpdateScene(FggScene scene);
 

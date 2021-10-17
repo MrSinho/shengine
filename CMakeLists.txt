@@ -48,6 +48,7 @@ target_include_directories(FggSceneManager PUBLIC
 target_link_libraries(FggSceneManager PUBLIC 
     FggUtilities
     json-c
+    PlyImporter
 )
 
 #FOGGY-ENGINE
