@@ -46,12 +46,30 @@
         "flags": "MESH_SETUP_STATIC_MESH"
       },
       "transform": {
-        "position": [ 0.0, 0.0, -1.5 ],
+        "position": [ 2.8, 0.0, -6.5 ],
+        "scale": [
+          1.75,
+          1.75,
+          1.75
+        ],
+      },
+      "material": 0
+    },
+    {
+      "mesh": {
+        "path": "../Assets/Meshes/stanfordHand.ply",
+        "flags": "MESH_SETUP_STATIC_MESH"
+      },
+      "transform": {
+        "position": [ -3.0, 0.0, -8.0 ],
         "scale": [
           1.0,
           1.0,
           1.0
         ],
+        "rotation": [
+          0, 0, 0
+        ]
       },
       "material": 0
     }
