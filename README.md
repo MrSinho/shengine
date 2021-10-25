@@ -12,13 +12,12 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter) by MrSinho
  - Indexed and not indexed drawing
  - Uniform buffer object support
- - Dynamic mesh
+ - Real time scene descriptor loader
 
 ## To do:
  - Depth buffering
  - Double/triple buffering
  - Runtime scene editor
- - Scene loader
 
 ## Prerequisites
 
@@ -51,13 +50,3 @@ In case your system does not support Vulkan 1.2, use the command `cmake -DFGG_US
 ### Binaries and output
 
 The built binaries are in `bin`.
-
-## For serial communication you must have `python` installed with the module `pyserial` on your machine so that the program can run the python script `Scripts/fggSerialReader.py` 
-
-```bash
-python -m pip install pyserial
-```
-
-## Tutorial:
-
-no
