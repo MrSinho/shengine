@@ -7,17 +7,20 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 ![test0](Saved/Pictures/Ive_been_to_Verdun.png)
 
 ## Current features (tested):
- - Entity Component System using [EZ-ECS](https://github.com/MrSinho/EZ-ECS) by MrSinho
+ - Entity Component System using [FggECS](https://github.com/MrSinho/FggECS) by MrSinho
  - Material creation and usage
  - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter) by MrSinho
  - Indexed and not indexed drawing
  - Uniform buffer object support
  - Real time scene descriptor loader
+ - Custom shader handling (more about that in the Coulomb shader and example)
 
 ## To do:
  - Depth buffering
  - Double/triple buffering
- - Runtime scene editor
+ - Textures
+ - Shader system sucks
+ - Scripting (native pls)
 
 ## Prerequisites
 
