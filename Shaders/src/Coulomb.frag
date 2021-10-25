@@ -1,10 +1,11 @@
 #version 460
 //INPUTS:
-layout (location = 1) in vec4 fragPos;
+layout (location = 0) flat in mat4 MVP;
+layout (location = 4) in vec4 fragPosition;
 
 //DECLARATIONS/DEFINITIONS:
 struct Charge {
-    vec2 position;
+    vec4 position;
     float intensity;
     vec3 colorID;
 };
@@ -12,13 +13,15 @@ struct Charge {
 //OUTPUT
 layout (location = 0) out vec4 fragColor;
 
-const uint chargeCount = 4;
+const uint chargeCount = 5;
 //RANGE OF VALUES MUST BE BETWEEN 0 AND 1
-const Charge charges[chargeCount] = Charge[chargeCount](
-    Charge(vec2( 0.0f,-0.4f), 0.6f, vec3(1.0f, 0.0f, 0.0f) ),
-    Charge(vec2(-0.3f, 0.0f), 0.8f, vec3(0.0f, 1.0f, 0.0f) ),
-    Charge(vec2( 0.7f, 0.0f), 0.1f, vec3(0.0f, 0.0f, 1.0f) ),
-    Charge(vec2(-0.5f, 0.5f), 0.3f, vec3(1.0f, 0.0f, 1.0f) )
+// The charges are in the scene 3 dimensional space
+Charge charges[chargeCount] = Charge[chargeCount](
+    Charge(MVP * vec4( 4.0f, 0.0f, 1.5f, 1.0f), 0.6f, vec3(1.0f, 0.0f, 0.0f) ),
+    Charge(MVP * vec4( 0.0f, 0.0f, 0.0f, 1.0f), 0.6f, vec3(1.0f, 1.0f, 0.0f) ),
+    Charge(MVP * vec4(-3.0f, 0.0f, -1.0f, 1.0f), 0.8f, vec3(0.0f, 1.0f, 0.0f) ),
+    Charge(MVP * vec4( 7.0f, 0.0f, -2.0f, 1.0f), 0.1f, vec3(0.0f, 0.0f, 1.0f) ),
+    Charge(MVP * vec4(-5.0f, 0.0f, 3.0f, 1.0f), 0.3f, vec3(1.0f, 0.0f, 1.0f) )
 );
 
 void main(){
@@ -26,11 +29,11 @@ void main(){
     float k = 0.01f; //HIGHER VALUES ARE NOT GOOD, USING 0.01 BECAUSE MAX DISTANCE IS LESS 1.0
     vec3 fieldIntensity = vec3(0.0f);
     for (uint i = 0; i < chargeCount; i++) {
-        float r = distance(fragPos, vec4(charges[i].position, 0.0f, 1.0f));
+        float r = distance(fragPosition, charges[i].position);
         vec3 intensity = charges[i].colorID*k*charges[i].intensity / (r*r);
         fieldIntensity += intensity;
     }
 
     fragColor = vec4(fieldIntensity, 1.0f);   
-    //fragColor = fragPos;   
+    //fragColor = fragPosition;   
 }

@@ -15,18 +15,19 @@
       ]
     },
     {
-      "vertex_shader_path": "../Shaders/bin/Line.vert.spv",
-      "fragment_shader_path": "../Shaders/bin/Line.frag.spv",
+      "vertex_shader_path": "../Shaders/bin/Coulomb.vert.spv",
+      "fragment_shader_path": "../Shaders/bin/Coulomb.frag.spv",
       "uniform_size": 64,
       "uniform_stage": "SHADER_STAGE_VERTEX",
       "push_constants_size": 128,
       "push_constants_stage": "SHADER_STAGE_VERTEX",
       "fixed_states": [
-        "POLYGON_MODE_WIREFRAME",
-        "PRIMITIVE_TOPOLOGY_LINE",
-        "VERTEX_POSITIONS"
+        "FIXED_STATES_POLYGON_MODE_FACE",
+        "FIXED_STATES_VERTEX_POSITIONS",
+        "FIXED_STATES_VERTEX_NORMALS",
+        "FIXED_STATES_VERTEX_TCOORDS"
       ]
-    }
+    },
   ],
   "entities": [
     {
@@ -46,69 +47,22 @@
         "flags": "MESH_SETUP_STATIC_MESH"
       },
       "transform": {
-        "position": [ 0.0, 0.0, -20.0 ]
-      },
-      "material": 0
-    },
-    {
-      "mesh": {
-        "path": "../Assets/Meshes/stanfordHand.ply",
-        "flags": "MESH_SETUP_STATIC_MESH"
-      },
-      "transform": {
-        "position": [ 0.0, 0.0, -18.0 ]
-      },
-      "material": 0
-    },
-    {
-      "mesh": {
-        "path": "../Assets/Meshes/stanfordHand.ply",
-        "flags": "MESH_SETUP_STATIC_MESH"
-      },
-      "transform": {
-        "position": [ 0.0, 0.0, -16.0 ]
-      },
-      "material": 0
-    },
-    {
-      "mesh": {
-        "path": "../Assets/Meshes/stanfordHand.ply",
-        "flags": "MESH_SETUP_STATIC_MESH"
-      },
-      "transform": {
-        "position": [ 0.0, 0.0, -14.0 ]
-      },
-      "material": 0
-    },
-    {
-      "mesh": {
-        "path": "../Assets/Meshes/stanfordHand.ply",
-        "flags": "MESH_SETUP_STATIC_MESH"
-      },
-      "transform": {
-        "position": [ 0.0, 0.0, -12.0 ]
-      },
-      "material": 0
-    },
-    {
-      "mesh": {
-        "path": "../Assets/Meshes/stanfordHand.ply",
-        "flags": "MESH_SETUP_STATIC_MESH"
-      },
-      "transform": {
-        "position": [ 0.0, 0.0, -10.0 ]
-      },
-      "material": 0
-    },
-    {
-      "mesh": {
-        "path": "../Assets/Meshes/stanfordHand.ply",
-        "flags": "MESH_SETUP_STATIC_MESH"
-      },
-      "transform": {
         "position": [ 0.0, 0.0, -8.0 ]
       },
       "material": 0
+    },
+    {
+      "mesh": {
+        "path": "../Assets/Meshes/plane.ply",
+        "flags": "MESH_SETUP_STATIC_MESH"
+      },
+      "transform": {
+        "position": [ 0.0, 0.5, 0.0 ],
+        "rotation": [-45.0, 0.0, 0.0],
+        "scale": [0.1, 0.1, 0.1]
+      },
+
+      "material": 1
     }
   ]
 }

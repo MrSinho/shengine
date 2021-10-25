@@ -46,8 +46,8 @@ int main() {
 #ifndef NDEBUG
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
 	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
-	fggCompileGLSLShader("../Shaders/src/Line.vert", "../Shaders/bin/Line.vert.spv");
-	fggCompileGLSLShader("../Shaders/src/Line.frag", "../Shaders/bin/Line.frag.spv");
+	fggCompileGLSLShader("../Shaders/src/Coulomb.vert", "../Shaders/bin/Coulomb.vert.spv");
+	fggCompileGLSLShader("../Shaders/src/Coulomb.frag", "../Shaders/bin/Coulomb.frag.spv");
 #endif // NDEBUG
 
 	//MATERIALS
