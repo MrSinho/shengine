@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void* updateBehaviour(const FggTime time, FggScene* scene) {
+void updateBehaviour(const FggTime time, FggScene* scene) {
 	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
 		if (fggHasFggIdentity(scene, entity)) {
 			FggIdentity* identity = fggGetFggIdentity(scene, entity);
