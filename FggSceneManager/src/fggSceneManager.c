@@ -3,6 +3,7 @@
 #include "fggCamera.h"
 #include "fggTransform.h"
 #include "fggMaterialInfo.h"
+#include "fggIdentity.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -132,7 +133,6 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
     }
 
     //ENTITIES
-    //fggClearScene(p_scene);
     json_object* json_entities = json_object_object_get(parser, "entities");
     for (uint32_t i = 0; i < json_object_array_length(json_entities); i++) {
         uint32_t entity = fggCreateEntity(p_scene);
@@ -142,6 +142,7 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
         json_object* json_mesh = json_object_object_get(json_entity, "mesh");
         json_object* json_camera = json_object_object_get(json_entity, "camera");
         json_object* json_material = json_object_object_get(json_entity, "material");
+        json_object* json_identity = json_object_object_get(json_entity, "identity");
 
         if (json_transform != NULL) {
             json_object* json_position = json_object_object_get(json_transform, "position");
@@ -214,6 +215,15 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
             FggMaterialInfo* p_material_info = fggAddFggMaterialInfo(p_scene, entity);
             uint32_t material_info_index = json_object_get_int(json_material);
             *p_material_info = p_material_infos[material_info_index];
+        }
+        if (json_identity != NULL) {
+            FggIdentity* p_identity  = fggAddFggIdentity(p_scene, entity);
+            json_object* json_name   = json_object_object_get(json_identity, "name");
+            json_object* json_tag    = json_object_object_get(json_identity, "tag");
+            json_object* json_subtag = json_object_object_get(json_identity, "subtag");
+            json_name   != NULL && (p_identity->name = json_object_get_string(json_name));
+            json_tag    != NULL && (p_identity->tag = json_object_get_string(json_tag));
+            json_subtag != NULL && (p_identity->subtag = json_object_get_string(json_subtag));
         }
     }
 

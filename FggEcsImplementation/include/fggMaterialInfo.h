@@ -1,7 +1,7 @@
 #ifndef FGG_MATERIAL_INFO_H
 #define FGG_MATERIAL_INFO_H
 
-//#include "fggEcsImplementation.h"
+#include "fggEcsImplementation.h"
 
 typedef enum FggFixedStateFlags {
 	FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT = 0x01,

@@ -4,6 +4,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+void* updateBehaviour(const FggTime time, FggScene* scene) {
+	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
+		if (fggHasFggIdentity(scene, entity)) {
+			FggIdentity* identity = fggGetFggIdentity(scene, entity);
+			if (strcmp(identity->name, "rotator") == 0) {
+				// I already know it has a transform component
+				FggTransform* t = fggGetFggTransform(scene, entity);
+				t->rotation[1] += 10.0f * time.delta_time;
+			}
+		}
+	}
+}
+
 int main() {
 
 	FggTime time = { 0 };
@@ -79,7 +92,8 @@ int main() {
 		fggFrameBegin(core, &image_index);
 		
 		fggSceneUpdate(core, time, &scene);
-	
+		updateBehaviour(time, &scene);
+
 		fggFrameEnd(core, image_index);
 	}
 
@@ -95,77 +109,3 @@ int main() {
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#ifdef RANDOM
-
-float* lorenzAttractorVertex(float a, float b, float c, float dTime, float x, float y, float z) {
-
-	float* vertex = calloc(3, sizeof(float));
-	if (vertex == NULL) { return NULL; }
-	float dx, dy, dz;
-
-	dx = (a * (y - x)) * dTime;
-	dy = (x * (b - z) - y) * dTime;
-	dz = (x * y - c * z) * dTime;
-	vertex[0] = x + dx;
-	vertex[1] = y + dy;
-	vertex[2] = z + dz;
-
-	return vertex;
-}
-
-void lorenzAttractor(float a, float b, float c, float dTime, FggMeshInfo* mesh) {
-	if (mesh->p_vertices != NULL) {
-		free(mesh->p_vertices);
-	}
-	if (mesh->p_indices != NULL) {
-		free(mesh->p_indices);
-	}
-	mesh->p_vertices = calloc(mesh->vertex_count, sizeof(float));
-	if (mesh->p_vertices == NULL) { return; }
-	for (uint32_t i = 0; i < mesh->vertex_count; i += 3) {
-		float* hvertex;
-		float vertex[3];
-		if (i == 0) {
-			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, dTime, 0.01f, 0.0f, 0.0f);
-		}
-		else {
-			hvertex = lorenzAttractorVertex(10.0f, 28.0f, 2.66f, dTime, mesh->p_vertices[i - 3], mesh->p_vertices[i - 2], mesh->p_vertices[i - 1]);
-		}
-		memcpy(vertex, hvertex, sizeof(float) * 3);
-		free(hvertex);
-		mesh->p_vertices[i] = vertex[0];
-		mesh->p_vertices[i + 1] = vertex[1];
-		mesh->p_vertices[i + 2] = vertex[2];
-	}
-	fggGenerateGraphIndices(mesh);
-}
-
-#endif // RANDOM

@@ -8,5 +8,6 @@
 #include "fggMeshInfo.h"
 #include "fggCamera.h"
 #include "fggMaterialInfo.h"
+#include "fggIdentity.h"
 
 #endif // FGG_COMPONENTS_H

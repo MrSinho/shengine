@@ -1,7 +1,6 @@
 #ifndef FGG_CAMERA_H
 #define FGG_CAMERA_H
 
-//#include "fggCglmImplementation.h"
 #include "fggEcsImplementation.h"
 
 typedef enum FggCameraSetupFlags {

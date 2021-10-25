@@ -4,9 +4,6 @@
 
 #include "fggEcsImplementation.h"
 
-#define FGG_TRANSFORM_MODEL_SIZE sizeof(mat4)
-
-
 typedef struct FggTransform {
 
 	float model[4][4];
