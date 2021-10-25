@@ -161,7 +161,7 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
                 }
             }
             json_object* json_scale = json_object_object_get(json_transform, "scale");
-            float scale[3] = { 0.0f };
+            float scale[3] = { 1.0f, 1.0f, 1.0f };
             if (json_scale != NULL) {
                 for (uint32_t j = 0; j < 3; j++) {
                     json_object* json_scl = json_object_array_get_idx(json_scale, j);

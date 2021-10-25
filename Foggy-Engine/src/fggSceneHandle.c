@@ -23,10 +23,12 @@ void fggSceneInit(const FggVkCore core, FggScene* scene) {
 			//Allocate memory
 			if (!(mesh_info->flags & FGG_MESH_SETUP_RUNTIME_MESH)) {
 				if (mesh_info->vertex_count > 0 && mesh_info->p_vertices != NULL) {
-					fggAllocateMeshVertexData(core, *mesh_info, mesh);
+					fggCreateVertexBuffer(core, *mesh_info, mesh);
+					fggAllocateVertexBuffer(core, mesh);
 				}
 				if (mesh_info->index_count > 0 && mesh_info->p_indices != NULL) {
-					fggAllocateMeshIndexData(core, *mesh_info, mesh);
+					fggCreateIndexBuffer(core, *mesh_info, mesh);
+					fggAllocateIndexBuffer(core, mesh);
 				}
 			}
 

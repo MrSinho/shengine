@@ -13,15 +13,19 @@ typedef struct FggMesh FggMesh;
 
 
 
-extern void fggCreateBuffer(const VkDevice device, const uint32_t bufferSize, VkBufferUsageFlagBits bufferUsage, VkBuffer* buffer);
+extern void fggCreateBuffer(const VkDevice device, const uint32_t bufferSize, VkBufferUsageFlagBits usage_flags, VkBuffer* buffer);
 
-extern void fggAllocateMeshVertexData(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh *mesh);
+extern void fggCreateVertexBuffer(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh* mesh);
+
+void fggAllocateVertexBuffer(const FggVkCore core, FggMesh* mesh);
 
 extern void fggMapVertexBufferMemory(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh* mesh);
 
-extern void fggMapIndexBufferMemory(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh* mesh);
+extern void fggCreateIndexBuffer(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh* mesh);
 
-extern void fggAllocateMeshIndexData(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh* mesh);
+void fggAllocateIndexBuffer(const FggVkCore core, FggMesh* mesh);
+
+extern void fggMapIndexBufferMemory(const FggVkCore core, const FggMeshInfo mesh_info, FggMesh* mesh);
 
 extern void fggGetMemoryType(const VkDevice device, const VkPhysicalDevice physicalDevice, const VkBuffer buffer, const uint32_t typeFlags, uint32_t *memoryTypeIndex);
 
