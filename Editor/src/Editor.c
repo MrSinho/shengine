@@ -30,31 +30,31 @@ int main() {
 	fggSetSyncObjects(&core);
 	fggInitCommands(&core);
 
-	//MATERIAL INFOS
-	FggMaterialInfo wireframeMaterialInfo = {
-		"../Shaders/bin/Mesh.vert.spv", 
-		"../Shaders/bin/Mesh.frag.spv",
-		sizeof(mat4), 
-		VK_SHADER_STAGE_VERTEX_BIT,
-		sizeof(mat4) * 2, 
-		VK_SHADER_STAGE_VERTEX_BIT,
-		FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
-			FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
-			FGG_FIXED_STATES_VERTEX_NORMALS_BIT |
-			FGG_FIXED_STATES_VERTEX_TCOORDS_BIT
-	};
-
-	FggMaterialInfo lineMaterialInfo = {
-		"../Shaders/bin/Line.vert.spv",
-		"../Shaders/bin/Line.frag.spv",
-		sizeof(mat4),
-		VK_SHADER_STAGE_VERTEX_BIT,
-		sizeof(mat4) * 2,
-		VK_SHADER_STAGE_VERTEX_BIT,
-		FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
-			FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST |
-			FGG_FIXED_STATES_VERTEX_POSITIONS_BIT
-	};
+	////MATERIAL INFOS
+	//FggMaterialInfo wireframeMaterialInfo = {
+	//	"../Shaders/Mesh.vert.spv", 
+	//	"../Shaders/Mesh.frag.spv",
+	//	sizeof(mat4), 
+	//	VK_SHADER_STAGE_VERTEX_BIT,
+	//	sizeof(mat4) * 2, 
+	//	VK_SHADER_STAGE_VERTEX_BIT,
+	//	FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
+	//		FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
+	//		FGG_FIXED_STATES_VERTEX_NORMALS_BIT |
+	//		FGG_FIXED_STATES_VERTEX_TCOORDS_BIT
+	//};
+	//
+	//FggMaterialInfo lineMaterialInfo = {
+	//	"../Shaders/Line.vert.spv",
+	//	"../Shaders/Line.frag.spv",
+	//	sizeof(mat4),
+	//	VK_SHADER_STAGE_VERTEX_BIT,
+	//	sizeof(mat4) * 2,
+	//	VK_SHADER_STAGE_VERTEX_BIT,
+	//	FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
+	//		FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST |
+	//		FGG_FIXED_STATES_VERTEX_POSITIONS_BIT
+	//};
 
 #ifndef NDEBUG
 	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
@@ -65,8 +65,8 @@ int main() {
 
 	//MATERIALS
 	FggMaterial wireframeMaterial, lineMaterial = { 0 };
-	fggSetupMaterial(core, wireframeMaterialInfo, &wireframeMaterial);
-	fggSetupMaterial(core, lineMaterialInfo, &lineMaterial);
+	//fggSetupMaterial(core, wireframeMaterialInfo, &wireframeMaterial);
+	//fggSetupMaterial(core, lineMaterialInfo, &lineMaterial);
 
 	FggScene scene = { 0 };
 	fggCreateScene(&scene);
@@ -84,8 +84,11 @@ int main() {
 		fggGetCursorPosition(core.window, &core.window.cursor_pos_x, &core.window.cursor_pos_y);
 		if (fggListenSceneDescriptor(&scene_descriptor, &scene)) {
 #ifndef NDEBUG
-			//for (uint32_t i = 0; i < fggMaterialInfo)
-			//fggCompileGLSLShader()
+			FggMaterialInfo* material_infos = fggGetFggMaterialInfoArray(&scene);
+			for (uint32_t i = 0; i < fggGetFggMaterialInfoCount(scene); i++) {
+				fggCompileGLSLShader(material_infos->vertex_shader_src_path, material_infos[i].vertex_shader_path);
+				fggCompileGLSLShader(material_infos->fragment_shader_src_path, material_infos[i].fragment_shader_path);
+			}
 #endif // NDEBUG
 			fggSceneRelease(core, &scene);
 			fggLoadScene(scene_descriptor.path, &scene);

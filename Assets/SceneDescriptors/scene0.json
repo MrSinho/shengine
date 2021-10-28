@@ -1,6 +1,8 @@
 {
   "materials": [
     {
+      "vertex_shader_src_path": "../Shaders/src/Mesh.vert",
+      "fragment_shader_src_path": "../Shaders/src/Mesh.frag",
       "vertex_shader_path": "../Shaders/bin/Mesh.vert.spv",
       "fragment_shader_path": "../Shaders/bin/Mesh.frag.spv",
       "uniform_size": 64,
@@ -15,6 +17,8 @@
       ]
     },
     {
+      "vertex_shader_src_path": "../Shaders/src/Coulomb.vert",
+      "fragment_shader_src_path": "../Shaders/src/Coulomb.frag",
       "vertex_shader_path": "../Shaders/bin/Coulomb.vert.spv",
       "fragment_shader_path": "../Shaders/bin/Coulomb.frag.spv",
       "uniform_size": 64,

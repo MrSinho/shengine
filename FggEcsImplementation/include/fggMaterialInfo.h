@@ -28,7 +28,8 @@ typedef enum FggShaderStageFlags {
 
 
 typedef struct FggMaterialInfo {
-
+	const char*				vertex_shader_src_path;
+	const char*				fragment_shader_src_path;
 	const char* 			vertex_shader_path;
 	const char* 			fragment_shader_path;	
 	uint32_t				uniformSize;

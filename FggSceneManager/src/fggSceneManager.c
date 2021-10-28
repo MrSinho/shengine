@@ -116,6 +116,8 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
     for (uint32_t i = 0; i < material_info_count; i++) {
         json_object* json_material = json_object_array_get_idx(json_materials, i);
         FggMaterialInfo material_info = {
+            json_object_get_string(json_object_object_get(json_material, "vertex_shader_src_path")),                    // vertex_shader_src_path;
+            json_object_get_string(json_object_object_get(json_material, "fragment_shader_src_path")),                  // fragment_shader_src_path;	
             json_object_get_string(json_object_object_get(json_material, "vertex_shader_path")),                        // vertex_shader_path;
             json_object_get_string(json_object_object_get(json_material, "fragment_shader_path")),                      // fragment_shader_path;	
             (uint32_t)json_object_get_int(json_object_object_get(json_material, "uniform_size")),                       // uniformSize;
