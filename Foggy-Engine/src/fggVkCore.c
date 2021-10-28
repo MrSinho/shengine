@@ -8,10 +8,12 @@
 
 #include "fggComponents.h"
 
+#ifdef _MSC_VER
 #pragma warning (disable: 6011)
 #pragma warning (disable: 6385)
 #pragma warning (disable: 6386)
 #pragma warning (disable: 6255)
+#endif // _MSC_VER
 
 /*
 * First setup

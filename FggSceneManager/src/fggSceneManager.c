@@ -21,6 +21,9 @@
 
 #include <PlyImporter.h>
 
+#ifdef _MSC_VER
+#pragma warning ( disable : 4996)
+#endif // _MSC_VER
 
 void fggGetFileStats(const char* path, FggFileStats* stats) {
     stat(path, stats);

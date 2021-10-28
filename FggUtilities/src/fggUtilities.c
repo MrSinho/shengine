@@ -4,9 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+#ifdef _MSC_VER
 #pragma warning (disable: 4996)
 #pragma warning (disable: 6385)
+#endif // _MSC_VER
 
 const char *fggReadCode(const char* path, uint32_t *pCodeSize, const char *mode) {
 

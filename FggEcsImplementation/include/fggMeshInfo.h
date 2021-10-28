@@ -7,6 +7,10 @@
 
 #include "fggEcsImplementation.h"
 
+#ifdef _MSC_VER
+#pragma warning ( disable : 6386)
+#endif // _MSC_VER
+
 typedef enum FggMeshInfoFlags {
 	FGG_MESH_SETUP_STATIC_MESH  = 0b001,
 	FGG_MESH_SETUP_DYNAMIC_MESH = 0b010,
