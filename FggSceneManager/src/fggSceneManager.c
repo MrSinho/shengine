@@ -132,6 +132,23 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
         p_material_infos[i] = material_info;
     }
 
+    //MESHES
+    json_object* json_meshes = json_object_object_get(parser, "meshes");
+    uint32_t mesh_info_count = (uint32_t)json_object_array_length(json_meshes);
+    FggMeshInfo* mesh_infos = calloc(mesh_info_count, sizeof(FggMeshInfo));
+    
+    uint32_t ply_mesh_count = 0; 
+    for (uint32_t i = 0; i < mesh_info_count; i++) {
+        json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
+        json_object_get_string(json_object_object_get(json_mesh, "path")) != NULL && ply_mesh_count++;
+    }
+    PlyFileData* ply_meshes = calloc(ply_mesh_count, sizeof(PlyFileData));
+    for (uint32_t i = 0; i < ply_mesh_count; i++) {
+        json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
+        const char* path = json_object_get_string(json_object_object_get(json_mesh, "path"));
+        if (path != NULL) { plyLoadFile(path, &ply_meshes[i], 0); }
+    }
+
     //ENTITIES
     json_object* json_entities = json_object_object_get(parser, "entities");
     for (uint32_t i = 0; i < json_object_array_length(json_entities); i++) {
@@ -185,17 +202,16 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
         }
         if (json_mesh != NULL) {
             FggMeshInfo* p_mesh_info = fggAddFggMeshInfo(p_scene, entity);
-            if (json_object_object_get(json_mesh, "path") != NULL) {
-                PlyFileData ply = { 0 };
-                plyLoadFile(json_object_get_string(json_object_object_get(json_mesh, "path")), &ply, 0);
-                p_mesh_info->vertex_count = ply.vertexCount * ply.vertexStride;
-                p_mesh_info->p_vertices = ply.pVertices;
-                p_mesh_info->index_count = ply.indexCount;
-                p_mesh_info->p_indices = ply.pIndices;
-                plyFree(&ply);
+            json_object* json_data_index = json_object_object_get(json_mesh, "data_index");
+            if (json_data_index != NULL) {
+                uint32_t data_index = json_object_get_int(json_data_index);
+                p_mesh_info->vertex_count = ply_meshes[data_index].vertexCount * ply_meshes[data_index].vertexStride;
+                p_mesh_info->p_vertices = ply_meshes[data_index].pVertices;
+                p_mesh_info->index_count = ply_meshes[data_index].indexCount;
+                p_mesh_info->p_indices = ply_meshes[data_index].pIndices;
+                json_object* json_flags = json_object_object_get(json_mesh, "flags");
+                p_mesh_info->flags = json_flags != NULL ? fggStringFlagToInt(json_object_get_string(json_flags)) : FGG_MESH_SETUP_STATIC_MESH;
             }
-            json_object* json_flags = json_object_object_get(json_mesh, "flags");
-            p_mesh_info->flags = json_flags != NULL ? fggStringFlagToInt(json_object_get_string(json_flags)) : FGG_MESH_SETUP_STATIC_MESH;
         }
         if (json_camera != NULL) {
             FggCamera camera = {
@@ -228,8 +244,7 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
     }
 
 
-
-
+    free(ply_meshes);
     free(p_material_infos);
     free(buffer);
     fclose(stream);

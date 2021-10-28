@@ -29,6 +29,14 @@
       ]
     },
   ],
+  "meshes": [
+    {
+      "path": "../Assets/Meshes/stanfordHand.ply"
+    },
+    {
+      "path": "../Assets/Meshes/plane.ply"
+    }
+  ],
   "entities": [
     {
       "transform": {
@@ -43,7 +51,7 @@
     },
     {
       "mesh": {
-        "path": "../Assets/Meshes/stanfordHand.ply",
+        "data_index": 0,
         "flags": "MESH_SETUP_STATIC_MESH"
       },
       "transform": {
@@ -56,13 +64,12 @@
     },
     {
       "mesh": {
-        "path": "../Assets/Meshes/plane.ply",
-        "flags": "MESH_SETUP_STATIC_MESH"
+        "data_index": 1
       },
       "transform": {
-        "position": [ 0.0, 0.5, 0.0 ],
+        "position": [ 0.0, 0.7, 0.0 ],
         "rotation": [-45.0, 0.0, 0.0],
-        "scale": [0.1, 0.1, 0.1]
+        "scale": [0.3, 0.3, 0.3]
       },
       "material": 1
     }

@@ -83,6 +83,10 @@ int main() {
 		fggFrameReset(core);
 		fggGetCursorPosition(core.window, &core.window.cursor_pos_x, &core.window.cursor_pos_y);
 		if (fggListenSceneDescriptor(&scene_descriptor, &scene)) {
+#ifndef NDEBUG
+			//for (uint32_t i = 0; i < fggMaterialInfo)
+			//fggCompileGLSLShader()
+#endif // NDEBUG
 			fggSceneRelease(core, &scene);
 			fggLoadScene(scene_descriptor.path, &scene);
 			fggSceneInit(core, &scene);
