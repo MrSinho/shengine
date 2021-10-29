@@ -42,44 +42,6 @@ int main() {
 	fggSetSyncObjects(&core);
 	fggInitCommands(&core);
 
-	//MATERIAL INFOS
-//	FggMaterialInfo wireframeMaterialInfo = {
-//		"../Shaders/bin/Mesh.vert.spv", 
-//		"../Shaders/bin/Mesh.frag.spv",
-//		sizeof(mat4), 
-//		VK_SHADER_STAGE_VERTEX_BIT,
-//		sizeof(mat4) * 2, 
-//		VK_SHADER_STAGE_VERTEX_BIT,
-//		FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
-//			FGG_FIXED_STATES_VERTEX_POSITIONS_BIT |
-//			FGG_FIXED_STATES_VERTEX_NORMALS_BIT |
-//			FGG_FIXED_STATES_VERTEX_TCOORDS_BIT
-//	};
-//
-//	FggMaterialInfo lineMaterialInfo = {
-//		"../Shaders/bin/Line.vert.spv",
-//		"../Shaders/bin/Line.frag.spv",
-//		sizeof(mat4),
-//		VK_SHADER_STAGE_VERTEX_BIT,
-//		sizeof(mat4) * 2,
-//		VK_SHADER_STAGE_VERTEX_BIT,
-//		FGG_FIXED_STATES_POLYGON_MODE_WIREFRAME_BIT |
-//			FGG_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST |
-//			FGG_FIXED_STATES_VERTEX_POSITIONS_BIT
-//	};
-//
-//#ifndef NDEBUG
-//	fggCompileGLSLShader("../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv");
-//	fggCompileGLSLShader("../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv");
-//	fggCompileGLSLShader("../Shaders/src/Coulomb.vert", "../Shaders/bin/Coulomb.vert.spv");
-//	fggCompileGLSLShader("../Shaders/src/Coulomb.frag", "../Shaders/bin/Coulomb.frag.spv");
-//#endif // NDEBUG
-
-	//MATERIALS
-	//FggMaterial wireframeMaterial, lineMaterial = { 0 };
-	//fggSetupMaterial(core, wireframeMaterialInfo, &wireframeMaterial);
-	//fggSetupMaterial(core, lineMaterialInfo, &lineMaterial);
-
 	FggDescriptorHandle mat_info_descriptor = { "../Assets/SceneDescriptors/materials.json" };
 	FggDescriptorHandle scene_descriptor = { "../Assets/SceneDescriptors/scene.json" };
 	fggInitDescriptor(&mat_info_descriptor);
@@ -116,9 +78,6 @@ int main() {
 
 		fggFrameEnd(core, image_index);
 	}
-
-	//fggDestroyPipeline(core, &wireframeMaterial.pipeline_data);
-	//fggDestroyPipeline(core, &lineMaterial.pipeline_data);
 
 	free(p_mat_infos);
 	fggSceneRelease(core, &scene);

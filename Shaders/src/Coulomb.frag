@@ -13,15 +13,11 @@ struct Charge {
 //OUTPUT
 layout (location = 0) out vec4 fragColor;
 
-const uint chargeCount = 5;
+const uint chargeCount = 1;
 //RANGE OF VALUES MUST BE BETWEEN 0 AND 1
 // The charges are in the scene 3 dimensional space
 Charge charges[chargeCount] = Charge[chargeCount](
-    Charge(MV * vec4( 0.0f, 0.0f, 0.0f, 1.0f), 0.6f, vec3(1.0f, 0.0f, 0.0f) ),
-    Charge(MV * vec4( 0.0f, 0.0f, 0.0f, 1.0f), 0.6f, vec3(1.0f, 1.0f, 0.0f) ),
-    Charge(MV * vec4(-3.0f, 0.0f, -1.0f, 1.0f), 0.8f, vec3(0.0f, 1.0f, 0.0f) ),
-    Charge(MV * vec4( 7.0f, 0.0f, -2.0f, 1.0f), 0.1f, vec3(0.0f, 0.0f, 1.0f) ),
-    Charge(MV * vec4(-5.0f, 0.0f, 3.0f, 1.0f), 0.3f, vec3(1.0f, 0.0f, 1.0f) )
+    Charge(MV * vec4( 0.0f, 0.7f, 0.0f, 1.0f), 10.0f, vec3(1.0f, 0.0f, 0.0f) )
 );
 
 void main(){
