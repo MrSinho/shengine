@@ -19,6 +19,6 @@
 #include "fggTime.h"
 #include "fggUtilities.h"
 
-#include "fggSceneManager.h"
+#include "fggDescriptorHandle.h"
 
 #endif

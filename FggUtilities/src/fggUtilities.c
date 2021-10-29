@@ -9,7 +9,7 @@
 #pragma warning (disable: 6385)
 #endif // _MSC_VER
 
-const char *fggReadCode(const char* path, uint32_t *pCodeSize, const char *mode) {
+const char* fggReadCode(const char* path, uint32_t* p_code_size, const char* mode) {
 
 	FILE* stream = fopen(path, mode);
 
@@ -18,13 +18,14 @@ const char *fggReadCode(const char* path, uint32_t *pCodeSize, const char *mode)
 	}
 
 	fseek(stream, 0, SEEK_END);
-	*pCodeSize = ftell(stream);
+	uint32_t code_size = ftell(stream);
 	fseek(stream, 0, SEEK_SET);
 
-	char* code = (char *)malloc(*pCodeSize);
+	char* code = (char*)malloc(code_size);
 
 	if (stream != NULL && code != NULL) {
-		fggCheckValue((int)fread(code, *pCodeSize, 1, stream), 1, "error reading buffer");
+		fread(code, code_size, 1, stream);
+		(p_code_size != NULL) && (*p_code_size = code_size);
 		return code;
 	}
 
@@ -80,7 +81,7 @@ void fggCheckVkResult(VkResult result, const char* errormsg) {
 	}
 }
 
-void fggCheckValue(const int result, const int desiredValue, const char *errormsg) {
+void fggCheckValue(const int result, const int desiredValue, const char* errormsg) {
 	if (result != desiredValue) {
 		perror(errormsg);
 		exit(EXIT_FAILURE);

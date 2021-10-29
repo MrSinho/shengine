@@ -38,14 +38,14 @@ target_link_libraries(FggUtilities PUBLIC
     ${VULKAN_LIBRARIES}
 )
 
-#FGGSCENEMANAGER
-file(GLOB_RECURSE FGG_SCENE_MANAGER_SRC FggSceneManager/src/*.c)
-add_library(FggSceneManager ${FGG_SCENE_MANAGER_SRC})
-target_include_directories(FggSceneManager PUBLIC
+#FGGDESCRIPTORHANDLE
+file(GLOB_RECURSE FGG_DESCRIPTOR_HANDLE_SRC FggDescriptorHandle/src/*.c)
+add_library(FggDescriptorHandle ${FGG_DESCRIPTOR_HANDLE_SRC})
+target_include_directories(FggDescriptorHandle PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/FggEcsImplementation/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/FggSceneManager/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/FggDescriptorHandle/include
 )
-target_link_libraries(FggSceneManager PUBLIC 
+target_link_libraries(FggDescriptorHandle PUBLIC 
     FggUtilities
     json-c
     PlyImporter
@@ -66,7 +66,7 @@ target_link_libraries(Foggy-Engine PUBLIC
     FggUtilities
     cglm
     PlyImporter
-    FggSceneManager
+    FggDescriptorHandle
 )
 
 #SHADERS

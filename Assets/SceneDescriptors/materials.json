@@ -1,0 +1,39 @@
+{
+  "auto_compile_shaders": false,
+  "shader_sources": [ 
+    "../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv",
+    "../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv",
+    "../Shaders/src/Coulomb.vert", "../Shaders/bin/Coulomb.vert.spv",
+    "../Shaders/src/Coulomb.frag", "../Shaders/bin/Coulomb.frag.spv"
+  ],
+  "materials": [
+    {
+      "vertex_shader": "../Shaders/bin/Mesh.vert.spv",
+      "fragment_shader": "../Shaders/bin/Mesh.frag.spv",
+      "uniform_size": 64,
+      "uniform_stage": "SHADER_STAGE_VERTEX",
+      "push_constants_size": 128,
+      "push_constants_stage": "SHADER_STAGE_VERTEX",
+      "fixed_states": [
+        "FIXED_STATES_POLYGON_MODE_WIREFRAME",
+        "FIXED_STATES_VERTEX_POSITIONS",
+        "FIXED_STATES_VERTEX_NORMALS",
+        "FIXED_STATES_VERTEX_TCOORDS"
+      ]
+    },
+    {
+      "vertex_shader": "../Shaders/bin/Coulomb.vert.spv",
+      "fragment_shader": "../Shaders/bin/Coulomb.frag.spv",
+      "uniform_size": 64,
+      "uniform_stage": "SHADER_STAGE_VERTEX",
+      "push_constants_size": 128,
+      "push_constants_stage": "SHADER_STAGE_VERTEX",
+      "fixed_states": [
+        "FIXED_STATES_POLYGON_MODE_FACE_LIST",
+        "FIXED_STATES_VERTEX_POSITIONS",
+        "FIXED_STATES_VERTEX_NORMALS",
+        "FIXED_STATES_VERTEX_TCOORDS"
+      ]
+    },
+  ]
+}

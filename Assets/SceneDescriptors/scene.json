@@ -1,0 +1,47 @@
+{
+  "meshes": [
+    {
+      "path": "../Assets/Meshes/stanfordHand.ply"
+    },
+    {
+      "path": "../Assets/Meshes/plane.ply"
+    }
+  ],
+  "entities": [
+    {
+      "transform": {
+      	"position": [0.0, 0.0, 2.0]
+      },
+      "camera": {
+        "fov": 45,
+        "nc": 0.1,
+        "fc": 150,
+        "flags": "CAMERA_SETUP_FREE_FLIGHT"
+      }
+    },
+    {
+      "mesh": {
+        "data_index": 0,
+        "flags": "MESH_SETUP_STATIC_MESH"
+      },
+      "transform": {
+        "position": [ 0.0, 0.0, -8.0 ]
+      },
+      "identity": {
+        "name": "rotator"
+      },
+      "material": 0
+    },
+    {
+      "mesh": {
+        "data_index": 1
+      },
+      "transform": {
+        "position": [ 0.0, 0.7, 0.0 ],
+        "rotation": [-45.0, 0.0, 0.0],
+        "scale": [0.3, 0.3, 0.3]
+      },
+      "material": 1
+    }
+  ]
+}

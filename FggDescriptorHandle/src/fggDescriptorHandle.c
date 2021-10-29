@@ -1,4 +1,4 @@
-#include "fggSceneManager.h"
+#include "fggDescriptorHandle.h"
 #include "fggUtilities.h"
 #include "fggCamera.h"
 #include "fggTransform.h"
@@ -29,7 +29,7 @@ void fggGetFileStats(const char* path, FggFileStats* stats) {
     stat(path, stats);
 }
 
-void fggInitSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle) {
+void fggInitDescriptor(FggDescriptorHandle* descriptor_handle) {
     fggGetFileStats(descriptor_handle->path, &descriptor_handle->stats0);
 }
 
@@ -88,38 +88,37 @@ uint32_t fggStringFlagToInt(const char* s_flag) {
     return 0;
 }
 
-void fggLoadScene(const char* path, FggScene* p_scene) {
-    FILE* stream = fopen(path, "r");
-    if (stream == NULL) {
-#ifndef NDEBUG
-        printf("FggError: cannot open scene descriptor at %s\n", path);
-#endif
-        return;
-    }
-
-    fseek(stream, 0, SEEK_END);
-    uint32_t descriptor_size = ftell(stream);
-    fseek(stream, 0, SEEK_SET);
-
-    char* buffer = calloc(descriptor_size, 1);
+void fggLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, FggMaterialInfo** pp_mat_infos) {
+    char* buffer = (char*)fggReadCode(path, NULL, "r");
     if (buffer == NULL) { return; }
-    fread(buffer, descriptor_size, 1, stream);
 
     json_object* parser = json_tokener_parse(buffer);
     if (parser == NULL) { return; }
+    
+    // AUTO COMPILE SHADERS
+    uint32_t compile_shaders = (uint32_t)json_object_get_int(json_object_object_get(parser, "auto_compile_shaders"));
+    
+    // SHADER SOURCES
+    json_object* json_shader_sources = json_object_object_get(parser, "shader_sources");
+    uint32_t shader_source_count = (uint32_t)json_object_array_length(json_shader_sources);
+    if (compile_shaders > 0) {
+        for (uint32_t i = 0; i < shader_source_count; i += 2) {
+            const char* shader_source = json_object_get_string(json_object_array_get_idx(json_shader_sources, i));
+            const char* bin = json_object_get_string(json_object_array_get_idx(json_shader_sources, i + 1));
+            fggCompileGLSLShader(shader_source, bin);
+        }
+    }
 
     //MATERIALS
     json_object* json_materials = json_object_object_get(parser, "materials");
-    uint32_t material_info_count = (uint32_t)json_object_array_length(json_materials);
-    FggMaterialInfo* p_material_infos = calloc(material_info_count, sizeof(FggMaterialInfo));
-    if (p_material_infos == NULL) { return; }
-    for (uint32_t i = 0; i < material_info_count; i++) {
+    uint32_t mat_info_count = (uint32_t)json_object_array_length(json_materials);
+    FggMaterialInfo* p_mat_infos = calloc(mat_info_count, sizeof(FggMaterialInfo));
+    if (p_mat_infos == NULL) { return; }
+    for (uint32_t i = 0; i < mat_info_count; i++) {
         json_object* json_material = json_object_array_get_idx(json_materials, i);
         FggMaterialInfo material_info = {
-            json_object_get_string(json_object_object_get(json_material, "vertex_shader_src_path")),                    // vertex_shader_src_path;
-            json_object_get_string(json_object_object_get(json_material, "fragment_shader_src_path")),                  // fragment_shader_src_path;	
-            json_object_get_string(json_object_object_get(json_material, "vertex_shader_path")),                        // vertex_shader_path;
-            json_object_get_string(json_object_object_get(json_material, "fragment_shader_path")),                      // fragment_shader_path;	
+            json_object_get_string(json_object_object_get(json_material, "vertex_shader")),                         // vertex_shader_path;
+            json_object_get_string(json_object_object_get(json_material, "fragment_shader")),                       // fragment_shader_path;	
             (uint32_t)json_object_get_int(json_object_object_get(json_material, "uniform_size")),                       // uniformSize;
             fggStringFlagToInt(json_object_get_string(json_object_object_get(json_material, "uniform_stage"))),         // uniformStage;
             (uint32_t)json_object_get_int(json_object_object_get(json_material, "push_constants_size")),                // pConstSize; 
@@ -134,8 +133,20 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
                 material_info.fixed_states_flags |= flag;
             }
         }
-        p_material_infos[i] = material_info;
+        p_mat_infos[i] = material_info;
     }
+    (p_mat_infos != NULL) && (*pp_mat_infos = p_mat_infos);
+    (p_mat_info_count != NULL) && (*p_mat_info_count = mat_info_count);
+}
+
+void fggLoadScene(const char* path, const FggMaterialInfo* p_mat_infos, FggScene* p_scene) {
+    char* buffer = (char*)fggReadCode(path, NULL, "r");
+    if (buffer == NULL) { return; }
+
+    json_object* parser = json_tokener_parse(buffer);
+    if (parser == NULL) { return; }
+
+    
 
     //MESHES
     json_object* json_meshes = json_object_object_get(parser, "meshes");
@@ -195,7 +206,7 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
             float model[16] = { 0.0f };
             if (json_model != NULL) {
                 for (uint32_t j = 0; j < 16; j++) {
-                    json_object* json_mdl = json_object_array_get_idx(json_mdl, j);
+                    json_object* json_mdl = json_object_array_get_idx(json_model, j);
                     model[j] = json_mdl != NULL ? (float)json_object_get_double(json_mdl) : 0.0f;
                 }
             }
@@ -235,7 +246,7 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
         if (json_material != NULL) {
             FggMaterialInfo* p_material_info = fggAddFggMaterialInfo(p_scene, entity);
             uint32_t material_info_index = json_object_get_int(json_material);
-            *p_material_info = p_material_infos[material_info_index];
+            *p_material_info = p_mat_infos[material_info_index];
         }
         if (json_identity != NULL) {
             FggIdentity* p_identity  = fggAddFggIdentity(p_scene, entity);
@@ -250,17 +261,15 @@ void fggLoadScene(const char* path, FggScene* p_scene) {
 
 
     free(ply_meshes);
-    free(p_material_infos);
     free(buffer);
-    fclose(stream);
 }
 
-int fggListenSceneDescriptor(FggSceneDescriptorHandle* descriptor_handle, FggScene* p_scene) {
+int fggListenDescriptor(FggDescriptorHandle* descriptor_handle) {
     fggGetFileStats(descriptor_handle->path, &descriptor_handle->stats1);
     if (memcmp(&descriptor_handle->stats0, &descriptor_handle->stats1, sizeof(FggFileStats)) != 0) {
         memcpy(&descriptor_handle->stats0, &descriptor_handle->stats1, sizeof(FggFileStats));
 #ifndef NDEBUG
-        printf("Saved scene descriptor at %s\n", descriptor_handle->path);
+        printf("Saved descriptor at %s\n", descriptor_handle->path);
 #endif
         return 1;
     }
