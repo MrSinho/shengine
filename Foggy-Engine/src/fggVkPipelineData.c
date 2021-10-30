@@ -115,8 +115,8 @@ void fggSetupShaders(const FggVkCore core, const char* vertexspv, const char* fr
 	
 		pipeData->pShaderStages = calloc(pipeData->shaderModuleCount, sizeof(VkPipelineShaderStageCreateInfo));
 		if (pipeData->pShaderStages != NULL) {
-			fggCreateShaderStage(core.device, pipeData->pShaderModules[0], vertexspv, VK_SHADER_STAGE_VERTEX_BIT, &pipeData->pShaderStages[0]);
-			fggCreateShaderStage(core.device, pipeData->pShaderModules[1], fragmentspv, VK_SHADER_STAGE_FRAGMENT_BIT, &pipeData->pShaderStages[1]);
+			fggCreateShaderStage(core.device, pipeData->pShaderModules[0], VK_SHADER_STAGE_VERTEX_BIT, &pipeData->pShaderStages[0]);
+			fggCreateShaderStage(core.device, pipeData->pShaderModules[1], VK_SHADER_STAGE_FRAGMENT_BIT, &pipeData->pShaderStages[1]);
 		}
 	}
 
@@ -125,14 +125,14 @@ void fggSetupShaders(const FggVkCore core, const char* vertexspv, const char* fr
 void fggCreateShaderModule(const VkDevice device, const char* input, VkShaderModule* shaderModule) {
 	
 	uint32_t codeSize = 0;
-	const char* shaderCode = fggReadCode(input, &codeSize, "rb");
+	const char* shader_code = fggReadCode(input, &codeSize, "rb");
 
 	VkShaderModuleCreateInfo shaderModuleCreateInfo = {
 		VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,	//sType;
 		NULL,											//pNext;
 		0,												//flags;
 		codeSize,										//codeSize;
-		(const uint32_t*)(shaderCode)					//pCode;
+		(const uint32_t*)(shader_code)					//pCode;
 	};
 
 #ifndef NDEBUG
@@ -144,9 +144,10 @@ void fggCreateShaderModule(const VkDevice device, const char* input, VkShaderMod
 		"error creating shader module"
 	);
 
+	free(shader_code);
 }
 
-void fggCreateShaderStage(const VkDevice device, const VkShaderModule shModule, const char *shaderPath, const VkShaderStageFlagBits stageFlag, VkPipelineShaderStageCreateInfo* pShInfo) {
+void fggCreateShaderStage(const VkDevice device, const VkShaderModule shModule, const VkShaderStageFlagBits stageFlag, VkPipelineShaderStageCreateInfo* pShInfo) {
 	
 	VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {
 		VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,	//sType;
@@ -422,6 +423,8 @@ void fggSetupGraphicsPipeline(const FggVkCore core, const FggVkFixedStates fStat
 		vkCreateGraphicsPipelines(core.device, 0, 1, &graphicsPipelineCreateInfo, NULL, &pPipeData->pipeline),
 		"error creating graphics pipeline"
 	);
+
+	
 }
 
 void fggDestroyPipeline(const FggVkCore core, FggVkPipelineData* pPipeData) {
@@ -432,8 +435,7 @@ void fggDestroyPipeline(const FggVkCore core, FggVkPipelineData* pPipeData) {
 	vkDestroyPipeline(core.device, pPipeData->pipeline, NULL);
 	vkDestroyShaderModule(core.device, pPipeData->pShaderModules[0], NULL);
 	vkDestroyShaderModule(core.device, pPipeData->pShaderModules[1], NULL);
-
+	
 	free(pPipeData->pShaderStages);
 	free(pPipeData->pShaderModules);
-
 }

@@ -13,25 +13,21 @@ const char* fggReadCode(const char* path, uint32_t* p_code_size, const char* mod
 
 	FILE* stream = fopen(path, mode);
 
-	if (stream == NULL) {
-		return (void*)(0);
-	}
+	if (stream == NULL) { return NULL; }
 
 	fseek(stream, 0, SEEK_END);
 	uint32_t code_size = ftell(stream);
 	fseek(stream, 0, SEEK_SET);
 
 	char* code = (char*)malloc(code_size);
+	if (code == NULL) { free(stream); return NULL; }
 
-	if (stream != NULL && code != NULL) {
-		fread(code, code_size, 1, stream);
-		(p_code_size != NULL) && (*p_code_size = code_size);
-		return code;
-	}
+	fread(code, code_size, 1, stream);
+	(p_code_size != NULL) && (*p_code_size = code_size);
 
-	free(code);
+	//free(stream);
 
-	return (void*)(0);
+	return code;
 }
 
 #ifndef NDEBUG

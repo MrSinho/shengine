@@ -40,4 +40,9 @@ typedef struct FggMaterialInfo {
 
 FGG_ECS_MAKE_COMPONENT_DEFINITIONS(FggMaterialInfo, 5)
 
+static void fggMaterialInfosRelease(uint32_t* p_mat_info_count, FggMaterialInfo** pp_mat_infos) {
+	free(*pp_mat_infos); *p_mat_info_count = 0;
+}
+
+
 #endif // FGG_MATERIAL_INFO_H

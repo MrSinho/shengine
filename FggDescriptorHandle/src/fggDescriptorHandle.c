@@ -137,6 +137,7 @@ void fggLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, FggMater
     }
     (p_mat_infos != NULL) && (*pp_mat_infos = p_mat_infos);
     (p_mat_info_count != NULL) && (*p_mat_info_count = mat_info_count);
+    free(buffer);
 }
 
 void fggLoadScene(const char* path, const FggMaterialInfo* p_mat_infos, FggScene* p_scene) {

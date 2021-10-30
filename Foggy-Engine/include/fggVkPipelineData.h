@@ -87,7 +87,7 @@ extern void fggSetFixedStates(const FggVkCore core, FggFixedStateFlags flags, Fg
  
 extern void fggCreateShaderModule(const VkDevice device, const char* input, VkShaderModule* shaderModule);
 
-extern void fggCreateShaderStage(const VkDevice device, const VkShaderModule shModule, const char* shaderPath, const VkShaderStageFlagBits stageFlag, VkPipelineShaderStageCreateInfo* pShInfo);
+extern void fggCreateShaderStage(const VkDevice device, const VkShaderModule shModule, const VkShaderStageFlagBits stageFlag, VkPipelineShaderStageCreateInfo* pShInfo);
 
 
 

@@ -55,7 +55,7 @@ typedef struct FggVkCore {
 
 
 
-extern void fggCreateWindowSurface(const VkInstance instance, GLFWwindow* window, VkSurfaceKHR* surface);
+extern void fggCreateWindowSurface(FggVkCore* p_core);
 
 extern VkSurfaceCapabilitiesKHR fggGetSurfaceCapabilities(const VkPhysicalDevice pDevice, const VkSurfaceKHR surface);
 
@@ -63,11 +63,11 @@ extern VkSurfaceCapabilitiesKHR fggGetSurfaceCapabilities(const VkPhysicalDevice
 
 extern FggVkCore fggVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char* title);
 
-extern void fggInitVulkan(FggVkCore* core);
+extern void fggInitVulkan(FggVkCore* p_core);
 
-extern void fggCreateInstance(FggVkCore* core);
+extern void fggCreateInstance(FggVkCore* p_core);
 
-extern void fggSetPhysicalDevice(FggVkCore* core);
+extern void fggSetPhysicalDevice(FggVkCore* p_core);
 
 extern int CheckPhysicalDeviceExtensions(const FggVkCore core, const VkPhysicalDevice pDevice);
 
@@ -75,23 +75,23 @@ extern int CheckPhysicalDeviceExtensions(const FggVkCore core, const VkPhysicalD
 
 extern VkDeviceQueueCreateInfo fggSetQueueInfo(const uint32_t queueFamilyIndex, const float* priority);
 
-extern void fggSetLogicalDevice(FggVkCore* core);
+extern void fggSetLogicalDevice(FggVkCore* p_core);
 
-extern void fggGetGraphicsQueue(FggVkCore* core);
-
-
-
-extern void fggCreateSwapchain(FggVkCore *core);
-
-extern void fggGetSwapchainImages(FggVkCore *core);
-
-extern void fggCreateSwapchainImageViews(FggVkCore *core);
-
-extern void fggInitSwapchainData(FggVkCore *core);
+extern void fggGetGraphicsQueue(FggVkCore* p_core);
 
 
 
-extern void fggInitCommands(FggVkCore *core);
+extern void fggCreateSwapchain(FggVkCore* p_core);
+
+extern void fggGetSwapchainImages(FggVkCore* p_core);
+
+extern void fggCreateSwapchainImageViews(FggVkCore* p_core);
+
+extern void fggInitSwapchainData(FggVkCore* p_core);
+
+
+
+extern void fggInitCommands(FggVkCore* p_core);
 
 extern VkCommandPool fggCreateCmdPool(const VkDevice device, uint32_t queueFamilyIndex);
 
@@ -99,16 +99,22 @@ extern VkCommandBuffer fggCreateCmdBuffer(const VkDevice device, const VkCommand
 
 
 
-extern void fggCreateRenderPass(FggVkCore *core);
+extern void fggCreateRenderPass(FggVkCore* p_core);
 
-extern void fggSetFramebuffers(FggVkCore *core);
+extern void fggSetFramebuffers(FggVkCore* p_core);
 
-extern void fggSetSyncObjects(FggVkCore *core);
+extern void fggSetSyncObjects(FggVkCore* p_core);
 
-extern void fggSurfaceRelease(FggVkCore* core);
+extern void fggSwapchainRelease(FggVkCore* p_core);
 
-extern void fggCmdRelease(FggVkCore* core);
+extern void fggSurfaceRelease(FggVkCore* p_core);
 
-extern void fggCoreRelease(FggVkCore* core);
+extern void fggCmdRelease(FggVkCore* p_core);
+
+extern void fggRenderPassRelease(FggVkCore* p_core);
+
+extern void fggInstanceRelease(FggVkCore* p_core);
+
+extern void fggVulkanRelease(FggVkCore* p_core);
 
 #endif

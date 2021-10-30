@@ -1,16 +1,16 @@
 {
   "meshes": [
     {
-      "path": "../Assets/Meshes/stanfordHand.ply"
+      "path": "../Assets/Meshes/stanfordLucy.ply"
     },
     {
-      "path": "../Assets/Meshes/plane.ply"
-    }
+      "path": "../Assets/Meshes/diorama.ply"
+    },
   ],
   "entities": [
     {
       "transform": {
-      	"position": [0.0, 0.0, 2.0]
+      	"position": [0.0, 0.0, 2.5]
       },
       "camera": {
         "fov": 45,
@@ -21,27 +21,28 @@
     },
     {
       "mesh": {
+        "data_index": 1
+      },
+      "transform": {
+        "position": [ 0.0, -1.0, 0.0 ],
+        "rotation": [ 0.0, 0.0, 0.0],
+        "scale": [2.0, 2.0, 2.0]
+      },
+      "material": 1
+    },
+    {
+      "mesh": {
         "data_index": 0,
         "flags": "MESH_SETUP_STATIC_MESH"
       },
       "transform": {
-        "position": [ 0.0, 0.0, -8.0 ]
+        "position": [ 0.0, 0.05, 0.0 ],
+        "scale": [  0.7, 0.7, 0.7 ]
       },
       "identity": {
         "name": "rotator"
       },
       "material": 0
-    },
-    {
-      "mesh": {
-        "data_index": 1
-      },
-      "transform": {
-        "position": [ 0.0, 0.7, 0.0 ],
-        "rotation": [-45.0, 0.0, 0.0],
-        "scale": [0.3, 0.3, 0.3]
-      },
-      "material": 1
     }
   ]
 }

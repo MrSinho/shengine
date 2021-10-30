@@ -21,4 +21,17 @@
 
 #include "fggDescriptorHandle.h"
 
-#endif
+
+
+static void fggReloadMaterialInfos(const FggDescriptorHandle mat_info_descriptor, uint32_t* p_mat_info_count, FggMaterialInfo** pp_mat_infos) {
+	fggMaterialInfosRelease(p_mat_info_count, pp_mat_infos);
+	fggLoadMaterialInfos(mat_info_descriptor.path, p_mat_info_count, pp_mat_infos);
+}
+
+static void fggReloadScene(const FggVkCore core, const FggDescriptorHandle scene_descriptor, FggMaterialInfo* p_mat_infos, FggScene* p_scene) {
+	fggSceneRelease(core, p_scene);
+	fggLoadScene(scene_descriptor.path, p_mat_infos, p_scene);
+	fggSceneInit(core, p_scene);
+}
+
+#endif // FGG_API_H
