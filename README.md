@@ -4,7 +4,7 @@
 
 The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
-![test0](Saved/Pictures/Ive_been_to_Verdun.png)
+![test0](Saved/Pictures/coulomb.png)
 
 ## Current features (tested):
  - Entity Component System using [FggECS](https://github.com/MrSinho/FggECS) by MrSinho
@@ -20,11 +20,14 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Double/triple buffering
  - Textures
  - Shader system sucks
- - Scripting (native pls)
+ - Scripting (native preferred)
+ - Audio
+ - Import/export scene binaries
+ - Edit shortcuts when navigating in the window
 
 ## Prerequisites
 
-Make sure you've installed the vulkan sdk on your machine and the required development libraries for glfw on linux. 
+Make sure you've installed the vulkan sdk on your machine and the required development libraries for GLFW and Vulkan on Linux. 
 
 ```bash
 bash linuxPrerequisites.sh
@@ -37,13 +40,13 @@ bash linuxPrerequisites.sh
 ```bash
 git clone --recursive https://github.com/MrSinho/Foggy-Engine
 cd Foggy-Engine
-mkdir build && cd build
 ``` 
 
 ### Generate projects
 
 Use cmake:
 ```bash
+mkdir build && cd build
 cmake ..
 cmake --build .
 ```
