@@ -9,7 +9,6 @@ void updateBehaviour(const FggTime time, FggScene* scene) {
 		if (fggHasFggIdentity(scene, entity)) {
 			FggIdentity* identity = fggGetFggIdentity(scene, entity);
 			if (strcmp(identity->name, "rotator") == 0) {
-				// I already know it has a transform component
 				FggTransform* t = fggGetFggTransform(scene, entity);
 				t->rotation[1] -= 150.0f * time.delta_time;
 			}
