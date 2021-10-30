@@ -125,7 +125,7 @@ void fggSetupShaders(const FggVkCore core, const char* vertexspv, const char* fr
 void fggCreateShaderModule(const VkDevice device, const char* input, VkShaderModule* shaderModule) {
 	
 	uint32_t codeSize = 0;
-	const char* shader_code = fggReadCode(input, &codeSize, "rb");
+	char* shader_code = (char*)fggReadCode(input, &codeSize, "rb");
 
 	VkShaderModuleCreateInfo shaderModuleCreateInfo = {
 		VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,	//sType;
