@@ -21,16 +21,7 @@ int main() {
 	FggTime time = { 0 };
 	FggVkCore core = fggVkCoreInitPrerequisites(720, 480, "Foggy-Engine Editor");
 
-	fggCreateInstance(&core);
-	fggCreateWindowSurface(&core);
-	fggSetPhysicalDevice(&core);
-	fggSetLogicalDevice(&core);
-	fggGetGraphicsQueue(&core);
-	fggInitSwapchainData(&core);
-	fggCreateRenderPass(&core);
-	fggSetFramebuffers(&core);
-	fggSetSyncObjects(&core);
-	fggInitCommands(&core);
+	fggInitVulkan(&core);
 
 	FggDescriptorHandle mat_info_descriptor = { "../Assets/SceneDescriptors/materials.json" };
 	FggDescriptorHandle scene_descriptor = { "../Assets/SceneDescriptors/scene.json" };
