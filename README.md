@@ -1,6 +1,7 @@
 # Foggy-Engine
 
 ## Build status: 
+![Status_badge]](.ShCI/status.svg)
 
 The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
