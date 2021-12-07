@@ -7,7 +7,7 @@
 #include "shProjection.h"
 #include "shView.h"
 #include "shDrawLoop.h"
-#include "ShEuler.h"
+#include "shEuler.h"
 #include "shInput.h"
 
 #include <string.h>
