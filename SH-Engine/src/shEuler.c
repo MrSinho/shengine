@@ -1,4 +1,4 @@
-#include "ShEuler.h"
+#include "shEuler.h"
 
 #include <math.h>
 
