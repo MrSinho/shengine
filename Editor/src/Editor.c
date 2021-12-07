@@ -1,15 +1,15 @@
-#include <FGG_API.h>
+#include <SH_API.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-void updateBehaviour(const FggTime time, FggScene* scene) {
+void updateBehaviour(const ShTime time, ShScene* scene) {
 	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
-		if (fggHasFggIdentity(scene, entity)) {
-			FggIdentity* identity = fggGetFggIdentity(scene, entity);
+		if (shHasShIdentity(scene, entity)) {
+			ShIdentity* identity = shGetShIdentity(scene, entity);
 			if (strcmp(identity->name, "rotator") == 0) {
-				FggTransform* t = fggGetFggTransform(scene, entity);
+				ShTransform* t = shGetShTransform(scene, entity);
 				t->rotation[1] -= 150.0f * time.delta_time;
 			}
 		}
@@ -18,52 +18,52 @@ void updateBehaviour(const FggTime time, FggScene* scene) {
 
 int main() {
 
-	FggTime time = { 0 };
-	FggVkCore core = fggVkCoreInitPrerequisites(720, 480, "Foggy-Engine Editor");
+	ShTime time = { 0 };
+	ShVkCore core = shVkCoreInitPrerequisites(720, 480, "SH-Engine Editor");
 
-	fggInitVulkan(&core);
+	shInitVulkan(&core);
 
-	FggDescriptorHandle mat_info_descriptor = { "../Assets/SceneDescriptors/materials.json" };
-	FggDescriptorHandle scene_descriptor = { "../Assets/SceneDescriptors/scene.json" };
-	fggInitDescriptor(&mat_info_descriptor);
-	fggInitDescriptor(&scene_descriptor);
+	ShDescriptorHandle mat_info_descriptor = { "../Assets/SceneDescriptors/materials.json" };
+	ShDescriptorHandle scene_descriptor = { "../Assets/SceneDescriptors/scene.json" };
+	shInitDescriptor(&mat_info_descriptor);
+	shInitDescriptor(&scene_descriptor);
 
 	uint32_t mat_info_count = 0;
-	FggMaterialInfo* p_mat_infos = NULL;
-	fggLoadMaterialInfos(mat_info_descriptor.path, &mat_info_count, &p_mat_infos);
+	ShMaterialInfo* p_mat_infos = NULL;
+	shLoadMaterialInfos(mat_info_descriptor.path, &mat_info_count, &p_mat_infos);
 
-	FggScene scene = { 0 };
-	fggCreateScene(&scene);
-	fggLoadScene(scene_descriptor.path, p_mat_infos, &scene);
+	ShScene scene = { 0 };
+	shCreateScene(&scene);
+	shLoadScene(scene_descriptor.path, p_mat_infos, &scene);
 	
-	fggSceneInit(core, &scene);
-	while (fggIsWindowActive(core.window.window)) {
+	shSceneInit(core, &scene);
+	while (shIsWindowActive(core.window.window)) {
 
-		fggPollEvents();
-		fggGetTime(&time);
-		fggFrameReset(core);
-		fggGetCursorPosition(core.window, &core.window.cursor_pos_x, &core.window.cursor_pos_y);
-		if (fggListenDescriptor(&mat_info_descriptor)) {
-			fggReloadMaterialInfos(mat_info_descriptor, &mat_info_count, &p_mat_infos);
-			fggReloadScene(core, scene_descriptor, p_mat_infos, &scene);
+		shPollEvents();
+		shGetTime(&time);
+		shFrameReset(core);
+		shGetCursorPosition(core.window, &core.window.cursor_pos_x, &core.window.cursor_pos_y);
+		if (shListenDescriptor(&mat_info_descriptor)) {
+			shReloadMaterialInfos(mat_info_descriptor, &mat_info_count, &p_mat_infos);
+			shReloadScene(core, scene_descriptor, p_mat_infos, &scene);
 		}
-		if (fggListenDescriptor(&scene_descriptor)) {
-			fggReloadScene(core, scene_descriptor, p_mat_infos, &scene);
+		if (shListenDescriptor(&scene_descriptor)) {
+			shReloadScene(core, scene_descriptor, p_mat_infos, &scene);
 		}
 
 		uint32_t image_index = 0;
-		fggFrameBegin(core, &image_index);
+		shFrameBegin(core, &image_index);
 		
-		fggSceneUpdate(core, time, &scene);
+		shSceneUpdate(core, time, &scene);
 		updateBehaviour(time, &scene);
 
-		fggFrameEnd(core, image_index);
+		shFrameEnd(core, image_index);
 	}
 
-	fggMaterialInfosRelease(&mat_info_count, &p_mat_infos);
-	fggSceneRelease(core, &scene);
+	shMaterialInfosRelease(&mat_info_count, &p_mat_infos);
+	shSceneRelease(core, &scene);
 
-	fggVulkanRelease(&core);
+	shVulkanRelease(&core);
 
 	return 0;
 }

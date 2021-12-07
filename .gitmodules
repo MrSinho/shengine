@@ -7,9 +7,9 @@
 [submodule "PlyImporter"]
 	path = Externals/PlyImporter
 	url = https://github.com/MrSinho/PlyImporter.git
-[submodule "Externals/FggECS"]
-	path = Externals/FggECS
-	url = https://github.com/MrSinho/FggECS
+[submodule "Externals/ShECS"]
+	path = Externals/ShECS
+	url = https://github.com/MrSinho/ShECS.git
 [submodule "Externals/json-c"]
 	path = Externals/json-c
 	url = https://github.com/json-c/json-c

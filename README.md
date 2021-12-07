@@ -1,4 +1,4 @@
-# Foggy-Engine
+# SH-Engine
 
 ## Build status: 
 ![Status_badge](.ShCI/status.svg)
@@ -8,7 +8,7 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 ![test0](Saved/Pictures/coulomb.png)
 
 ## Current features (tested):
- - Entity Component System using [FggECS](https://github.com/MrSinho/FggECS) by MrSinho
+ - Entity Component System using [ShECS](https://github.com/MrSinho/ShECS) by MrSinho
  - Material creation and usage
  - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter) by MrSinho
  - Indexed and not indexed drawing
@@ -39,8 +39,8 @@ bash linuxPrerequisites.sh
 ### Clone repository
 
 ```bash
-git clone --recursive https://github.com/MrSinho/Foggy-Engine
-cd Foggy-Engine
+git clone --recursive https://github.com/MrSinho/SH-Engine
+cd SH-Engine
 ``` 
 
 ### Generate projects
@@ -52,7 +52,7 @@ cmake ..
 cmake --build .
 ```
 
-In case your system does not support Vulkan 1.2, use the command `cmake -DFGG_USE_VULKAN_1_1=ON` or `cmake -DFGG_USE_VULKAN_1_0=ON` depending on the api version you're going to use.
+In case your system does not support Vulkan 1.2, use the command `cmake -DSH_USE_VULKAN_1_1=ON` or `cmake -DSH_USE_VULKAN_1_0=ON` depending on the api version you're going to use.
 
 ### Binaries and output
 

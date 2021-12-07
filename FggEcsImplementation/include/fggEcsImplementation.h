@@ -1,9 +1,0 @@
-#ifndef FGG_ECS_IMPLEMENTATION_H
-#define FGG_ECS_IMPLEMENTATION_H
-
-#define FGG_ECS_MAX_ENTITIES 128
-#define FGG_ECS_MAX_COMPONENTS 24
-
-#include "../../Externals/FggECS/FggECS/include/fggECS.h"
-
-#endif // FGG_ECS_IMPLEMENTATION

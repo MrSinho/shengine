@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
-set(PROJECT_NAME Foggy-Engine)
+set(PROJECT_NAME SH-Engine)
 project(${PROJECT_NAME} C)
 
 #SUBDIRECTORIES OPTIONS
@@ -17,56 +17,56 @@ add_subdirectory(Externals/json-c)
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)
 
-option(FGG_USE_VULKAN_1_0 OFF)
-if(FGG_USE_VULKAN_1_0)
-    add_definitions(-DFGG_USE_VULKAN_1_0)
-endif(FGG_USE_VULKAN_1_0)
+option(SH_USE_VULKAN_1_0 OFF)
+if(SH_USE_VULKAN_1_0)
+    add_definitions(-DSH_USE_VULKAN_1_0)
+endif(SH_USE_VULKAN_1_0)
 
-option(FGG_USE_VULKAN_1_1 OFF)
-if(FGG_USE_VULKAN_1_1)
-    add_definitions(-DFGG_USE_VULKAN_1_1)
-endif(FGG_USE_VULKAN_1_1)
+option(SH_USE_VULKAN_1_1 OFF)
+if(SH_USE_VULKAN_1_1)
+    add_definitions(-DSH_USE_VULKAN_1_1)
+endif(SH_USE_VULKAN_1_1)
 
-#FGGUTILITIES
-file(GLOB_RECURSE FGG_UTILITIES_SRC FggUtilities/src/*.c)
-add_library(FggUtilities STATIC ${FGG_UTILITIES_SRC})
-target_include_directories(FggUtilities PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/FggUtilities/include
+#SHUTILITIES
+file(GLOB_RECURSE SH_UTILITIES_SRC ShUtilities/src/*.c)
+add_library(ShUtilities STATIC ${SH_UTILITIES_SRC})
+target_include_directories(ShUtilities PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/ShUtilities/include
     ${Vulkan_INCLUDE_DIRS}
 )
-target_link_libraries(FggUtilities PUBLIC 
+target_link_libraries(ShUtilities PUBLIC 
     ${VULKAN_LIBRARIES}
 )
 
-#FGGDESCRIPTORHANDLE
-file(GLOB_RECURSE FGG_DESCRIPTOR_HANDLE_SRC FggDescriptorHandle/src/*.c)
-add_library(FggDescriptorHandle ${FGG_DESCRIPTOR_HANDLE_SRC})
-target_include_directories(FggDescriptorHandle PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/FggEcsImplementation/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/FggDescriptorHandle/include
+#SHDESCRIPTORHANDLE
+file(GLOB_RECURSE SH_DESCRIPTOR_HANDLE_SRC ShDescriptorHandle/src/*.c)
+add_library(ShDescriptorHandle ${SH_DESCRIPTOR_HANDLE_SRC})
+target_include_directories(ShDescriptorHandle PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/ShEcsImplementation/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/ShDescriptorHandle/include
 )
-target_link_libraries(FggDescriptorHandle PUBLIC 
-    FggUtilities
+target_link_libraries(ShDescriptorHandle PUBLIC 
+    ShUtilities
     json-c
     PlyImporter
 )
 
 #FOGGY-ENGINE
-file(GLOB_RECURSE FOGGY_ENGINE_SRC Foggy-Engine/src/*.c)
-add_library(Foggy-Engine STATIC ${FOGGY_ENGINE_SRC})
-target_include_directories(Foggy-Engine PUBLIC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/FggEcsImplementation/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/Externals/FggECS/FggECS/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/Foggy-Engine/include
+file(GLOB_RECURSE FOGGY_ENGINE_SRC SH-Engine/src/*.c)
+add_library(SH-Engine STATIC ${FOGGY_ENGINE_SRC})
+target_include_directories(SH-Engine PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/ShEcsImplementation/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/Externals/ShECS/ShECS/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/SH-Engine/include
     ${Vulkan_INCLUDE_DIRS}
 )
-target_link_libraries(Foggy-Engine PUBLIC
+target_link_libraries(SH-Engine PUBLIC
     glfw
     ${Vulkan_LIBRARIES}      
-    FggUtilities
+    ShUtilities
     cglm
     PlyImporter
-    FggDescriptorHandle
+    ShDescriptorHandle
 )
 
 #SHADERS
@@ -83,15 +83,15 @@ endif()
 file(GLOB_RECURSE EDITOR_SRC Editor/src/*.c)
 add_executable(Editor ${EDITOR_SRC})
 target_link_libraries(Editor PUBLIC 
-    Foggy-Engine
-    FggUtilities
+    SH-Engine
+    ShUtilities
 )
 target_include_directories(Editor PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Editor/include
 )
 
 #OUTPUT
-set_target_properties(Editor Foggy-Engine FggUtilities glfw cglm PROPERTIES
+set_target_properties(Editor SH-Engine ShUtilities glfw cglm PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
