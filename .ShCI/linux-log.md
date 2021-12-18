@@ -34,16 +34,16 @@ sudo apt install -y mesa-vulkan-drivers
 sudo apt install -y vulkan-utils
 
 sudo apt install -y libusb-dev
-Hit:1 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Hit:1 http://security.ubuntu.com/ubuntu focal-security InRelease
 Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
-Hit:3 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Hit:4 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Get:5 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
-Hit:6 http://archive.canonical.com/ubuntu focal InRelease
-Hit:7 http://security.ubuntu.com/ubuntu focal-security InRelease
-Ign:8 http://packages.linuxmint.com uma InRelease
+Hit:3 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Hit:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Get:6 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
+Ign:7 http://packages.linuxmint.com uma InRelease
+Hit:8 http://archive.canonical.com/ubuntu focal InRelease
 Hit:9 http://packages.linuxmint.com uma Release
-Err:5 https://packages.microsoft.com/repos/edge stable InRelease
+Err:6 https://packages.microsoft.com/repos/edge stable InRelease
   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EB3E94ADBE1229CF
 Reading package lists...
 Reading package lists...
@@ -76,7 +76,7 @@ Building dependency tree...
 Reading state information...
 libxi-dev is already the newest version (2:1.7.10-0ubuntu1).
 0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
-Executing: /tmp/apt-key-gpghome.jQ6iN9o5EU/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
+Executing: /tmp/apt-key-gpghome.cLMe5tnDTG/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
 You are about to add the following PPA:
  PLEASE READ: don't email me to report bugs, unless you are sure it's a packaging bug. Not only is email not a good tool for tracking bugs, it also excludes anybody else from tracking or working on the issue. Please read the section "Debugging and reporting problems" below.
 
@@ -162,16 +162,16 @@ $ sudo ppa-purge ppa:oibaf/graphics-drivers
 === Donations ===
 Some people asked me if I can accept donations to support this work. I don't, but if you have some spare money I would be happy if you could do a donation to a charity of your choice (for the poors, animals, whatever else you may think it might need it). Then feel free to send me a note about it!
  More info: https://launchpad.net/~oibaf/+archive/ubuntu/graphics-drivers
-Hit:1 http://security.ubuntu.com/ubuntu focal-security InRelease
-Hit:2 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
-Hit:3 http://archive.ubuntu.com/ubuntu focal InRelease
-Hit:4 http://archive.canonical.com/ubuntu focal InRelease
-Hit:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Hit:6 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Get:7 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
+Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
+Hit:2 http://archive.canonical.com/ubuntu focal InRelease
+Hit:3 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Hit:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Get:6 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
+Hit:7 http://security.ubuntu.com/ubuntu focal-security InRelease
 Ign:8 http://packages.linuxmint.com uma InRelease
 Hit:9 http://packages.linuxmint.com uma Release
-Err:7 https://packages.microsoft.com/repos/edge stable InRelease
+Err:6 https://packages.microsoft.com/repos/edge stable InRelease
   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EB3E94ADBE1229CF
 Reading package lists...
 Reading package lists...
