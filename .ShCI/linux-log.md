@@ -2,13 +2,11 @@
 ![linux_badge](linux-status.svg)
 ## [Linux/Unix build logs:](https://github.com/MrSinho/ShCI)
   
-```bash
-$$shci call$$:
+```bash$$shci call$$:
 apt install -y wget gcc cmake make gdb
 ```
 
-```bash
-$$shci call$$:
+```bash$$shci call$$:
 sudo apt update -y
 sudo apt install -y libx11-dev
 sudo apt install -y doxygen
@@ -28,8 +26,7 @@ sudo apt install -y vulkan-utils
 sudo apt install -y libusb-dev
 ```
 
-```bash
-$$shci call$$:
+```bash$$shci call$$:
 cd SH-Engine && mkdir build && cd build && cmake .. && cmake --build .
 -- The C compiler identification is GNU 11.2.0
 -- Detecting C compiler ABI info
