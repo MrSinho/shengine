@@ -2,8 +2,8 @@
 
 ## [Build status](https://github.com/MrSinho/PlyImporter/.ShCI)
 
-[![linux_badge](.ShCI/linux-status.svg)](https://github.com/MrSinho/Sh-Engine/.ShCI/linux-log.md)
-[![windows_badge](.ShCI/windows-status.svg)](https://github.com/MrSinho/Sh-Engine/.ShCI/windows-log.md)
+[![linux_badge](.ShCI/linux-status.svg)](https://github.com/MrSinho/Sh-Engine/tree/main/.ShCI/linux-log.md)
+[![windows_badge](.ShCI/windows-status.svg)](https://github.com/MrSinho/Sh-Engine/tree/main/.ShCI/windows-log.md)
 
 The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
