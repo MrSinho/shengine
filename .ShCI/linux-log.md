@@ -12,7 +12,7 @@ gcc is already the newest version (4:9.3.0-1ubuntu2).
 make is already the newest version (4.2.1-1.2).
 gdb is already the newest version (9.2-0ubuntu1~20.04).
 wget is already the newest version (1.20.3-1ubuntu2).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
 
 ```
 
@@ -34,49 +34,59 @@ sudo apt install -y mesa-vulkan-drivers
 sudo apt install -y vulkan-utils
 
 sudo apt install -y libusb-dev
-Hit:1 http://security.ubuntu.com/ubuntu focal-security InRelease
+Get:1 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease [23,9 kB]
 Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
-Hit:3 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
-Hit:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Hit:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Get:3 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+Get:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+Hit:5 http://archive.canonical.com/ubuntu focal InRelease
 Get:6 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
 Ign:7 http://packages.linuxmint.com uma InRelease
-Hit:8 http://archive.canonical.com/ubuntu focal InRelease
+Get:8 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
 Hit:9 http://packages.linuxmint.com uma Release
+Get:10 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal/main amd64 Packages [15,7 kB]
+Get:11 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal/main i386 Packages [14,6 kB]
 Err:6 https://packages.microsoft.com/repos/edge stable InRelease
   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EB3E94ADBE1229CF
+Get:12 http://security.ubuntu.com/ubuntu focal-security/main amd64 DEP-11 Metadata [35,7 kB]
+Get:13 http://security.ubuntu.com/ubuntu focal-security/universe amd64 DEP-11 Metadata [66,0 kB]
+Get:14 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 DEP-11 Metadata [2.464 B]
+Get:15 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 DEP-11 Metadata [277 kB]
+Get:16 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 DEP-11 Metadata [363 kB]
+Get:17 http://archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 DEP-11 Metadata [944 B]
+Get:18 http://archive.ubuntu.com/ubuntu focal-backports/main amd64 DEP-11 Metadata [8.004 B]
+Get:19 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 DEP-11 Metadata [11,3 kB]
 Reading package lists...
 Reading package lists...
 Building dependency tree...
 Reading state information...
 libx11-dev is already the newest version (2:1.6.9-2ubuntu1.2).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
 Reading package lists...
 Building dependency tree...
 Reading state information...
 doxygen is already the newest version (1.8.17-0ubuntu2).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
 Reading package lists...
 Building dependency tree...
 Reading state information...
 libxrandr-dev is already the newest version (2:1.5.2-0ubuntu1).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
 Reading package lists...
 Building dependency tree...
 Reading state information...
 libxinerama-dev is already the newest version (2:1.1.4-2).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
 Reading package lists...
 Building dependency tree...
 Reading state information...
 libxcursor-dev is already the newest version (1:1.2.0-2).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
 Reading package lists...
 Building dependency tree...
 Reading state information...
 libxi-dev is already the newest version (2:1.7.10-0ubuntu1).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
-Executing: /tmp/apt-key-gpghome.cLMe5tnDTG/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
+0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
+Executing: /tmp/apt-key-gpghome.jlSq8KgPeZ/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
 You are about to add the following PPA:
  PLEASE READ: don't email me to report bugs, unless you are sure it's a packaging bug. Not only is email not a good tool for tracking bugs, it also excludes anybody else from tracking or working on the issue. Please read the section "Debugging and reporting problems" below.
 
@@ -162,33 +172,43 @@ $ sudo ppa-purge ppa:oibaf/graphics-drivers
 === Donations ===
 Some people asked me if I can accept donations to support this work. I don't, but if you have some spare money I would be happy if you could do a donation to a charity of your choice (for the poors, animals, whatever else you may think it might need it). Then feel free to send me a note about it!
  More info: https://launchpad.net/~oibaf/+archive/ubuntu/graphics-drivers
-Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
-Hit:2 http://archive.canonical.com/ubuntu focal InRelease
-Hit:3 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
-Hit:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Hit:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Get:6 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
-Hit:7 http://security.ubuntu.com/ubuntu focal-security InRelease
+Hit:1 http://archive.canonical.com/ubuntu focal InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
+Hit:3 http://security.ubuntu.com/ubuntu focal-security InRelease
+Hit:4 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Hit:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Hit:6 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Get:7 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
 Ign:8 http://packages.linuxmint.com uma InRelease
 Hit:9 http://packages.linuxmint.com uma Release
-Err:6 https://packages.microsoft.com/repos/edge stable InRelease
+Err:7 https://packages.microsoft.com/repos/edge stable InRelease
   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EB3E94ADBE1229CF
 Reading package lists...
 Reading package lists...
 Building dependency tree...
 Reading state information...
 libvulkan-dev is already the newest version (1.2.131.2-1).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
 Reading package lists...
 Building dependency tree...
 Reading state information...
 libvulkan1 is already the newest version (1.2.131.2-1).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
 Reading package lists...
 Building dependency tree...
 Reading state information...
-mesa-vulkan-drivers is already the newest version (22.0~git2112180600.eebb2d~oibaf~f).
-0 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+The following packages will be upgraded:
+  mesa-vulkan-drivers
+1 upgraded, 0 newly installed, 0 to remove and 21 not upgraded.
+Need to get 5.051 kB of archives.
+After this operation, 4.096 B of additional disk space will be used.
+Get:1 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal/main amd64 mesa-vulkan-drivers amd64 22.0~git2112220600.0bc5e8~oibaf~f [5.051 kB]
+Fetched 5.051 kB in 2s (3.065 kB/s)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 325724 files and directories currently installed.)
+Preparing to unpack .../mesa-vulkan-drivers_22.0~git2112220600.0bc5e8~oibaf~f_amd64.deb ...
+Unpacking mesa-vulkan-drivers:amd64 (22.0~git2112220600.0bc5e8~oibaf~f) over (22.0~git2112180600.eebb2d~oibaf~f) ...
+Setting up mesa-vulkan-drivers:amd64 (22.0~git2112220600.0bc5e8~oibaf~f) ...
+Processing triggers for libc-bin (2.31-0ubuntu9.2) ...
 Reading package lists...
 Building dependency tree...
 Reading state information...
