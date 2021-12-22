@@ -1,7 +1,7 @@
 # SH-Engine
 ![windows_badge](windows-status.svg)
 ## [Windows build logs:](https://github.com/MrSinho/ShCI)
-  
+  `Build ran for 112.39s`
 ```bash $shci call$
 choco install -y curl mingw cmake
 Chocolatey v0.11.2
@@ -25,6 +25,10 @@ Warnings:
  Use --force to reinstall, specify a version to install, or try upgrade.
  - mingw - mingw v11.2.0.07112021 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
+
+Enjoy using Chocolatey? Explore more amazing features to take your
+experience to the next level at
+ https://chocolatey.org/compare
 
 ```
 
@@ -53,7 +57,7 @@ cd SH-Engine && mkdir build && cd build && cmake -G"MinGW Makefiles" .. && mingw
 -- Setting build type to 'Release' as none was specified.
 -- Looking for sys/resource.h
 -- Looking for sys/resource.h - not found
--- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/Debug/SH-Engine/build/Externals/json-c/apps_config.h
+-- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/SH-Engine/build/Externals/json-c/apps_config.h
 -- Looking for fcntl.h
 -- Looking for fcntl.h - found
 -- Looking for inttypes.h
@@ -162,8 +166,8 @@ cd SH-Engine && mkdir build && cd build && cmake -G"MinGW Makefiles" .. && mingw
 -- Performing Test HAVE_ATOMIC_BUILTINS - Success
 -- Performing Test HAVE___THREAD
 -- Performing Test HAVE___THREAD - Success
--- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/Debug/SH-Engine/build/Externals/json-c/config.h
--- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/Debug/SH-Engine/build/Externals/json-c/json_config.h
+-- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/SH-Engine/build/Externals/json-c/config.h
+-- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/SH-Engine/build/Externals/json-c/json_config.h
 -- Performing Test REENTRANT_WORKS
 -- Performing Test REENTRANT_WORKS - Success
 -- Performing Test BSYMBOLIC_WORKS
@@ -171,13 +175,13 @@ cd SH-Engine && mkdir build && cd build && cmake -G"MinGW Makefiles" .. && mingw
 -- Performing Test VERSION_SCRIPT_WORKS
 -- Performing Test VERSION_SCRIPT_WORKS - Success
 -- Found Doxygen: C:/ProgramData/chocolatey/bin/doxygen.exe (found version "1.9.1") found components: doxygen missing components: dot
--- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/Debug/SH-Engine/build/Externals/json-c/doc/Doxyfile
+-- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/SH-Engine/build/Externals/json-c/doc/Doxyfile
 -- Found Vulkan: C:/VulkanSDK/1.2.182.0/Lib32/vulkan-1.lib  
 -- looking for glslc
 -- found glslc
 -- Configuring done
 -- Generating done
--- Build files have been written to: C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/Debug/SH-Engine/build
+-- Build files have been written to: C:/Users/sino3/Desktop/GitHub/ShCI-implementation/bin/SH-Engine/build
 [  1%] Building C object CMakeFiles/ShUtilities.dir/ShUtilities/src/shUtilities.c.obj
 [  2%] Linking C static library ..\bin\libShUtilities.a
 [  2%] Built target ShUtilities
