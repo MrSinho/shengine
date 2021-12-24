@@ -13,6 +13,7 @@ typedef struct ShCamera {
 	float	fov;
 	float	nc;
 	float	fc;
+	float 	speed;
 	float	projection[4][4];
 	float	view[4][4];
 

@@ -17,13 +17,12 @@
 #include <stdio.h>
 #endif
 
-#include <json.h>
-
 #include <PlyImporter.h>
 
 #ifdef _MSC_VER
-#pragma warning ( disable : 4996)
+#pragma warning (disable: 26451 6386)
 #endif // _MSC_VER
+#include <json.h>
 
 void shGetFileStats(const char* path, ShFileStats* stats) {
     stat(path, stats);
@@ -104,7 +103,7 @@ void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMateria
     if (compile_shaders > 0) {
         for (uint32_t i = 0; i < shader_source_count; i += 2) {
             const char* shader_source = json_object_get_string(json_object_array_get_idx(json_shader_sources, i));
-            const char* bin = json_object_get_string(json_object_array_get_idx(json_shader_sources, i + 1));
+            const char* bin = json_object_get_string(json_object_array_get_idx(json_shader_sources, (size_t)i + 1));
             shCompileGLSLShader(shader_source, bin);
         }
     }
@@ -235,6 +234,7 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
                 (float)json_object_get_double(json_object_object_get(json_camera, "fov")),
                 (float)json_object_get_double(json_object_object_get(json_camera, "nc")),
                 (float)json_object_get_double(json_object_object_get(json_camera, "fc")),
+                (float)json_object_get_double(json_object_object_get(json_camera, "speed")),
                 { 0 },
                 { 0 },
                 0

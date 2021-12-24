@@ -49,6 +49,7 @@ void shSceneInit(const ShVkCore core, ShScene* scene) {
 
 		if (shHasShTransform(scene, entity)) {
 			ShTransform* t = shGetShTransform(scene, entity);
+			t->position[1] *= -1.0f;
 		}
 	}
 
@@ -82,30 +83,39 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 					vec3 displacement = { 0.0f, 0.0f, 0.0f };
 					if (shIsKeyPressed(core.window, KEY_W)) {
 						glm_vec3_copy(t->front, displacement);
+						displacement[0] *= camera.speed;
+						displacement[1] *= camera.speed;
+						displacement[2] *= camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_A)) {
 						glm_vec3_copy(t->left, displacement);
+						displacement[0] *= camera.speed;
+						displacement[1] *= camera.speed;
+						displacement[2] *= camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_S)) {
 						glm_vec3_copy(t->front, displacement);
-						displacement[0] *= -1.0f;
-						displacement[1] *= -1.0f;
-						displacement[2] *= -1.0f;
+						displacement[0] *= -1.0f * camera.speed;
+						displacement[1] *= -1.0f * camera.speed;
+						displacement[2] *= -1.0f * camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_D)) {
 						glm_vec3_copy(t->left, displacement);
-						displacement[0] *= -1.0f;
-						displacement[1] *= -1.0f;
-						displacement[2] *= -1.0f;
+						displacement[0] *= -1.0f * camera.speed;
+						displacement[1] *= -1.0f * camera.speed;
+						displacement[2] *= -1.0f * camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_E)) {
 						glm_vec3_copy(t->up, displacement);
-						displacement[0] *= -1.0f;
-						displacement[1] *= -1.0f;
-						displacement[2] *= -1.0f;
+						displacement[0] *= -1.0f * camera.speed;
+						displacement[1] *= -1.0f * camera.speed;
+						displacement[2] *= -1.0f * camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_Q)) {
 						glm_vec3_copy(t->up, displacement);
+						displacement[0] *= camera.speed;
+						displacement[1] *= camera.speed;
+						displacement[2] *= camera.speed;
 					}
 					displacement[0] *= 5.0f * time.delta_time;
 					displacement[1] *= 5.0f * time.delta_time;

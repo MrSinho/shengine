@@ -1,15 +1,15 @@
 {
   "auto_compile_shaders": false,
-  "shader_sources": [ 
-    "../Shaders/src/Mesh.vert", "../Shaders/bin/Mesh.vert.spv",
-    "../Shaders/src/Mesh.frag", "../Shaders/bin/Mesh.frag.spv",
-    "../Shaders/src/Coulomb.vert", "../Shaders/bin/Coulomb.vert.spv",
-    "../Shaders/src/Coulomb.frag", "../Shaders/bin/Coulomb.frag.spv"
+  "shader_sources": [
+    "../Assets/Shaders/src/Mesh.vert", "../Assets/Shaders/bin/Mesh.vert.spv",
+    "../Assets/Shaders/src/Mesh.frag", "../Assets/Shaders/bin/Mesh.frag.spv",
+    "../Assets/Shaders/src/Coulomb.vert", "../Assets/Shaders/bin/Coulomb.vert.spv",
+    "../Assets/Shaders/src/Coulomb.frag", "../Assets/Shaders/bin/Coulomb.frag.spv"
   ],
   "materials": [
     {
-      "vertex_shader": "../Shaders/bin/Mesh.vert.spv",
-      "fragment_shader": "../Shaders/bin/Mesh.frag.spv",
+      "vertex_shader": "../Assets/Shaders/bin/Mesh.vert.spv",
+      "fragment_shader": "../Assets/Shaders/bin/Mesh.frag.spv",
       "uniform_size": 64,
       "uniform_stage": "SHADER_STAGE_VERTEX",
       "push_constants_size": 128,
@@ -22,8 +22,8 @@
       ]
     },
     {
-      "vertex_shader": "../Shaders/bin/Coulomb.vert.spv",
-      "fragment_shader": "../Shaders/bin/Coulomb.frag.spv",
+      "vertex_shader": "../Assets/Shaders/bin/Coulomb.vert.spv",
+      "fragment_shader": "../Assets/Shaders/bin/Coulomb.frag.spv",
       "uniform_size": 64,
       "uniform_stage": "SHADER_STAGE_VERTEX",
       "push_constants_size": 128,

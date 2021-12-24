@@ -3,14 +3,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ShPhysics.h>
 
-void updateBehaviour(const ShTime time, ShScene* scene) {
+//void updateBehaviour(const ShTime time, ShScene* scene) {
+//	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
+//		if (shHasShIdentity(scene, entity)) {
+//			ShIdentity* identity = shGetShIdentity(scene, entity);
+//			if (strcmp(identity->name, "rotator") == 0) {
+//				ShTransform* t = shGetShTransform(scene, entity);
+//				t->rotation[1] -= 150.0f * time.delta_time;
+//			}
+//		}
+//	}
+//}
+
+void EarthMoon(const float delta_time, ShDynamicsHandle* earth, ShDynamicsHandle* moon, ShScene* scene) {
 	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
 		if (shHasShIdentity(scene, entity)) {
 			ShIdentity* identity = shGetShIdentity(scene, entity);
-			if (strcmp(identity->name, "rotator") == 0) {
+			shGravitationalForce(delta_time, earth, moon);
+			if (strcmp(identity->name, "earth") == 0) {
 				ShTransform* t = shGetShTransform(scene, entity);
-				t->rotation[1] -= 150.0f * time.delta_time;
+				memcpy(t->position, earth->position, sizeof(shvec3));
+			}
+			else if (strcmp(identity->name, "moon") == 0) {
+				ShTransform* t = shGetShTransform(scene, entity);
+				memcpy(t->position, moon->position, sizeof(shvec3));
 			}
 		}
 	}
@@ -37,6 +55,25 @@ int main() {
 	shLoadScene(scene_descriptor.path, p_mat_infos, &scene);
 	
 	shSceneInit(core, &scene);
+
+	ShDynamicsHandle earth = { 0 };
+	earth.mass = 597.0f;
+	shvec3 pos0 = { 0.0f, 0.0f, 0.0f };
+	shDynamicsSetPosition(pos0, &earth);
+
+	ShDynamicsHandle moon = { 0 };
+	moon.mass = 7.34f;
+	shvec3 pos1 = { 0.0f, 0.0f,-384.0f };
+	shDynamicsSetPosition(pos1, &moon);
+
+	//for (;;) {
+	//	puts("EARTH");
+	//	shPrintShDynamics(&earth);
+	//	puts("MOON");
+	//	shPrintShDynamics(&moon);
+	//}
+
+
 	while (shIsWindowActive(core.window.window)) {
 
 		shPollEvents();
@@ -49,13 +86,15 @@ int main() {
 		}
 		if (shListenDescriptor(&scene_descriptor)) {
 			shReloadScene(core, scene_descriptor, p_mat_infos, &scene);
+			shDynamicsSetPosition(pos0, &earth);
+			shDynamicsSetPosition(pos1, &moon);
 		}
 
 		uint32_t image_index = 0;
 		shFrameBegin(core, &image_index);
 		
 		shSceneUpdate(core, time, &scene);
-		updateBehaviour(time, &scene);
+		EarthMoon(time.delta_time*DEC(1.0E5), &earth, &moon, &scene);
 
 		shFrameEnd(core, image_index);
 	}

@@ -37,6 +37,6 @@ void main(){
         fieldIntensity += intensity;
     }
 
-    fragColor = vec4(fieldIntensity, 1.0f);   
-    //fragColor = fragPosition;   
+    fragColor = vec4(fieldIntensity, 1.0f);
+    //fragColor = fragPosition;
 }
