@@ -13,6 +13,8 @@ add_subdirectory(Externals/glfw)
 add_subdirectory(Externals/cglm)
 add_subdirectory(Externals/PlyImporter)
 add_subdirectory(Externals/json-c)
+add_subdirectory(Externals/ShPhysics)
+add_subdirectory(Externals/ShSerial)
 
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)
@@ -85,6 +87,8 @@ add_executable(Editor ${EDITOR_SRC})
 target_link_libraries(Editor PUBLIC 
     SH-Engine
     ShUtilities
+    ShPhysics
+    ShSerial
 )
 target_include_directories(Editor PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Editor/include
