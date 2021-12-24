@@ -10,7 +10,7 @@
   "entities": [
     {
       "transform": {
-        "position": [8, 0, 20],
+        "position": [6, 0, 20],
       },
       "camera": {
         "fov": 45,
@@ -42,7 +42,7 @@
         "data_index": 1
       },
       "transform": {
-        "position": [ 0.0, 0.0, -384 ],
+        "position": [ 0.0, 0.0, 0.0 ],
         "rotation": [ 0.0, 0.0, 0.0],
         "scale": [1.737, 1.737, 1.737]
       },

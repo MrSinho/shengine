@@ -5,30 +5,21 @@
 #include <string.h>
 #include <ShPhysics.h>
 
-//void updateBehaviour(const ShTime time, ShScene* scene) {
-//	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
-//		if (shHasShIdentity(scene, entity)) {
-//			ShIdentity* identity = shGetShIdentity(scene, entity);
-//			if (strcmp(identity->name, "rotator") == 0) {
-//				ShTransform* t = shGetShTransform(scene, entity);
-//				t->rotation[1] -= 150.0f * time.delta_time;
-//			}
-//		}
-//	}
-//}
-
-void EarthMoon(const float delta_time, ShDynamicsHandle* earth, ShDynamicsHandle* moon, ShScene* scene) {
+void updateBehaviour(const ShTime time, ShRigidBody** pp_rbodies, uint32_t rbody_count, ShScene* scene) {
 	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
 		if (shHasShIdentity(scene, entity)) {
 			ShIdentity* identity = shGetShIdentity(scene, entity);
-			shGravitationalForce(delta_time, earth, moon);
-			if (strcmp(identity->name, "earth") == 0) {
+			if (strcmp(identity->name, "rotator") == 0) {
 				ShTransform* t = shGetShTransform(scene, entity);
-				memcpy(t->position, earth->position, sizeof(shvec3));
+				t->rotation[1] -= 150.0f * time.delta_time;
+			}
+			else if (strcmp(identity->name, "earth") == 0) {
+				ShTransform* t = shGetShTransform(scene, entity);
+				memcpy(t->position, pp_rbodies[0]->position, sizeof(shvec3));
 			}
 			else if (strcmp(identity->name, "moon") == 0) {
 				ShTransform* t = shGetShTransform(scene, entity);
-				memcpy(t->position, moon->position, sizeof(shvec3));
+				memcpy(t->position, pp_rbodies[1]->position, sizeof(shvec3));
 			}
 		}
 	}
@@ -56,23 +47,19 @@ int main() {
 	
 	shSceneInit(core, &scene);
 
-	ShDynamicsHandle earth = { 0 };
+	ShRigidBody earth = { 0 };
 	earth.mass = 597.0f;
 	shvec3 pos0 = { 0.0f, 0.0f, 0.0f };
 	shDynamicsSetPosition(pos0, &earth);
 
-	ShDynamicsHandle moon = { 0 };
+	ShRigidBody moon = { 0 };
 	moon.mass = 7.34f;
-	shvec3 pos1 = { 0.0f, 0.0f,-384.0f };
+	shvec3 pos1 = { 10.0f, 0.0f, 0.0f };
 	shDynamicsSetPosition(pos1, &moon);
 
-	//for (;;) {
-	//	puts("EARTH");
-	//	shPrintShDynamics(&earth);
-	//	puts("MOON");
-	//	shPrintShDynamics(&moon);
-	//}
-
+	ShRigidBody* pp_rbodies[2] = {
+		&earth, &moon
+	};
 
 	while (shIsWindowActive(core.window.window)) {
 
@@ -94,7 +81,8 @@ int main() {
 		shFrameBegin(core, &image_index);
 		
 		shSceneUpdate(core, time, &scene);
-		EarthMoon(time.delta_time*DEC(1.0E5), &earth, &moon, &scene);
+		shDynamicsWorldSimulate(SH_DYNAMICS_WORLD_GRAVITY, time.delta_time * DEC(1.0E3), pp_rbodies, 2);
+		updateBehaviour(time, pp_rbodies, 2, &scene);
 
 		shFrameEnd(core, image_index);
 	}
