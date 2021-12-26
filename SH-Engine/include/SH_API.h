@@ -13,6 +13,7 @@
 #include "shComponents.h"
 
 #include "PlyImporter.h"
+#include "shDynamics.h"
 
 #include "shWindow.h"
 #include "shInput.h"
@@ -32,6 +33,11 @@ static void shReloadScene(const ShVkCore core, const ShDescriptorHandle scene_de
 	shSceneRelease(core, p_scene);
 	shLoadScene(scene_descriptor.path, p_mat_infos, p_scene);
 	shSceneInit(core, p_scene);
+}
+
+static void shReloadPhysicsWorld(const ShDescriptorHandle physics_descriptor, ShScene* p_scene, ShDynamicsWorld* p_dynamics) {
+	shDynamicsWorldRelease(p_dynamics);
+	shLoadPhysicsWorld(physics_descriptor.path, p_scene, p_dynamics);
 }
 
 #endif // SH_API_H

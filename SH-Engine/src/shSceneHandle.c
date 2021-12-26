@@ -9,6 +9,7 @@
 #include "shDrawLoop.h"
 #include "shEuler.h"
 #include "shInput.h"
+#include "shPhysicsInfo.h"
 
 #include <string.h>
 
@@ -50,7 +51,12 @@ void shSceneInit(const ShVkCore core, ShScene* scene) {
 		if (shHasShTransform(scene, entity)) {
 			ShTransform* t = shGetShTransform(scene, entity);
 			t->position[1] *= -1.0f;
+			if (shHasShRigidBody(scene, entity)) {
+				ShRigidBody* p_rb = shGetShRigidBody(scene, entity);
+				p_rb->position = t->position;
+			}
 		}
+
 	}
 
 }

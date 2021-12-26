@@ -4,6 +4,7 @@
 #include "shTransform.h"
 #include "shMaterialInfo.h"
 #include "shIdentity.h"
+#include "shPhysicsInfo.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -84,10 +85,27 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     if (strcmp(s_flag, "MESH_SETUP_RUNTIME_MESH") == 0) {
         return SH_MESH_SETUP_RUNTIME_MESH;
     }
+    if (strcmp(s_flag, "COLLISION_SHAPE_SPHERE") == 0) {
+        return SH_COLLISION_SHAPE_SPHERE;
+    }
+    if (strcmp(s_flag, "COLLISION_SHAPE_POINT") == 0) {
+        return SH_COLLISION_SHAPE_BOX;
+    }
+    if (strcmp(s_flag, "COLLISION_SHAPE_POINT") == 0) {
+        return SH_COLLISION_SHAPE_BOX;
+    }
+    if (strcmp(s_flag, "DYNAMICS_WORLD_GRAVITY") == 0) {
+        return SH_DYNAMICS_WORLD_GRAVITY;
+    }
+    if (strcmp(s_flag, "DYNAMICS_WORLD_NEWTON_3RD_LAW") == 0) {
+        return SH_DYNAMICS_WORLD_NEWTON_3RD_LAW;
+    }
     return 0;
 }
 
 void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMaterialInfo** pp_mat_infos) {
+    assert(p_mat_info_count != NULL);
+
     char* buffer = (char*)shReadCode(path, NULL, "r");
     if (buffer == NULL) { return; }
 
@@ -140,13 +158,14 @@ void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMateria
 }
 
 void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p_scene) {
+    assert(p_scene != NULL && p_mat_infos != NULL);
+
     char* buffer = (char*)shReadCode(path, NULL, "r");
     if (buffer == NULL) { return; }
 
     json_object* parser = json_tokener_parse(buffer);
     if (parser == NULL) { return; }
 
-    
 
     //MESHES
     json_object* json_meshes = json_object_object_get(parser, "meshes");
@@ -176,6 +195,7 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
         json_object* json_camera = json_object_object_get(json_entity, "camera");
         json_object* json_material = json_object_object_get(json_entity, "material");
         json_object* json_identity = json_object_object_get(json_entity, "identity");
+        json_object* json_rigidbody = json_object_object_get(json_entity, "rigidbody");
 
         if (json_transform != NULL) {
             json_object* json_position = json_object_object_get(json_transform, "position");
@@ -254,18 +274,68 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
             json_object* json_name   = json_object_object_get(json_identity, "name");
             json_object* json_tag    = json_object_object_get(json_identity, "tag");
             json_object* json_subtag = json_object_object_get(json_identity, "subtag");
-            json_name   != NULL && (p_identity->name = json_object_get_string(json_name));
-            json_tag    != NULL && (p_identity->tag = json_object_get_string(json_tag));
-            json_subtag != NULL && (p_identity->subtag = json_object_get_string(json_subtag));
+            (json_name   != NULL) && (p_identity->name = json_object_get_string(json_name));
+            (json_tag    != NULL) && (p_identity->tag = json_object_get_string(json_tag));
+            (json_subtag != NULL) && (p_identity->subtag = json_object_get_string(json_subtag));
+        }
+        if (json_rigidbody != NULL) {
+            ShRigidBody* p_rb = shAddShRigidBody(p_scene, entity);
+            json_object* json_mass = json_object_object_get(json_rigidbody, "mass");
+            json_object* json_shape = json_object_object_get(json_rigidbody, "shape");
+            json_object* json_radius = json_object_object_get(json_rigidbody, "radius");
+            ShCollisionShapeType shape_type = 0;
+            shreal radius = DEC(0.0);
+            (json_mass   != NULL) && (p_rb->mass = (shreal)json_object_get_double(json_mass));
+            (json_shape  != NULL) && (shape_type = shStringFlagToInt(json_object_get_string(json_shape)));
+            (json_radius != NULL) && (radius = (shreal)json_object_get_double(json_radius));
+            shDynamicsSetCollisionShape(shape_type, p_rb);
+            shDynamicsSetCollisionSphereRadius(radius, p_rb);
         }
     }
-
-
+    
     free(ply_meshes);
     free(buffer);
 }
 
-int shListenDescriptor(ShDescriptorHandle* descriptor_handle) {
+void shLoadPhysicsWorld(const char* path, ShScene* p_scene, ShDynamicsWorld* p_dynamics) {
+    assert(p_scene != NULL && p_dynamics != NULL);
+    char* buffer = (char*)shReadCode(path, NULL, "r");
+    if (buffer == NULL) { return; }
+
+    json_object* parser = json_tokener_parse(buffer);
+    if (parser == NULL) { return; }
+    
+
+    json_object* json_dynamics  = json_object_object_get(parser, "dynamics_world");
+    json_object* json_speed     = json_object_object_get(parser, "speed");
+    if (json_dynamics != NULL) {
+        ShDynamicsWorld dynamics = { 0 };
+        for (uint32_t i = 0; i < (uint32_t)json_object_array_length(json_dynamics); i++) {
+            json_object* json_flag = json_object_array_get_idx(json_dynamics, i);
+            dynamics.flags |= shStringFlagToInt(json_object_get_string(json_flag));
+        }
+        (json_speed != NULL) && (dynamics.speed = (shreal)json_object_get_double(json_speed));
+        uint32_t* scene_indices = (uint32_t*)calloc(p_scene->entity_count, sizeof(uint32_t));
+        if (scene_indices != NULL) {
+            for (uint32_t entity = 0; entity < p_scene->entity_count; entity++) {
+                if (shHasShRigidBody(p_scene, entity)) {
+                    scene_indices[dynamics.rbody_count] = entity;
+                    dynamics.rbody_count++;
+                }
+            }
+            dynamics.pp_rbodies = calloc(dynamics.rbody_count, sizeof(ShRigidBody));
+            if (dynamics.pp_rbodies != NULL) {
+                for (uint32_t i = 0; i < dynamics.rbody_count; i++) {
+                    dynamics.pp_rbodies[i] = shGetShRigidBody(p_scene, scene_indices[i]);
+                }
+            }
+            free(scene_indices);
+        }
+        *p_dynamics = dynamics;
+    }
+}
+
+uint8_t shListenDescriptor(ShDescriptorHandle* descriptor_handle) {
     shGetFileStats(descriptor_handle->path, &descriptor_handle->stats1);
     if (memcmp(&descriptor_handle->stats0, &descriptor_handle->stats1, sizeof(ShFileStats)) != 0) {
         memcpy(&descriptor_handle->stats0, &descriptor_handle->stats1, sizeof(ShFileStats));

@@ -17,9 +17,11 @@
 #endif // _WIN32
 
 #include <stdio.h>
+#include <stdint.h>
 
 typedef struct stat ShFileStats;
 
+typedef struct ShDynamicsWorld ShDynamicsWorld;
 
 
 typedef struct ShDescriptorHandle {
@@ -32,6 +34,9 @@ typedef struct ShDescriptorHandle {
 
 
 
+
+extern uint8_t shListenDescriptor(ShDescriptorHandle* descriptor_handle);
+
 extern void shGetFileStats(const char* path, ShFileStats* stats);
 
 extern void shInitDescriptor(ShDescriptorHandle* descriptor_handle);
@@ -40,9 +45,7 @@ extern void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, Sh
 
 extern void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p_scene);
 
-extern int shListenDescriptor(ShDescriptorHandle* descriptor_handle);
-
-extern void shUpdateScene(ShScene scene);
+extern void shLoadPhysicsWorld(const char* path, ShScene* p_scene, ShDynamicsWorld* p_dynamics);
 
 
 #endif // SH_DESCRIPTOR_HANDLE_H

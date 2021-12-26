@@ -17,4 +17,3 @@ typedef struct ShTime
 extern void shGetTime(ShTime* time);
 
 extern void shSetTime(double now, ShTime* time);
-

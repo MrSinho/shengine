@@ -51,6 +51,7 @@ target_link_libraries(ShDescriptorHandle PUBLIC
     ShUtilities
     json-c
     PlyImporter
+    ShPhysics
 )
 
 #FOGGY-ENGINE

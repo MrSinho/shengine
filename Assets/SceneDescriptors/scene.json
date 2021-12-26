@@ -5,12 +5,12 @@
     },
     {
       "path": "../Assets/Meshes/sphere.ply"
-    },
+    }
   ],
   "entities": [
     {
       "transform": {
-        "position": [6, 0, 20],
+        "position": [6, 0, 20]
       },
       "camera": {
         "fov": 45,
@@ -29,10 +29,15 @@
         "flags": "MESH_SETUP_STATIC_MESH"
       },
       "transform": {
-        "position": [ 0.0, 0.0, 0.0 ],
-        "scale": [  6.371, 6.371, 6.371 ],
+        "position": [ 0, 0, 0 ],
+        "scale": [ 7, 7, 7 ]
       },
-      "material": 0
+      "material": 0,
+      "rigidbody": {
+        "mass": 600,
+        "shape": "COLLISION_SHAPE_SPHERE",
+        "radius": 7
+      }
     },
     {
       "identity": {
@@ -42,11 +47,16 @@
         "data_index": 1
       },
       "transform": {
-        "position": [ 9.0, 0.0, 0.0 ],
-        "rotation": [ 0.0, 0.0, 0.0],
-        "scale": [1.737, 1.737, 1.737]
+        "position": [ 9, 0, 0 ],
+        "rotation": [ 0, 0, 0],
+        "scale": [1, 1, 1]
       },
-      "material": 0
+      "material": 0,
+      "rigidbody": {
+        "mass": 8,
+        "shape": "COLLISION_SHAPE_SPHERE",
+        "radius": 1
+      }
     }
-  ]
+  ],
 }

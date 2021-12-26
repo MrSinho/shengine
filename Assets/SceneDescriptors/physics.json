@@ -1,0 +1,4 @@
+{
+  "dynamics_world": [ "DYNAMICS_WORLD_GRAVITY", "DYNAMICS_WORLD_NEWTON_3RD_LAW" ],
+  "speed": 2E3
+}
