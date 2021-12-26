@@ -16,6 +16,7 @@
         "fov": 45,
         "nc": 0.1,
         "fc": 150,
+        "speed": 1,
         "flags": "CAMERA_SETUP_FREE_FLIGHT"
       }
     },
@@ -24,7 +25,7 @@
         "data_index": 1
       },
       "transform": {
-        "position": [ 0.0, -1.0, 0.0 ],
+        "position": [ 0.0, 1.0, 0.0 ],
         "rotation": [ 0.0, 0.0, 0.0],
         "scale": [2.0, 2.0, 2.0]
       },

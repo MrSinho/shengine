@@ -10,7 +10,7 @@
   "entities": [
     {
       "transform": {
-        "position": [6, 0, 20]
+        "position": [0, 0, 20]
       },
       "camera": {
         "fov": 45,
@@ -29,14 +29,14 @@
         "flags": "MESH_SETUP_STATIC_MESH"
       },
       "transform": {
-        "position": [ 0, 0, 0 ],
-        "scale": [ 7, 7, 7 ]
+        "position": [ -1, 0, 0 ],
+        "scale": [ 1.5, 1.5, 1.5 ]
       },
-      "material": 0,
+      "material": 1,
       "rigidbody": {
-        "mass": 600,
+        "mass": 500,
         "shape": "COLLISION_SHAPE_SPHERE",
-        "radius": 7
+        "radius": 1.5
       }
     },
     {
@@ -47,7 +47,7 @@
         "data_index": 1
       },
       "transform": {
-        "position": [ 9, 0, 0 ],
+        "position": [ 5, 0, 0 ],
         "rotation": [ 0, 0, 0],
         "scale": [1, 1, 1]
       },
@@ -56,6 +56,25 @@
         "mass": 8,
         "shape": "COLLISION_SHAPE_SPHERE",
         "radius": 1
+      },
+    },
+    {
+      "identity": {
+        "name": "mars"
+      },
+      "mesh": {
+        "data_index": 1
+      },
+      "transform": {
+        "position": [-5, 5, 0 ],
+        "rotation": [ 0, 0, 0],
+        "scale": [3, 3, 3]
+      },
+      "material": 0,
+      "rigidbody": {
+        "mass": 50,
+        "shape": "COLLISION_SHAPE_SPHERE",
+        "radius": 3
       }
     }
   ],

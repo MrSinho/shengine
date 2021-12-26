@@ -14,23 +14,13 @@ void updateBehaviour(const ShTime time, ShRigidBody** pp_rbodies, uint32_t rbody
 				ShTransform* t = shGetShTransform(scene, entity);
 				t->rotation[1] -= 150.0f * (float)time.delta_time;
 			}
-			else if (strcmp(identity->name, "earth") == 0) {
-				ShTransform* t = shGetShTransform(scene, entity);
-				memcpy(t->position, pp_rbodies[0]->position, sizeof(shvec3));
-				//printf("earth pos: %f\n", t->position[0]);
-			}
-			else if (strcmp(identity->name, "moon") == 0) {
-				ShTransform* t = shGetShTransform(scene, entity);
-				memcpy(t->position, pp_rbodies[1]->position, sizeof(shvec3));
-				//printf("moon pos: %f\n", t->position[0]);
-			}
 		}
 	}
 }
 
 int main() {
 
-	ShVkCore core = shVkCoreInitPrerequisites(720, 480, "SH-Engine Editor");
+	ShVkCore core = shVkCoreInitPrerequisites(1900/2, 1000, "SH-Engine Editor");
 
 	shInitVulkan(&core);
 
