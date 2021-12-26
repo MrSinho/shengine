@@ -1,6 +1,6 @@
 #include <SH_API.h>
 #include <shLinearAlgebraTypes.h>
-#include <ShPhysics.h>
+#include <shPhysics.h>
 
 #include <stdio.h>
 #include <stdlib.h>
