@@ -123,16 +123,16 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 						displacement[1] *= camera.speed;
 						displacement[2] *= camera.speed;
 					}
-					displacement[0] *= 5.0f * time.delta_time;
-					displacement[1] *= 5.0f * time.delta_time;
-					displacement[2] *= 5.0f * time.delta_time;
+					displacement[0] *= 5.0f * (float)time.delta_time;
+					displacement[1] *= 5.0f * (float)time.delta_time;
+					displacement[2] *= 5.0f * (float)time.delta_time;
 					glm_vec3_add(t->position, displacement, t->position);
 					if (shIsMouseButtonPressed(core.window, MOUSE_BUTTON_RIGHT)) {
 						glfwSetInputMode(core.window.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 						double dx, dy = 0.0;
 						shMouseOffset(core.window, &dx, &dy);
-						t->rotation[0] -= 0.6f * (float)dy * time.delta_time;
-						t->rotation[1] -= 0.6f * (float)dx * time.delta_time;
+						t->rotation[0] -= 0.6f * (float)dy * (float)time.delta_time;
+						t->rotation[1] -= 0.6f * (float)dx * (float)time.delta_time;
 						if (t->rotation[0] >= glm_rad(89.99999f)) {
 							t->rotation[0] = glm_rad(89.99999f);
 						}
