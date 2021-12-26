@@ -1,7 +1,7 @@
 # SH-Engine
 ![windows_badge](windows-status.svg)
 ## [Windows build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 112.39s`
+  `Build ran for 113.37s`
 ```bash $shci call$
 choco install -y curl mingw cmake
 Chocolatey v0.11.2
@@ -25,10 +25,6 @@ Warnings:
  Use --force to reinstall, specify a version to install, or try upgrade.
  - mingw - mingw v11.2.0.07112021 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
-
-Enjoy using Chocolatey? Explore more amazing features to take your
-experience to the next level at
- https://chocolatey.org/compare
 
 ```
 
@@ -185,70 +181,81 @@ cd SH-Engine && mkdir build && cd build && cmake -G"MinGW Makefiles" .. && mingw
 [  1%] Building C object CMakeFiles/ShUtilities.dir/ShUtilities/src/shUtilities.c.obj
 [  2%] Linking C static library ..\bin\libShUtilities.a
 [  2%] Built target ShUtilities
-[  3%] Building C object Externals/json-c/CMakeFiles/json-c.dir/arraylist.c.obj
-[  4%] Building C object Externals/json-c/CMakeFiles/json-c.dir/debug.c.obj
-[  5%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_c_version.c.obj
-[  6%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_object.c.obj
-[  7%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_object_iterator.c.obj
-[  8%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_tokener.c.obj
-[  9%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_util.c.obj
-[ 10%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_visit.c.obj
-[ 11%] Building C object Externals/json-c/CMakeFiles/json-c.dir/linkhash.c.obj
-[ 12%] Building C object Externals/json-c/CMakeFiles/json-c.dir/printbuf.c.obj
-[ 13%] Building C object Externals/json-c/CMakeFiles/json-c.dir/random_seed.c.obj
-[ 14%] Building C object Externals/json-c/CMakeFiles/json-c.dir/strerror_override.c.obj
-[ 15%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_pointer.c.obj
-[ 17%] Linking C static library libjson-c.a
-[ 17%] Built target json-c
-[ 18%] Building C object Externals/PlyImporter/CMakeFiles/PlyImporter.dir/PlyImporter/src/PlyImporter.c.obj
-[ 19%] Linking C static library ..\..\..\bin\libPlyImporter.a
-[ 19%] Built target PlyImporter
-[ 20%] Building C object CMakeFiles/ShDescriptorHandle.dir/ShDescriptorHandle/src/shDescriptorHandle.c.obj
-[ 21%] Linking C static library libShDescriptorHandle.a
-[ 21%] Built target ShDescriptorHandle
-[ 22%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/context.c.obj
-[ 23%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/init.c.obj
-[ 24%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/input.c.obj
-[ 25%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/monitor.c.obj
-[ 26%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/platform.c.obj
-[ 27%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/vulkan.c.obj
-[ 28%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/window.c.obj
-[ 29%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/egl_context.c.obj
-[ 30%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.obj
-[ 31%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_init.c.obj
-[ 32%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_monitor.c.obj
-[ 34%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_window.c.obj
-[ 35%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.obj
-[ 36%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_module.c.obj
-[ 37%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_time.c.obj
-[ 38%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_thread.c.obj
-[ 39%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_init.c.obj
-[ 40%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_joystick.c.obj
-[ 41%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_monitor.c.obj
-[ 42%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_window.c.obj
-[ 43%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/wgl_context.c.obj
-[ 44%] Linking C static library ..\..\..\..\bin\libglfw3.a
-[ 44%] Built target glfw
-[ 45%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/euler.c.obj
-[ 46%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/affine.c.obj
-[ 47%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/io.c.obj
-[ 48%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/quat.c.obj
-[ 50%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/cam.c.obj
-[ 51%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec2.c.obj
-[ 52%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec3.c.obj
-[ 53%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec4.c.obj
-[ 54%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat2.c.obj
-[ 55%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat3.c.obj
-[ 56%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat4.c.obj
-[ 57%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/plane.c.obj
-[ 58%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/frustum.c.obj
-[ 59%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/box.c.obj
-[ 60%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/project.c.obj
-[ 61%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/sphere.c.obj
-[ 62%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/ease.c.obj
-[ 63%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/curve.c.obj
-[ 64%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/bezier.c.obj
-[ 65%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/ray.c.obj
+[  3%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shIntersection.c.obj
+[  4%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shLineSolver.c.obj
+[  5%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shMatrix.c.obj
+[  6%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shScalar.c.obj
+[  7%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shVector.c.obj
+[  8%] Linking C static library libShLinearAlgebra.a
+[  8%] Built target ShLinearAlgebra
+[  9%] Building C object Externals/ShPhysics/CMakeFiles/ShPhysics.dir/ShPhysics/src/shDynamics.c.obj
+[ 10%] Building C object Externals/ShPhysics/CMakeFiles/ShPhysics.dir/ShPhysics/src/shPhysicsCollision.c.obj
+[ 10%] Linking C static library ..\..\..\bin\libShPhysics.a
+[ 10%] Built target ShPhysics
+[ 11%] Building C object Externals/PlyImporter/CMakeFiles/PlyImporter.dir/PlyImporter/src/PlyImporter.c.obj
+[ 12%] Linking C static library ..\..\..\bin\libPlyImporter.a
+[ 12%] Built target PlyImporter
+[ 13%] Building C object Externals/json-c/CMakeFiles/json-c.dir/arraylist.c.obj
+[ 14%] Building C object Externals/json-c/CMakeFiles/json-c.dir/debug.c.obj
+[ 15%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_c_version.c.obj
+[ 15%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_object.c.obj
+[ 16%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_object_iterator.c.obj
+[ 17%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_tokener.c.obj
+[ 18%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_util.c.obj
+[ 19%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_visit.c.obj
+[ 20%] Building C object Externals/json-c/CMakeFiles/json-c.dir/linkhash.c.obj
+[ 21%] Building C object Externals/json-c/CMakeFiles/json-c.dir/printbuf.c.obj
+[ 22%] Building C object Externals/json-c/CMakeFiles/json-c.dir/random_seed.c.obj
+[ 23%] Building C object Externals/json-c/CMakeFiles/json-c.dir/strerror_override.c.obj
+[ 24%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_pointer.c.obj
+[ 25%] Linking C static library libjson-c.a
+[ 25%] Built target json-c
+[ 26%] Building C object CMakeFiles/ShDescriptorHandle.dir/ShDescriptorHandle/src/shDescriptorHandle.c.obj
+[ 27%] Linking C static library libShDescriptorHandle.a
+[ 27%] Built target ShDescriptorHandle
+[ 28%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/context.c.obj
+[ 29%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/init.c.obj
+[ 30%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/input.c.obj
+[ 31%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/monitor.c.obj
+[ 32%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/platform.c.obj
+[ 33%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/vulkan.c.obj
+[ 34%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/window.c.obj
+[ 35%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/egl_context.c.obj
+[ 36%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.obj
+[ 37%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_init.c.obj
+[ 38%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_monitor.c.obj
+[ 39%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_window.c.obj
+[ 39%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.obj
+[ 40%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_module.c.obj
+[ 41%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_time.c.obj
+[ 42%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_thread.c.obj
+[ 43%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_init.c.obj
+[ 44%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_joystick.c.obj
+[ 45%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_monitor.c.obj
+[ 46%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/win32_window.c.obj
+[ 47%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/wgl_context.c.obj
+[ 48%] Linking C static library ..\..\..\..\bin\libglfw3.a
+[ 48%] Built target glfw
+[ 49%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/euler.c.obj
+[ 50%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/affine.c.obj
+[ 51%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/io.c.obj
+[ 52%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/quat.c.obj
+[ 53%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/cam.c.obj
+[ 54%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec2.c.obj
+[ 54%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec3.c.obj
+[ 55%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec4.c.obj
+[ 56%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat2.c.obj
+[ 57%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat3.c.obj
+[ 58%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat4.c.obj
+[ 59%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/plane.c.obj
+[ 60%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/frustum.c.obj
+[ 61%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/box.c.obj
+[ 62%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/project.c.obj
+[ 63%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/sphere.c.obj
+[ 64%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/ease.c.obj
+[ 65%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/curve.c.obj
+[ 66%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/bezier.c.obj
+[ 67%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/ray.c.obj
 [ 67%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/affine2d.c.obj
 [ 68%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_zo.c.obj
 [ 69%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_zo.c.obj
@@ -262,27 +269,33 @@ cd SH-Engine && mkdir build && cd build && cmake -G"MinGW Makefiles" .. && mingw
 [ 77%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_zo.c.obj
 [ 78%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_no.c.obj
 [ 79%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_no.c.obj
-[ 80%] Linking C shared library ..\..\..\bin\libcglm-0.dll
-[ 80%] Built target cglm
-[ 81%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shDrawLoop.c.obj
-[ 82%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shEuler.c.obj
-[ 84%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shInput.c.obj
-[ 85%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shMaterial.c.obj
-[ 86%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shProjection.c.obj
-[ 87%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shSceneHandle.c.obj
-[ 88%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shTime.c.obj
-[ 89%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shView.c.obj
-[ 90%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkCore.c.obj
-[ 91%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkMemoryInfo.c.obj
-[ 92%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkPipelineData.c.obj
-[ 93%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shWindow.c.obj
-[ 94%] Linking C static library ..\bin\libSH-Engine.a
-[ 94%] Built target SH-Engine
-[ 95%] Building C object CMakeFiles/Editor.dir/Editor/src/Editor.c.obj
-[ 96%] Linking C executable ..\bin\Editor.exe
-[ 96%] Built target Editor
-[ 97%] Generating HTML documentation
-[ 97%] Built target docs
-[ 98%] Building C object Externals/json-c/apps/CMakeFiles/json_parse.dir/json_parse.c.obj
-[100%] Linking C executable json_parse.exe
-[100%] Built target json_parse
+[ 79%] Linking C shared library ..\..\..\bin\libcglm-0.dll
+[ 79%] Built target cglm
+[ 80%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shDrawLoop.c.obj
+[ 81%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shEuler.c.obj
+[ 82%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shInput.c.obj
+[ 83%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shMaterial.c.obj
+[ 84%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shProjection.c.obj
+[ 85%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shSceneHandle.c.obj
+[ 86%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shTime.c.obj
+[ 87%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shView.c.obj
+[ 88%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkCore.c.obj
+[ 88%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkMemoryInfo.c.obj
+[ 89%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkPipelineData.c.obj
+[ 90%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shWindow.c.obj
+[ 91%] Linking C static library ..\bin\libSH-Engine.a
+[ 91%] Built target SH-Engine
+[ 92%] Building C object Externals/ShSerial/CMakeFiles/ShSerial.dir/ShSerial/src/ShSerial.c.obj
+[ 93%] Linking C static library ..\..\..\Externals\ShSerial\bin\libShSerial.a
+[ 93%] Built target ShSerial
+[ 93%] Building C object CMakeFiles/Editor.dir/Editor/src/Editor.c.obj
+[ 94%] Linking C executable ..\bin\Editor.exe
+[ 94%] Built target Editor
+[ 95%] Generating HTML documentation
+[ 95%] Built target docs
+[ 96%] Building C object Externals/json-c/apps/CMakeFiles/json_parse.dir/json_parse.c.obj
+[ 97%] Linking C executable json_parse.exe
+[ 97%] Built target json_parse
+[ 98%] Building C object Externals/ShPhysics/CMakeFiles/ShPhysicsExample.dir/ShPhysicsExample/src/shPhysicsExample.c.obj
+[100%] Linking C executable ..\..\..\bin\ShPhysicsExample.exe
+[100%] Built target ShPhysicsExample
