@@ -22,7 +22,19 @@
 
 #include "shDescriptorHandle.h"
 
-
+static void shInitVulkan(ShVkCore* p_core) {
+	shCreateInstance(p_core);
+	shCreateWindowSurface(p_core);
+	shSetPhysicalDevice(p_core);
+	shSetLogicalDevice(p_core);
+	shGetGraphicsQueue(p_core);
+	shInitSwapchainData(p_core);
+	shInitDepthData(p_core);
+	shCreateRenderPass(p_core);
+	shSetFramebuffers(p_core);
+	shSetSyncObjects(p_core);
+	shInitCommands(p_core);
+}
 
 static void shReloadMaterialInfos(const ShDescriptorHandle mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterialInfo** pp_mat_infos) {
 	shMaterialInfosRelease(p_mat_info_count, pp_mat_infos);
