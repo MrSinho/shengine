@@ -36,6 +36,6 @@ extern void shDraw(const VkCommandBuffer graphicsCmdBuffer, const uint32_t count
 extern void shFrameEnd(const ShVkCore core, const uint32_t swapchainImageIndex);
 
 
-extern void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniform_size, void* p_uniform, const ShMeshInfo mesh_info, ShMesh* mesh);
+extern void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniform_size, void* p_uniform, ShMeshInfo* p_mesh_info, ShMesh* mesh);
 
 #endif
