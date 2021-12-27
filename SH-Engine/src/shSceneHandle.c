@@ -24,11 +24,11 @@ void shSceneInit(const ShVkCore core, ShScene* scene) {
 			//Allocate memory
 			if (!(mesh_info->flags & SH_MESH_SETUP_RUNTIME_MESH)) {
 				if (mesh_info->vertex_count > 0 && mesh_info->p_vertices != NULL) {
-					shCreateVertexBuffer(core, *mesh_info, mesh);
+					shCreateVertexBuffer(core, mesh_info, mesh);
 					shAllocateVertexBuffer(core, mesh);
 				}
 				if (mesh_info->index_count > 0 && mesh_info->p_indices != NULL) {
-					shCreateIndexBuffer(core, *mesh_info, mesh);
+					shCreateIndexBuffer(core, mesh_info, mesh);
 					shAllocateIndexBuffer(core, mesh);
 				}
 			}
@@ -36,10 +36,10 @@ void shSceneInit(const ShVkCore core, ShScene* scene) {
 			//Map memory
 			if (mesh_info->flags & SH_MESH_SETUP_STATIC_MESH) {
 				if (mesh_info->vertex_count > 0 && mesh_info->p_vertices != NULL) {
-					shMapVertexBufferMemory(core, *mesh_info, mesh);
+					shMapVertexBufferMemory(core, mesh_info, mesh);
 				}
 				if (mesh_info->index_count > 0 && mesh_info->p_indices != NULL) {
-					shMapIndexBufferMemory(core, *mesh_info, mesh);
+					shMapIndexBufferMemory(core, mesh_info, mesh);
 				}
 			}
 		}
@@ -191,7 +191,7 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 			shRenderMesh(core, material->pipeline_data,
 				push_constants_index, p_push_constants,
 				uniform_buffer_index, p_uniform_buffer,
-				*mesh_info, mesh);
+				mesh_info, mesh);
 
 
 			if (p_uniform_buffer != NULL) {
