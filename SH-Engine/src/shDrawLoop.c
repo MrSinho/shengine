@@ -23,7 +23,9 @@ void shFrameBegin(const ShVkCore core, uint32_t* pSwapchainImageIndex) {
 		NULL											//pInheritanceInfo;
 	};
 
-	VkClearValue clearColor = { {0.1f, 0.1f, 0.1f} };
+	VkClearValue clear_values[2];
+	clear_values[0].color = (VkClearColorValue){ 0.1f, 0.1f, 0.1f };
+	clear_values[1].depthStencil = (VkClearDepthStencilValue){ 1.0f, 0 };
 	VkRenderPassBeginInfo renderPassBeginInfo = {
 		VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,		//sType;
 		NULL,											//pNext;
@@ -33,8 +35,8 @@ void shFrameBegin(const ShVkCore core, uint32_t* pSwapchainImageIndex) {
 			{0, 0},										//
 			{core.window.width, core.window.height}	//
 		},												//renderArea;
-		1,												//clearValueCount;
-		&clearColor										//pClearValues;
+		2,												//clearValueCount;
+		clear_values									//pClearValues;
 	};
 
 	vkBeginCommandBuffer(core.p_cmd_buffers[0], &cmdBufferBeginInfo);
@@ -118,10 +120,10 @@ void shFrameEnd(const ShVkCore core, const uint32_t swapchainImageIndex) {
 	vkQueuePresentKHR(core.graphics_queue, &presentInfo);
 }
 
-void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniform_size, void* p_uniform, const ShMeshInfo mesh_info, ShMesh* mesh) {
+void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniform_size, void* p_uniform, ShMeshInfo* p_mesh_info, ShMesh* mesh) {
 
 	//Map mesh buffers
-	if (mesh_info.flags & SH_MESH_SETUP_DYNAMIC_MESH) {
+	if (p_mesh_info->flags & SH_MESH_SETUP_DYNAMIC_MESH) {
 		//if (mesh->flags & SH_MESH_SETUP_RUNTIME_MESH) {
 		//	if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
 		//		shAllocateMeshVertexData(core, mesh);
@@ -130,9 +132,9 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 		//		shAllocateMeshIndexData(core, mesh);
 		//	}
 		//}
-		shMapVertexBufferMemory(core, mesh_info, mesh);
+		shMapVertexBufferMemory(core, p_mesh_info, mesh);
 		if (mesh->index_buffer_memory != NULL) {
-			shMapIndexBufferMemory(core, mesh_info, mesh);
+			shMapIndexBufferMemory(core, p_mesh_info, mesh);
 		}
 	}
 
@@ -158,10 +160,10 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 	}
 	
 	if (mesh->index_buffer_memory != NULL) { //indexed
-		shDraw(core.p_cmd_buffers[0], mesh_info.index_count, pipe_data.vertexStride / 4, *mesh);
+		shDraw(core.p_cmd_buffers[0], p_mesh_info->index_count, pipe_data.vertexStride / 4, *mesh);
 	}
 	else { //not indexed
-		shDraw(core.p_cmd_buffers[0], mesh_info.vertex_count, pipe_data.vertexStride / 4, *mesh);
+		shDraw(core.p_cmd_buffers[0], p_mesh_info->vertex_count, pipe_data.vertexStride / 4, *mesh);
 	}
 
 	//if (mesh->flags & SH_MESH_SETUP_DYNAMIC_MESH & SH_MESH_SETUP_RUNTIME_MESH) {

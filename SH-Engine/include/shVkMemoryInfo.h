@@ -7,8 +7,6 @@
 #include "shMesh.h"
 #include "shMeshInfo.h"
 
-#define SH_DEPTH_IMAGE_FORMAT VK_FORMAT_D32_SFLOAT
-
 typedef struct ShVkCore	ShVkCore;
 
 #define shCreateVertexBuffer(core, p_mesh_info, p_mesh)\
@@ -32,7 +30,7 @@ typedef struct ShVkCore	ShVkCore;
 #define SH_DEPTH_IMAGE_FORMAT VK_FORMAT_D32_SFLOAT
 
 #define shCreateDepthImage(p_core)\
-	shCreateImage(*p_core, p_core->window.width, p_core->window.height, SH_DEPTH_IMAGE_FORMAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, &p_core->depthImage, &p_core->depthImageMemory);
+	shCreateImage(*p_core, p_core->window.width, p_core->window.height, SH_DEPTH_IMAGE_FORMAT, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, &p_core->depth_image, &p_core->depth_image_memory);
 
 #define shInitDepthData(p_core)\
 	shCreateDepthImage(p_core); shCreateDepthImageView(p_core)

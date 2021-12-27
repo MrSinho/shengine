@@ -5,7 +5,6 @@
 #include "shVkCore.h"
 #include "shWindow.h"
 #include "shUtilities.h"
-
 #include "shComponents.h"
 
 #ifdef _MSC_VER
@@ -30,25 +29,12 @@ ShVkCore shVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char *
 
 	ShVkCore core = { 0 };
 	core.required_queue_flag = VK_QUEUE_GRAPHICS_BIT;
-	core.image_format = VK_FORMAT_R8G8B8A8_UNORM;
+	core.swapchain_image_format = SH_SWAPCHAIN_IMAGE_FORMAT;
 	core.window = window;
 
 	shInitGLFW(&core.window);
 	
 	return core;
-}
-
-void shInitVulkan(ShVkCore* p_core) {
-	shCreateInstance(p_core);
-	shCreateWindowSurface(p_core);
-	shSetPhysicalDevice(p_core);
-	shSetLogicalDevice(p_core);
-	shGetGraphicsQueue(p_core);
-	shInitSwapchainData(p_core);
-	shCreateRenderPass(p_core);
-	shSetFramebuffers(p_core);
-	shSetSyncObjects(p_core);
-	shInitCommands(p_core);
 }
 
 void shCreateInstance(ShVkCore* p_core) {
@@ -172,8 +158,8 @@ void shSetPhysicalDevice(ShVkCore* p_core) {
 		VkPhysicalDeviceProperties pDeviceProperties;
 		vkGetPhysicalDeviceProperties(pDevices[i], &pDeviceProperties);
 
-		VkPhysicalDeviceFeatures pDeviceFeatures;
-		vkGetPhysicalDeviceFeatures(pDevices[i], &pDeviceFeatures);
+		VkPhysicalDeviceFeatures deviceFeatures;
+		vkGetPhysicalDeviceFeatures(pDevices[i], &deviceFeatures);
 		
 		scores[i] += pDeviceProperties.limits.maxComputeSharedMemorySize;
 		scores[i] += pDeviceProperties.limits.maxComputeWorkGroupInvocations;
@@ -281,6 +267,10 @@ void shInitSwapchainData(ShVkCore* p_core) {
 	shCreateSwapchainImageViews(p_core);
 }
 
+void shCreateDepthImageView(ShVkCore* p_core) {
+	shCreateImageView(p_core, p_core->depth_image, SH_DEPTH_IMAGE, &p_core->depth_image_view);
+}
+
 void shCreateSwapchain(ShVkCore* p_core) {
 	// Get the list of VkFormats that are supported:
     uint32_t formatCount;
@@ -293,10 +283,10 @@ void shCreateSwapchain(ShVkCore* p_core) {
     // the surface has no preferred format.  Otherwise, at least one
     // supported format will be returned.
     if (formatCount == 1 && surfFormats[0].format == VK_FORMAT_UNDEFINED) {
-        p_core->image_format = VK_FORMAT_B8G8R8A8_UNORM;
+        p_core->swapchain_image_format = VK_FORMAT_B8G8R8A8_UNORM;
     } else {
         assert(formatCount >= 1);
-        p_core->image_format = surfFormats[0].format;
+        p_core->swapchain_image_format = surfFormats[0].format;
     }
     free(surfFormats);
 
@@ -373,7 +363,7 @@ void shCreateSwapchain(ShVkCore* p_core) {
     swapchain_ci.pNext = NULL;
     swapchain_ci.surface = p_core->surface;
     swapchain_ci.minImageCount = desiredNumberOfSwapChainImages;
-    swapchain_ci.imageFormat = p_core->image_format;
+    swapchain_ci.imageFormat = p_core->swapchain_image_format;
     swapchain_ci.imageExtent.width = swapchainExtent.width;
     swapchain_ci.imageExtent.height = swapchainExtent.height;
     swapchain_ci.preTransform = preTransform;
@@ -411,32 +401,40 @@ void shGetSwapchainImages(ShVkCore* p_core) {
 	vkGetSwapchainImagesKHR(p_core->device, p_core->swapchain, &p_core->swapchain_image_count, p_core->p_swapchain_images);
 }
 
-void shCreateSwapchainImageViews(ShVkCore* p_core) {
-	p_core->p_swapchain_image_views = (VkImageView*)malloc(p_core->swapchain_image_count * sizeof(VkImageView));
-
-	for (uint32_t i = 0; i < p_core->swapchain_image_count; i++) {
-		
-		VkImageViewCreateInfo imageViewCreateInfo = {
+void shCreateImageView(ShVkCore* p_core, const VkImage image, const shImageType type, VkImageView* p_image_view) {
+	VkImageViewCreateInfo imageViewCreateInfo = {
 			VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,	//sType;
 			NULL,										//pNext;
 			0,											//flags;
-			p_core->p_swapchain_images[i],					//image;
+			image,										//image;
 			VK_IMAGE_VIEW_TYPE_2D,						//viewType;
-			p_core->image_format,							//format;
+			0,											//format;
 			VK_COMPONENT_SWIZZLE_IDENTITY,				//components;
 			0
-		};
+	};
+	//aspectMask;
+	if (type == SH_SWAPCHAIN_IMAGE) {
+		imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;	
+		imageViewCreateInfo.format = p_core->swapchain_image_format;
+	}
+	else if (type == SH_DEPTH_IMAGE) {
+		imageViewCreateInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		imageViewCreateInfo.format = SH_DEPTH_IMAGE_FORMAT;
+	}
+	imageViewCreateInfo.subresourceRange.baseMipLevel = 0;							//baseMipLevel;
+	imageViewCreateInfo.subresourceRange.levelCount = 1;							//levelCount;
+	imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;						//baseArrayLayer;
+	imageViewCreateInfo.subresourceRange.layerCount = 1;							//layerCount;
+	shCheckVkResult(
+		vkCreateImageView(p_core->device, &imageViewCreateInfo, NULL, p_image_view),
+		"error creating image view"
+	);
+}
 
-		imageViewCreateInfo.subresourceRange.aspectMask   = VK_IMAGE_ASPECT_COLOR_BIT;	//aspectMask;
-		imageViewCreateInfo.subresourceRange.baseMipLevel = 0;							//baseMipLevel;
-		imageViewCreateInfo.subresourceRange.levelCount = 1;							//levelCount;
-		imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;						//baseArrayLayer;
-		imageViewCreateInfo.subresourceRange.layerCount = 1;							//layerCount;
-
-		shCheckVkResult(
-			vkCreateImageView(p_core->device, &imageViewCreateInfo, NULL, &p_core->p_swapchain_image_views[i]),
-			"error creating image view"
-		);
+void shCreateSwapchainImageViews(ShVkCore* p_core) {
+	p_core->p_swapchain_image_views = (VkImageView*)malloc(p_core->swapchain_image_count * sizeof(VkImageView));
+	for (uint32_t i = 0; i < p_core->swapchain_image_count; i++) {
+		shCreateImageView(p_core, p_core->p_swapchain_images[i], SH_SWAPCHAIN_IMAGE, &p_core->p_swapchain_image_views[i]);
 	}
 }
 
@@ -506,8 +504,8 @@ void shCreateRenderPass(ShVkCore* p_core) {
 	
 	VkAttachmentDescription colorAttachmentDescription = {
 		0,									//flags;
-		p_core->image_format,					//format;
-		1,									//samples;
+		p_core->swapchain_image_format,				//format;
+		VK_SAMPLE_COUNT_1_BIT,				//samples;
 		VK_ATTACHMENT_LOAD_OP_CLEAR,		//loadOp;
 		VK_ATTACHMENT_STORE_OP_STORE,		//storeOp;
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,	//stencilLoadOp;
@@ -521,6 +519,23 @@ void shCreateRenderPass(ShVkCore* p_core) {
 		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
 	};
 
+	VkAttachmentDescription depthAttachmentDescription = {
+		0,													//flags;
+		SH_DEPTH_IMAGE_FORMAT,								//format;
+		VK_SAMPLE_COUNT_1_BIT,								//samples;
+		VK_ATTACHMENT_LOAD_OP_CLEAR,						//loadOp;
+		VK_ATTACHMENT_STORE_OP_DONT_CARE,					//storeOp;
+		VK_ATTACHMENT_LOAD_OP_DONT_CARE,					//stencilLoadOp;
+		VK_ATTACHMENT_STORE_OP_DONT_CARE,					//stencilStoreOp;
+		VK_IMAGE_LAYOUT_UNDEFINED,							//initialLayout;
+		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,	//finalLayout;
+	};
+
+	VkAttachmentReference depthAttachmentReference = {
+		1, 													//attachment
+		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL	//layout
+	};
+
 	VkSubpassDescription subpassDescription = {
 		0,									//flags;
 		VK_PIPELINE_BIND_POINT_GRAPHICS,	//pipelineBindPoint;
@@ -529,21 +544,35 @@ void shCreateRenderPass(ShVkCore* p_core) {
 		1,									//colorAttachmentCount;
 		&colorAttachmentReference,			//pColorAttachments;
 		NULL,								//pResolveAttachments;
-		NULL,								//pDepthStencilAttachment;
+		&depthAttachmentReference,			//pDepthStencilAttachment;
 		0,									//preserveAttachmentCount;
 		NULL								//pPreserveAttachments;
+	};
+
+	VkAttachmentDescription attachment_descriptions[2] = {
+		colorAttachmentDescription, depthAttachmentDescription
+	};
+
+	VkSubpassDependency subpassDependency = {
+		0,																							//srcSubpass;
+		0,																							//dstSubpass;
+		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,	//srcStageMask;
+		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,	//dstStageMask;
+		0, 																							//srcAccessMask;
+		VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,		//dstAccessMask;
+		VK_DEPENDENCY_BY_REGION_BIT																	//dependencyFlags;
 	};
 
 	VkRenderPassCreateInfo renderPassCreateInfo = {
 		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,	//sType;
 		NULL,										//pNext;
 		0,											//flags;
-		1,											//attachmentCount;
-		&colorAttachmentDescription,				//pAttachments;
+		2,											//attachmentCount;
+		attachment_descriptions,					//pAttachments;
 		1,											//subpassCount;
 		&subpassDescription,						//pSubpasses;
-		0,											//dependencyCount;
-		NULL										//pDependencies;
+		1,											//dependencyCount;
+		&subpassDependency							//pDependencies;
 	};
 
 #ifndef NDEBUG
@@ -562,10 +591,10 @@ void shSetFramebuffers(ShVkCore* p_core) {
 		VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,	//sType;
 		NULL,										//pNext;
 		0,											//flags;
-		p_core->render_pass,							//renderPass;
-		1,											//attachmentCount;
+		p_core->render_pass,						//renderPass;
+		2,											//attachmentCount;
 		NULL,										//pAttachments;
-		p_core->window.width,							//width;
+		p_core->window.width,						//width;
 		p_core->window.height,						//height;
 		1											//layers;
 	};
@@ -575,7 +604,10 @@ void shSetFramebuffers(ShVkCore* p_core) {
 	p_core->p_frame_buffers = (VkFramebuffer*)malloc(p_core->swapchain_image_count * sizeof(VkFramebuffer));
 
 	for (uint32_t i = 0; i < p_core->swapchain_image_count; i++) {
-		framebufferCreateInfo.pAttachments = &p_core->p_swapchain_image_views[i];
+		VkImageView attachments[2] = {
+			p_core->p_swapchain_image_views[i], p_core->depth_image_view 
+		};
+		framebufferCreateInfo.pAttachments = attachments;
 		shCheckVkResult(
 			vkCreateFramebuffer(p_core->device, &framebufferCreateInfo, NULL, &p_core->p_frame_buffers[i]),
 			"error creating framebuffer"
@@ -623,6 +655,12 @@ void shSwapchainRelease(ShVkCore* p_core) {
 		vkDestroyImageView(p_core->device, p_core->p_swapchain_image_views[i], NULL);
 	}
 	vkDestroySwapchainKHR(p_core->device, p_core->swapchain, NULL);
+}
+
+void shDepthBufferRelease(ShVkCore* p_core) {
+	vkDestroyImageView(p_core->device, p_core->depth_image_view, NULL);
+	vkDestroyImage(p_core->device, p_core->depth_image, NULL);
+	vkFreeMemory(p_core->device, p_core->depth_image_memory, NULL);
 }
 
 void shSurfaceRelease(ShVkCore* p_core) {
@@ -673,6 +711,7 @@ void shInstanceRelease(ShVkCore* p_core) {
 
 void shVulkanRelease(ShVkCore* p_core) {
 	shSwapchainRelease(p_core);
+	shDepthBufferRelease(p_core);
 	shSurfaceRelease(p_core);
 	shCmdRelease(p_core);
 	shRenderPassRelease(p_core);

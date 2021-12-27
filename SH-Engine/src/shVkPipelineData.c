@@ -8,6 +8,10 @@
 
 #include <shVkMemoryInfo.h>
 
+#ifdef _MSC_VER
+#pragma warning (disable: 6386)
+#endif//_MSC_VER
+
 void shAllocateUniformBufferData(const ShVkCore core, const uint32_t bufferSize, ShVkPipelineData* pPipeData) {
 	pPipeData->uniformBufferSize = bufferSize;
 	shCreateBuffer(core.device, pPipeData->uniformBufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, &pPipeData->uniformBuffer);
@@ -251,13 +255,13 @@ void shCreateRasterizer(VkPipelineRasterizationStateCreateInfo *rasterizer) {
 		NULL,														//pNext;
 		0,															//flags;
 		VK_FALSE,													//depthClampEnable;
-		VK_FALSE,													//rasterizerDiscardEnable; //false let the rasterizer draw
+		VK_FALSE,													//rasterizerDiscardEnable;
 		VK_POLYGON_MODE_FILL,										//polygonMode;
 		VK_CULL_MODE_BACK_BIT,										//cullMode
 		VK_FRONT_FACE_CLOCKWISE,									//frontFace
 		VK_FALSE,													//depthBiasEnable 
 		0.0f,														//depthBiasConstantFactor;
-		0.0f,														//depthBiasClamp; // depth bias clamp value
+		0.0f,														//depthBiasClamp;
 		0.0f,														//depthBiasSlopeFactor; 
 		1.0f														//lineWidth;
 	};
@@ -390,6 +394,22 @@ void shSetupGraphicsPipeline(const ShVkCore core, const ShVkFixedStates fStates,
 		mainPipelineLayoutCreateInfo.pSetLayouts = &pPipeData->descriptorSetLayout;
 	}											   
 
+	VkPipelineDepthStencilStateCreateInfo depthStencilStateCreateInfo = {
+		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,	//sType;
+		NULL,														//pNext;
+		0,															//flags;
+		VK_TRUE,													//depthTestEnable;
+		VK_TRUE,													//depthWriteEnable;
+		VK_COMPARE_OP_LESS,											//depthCompareOp;
+		VK_FALSE,													//depthBoundsTestEnable;
+		VK_FALSE,													//stencilTestEnable;
+		0, 															//front;
+		0,															//back;
+		0.0f,														//minDepthBounds;
+		1.0f														//maxDepthBounds;
+	};
+
+
 	shCheckVkResult(
 		vkCreatePipelineLayout(core.device, &mainPipelineLayoutCreateInfo, NULL, &pPipeData->mainPipelineLayout),
 		"error creating main pipeline layout"
@@ -401,13 +421,13 @@ void shSetupGraphicsPipeline(const ShVkCore core, const ShVkFixedStates fStates,
 		0,													//flags;
 		pPipeData->shaderStageCount,						//stageCount;
 		pPipeData->pShaderStages,							//pStages;
-		&fStates.vertex_input_state_info,						//pVertexInputState;
-		&fStates.input_assembly,								//pInputAssemblyState;
+		&fStates.vertex_input_state_info,					//pVertexInputState;
+		&fStates.input_assembly,							//pInputAssemblyState;
 		NULL,												//pTessellationState;
-		&fStates.viewport_state,								//pViewportState;
+		&fStates.viewport_state,							//pViewportState;
 		&fStates.rasterizer,								//pRasterizationState;
-		&fStates.multisample_state_info,						//pMultisampleState;
-		NULL,												//pDepthStencilState;
+		&fStates.multisample_state_info,					//pMultisampleState;
+		&depthStencilStateCreateInfo ,						//pDepthStencilState;
 		&fStates.color_blend_state,							//pColorBlendState;
 		NULL,												//pDynamicState;
 		pPipeData->mainPipelineLayout,						//layout;

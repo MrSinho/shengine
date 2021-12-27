@@ -20,7 +20,9 @@ typedef enum shImageType {
 	SH_DEPTH_IMAGE = 1
 } shImageType;
 
+#define SH_DEPTH_IMAGE_FORMAT VK_FORMAT_D32_SFLOAT
 
+#define SH_SWAPCHAIN_IMAGE_FORMAT VK_FORMAT_R8G8B8A8_UNORM
 
 typedef struct ShVkCore {
 	
@@ -47,16 +49,16 @@ typedef struct ShVkCore {
 
 	/*Swapchain*/
 	VkSwapchainKHR swapchain;
-	VkFormat image_format;
+	VkFormat swapchain_image_format;
 	uint32_t swapchain_image_count;
 	VkImage* p_swapchain_images;
 	VkImageView* p_swapchain_image_views;
 	VkFramebuffer* p_frame_buffers;
 
 	/*Depth buffer*/
-	VkImage depthImage;
-	VkDeviceMemory depthImageMemory;
-	VkImageView depthImageView;
+	VkImage depth_image;
+	VkDeviceMemory depth_image_memory;
+	VkImageView depth_image_view;
 
 	/*Render pass + sync objects*/
 	VkRenderPass render_pass;
