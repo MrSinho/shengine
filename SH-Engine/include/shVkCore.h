@@ -14,6 +14,14 @@ typedef struct ShVkPipelineData ShVkPipelineData;
 
 typedef struct ShMesh ShMesh;
 
+
+typedef enum shImageType {
+	SH_SWAPCHAIN_IMAGE = 0,
+	SH_DEPTH_IMAGE = 1
+} shImageType;
+
+
+
 typedef struct ShVkCore {
 	
 	/*Initialization stuff*/
@@ -45,6 +53,11 @@ typedef struct ShVkCore {
 	VkImageView* p_swapchain_image_views;
 	VkFramebuffer* p_frame_buffers;
 
+	/*Depth buffer*/
+	VkImage depthImage;
+	VkDeviceMemory depthImageMemory;
+	VkImageView depthImageView;
+
 	/*Render pass + sync objects*/
 	VkRenderPass render_pass;
 	VkSemaphore render_semaphore;
@@ -54,7 +67,6 @@ typedef struct ShVkCore {
 } ShVkCore;
 
 
-
 extern void shCreateWindowSurface(ShVkCore* p_core);
 
 extern VkSurfaceCapabilitiesKHR shGetSurfaceCapabilities(const VkPhysicalDevice pDevice, const VkSurfaceKHR surface);
@@ -62,8 +74,6 @@ extern VkSurfaceCapabilitiesKHR shGetSurfaceCapabilities(const VkPhysicalDevice 
 
 
 extern ShVkCore shVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char* title);
-
-extern void shInitVulkan(ShVkCore* p_core);
 
 extern void shCreateInstance(ShVkCore* p_core);
 
@@ -85,11 +95,13 @@ extern void shCreateSwapchain(ShVkCore* p_core);
 
 extern void shGetSwapchainImages(ShVkCore* p_core);
 
+extern void shCreateImageView(ShVkCore* p_core, const VkImage image, const shImageType type, VkImageView* p_image_view);
+
 extern void shCreateSwapchainImageViews(ShVkCore* p_core);
 
 extern void shInitSwapchainData(ShVkCore* p_core);
 
-
+extern void shCreateDepthImageView(ShVkCore* p_core);
 
 extern void shInitCommands(ShVkCore* p_core);
 
@@ -106,6 +118,8 @@ extern void shSetFramebuffers(ShVkCore* p_core);
 extern void shSetSyncObjects(ShVkCore* p_core);
 
 extern void shSwapchainRelease(ShVkCore* p_core);
+
+extern void shDepthBufferRelease(ShVkCore* p_core);
 
 extern void shSurfaceRelease(ShVkCore* p_core);
 
