@@ -2,9 +2,6 @@
 #include "shVkCore.h"
 #include "shUtilities.h"
 
-#include "shMesh.h"
-#include "shMeshInfo.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,34 +30,10 @@ void shCreateBuffer(const VkDevice device, const uint32_t size, VkBufferUsageFla
 	);
 }
 
-void shCreateVertexBuffer(const ShVkCore core, const ShMeshInfo mesh_info, ShMesh* mesh) {
-	shCreateBuffer(core.device, mesh_info.vertex_count * sizeof(mesh_info.p_vertices[0]), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, &mesh->vertex_buffer);
-}
-
-void shAllocateVertexBuffer(const ShVkCore core, ShMesh* mesh) {
-	shAllocateMemory(core.device, core.physical_device, mesh->vertex_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &mesh->vertex_buffer_memory);
-}
-
-void shMapVertexBufferMemory(const ShVkCore core, const ShMeshInfo mesh_info, ShMesh* mesh) {
-	shMapMemory(core.device, mesh->vertex_buffer_memory, mesh_info.vertex_count * sizeof(mesh_info.p_vertices[0]), (void*)mesh_info.p_vertices);
-}
-
-void shCreateIndexBuffer(const ShVkCore core, const ShMeshInfo mesh_info, ShMesh* mesh) {
-	shCreateBuffer(core.device, mesh_info.index_count * sizeof(mesh_info.p_indices[0]), VK_BUFFER_USAGE_INDEX_BUFFER_BIT, &mesh->index_buffer);
-}
-
-void shAllocateIndexBuffer(const ShVkCore core, ShMesh* mesh) {
-	shAllocateMemory(core.device, core.physical_device, mesh->index_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &mesh->index_buffer_memory);
-}
-
-void shMapIndexBufferMemory(const ShVkCore core, const ShMeshInfo mesh_info, ShMesh* mesh) {
-	shMapMemory(core.device, mesh->index_buffer_memory, mesh_info.index_count * sizeof(mesh_info.p_indices[0]), (void*)mesh_info.p_indices);
-}
-
 void shAllocateMemory(const VkDevice device, const VkPhysicalDevice physical_device, const VkBuffer buffer, const uint32_t typeFlags, VkDeviceMemory *pMemory) {
 
 	uint32_t memoryTypeIndex = 0;
-	shGetMemoryType(device, physical_device, buffer, typeFlags, &memoryTypeIndex);
+	shGetMemoryType(device, physical_device, typeFlags, &memoryTypeIndex);
 
 	VkMemoryRequirements memoryRequirements;
 	vkGetBufferMemoryRequirements(device, buffer, &memoryRequirements);
@@ -91,7 +64,7 @@ void shAllocateMemory(const VkDevice device, const VkPhysicalDevice physical_dev
 	);
 }
 
-void shGetMemoryType(const VkDevice device, const VkPhysicalDevice physical_device, const VkBuffer buffer, const uint32_t typeFlags, uint32_t *memoryTypeIndex) {
+void shGetMemoryType(const VkDevice device, const VkPhysicalDevice physical_device, const uint32_t typeFlags, uint32_t *memoryTypeIndex) {
 	
 	VkPhysicalDeviceMemoryProperties memoryProperties;
 	vkGetPhysicalDeviceMemoryProperties(physical_device, &memoryProperties);
@@ -130,4 +103,49 @@ void shMapMemory(const VkDevice device, const VkDeviceMemory memory, const uint3
 void shClearBufferMemory(const VkDevice device, const VkBuffer buffer, const VkDeviceMemory memory) {
 	vkDestroyBuffer(device, buffer, NULL);
 	vkFreeMemory(device, memory, NULL);
+}
+
+void shCreateImage(ShVkCore core, const uint32_t width, const uint32_t height, VkFormat format, VkImageUsageFlags usage, VkImage* p_image, VkDeviceMemory* p_image_memory) {
+	VkExtent3D image_extent = {
+		width, height, 1
+	};
+
+	VkImageCreateInfo image_create_info = {
+		VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,	//sType;			
+		NULL,									//pNext;
+		0,										//flags;
+		VK_IMAGE_TYPE_2D,						//imageType;
+		format,									//format;
+		image_extent,							//extent;
+		1,										//mipLevels;
+		1,										//arrayLayers;
+		VK_SAMPLE_COUNT_1_BIT,					//samples;
+		VK_IMAGE_TILING_OPTIMAL,				//tiling;
+		usage,									//usage;
+		VK_SHARING_MODE_EXCLUSIVE,				//sharingMode;
+		0,										//queueFamilyIndexCount;
+		NULL									//pQueueFamilyIndices;
+	};
+	shCheckVkResult(vkCreateImage(core.device, &image_create_info, NULL, p_image),
+		"error creating image"
+	);
+
+	VkMemoryRequirements memory_requirements;
+	vkGetImageMemoryRequirements(core.device, *p_image, &memory_requirements);
+
+	uint32_t memory_type_index = 0;
+	shGetMemoryType(core.device, core.physical_device, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &memory_type_index);
+
+	VkMemoryAllocateInfo memory_allocate_info = {
+		VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+		NULL,
+		memory_requirements.size,
+		memory_type_index
+	};
+
+	shCheckVkResult(vkAllocateMemory(core.device, &memory_allocate_info, NULL, p_image_memory),
+		"error allocating image memory"
+	);
+
+	vkBindImageMemory(core.device, *p_image, *p_image_memory, 0);
 }
