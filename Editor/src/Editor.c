@@ -20,7 +20,7 @@ void updateBehaviour(const ShTime time, ShRigidBody** pp_rbodies, uint32_t rbody
 
 int main() {
 
-	ShVkCore core = shVkCoreInitPrerequisites(1900/2, 1000, "SH-Engine Editor");
+	ShVkCore core = shVkCoreInitPrerequisites(720, 480, "SH-Engine Editor");
 
 	shInitVulkan(&core);
 
