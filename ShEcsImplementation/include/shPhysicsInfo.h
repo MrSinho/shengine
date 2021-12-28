@@ -1,5 +1,5 @@
-#ifndef SH_DYNAMICS_INFO_H
-#define SH_DYNAMICS_INFO_H
+#ifndef SH_PHYSICS_INFO_H
+#define SH_PHYSICS_INFO_H
 
 #include "shEcsImplementation.h"
 

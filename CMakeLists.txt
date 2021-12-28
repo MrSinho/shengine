@@ -11,11 +11,10 @@ set(CGLM_STATIC ON)
 #SUBDIRECTORIES
 add_subdirectory(Externals/glfw)
 add_subdirectory(Externals/cglm)
-add_subdirectory(Externals/PlyImporter)
 add_subdirectory(Externals/json-c)
+add_subdirectory(Externals/PlyImporter)
 add_subdirectory(Externals/ShPhysics)
 add_subdirectory(Externals/ShSerial)
-add_subdirectory(Externals/glslang)
 
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)
@@ -30,7 +29,7 @@ if(SH_USE_VULKAN_1_1)
     add_definitions(-DSH_USE_VULKAN_1_1)
 endif(SH_USE_VULKAN_1_1)
 
-#SHUTILITIES
+#SHFILE
 file(GLOB_RECURSE SH_UTILITIES_SRC ShUtilities/src/*.c)
 add_library(ShUtilities STATIC ${SH_UTILITIES_SRC})
 target_include_directories(ShUtilities PUBLIC
@@ -39,11 +38,6 @@ target_include_directories(ShUtilities PUBLIC
 )
 target_link_libraries(ShUtilities PUBLIC 
     ${VULKAN_LIBRARIES}
-    glslang
-    HLSL
-    OSDependent
-    OGLCompiler
-    SPIRV
 )
 
 #SHDESCRIPTORHANDLE
@@ -60,14 +54,15 @@ target_link_libraries(ShDescriptorHandle PUBLIC
     ShPhysics
 )
 
-#FOGGY-ENGINE
+#SH-ENGINE
 file(GLOB_RECURSE FOGGY_ENGINE_SRC SH-Engine/src/*.c)
 add_library(SH-Engine STATIC ${FOGGY_ENGINE_SRC})
 target_include_directories(SH-Engine PUBLIC 
+    ${Vulkan_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Externals/stb
     ${CMAKE_CURRENT_SOURCE_DIR}/ShEcsImplementation/include
     ${CMAKE_CURRENT_SOURCE_DIR}/Externals/ShECS/ShECS/include
     ${CMAKE_CURRENT_SOURCE_DIR}/SH-Engine/include
-    ${Vulkan_INCLUDE_DIRS}
 )
 target_link_libraries(SH-Engine PUBLIC
     glfw

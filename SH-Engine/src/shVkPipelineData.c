@@ -1,7 +1,8 @@
 #include "shVkCore.h"
 #include "shVkPipelineData.h"
 #include "shProjection.h"
-#include "shUtilities.h"
+#include "shVkCheck.h"
+#include "shFile.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -129,7 +130,7 @@ void shSetupShaders(const ShVkCore core, const char* vertexspv, const char* frag
 void shCreateShaderModule(const VkDevice device, const char* input, VkShaderModule* shaderModule) {
 	
 	uint32_t codeSize = 0;
-	char* shader_code = (char*)shReadCode(input, &codeSize, "rb");
+	char* shader_code = (char*)shReadBinary(input, &codeSize);
 
 	VkShaderModuleCreateInfo shaderModuleCreateInfo = {
 		VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,	//sType;

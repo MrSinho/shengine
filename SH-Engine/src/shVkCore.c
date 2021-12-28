@@ -4,7 +4,7 @@
 
 #include "shVkCore.h"
 #include "shWindow.h"
-#include "shUtilities.h"
+#include "shVkCheck.h"
 #include "shComponents.h"
 
 #ifdef _MSC_VER

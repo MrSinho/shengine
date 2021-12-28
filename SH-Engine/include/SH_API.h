@@ -18,7 +18,6 @@
 #include "shWindow.h"
 #include "shInput.h"
 #include "shTime.h"
-#include "shUtilities.h"
 
 #include "shDescriptorHandle.h"
 

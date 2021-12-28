@@ -47,6 +47,16 @@ cd SH-Engine
 
 ### Generate projects
 
+On Windows:
+```batch
+type configure.txt|cmd
+```
+
+On Linux:
+```bash
+bash configure.txt
+```
+
 Use cmake:
 ```bash
 mkdir build && cd build

@@ -19,6 +19,6 @@
 [submodule "Externals/ShSerial"]
 	path = Externals/ShSerial
 	url = https://github.com/MrSinho/ShSerial
-[submodule "Externals/glslang"]
-	path = Externals/glslang
-	url = https://github.com/KhronosGroup/glslang
+[submodule "Externals/stb"]
+	path = Externals/stb
+	url = https://github.com/nothings/stb.git

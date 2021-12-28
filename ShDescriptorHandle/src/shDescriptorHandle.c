@@ -1,10 +1,11 @@
 #include "shDescriptorHandle.h"
-#include "shUtilities.h"
+#include "shCheck.h"
 #include "shCamera.h"
 #include "shTransform.h"
 #include "shMaterialInfo.h"
 #include "shIdentity.h"
 #include "shPhysicsInfo.h"
+#include "shFile.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -106,7 +107,7 @@ uint32_t shStringFlagToInt(const char* s_flag) {
 void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMaterialInfo** pp_mat_infos) {
     assert(p_mat_info_count != NULL);
 
-    char* buffer = (char*)shReadCode(path, NULL, "r");
+    char* buffer = (char*)shReadText(path, NULL);
     if (buffer == NULL) { return; }
 
     json_object* parser = json_tokener_parse(buffer);
@@ -122,7 +123,7 @@ void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMateria
         for (uint32_t i = 0; i < shader_source_count; i += 2) {
             const char* shader_source = json_object_get_string(json_object_array_get_idx(json_shader_sources, i));
             const char* bin = json_object_get_string(json_object_array_get_idx(json_shader_sources, (size_t)i + 1));
-            shCompileGLSLShader(shader_source, bin);
+            ////shCompileGLSLShader(shader_source, bin);
         }
     }
 
@@ -160,7 +161,7 @@ void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMateria
 void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p_scene) {
     assert(p_scene != NULL && p_mat_infos != NULL);
 
-    char* buffer = (char*)shReadCode(path, NULL, "r");
+    char* buffer = (char*)shReadText(path, NULL);
     if (buffer == NULL) { return; }
 
     json_object* parser = json_tokener_parse(buffer);
@@ -299,7 +300,7 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
 
 void shLoadPhysicsWorld(const char* path, ShScene* p_scene, ShDynamicsWorld* p_dynamics) {
     assert(p_scene != NULL && p_dynamics != NULL);
-    char* buffer = (char*)shReadCode(path, NULL, "r");
+    char* buffer = (char*)shReadText(path, NULL);
     if (buffer == NULL) { return; }
 
     json_object* parser = json_tokener_parse(buffer);
@@ -333,6 +334,7 @@ void shLoadPhysicsWorld(const char* path, ShScene* p_scene, ShDynamicsWorld* p_d
         }
         *p_dynamics = dynamics;
     }
+    free(buffer);
 }
 
 uint8_t shListenDescriptor(ShDescriptorHandle* descriptor_handle) {

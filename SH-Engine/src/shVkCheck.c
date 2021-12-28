@@ -1,36 +1,12 @@
-#include "shUtilities.h"
+#include "shVkCheck.h"
 
-#include <stdio.h>
+
 #include <stdlib.h>
-#include <string.h>
-
-#ifdef _MSC_VER
-#pragma warning (disable: 4996)
-#pragma warning (disable: 6385)
-#endif // _MSC_VER
-
-const char* shReadCode(const char* path, uint32_t* p_code_size, const char* mode) {
-
-	FILE* stream = fopen(path, mode);
-
-	if (stream == NULL) { return NULL; }
-
-	fseek(stream, 0, SEEK_END);
-	uint32_t code_size = ftell(stream);
-	fseek(stream, 0, SEEK_SET);
-
-	char* code = (char*)malloc(code_size);
-	if (code == NULL) { free(stream); return NULL; }
-
-	fread(code, code_size, 1, stream);
-	(p_code_size != NULL) && (*p_code_size = code_size);
-
-	//free(stream);
-
-	return code;
-}
 
 #ifndef NDEBUG
+
+#include <stdio.h>
+#include <string.h>
 
 int shCheckValidationLayer(const char* validationLayer) {
 
@@ -56,33 +32,6 @@ int shCheckValidationLayer(const char* validationLayer) {
 }
 
 #endif
-
-void shCheckResult(int result, const char* errormsg) {
-	if (!result) {
-#ifndef NDEBUG
-		printf("ShError: %s\n", errormsg);
-#endif // NDEBUG
-		system("pause");
-		exit(-1);
-	}
-}
-
-void shCheckVkResult(VkResult result, const char* errormsg) {
-	if (result != VK_SUCCESS) {
-#ifndef NDEBUG
-		printf("ShError: %s, %s\n", errormsg, shTranslateVkResult(result));
-#endif // NDEBUG
-		system("pause");
-		exit(-1);
-	}
-}
-
-void shCheckValue(const int result, const int desiredValue, const char* errormsg) {
-	if (result != desiredValue) {
-		perror(errormsg);
-		exit(EXIT_FAILURE);
-	}
-}
 
 const char* shTranslateVkResult(const VkResult vkResult) {
 	switch (vkResult) {
@@ -114,15 +63,12 @@ const char* shTranslateVkResult(const VkResult vkResult) {
 	return "unknown vkresult";
 }
 
-void shCompileGLSLShader(const char* input, const char* output) {
-	char cmd[256] = { 0 };
-	const char* o = " -o ";
-	strcpy(cmd, "glslc ");
-	strcat(cmd, input);
-	strcat(cmd, o);
-	strcat(cmd, output);
+void shCheckVkResult(VkResult result, const char* errormsg) {
+	if (result != VK_SUCCESS) {
 #ifndef NDEBUG
-	puts(cmd);
-#endif
-	int rtrn = system(cmd);
+		printf("ShError: %s, %s\n", errormsg, shTranslateVkResult(result));
+#endif // NDEBUG
+		system("pause");
+		exit(-1);
+	}
 }

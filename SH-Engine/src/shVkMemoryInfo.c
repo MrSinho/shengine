@@ -1,12 +1,15 @@
 #include "shVkMemoryInfo.h"
 #include "shVkCore.h"
-#include "shUtilities.h"
+#include "shVkCheck.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <shVkPipelineData.h>
+#include "shVkPipelineData.h"
+
+#ifndef NDEBUG
+#include <stdio.h>
+#endif//NDEBUG
 
 void shCreateBuffer(const VkDevice device, const uint32_t size, VkBufferUsageFlagBits usage_flags, VkBuffer* buffer) {
 	VkBufferCreateInfo buffer_create_info = {
@@ -81,7 +84,7 @@ void shGetMemoryType(const VkDevice device, const VkPhysicalDevice physical_devi
 
 #ifndef NDEBUG
 	printf("cannot find suitable memory type for given buffer \n");
-#endif 
+#endif//NDEBUG
 	exit(-1);
 }
 

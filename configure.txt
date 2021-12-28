@@ -1,0 +1,2 @@
+cd Externals/shaderc 
+python utils/git-sync-deps
