@@ -17,9 +17,9 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Uniform buffer object support
  - Real time scene descriptor loader
  - Custom shader handling (more about that in the Coulomb shader and example)
-
+ - Depth buffer
+ 
 ## To do:
- - Depth buffering
  - Double/triple buffering
  - Textures
  - Shader system sucks

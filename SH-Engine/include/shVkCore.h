@@ -16,8 +16,8 @@ typedef struct ShMesh ShMesh;
 
 
 typedef enum shImageType {
-	SH_SWAPCHAIN_IMAGE = 0,
-	SH_DEPTH_IMAGE = 1
+	SH_SWAPCHAIN_IMAGE = 0b001,
+	SH_DEPTH_IMAGE = 0b010
 } shImageType;
 
 #define SH_DEPTH_IMAGE_FORMAT VK_FORMAT_D32_SFLOAT

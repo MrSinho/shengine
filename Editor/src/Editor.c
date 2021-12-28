@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void updateBehaviour(const ShTime time, ShRigidBody** pp_rbodies, uint32_t rbody_count, ShScene* scene) {
+void updateBehaviour(const ShTime time, ShScene* scene) {
 	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
 		if (shHasShIdentity(scene, entity)) {
 			ShIdentity* identity = shGetShIdentity(scene, entity);
@@ -67,7 +67,7 @@ int main() {
 		
 		shSceneUpdate(core, time, &scene);
 		shDynamicsWorldSimulate((shreal)time.delta_time, &dynamics);
-		updateBehaviour(time, dynamics.pp_rbodies, dynamics.rbody_count, &scene);
+		updateBehaviour(time, &scene);
 
 		shFrameEnd(core, image_index);
 	}

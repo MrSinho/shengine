@@ -35,9 +35,12 @@ void shFrameBegin(const ShVkCore core, uint32_t* pSwapchainImageIndex) {
 			{0, 0},										//
 			{core.window.width, core.window.height}	//
 		},												//renderArea;
-		2,												//clearValueCount;
+		1,												//clearValueCount;
 		clear_values									//pClearValues;
 	};
+	if (core.depth_image_view != VK_NULL_HANDLE) {
+		renderPassBeginInfo.clearValueCount = 2;
+	}
 
 	vkBeginCommandBuffer(core.p_cmd_buffers[0], &cmdBufferBeginInfo);
 

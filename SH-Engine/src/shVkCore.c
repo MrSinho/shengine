@@ -504,7 +504,7 @@ void shCreateRenderPass(ShVkCore* p_core) {
 	
 	VkAttachmentDescription colorAttachmentDescription = {
 		0,									//flags;
-		p_core->swapchain_image_format,				//format;
+		p_core->swapchain_image_format,		//format;
 		VK_SAMPLE_COUNT_1_BIT,				//samples;
 		VK_ATTACHMENT_LOAD_OP_CLEAR,		//loadOp;
 		VK_ATTACHMENT_STORE_OP_STORE,		//storeOp;
@@ -544,10 +544,13 @@ void shCreateRenderPass(ShVkCore* p_core) {
 		1,									//colorAttachmentCount;
 		&colorAttachmentReference,			//pColorAttachments;
 		NULL,								//pResolveAttachments;
-		&depthAttachmentReference,			//pDepthStencilAttachment;
+		NULL,								//pDepthStencilAttachment;
 		0,									//preserveAttachmentCount;
 		NULL								//pPreserveAttachments;
 	};
+	if (p_core->depth_image_view != VK_NULL_HANDLE) {
+		subpassDescription.pDepthStencilAttachment = &depthAttachmentReference;
+	}
 
 	VkAttachmentDescription attachment_descriptions[2] = {
 		colorAttachmentDescription, depthAttachmentDescription
@@ -567,13 +570,18 @@ void shCreateRenderPass(ShVkCore* p_core) {
 		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,	//sType;
 		NULL,										//pNext;
 		0,											//flags;
-		2,											//attachmentCount;
+		1,											//attachmentCount;
 		attachment_descriptions,					//pAttachments;
 		1,											//subpassCount;
 		&subpassDescription,						//pSubpasses;
-		1,											//dependencyCount;
-		&subpassDependency							//pDependencies;
+		0,											//dependencyCount;
+		NULL										//pDependencies;
 	};
+	if (p_core->depth_image_view != VK_NULL_HANDLE) {
+		renderPassCreateInfo.attachmentCount = 2;
+		renderPassCreateInfo.dependencyCount = 1;
+		renderPassCreateInfo.pDependencies = &subpassDependency;
+	}
 
 #ifndef NDEBUG
 	puts("creating render pass");
@@ -592,7 +600,7 @@ void shSetFramebuffers(ShVkCore* p_core) {
 		NULL,										//pNext;
 		0,											//flags;
 		p_core->render_pass,						//renderPass;
-		2,											//attachmentCount;
+		1,											//attachmentCount;
 		NULL,										//pAttachments;
 		p_core->window.width,						//width;
 		p_core->window.height,						//height;
@@ -607,6 +615,9 @@ void shSetFramebuffers(ShVkCore* p_core) {
 		VkImageView attachments[2] = {
 			p_core->p_swapchain_image_views[i], p_core->depth_image_view 
 		};
+		if (p_core->depth_image_view != VK_NULL_HANDLE) {
+			framebufferCreateInfo.attachmentCount = 2;
+		}
 		framebufferCreateInfo.pAttachments = attachments;
 		shCheckVkResult(
 			vkCreateFramebuffer(p_core->device, &framebufferCreateInfo, NULL, &p_core->p_frame_buffers[i]),

@@ -15,6 +15,7 @@ add_subdirectory(Externals/PlyImporter)
 add_subdirectory(Externals/json-c)
 add_subdirectory(Externals/ShPhysics)
 add_subdirectory(Externals/ShSerial)
+add_subdirectory(Externals/glslang)
 
 #INSTALLED PACKAGES
 find_package(Vulkan REQUIRED FATAL_ERROR)
@@ -38,6 +39,11 @@ target_include_directories(ShUtilities PUBLIC
 )
 target_link_libraries(ShUtilities PUBLIC 
     ${VULKAN_LIBRARIES}
+    glslang
+    HLSL
+    OSDependent
+    OGLCompiler
+    SPIRV
 )
 
 #SHDESCRIPTORHANDLE
@@ -71,16 +77,6 @@ target_link_libraries(SH-Engine PUBLIC
     PlyImporter
     ShDescriptorHandle
 )
-
-#SHADERS
-message(STATUS "looking for glslc")
-find_program(GLSLC_FOUND glslc)
-if (NOT GLSLC_FOUND)
-    message(STATUS "glslc not found, required for shader compilation, install before executing the engine in debug mode")
-else()
-    message(STATUS "found glslc")
-endif()
-
 
 #EDITOR
 file(GLOB_RECURSE EDITOR_SRC Editor/src/*.c)
