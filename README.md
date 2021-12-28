@@ -18,6 +18,7 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Real time scene descriptor loader
  - Custom shader handling (more about that in the Coulomb shader and example)
  - Depth buffer
+ - Physics support using [ShPhysics](https://github.com/MrSinho/ShPhysics) by MrSinho
  
 ## To do:
  - Double/triple buffering
