@@ -4,7 +4,7 @@
       "path": "../Assets/Meshes/sphere.ply"
     },
     {
-      "path": "../Assets/Meshes/sphere.ply"
+      "path": "../Assets/Meshes/cube.ply"
     }
   ],
   "entities": [
@@ -29,13 +29,33 @@
         "flags": "MESH_SETUP_STATIC_MESH"
       },
       "transform": {
-        "position": [ -1, 0, 0 ],
+        "position": [ -2, 0, 0 ],
         "scale": [ 1.5, 1.5, 1.5 ]
       },
       "material": 1,
       "rigidbody": {
         "mass": 500,
+        "fulcrum": "position",
         "shape": "COLLISION_SHAPE_SPHERE",
+        "radius": 1.5
+      }
+    },
+    {
+      "identity": {
+        "name": "base"
+      },
+      "mesh": {
+        "data_index": 1,
+        "flags": "MESH_SETUP_STATIC_MESH"
+      },
+      "transform": {
+        "position": [ 0, -3, 0 ],
+        "scale": [ 8, 1.5, 1.5 ]
+      },
+      "material": 1,
+      "rigidbody": {
+        "mass": 0,
+        "shape": "",
         "radius": 1.5
       }
     },
@@ -44,38 +64,38 @@
         "name": "moon"
       },
       "mesh": {
-        "data_index": 1
+        "data_index": 0
       },
       "transform": {
         "position": [ 5, 0, 0 ],
         "rotation": [ 0, 0, 0],
         "scale": [1, 1, 1]
       },
-      "material": 0,
+      "material": 1,
       "rigidbody": {
         "mass": 8,
         "shape": "COLLISION_SHAPE_SPHERE",
         "radius": 1
-      },
+      }
     },
     {
       "identity": {
         "name": "mars"
       },
       "mesh": {
-        "data_index": 1
+        "data_index": 0
       },
       "transform": {
-        "position": [-5, 5, 0 ],
+        "position": [-12, 0, 0 ],
         "rotation": [ 0, 0, 0],
         "scale": [3, 3, 3]
       },
       "material": 0,
       "rigidbody": {
-        "mass": 50,
+        "mass": 0,
         "shape": "COLLISION_SHAPE_SPHERE",
         "radius": 3
       }
     }
-  ],
+  ]
 }

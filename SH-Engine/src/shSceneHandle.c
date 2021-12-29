@@ -4,15 +4,28 @@
 #include "shSceneHandle.h"
 #include "shComponentEmbedded.h"
 #include "shComponents.h"
+
 #include "shProjection.h"
 #include "shView.h"
 #include "shDrawLoop.h"
-#include "shEuler.h"
 #include "shInput.h"
+
+#include "shLinearAlgebra.h"
+#include "shMatrix.h"
+#include "shEuler.h"
+#include "shVector.h"
 #include "shPhysicsInfo.h"
 
 #include <string.h>
 
+void shUpdateTransform(ShTransform* t) {
+	glm_mat4_identity(t->model);
+	shMat4Translate(t->model, t->position, t->model);
+	shMat4Scale(t->model, t->scale, t->model);
+	shMat4Rotate(t->model, SH_DEGREES_TO_RADIANS(t->rotation[0]), (shvec3) { 1.0f, 0.0f, 0.0f }, t->model);
+	shMat4Rotate(t->model, SH_DEGREES_TO_RADIANS(t->rotation[1]), (shvec3) { 0.0f, 1.0f, 0.0f }, t->model);
+	shMat4Rotate(t->model, SH_DEGREES_TO_RADIANS(t->rotation[2]), (shvec3) { 0.0f, 0.0f, 1.0f }, t->model);
+}
 
 void shSceneInit(const ShVkCore core, ShScene* scene) {
 
@@ -51,9 +64,10 @@ void shSceneInit(const ShVkCore core, ShScene* scene) {
 		if (shHasShTransform(scene, entity)) {
 			ShTransform* t = shGetShTransform(scene, entity);
 			t->position[1] *= -1.0f;
+			shUpdateTransform(t);
 			if (shHasShRigidBody(scene, entity)) {
 				ShRigidBody* p_rb = shGetShRigidBody(scene, entity);
-				p_rb->position = t->position;
+				memcpy(p_rb->transform, t->model, sizeof(shmat4));
 			}
 		}
 
@@ -69,56 +83,59 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 
 		if (shHasShTransform(scene, entity)) {
 			ShTransform* t = shGetShTransform(scene, entity);
-			glm_mat4_identity(t->model);
-			glm_translate(t->model, t->position);
-			glm_scale(t->model, t->scale);
-			glm_rotate(t->model, glm_rad(t->rotation[0]), (vec3) { 1.0f, 0.0f, 0.0f });
-			glm_rotate(t->model, glm_rad(t->rotation[1]), (vec3) { 0.0f, 1.0f, 0.0f });
-			glm_rotate(t->model, glm_rad(t->rotation[2]), (vec3) { 0.0f, 0.0f, 1.0f });
-			shDegreesToVector(t->rotation, t->front);
+			if (shHasShRigidBody(scene, entity)) {
+				ShRigidBody* p_rb = shGetShRigidBody(scene, entity);
+				//printf("pos %f\n", p_rb->transform[3][1]);
+				memcpy(t->model, p_rb->transform, sizeof(shmat4));
+			}
+			else {
+				shUpdateTransform(t);
+			}
+			
+			shEulerToVector(t->rotation, t->front);
+			
+			shVec3Cross((shvec3) { 0.0f, 1.0f, 0.0f }, t->front, t->left);
+			shVec3Normalize(t->left, t->left);
 
-			glm_cross((vec3) { 0.0f, 1.0f, 0.0f }, t->front, t->left);
-			glm_normalize(t->left);
-
-			glm_cross(t->front, t->left, t->up);
-			glm_normalize(t->up);
+			shVec3Cross(t->front, t->left, t->up);
+			shVec3Normalize(t->up, t->up);
 
 			if (shHasShCamera(scene, entity)) {
 				camera = *shGetShCamera(scene, entity);
 				if (camera.flags & SH_CAMERA_SETUP_FREE_FLIGHT_BIT) {
-					vec3 displacement = { 0.0f, 0.0f, 0.0f };
+					shvec3 displacement = { 0.0f, 0.0f, 0.0f };
 					if (shIsKeyPressed(core.window, KEY_W)) {
-						glm_vec3_copy(t->front, displacement);
+						memcpy(displacement, t->front, sizeof(shvec3));
 						displacement[0] *= camera.speed;
 						displacement[1] *= camera.speed;
 						displacement[2] *= camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_A)) {
-						glm_vec3_copy(t->left, displacement);
+						memcpy(displacement, t->left, sizeof(shvec3));
 						displacement[0] *= camera.speed;
 						displacement[1] *= camera.speed;
 						displacement[2] *= camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_S)) {
-						glm_vec3_copy(t->front, displacement);
+						memcpy(displacement, t->front, sizeof(shvec3));
 						displacement[0] *= -1.0f * camera.speed;
 						displacement[1] *= -1.0f * camera.speed;
 						displacement[2] *= -1.0f * camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_D)) {
-						glm_vec3_copy(t->left, displacement);
+						memcpy(displacement, t->left, sizeof(shvec3));
 						displacement[0] *= -1.0f * camera.speed;
 						displacement[1] *= -1.0f * camera.speed;
 						displacement[2] *= -1.0f * camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_E)) {
-						glm_vec3_copy(t->up, displacement);
+						memcpy(displacement, t->up, sizeof(shvec3));
 						displacement[0] *= -1.0f * camera.speed;
 						displacement[1] *= -1.0f * camera.speed;
 						displacement[2] *= -1.0f * camera.speed;
 					}
 					if (shIsKeyPressed(core.window, KEY_Q)) {
-						glm_vec3_copy(t->up, displacement);
+						memcpy(displacement, t->up, sizeof(shvec3));
 						displacement[0] *= camera.speed;
 						displacement[1] *= camera.speed;
 						displacement[2] *= camera.speed;
@@ -133,11 +150,11 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 						shMouseOffset(core.window, &dx, &dy);
 						t->rotation[0] -= 0.6f * (float)dy * (float)time.delta_time;
 						t->rotation[1] -= 0.6f * (float)dx * (float)time.delta_time;
-						if (t->rotation[0] >= glm_rad(89.99999f)) {
-							t->rotation[0] = glm_rad(89.99999f);
+						if (t->rotation[0] >= SH_DEGREES_TO_RADIANS(89.99999f)) {
+							t->rotation[0] = SH_DEGREES_TO_RADIANS(89.99999f);
 						}
-						if (t->rotation[0] <= glm_rad(-89.99999f)) {
-							t->rotation[0] = glm_rad(-89.99999f);
+						if (t->rotation[0] <= SH_DEGREES_TO_RADIANS(-89.99999f)) {
+							t->rotation[0] = SH_DEGREES_TO_RADIANS(-89.99999f);
 						}
 					}
 					else if (shIsMouseButtonReleased(core.window, MOUSE_BUTTON_RIGHT)) {

@@ -19,4 +19,4 @@ typedef struct ShTransform {
 
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShTransform, 0)
 
-#endif
+#endif//SH_TRANSFORM_H

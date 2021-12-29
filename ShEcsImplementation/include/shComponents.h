@@ -9,5 +9,6 @@
 #include "shCamera.h"
 #include "shMaterialInfo.h"
 #include "shIdentity.h"
+#include "shPhysicsInfo.h"
 
-#endif // SH_COMPONENTS_H
+#endif//SH_COMPONENTS_H

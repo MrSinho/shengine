@@ -280,17 +280,24 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
             (json_subtag != NULL) && (p_identity->subtag = json_object_get_string(json_subtag));
         }
         if (json_rigidbody != NULL) {
-            ShRigidBody* p_rb = shAddShRigidBody(p_scene, entity);
             json_object* json_mass = json_object_object_get(json_rigidbody, "mass");
             json_object* json_shape = json_object_object_get(json_rigidbody, "shape");
-            json_object* json_radius = json_object_object_get(json_rigidbody, "radius");
+            
+            shreal mass = DEC(0.0);
             ShCollisionShapeType shape_type = 0;
-            shreal radius = DEC(0.0);
-            (json_mass   != NULL) && (p_rb->mass = (shreal)json_object_get_double(json_mass));
-            (json_shape  != NULL) && (shape_type = shStringFlagToInt(json_object_get_string(json_shape)));
-            (json_radius != NULL) && (radius = (shreal)json_object_get_double(json_radius));
-            shDynamicsSetCollisionShape(shape_type, p_rb);
-            shDynamicsSetCollisionSphereRadius(radius, p_rb);
+
+            (json_mass   != NULL) && (mass = (shreal)json_object_get_double(json_mass));
+            (json_shape != NULL) && (shape_type = shStringFlagToInt(json_object_get_string(json_shape)));
+            
+            ShRigidBody* p_rb = shAddShRigidBody(p_scene, entity);
+            shDynamicsRigidBodyInit(mass, shape_type, p_rb);
+
+            if (shape_type == SH_COLLISION_SHAPE_SPHERE) { 
+                shreal radius = DEC(0.0);
+                json_object* json_radius = json_object_object_get(json_rigidbody, "radius");
+                (json_radius != NULL) && (radius = (shreal)json_object_get_double(json_radius));
+                shDynamicsSetCollisionSphereRadius(radius, p_rb);
+            }
         }
     }
     

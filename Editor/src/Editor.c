@@ -6,13 +6,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+void initBehaviour(ShScene* scene) {
+	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
+		if (shHasShIdentity(scene, entity)) {
+			ShIdentity* identity = shGetShIdentity(scene, entity);
+			if (strcmp(identity->name, "moon") == 0) {
+				ShRigidBody* rb = shGetShRigidBody(scene, entity);
+				//shvec3 force = { DEC(0.0), DEC(-100.0), DEC(0.0) };
+				//shDynamicsAddForce(force, DEC(1.0)*2000.0f, rb);
+			}
+		}
+	}
+}
+
 void updateBehaviour(const ShTime time, ShScene* scene) {
 	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
 		if (shHasShIdentity(scene, entity)) {
 			ShIdentity* identity = shGetShIdentity(scene, entity);
-			if (strcmp(identity->name, "rotator") == 0) {
-				ShTransform* t = shGetShTransform(scene, entity);
-				t->rotation[1] -= 150.0f * (float)time.delta_time;
+			if (strcmp(identity->name, "moon") == 0) {
+				//ShTransform* t = shGetShTransform(scene, entity);
+				//t->rotation[1] -= 150.0f * (float)time.delta_time;
+				//ShRigidBody* p_rb = shGetShRigidBody(scene, entity);
+				//printf("pos %f\n", p_rb->transform[3][1]);
 			}
 		}
 	}
@@ -43,7 +58,8 @@ int main() {
 	shLoadPhysicsWorld(physics_descriptor.path, &scene, &dynamics);
 
 	shSceneInit(core, &scene);
-
+	initBehaviour(&scene);
+	
 	ShTime time = { 0 };
 	while (shIsWindowActive(core.window.window)) {
 
@@ -55,11 +71,13 @@ int main() {
 			shReloadMaterialInfos(mat_info_descriptor, &mat_info_count, &p_mat_infos);
 			shReloadScene(core, scene_descriptor, p_mat_infos, &scene);
 			shSetTime(0.0, &time);
+			initBehaviour(&scene);
 		}
 		if (shListenDescriptor(&scene_descriptor) || shListenDescriptor(&physics_descriptor)) {
 			shReloadScene(core, scene_descriptor, p_mat_infos, &scene);
 			shReloadPhysicsWorld(physics_descriptor, &scene, &dynamics);
 			shSetTime(0.0, &time);
+			initBehaviour(&scene);
 		}
 
 		uint32_t image_index = 0;
@@ -67,6 +85,7 @@ int main() {
 		
 		shSceneUpdate(core, time, &scene);
 		shDynamicsWorldSimulate((shreal)time.delta_time, &dynamics);
+
 		updateBehaviour(time, &scene);
 
 		shFrameEnd(core, image_index);
