@@ -29,7 +29,7 @@
         "flags": "MESH_SETUP_STATIC_MESH"
       },
       "transform": {
-        "position": [ -2, 0, 0 ],
+        "position": [ 0, 0, 0 ],
         "scale": [ 1.5, 1.5, 1.5 ]
       },
       "material": 1,
@@ -42,59 +42,21 @@
     },
     {
       "identity": {
-        "name": "base"
-      },
-      "mesh": {
-        "data_index": 1,
-        "flags": "MESH_SETUP_STATIC_MESH"
-      },
-      "transform": {
-        "position": [ 0, -3, 0 ],
-        "scale": [ 8, 1.5, 1.5 ]
-      },
-      "material": 1,
-      "rigidbody": {
-        "mass": 0,
-        "shape": "",
-        "radius": 1.5
-      }
-    },
-    {
-      "identity": {
         "name": "moon"
       },
       "mesh": {
         "data_index": 0
       },
       "transform": {
-        "position": [ 5, 0, 0 ],
+        "position": [ 6, 0, 0 ],
         "rotation": [ 0, 0, 0],
         "scale": [1, 1, 1]
       },
       "material": 1,
       "rigidbody": {
         "mass": 8,
-        "shape": "COLLISION_SHAPE_SPHERE",
+        "shape": "",
         "radius": 1
-      }
-    },
-    {
-      "identity": {
-        "name": "mars"
-      },
-      "mesh": {
-        "data_index": 0
-      },
-      "transform": {
-        "position": [-12, 0, 0 ],
-        "rotation": [ 0, 0, 0],
-        "scale": [3, 3, 3]
-      },
-      "material": 0,
-      "rigidbody": {
-        "mass": 0,
-        "shape": "COLLISION_SHAPE_SPHERE",
-        "radius": 3
       }
     }
   ]

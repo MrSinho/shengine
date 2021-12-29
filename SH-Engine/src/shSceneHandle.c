@@ -104,37 +104,37 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 				camera = *shGetShCamera(scene, entity);
 				if (camera.flags & SH_CAMERA_SETUP_FREE_FLIGHT_BIT) {
 					shvec3 displacement = { 0.0f, 0.0f, 0.0f };
-					if (shIsKeyPressed(core.window, KEY_W)) {
+					if (shIsKeyPressed(core.window, SH_KEY_W)) {
 						memcpy(displacement, t->front, sizeof(shvec3));
 						displacement[0] *= camera.speed;
 						displacement[1] *= camera.speed;
 						displacement[2] *= camera.speed;
 					}
-					if (shIsKeyPressed(core.window, KEY_A)) {
+					if (shIsKeyPressed(core.window, SH_KEY_A)) {
 						memcpy(displacement, t->left, sizeof(shvec3));
 						displacement[0] *= camera.speed;
 						displacement[1] *= camera.speed;
 						displacement[2] *= camera.speed;
 					}
-					if (shIsKeyPressed(core.window, KEY_S)) {
+					if (shIsKeyPressed(core.window, SH_KEY_S)) {
 						memcpy(displacement, t->front, sizeof(shvec3));
 						displacement[0] *= -1.0f * camera.speed;
 						displacement[1] *= -1.0f * camera.speed;
 						displacement[2] *= -1.0f * camera.speed;
 					}
-					if (shIsKeyPressed(core.window, KEY_D)) {
+					if (shIsKeyPressed(core.window, SH_KEY_D)) {
 						memcpy(displacement, t->left, sizeof(shvec3));
 						displacement[0] *= -1.0f * camera.speed;
 						displacement[1] *= -1.0f * camera.speed;
 						displacement[2] *= -1.0f * camera.speed;
 					}
-					if (shIsKeyPressed(core.window, KEY_E)) {
+					if (shIsKeyPressed(core.window, SH_KEY_E)) {
 						memcpy(displacement, t->up, sizeof(shvec3));
 						displacement[0] *= -1.0f * camera.speed;
 						displacement[1] *= -1.0f * camera.speed;
 						displacement[2] *= -1.0f * camera.speed;
 					}
-					if (shIsKeyPressed(core.window, KEY_Q)) {
+					if (shIsKeyPressed(core.window, SH_KEY_Q)) {
 						memcpy(displacement, t->up, sizeof(shvec3));
 						displacement[0] *= camera.speed;
 						displacement[1] *= camera.speed;
@@ -144,7 +144,7 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 					displacement[1] *= 5.0f * (float)time.delta_time;
 					displacement[2] *= 5.0f * (float)time.delta_time;
 					glm_vec3_add(t->position, displacement, t->position);
-					if (shIsMouseButtonPressed(core.window, MOUSE_BUTTON_RIGHT)) {
+					if (shIsMouseButtonPressed(core.window, SH_MOUSE_BUTTON_RIGHT)) {
 						glfwSetInputMode(core.window.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 						double dx, dy = 0.0;
 						shMouseOffset(core.window, &dx, &dy);
@@ -157,7 +157,7 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 							t->rotation[0] = SH_DEGREES_TO_RADIANS(-89.99999f);
 						}
 					}
-					else if (shIsMouseButtonReleased(core.window, MOUSE_BUTTON_RIGHT)) {
+					else if (shIsMouseButtonReleased(core.window, SH_MOUSE_BUTTON_RIGHT)) {
 						glfwSetInputMode(core.window.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 					}
 				}

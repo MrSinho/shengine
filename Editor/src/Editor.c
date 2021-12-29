@@ -12,22 +12,25 @@ void initBehaviour(ShScene* scene) {
 			ShIdentity* identity = shGetShIdentity(scene, entity);
 			if (strcmp(identity->name, "moon") == 0) {
 				ShRigidBody* rb = shGetShRigidBody(scene, entity);
-				//shvec3 force = { DEC(0.0), DEC(-100.0), DEC(0.0) };
-				//shDynamicsAddForce(force, DEC(1.0)*2000.0f, rb);
+				
 			}
 		}
 	}
 }
 
-void updateBehaviour(const ShTime time, ShScene* scene) {
+void updateBehaviour(const ShWindow window, const ShTime time, ShScene* scene) {
 	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
 		if (shHasShIdentity(scene, entity)) {
 			ShIdentity* identity = shGetShIdentity(scene, entity);
 			if (strcmp(identity->name, "moon") == 0) {
 				//ShTransform* t = shGetShTransform(scene, entity);
 				//t->rotation[1] -= 150.0f * (float)time.delta_time;
-				//ShRigidBody* p_rb = shGetShRigidBody(scene, entity);
+				ShRigidBody* p_rb = shGetShRigidBody(scene, entity);
 				//printf("pos %f\n", p_rb->transform[3][1]);
+				if (shIsMouseButtonPressed(window, SH_MOUSE_BUTTON_LEFT)) {
+					shvec3 force = { DEC(0.0), DEC(-0.0002), DEC(0.0) };
+					shDynamicsAddForce(force, (shreal)time.delta_time, p_rb);
+				}
 			}
 		}
 	}
@@ -86,7 +89,7 @@ int main() {
 		shSceneUpdate(core, time, &scene);
 		shDynamicsWorldSimulate((shreal)time.delta_time, &dynamics);
 
-		updateBehaviour(time, &scene);
+		updateBehaviour(core.window, time, &scene);
 
 		shFrameEnd(core, image_index);
 	}
