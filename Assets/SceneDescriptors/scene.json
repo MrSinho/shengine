@@ -48,14 +48,33 @@
         "data_index": 0
       },
       "transform": {
-        "position": [ 6, 0, 0 ],
+        "position": [ 3, 0, 0 ],
         "rotation": [ 0, 0, 0],
         "scale": [1, 1, 1]
       },
       "material": 1,
       "rigidbody": {
         "mass": 8,
-        "shape": "",
+        "shape": "COLLISION_SHAPE_SPHERE",
+        "radius": 1
+      }
+    },
+    {
+      "identity": {
+        "name": "mars"
+      },
+      "mesh": {
+        "data_index": 0
+      },
+      "transform": {
+        "position": [ -3, 2, 0 ],
+        "rotation": [ 0, 0, 0],
+        "scale": [1, 1, 1]
+      },
+      "material": 0,
+      "rigidbody": {
+        "mass": 100,
+        "shape": "COLLISION_SHAPE_SPHERE",
         "radius": 1
       }
     }
