@@ -289,14 +289,14 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
             (json_mass   != NULL) && (mass = (shreal)json_object_get_double(json_mass));
             (json_shape != NULL) && (shape_type = shStringFlagToInt(json_object_get_string(json_shape)));
             
-            ShRigidBody* p_rb = shAddShRigidBody(p_scene, entity);
-            shDynamicsRigidBodyInit(mass, shape_type, p_rb);
+            //ShRigidBody* p_rb = shAddShRigidBody(p_scene, entity);
+            //shDynamicsRigidBodyInit(mass, shape_type, p_rb);
 
             if (shape_type == SH_COLLISION_SHAPE_SPHERE) { 
                 shreal radius = DEC(0.0);
                 json_object* json_radius = json_object_object_get(json_rigidbody, "radius");
                 (json_radius != NULL) && (radius = (shreal)json_object_get_double(json_radius));
-                shDynamicsSetCollisionSphereRadius(radius, p_rb);
+                //shDynamicsSetCollisionSphereRadius(radius, p_rb);
             }
         }
     }
