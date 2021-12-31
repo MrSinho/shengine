@@ -1,18 +1,18 @@
 # SH-Engine
 ![linux_badge](linux-status.svg)
 ## [Linux/Unix build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 35.77s`
+  `Build ran for 36.25s`
 ```bash $shci call$
 apt install -y wget gcc cmake make gdb
-Reading package lists...
-Building dependency tree...
-Reading state information...
-cmake is already the newest version (3.16.3-1ubuntu1).
-gcc is already the newest version (4:9.3.0-1ubuntu2).
-make is already the newest version (4.2.1-1.2).
-gdb is already the newest version (9.2-0ubuntu1~20.04).
-wget is already the newest version (1.20.3-1ubuntu2).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+cmake è già alla versione più recente (3.16.3-1ubuntu1).
+gcc è già alla versione più recente (4:9.3.0-1ubuntu2).
+make è già alla versione più recente (4.2.1-1.2).
+gdb è già alla versione più recente (9.2-0ubuntu1~20.04).
+wget è già alla versione più recente (1.20.3-1ubuntu2).
+0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
 
 ```
 
@@ -34,53 +34,60 @@ sudo apt install -y mesa-vulkan-drivers
 sudo apt install -y vulkan-utils
 
 sudo apt install -y libusb-dev
-Ign:1 http://dl.google.com/linux/chrome-remote-desktop/deb stable InRelease
-Hit:2 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
-Hit:3 http://archive.ubuntu.com/ubuntu focal InRelease
-Hit:4 http://security.ubuntu.com/ubuntu focal-security InRelease
-Hit:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Hit:6 http://dl.google.com/linux/chrome-remote-desktop/deb stable Release
-Hit:7 http://ppa.launchpad.net/openshot.developers/ppa/ubuntu focal InRelease
-Hit:8 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Hit:9 http://archive.canonical.com/ubuntu focal InRelease
-Get:10 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
-Ign:11 http://packages.linuxmint.com uma InRelease
-Hit:12 http://packages.linuxmint.com uma Release
-Err:10 https://packages.microsoft.com/repos/edge stable InRelease
-  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EB3E94ADBE1229CF
-Reading package lists...
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libx11-dev is already the newest version (2:1.6.9-2ubuntu1.2).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-doxygen is already the newest version (1.8.17-0ubuntu2).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libxrandr-dev is already the newest version (2:1.5.2-0ubuntu1).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libxinerama-dev is already the newest version (2:1.1.4-2).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libxcursor-dev is already the newest version (1:1.2.0-2).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libxi-dev is already the newest version (2:1.7.10-0ubuntu1).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Executing: /tmp/apt-key-gpghome.j3yltbKsuM/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
-You are about to add the following PPA:
+Trovato:1 http://archive.ubuntu.com/ubuntu focal InRelease
+Ignorato:2 http://dl.google.com/linux/chrome-remote-desktop/deb stable InRelease
+Trovato:3 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Trovato:4 http://packages.microsoft.com/repos/code stable InRelease
+Trovato:5 http://security.ubuntu.com/ubuntu focal-security InRelease
+Trovato:6 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Trovato:7 http://dl.google.com/linux/chrome-remote-desktop/deb stable Release
+Trovato:8 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Trovato:9 http://ppa.launchpad.net/openshot.developers/ppa/ubuntu focal InRelease
+Scaricamento di:10 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
+Ignorato:11 http://packages.linuxmint.com uma InRelease
+Trovato:12 http://archive.canonical.com/ubuntu focal InRelease
+Trovato:13 http://packages.linuxmint.com uma Release
+Scaricamento di:14 http://archive.ubuntu.com/ubuntu focal/main Translation-it [488 kB]
+Scaricamento di:15 http://archive.ubuntu.com/ubuntu focal/restricted Translation-it [1.272 B]
+Scaricamento di:16 http://archive.ubuntu.com/ubuntu focal/universe Translation-it [4.006 kB]
+Scaricamento di:18 http://archive.ubuntu.com/ubuntu focal/multiverse Translation-it [25,3 kB]
+Recuperati 4.528 kB in 3s (1.705 kB/s)
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+20 pacchetti possono essere aggiornati: eseguire "apt list --upgradable" per vederli.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+libx11-dev è già alla versione più recente (2:1.6.9-2ubuntu1.2).
+0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+doxygen è già alla versione più recente (1.8.17-0ubuntu2).
+0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+libxrandr-dev è già alla versione più recente (2:1.5.2-0ubuntu1).
+0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+libxinerama-dev è già alla versione più recente (2:1.1.4-2).
+0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+libxcursor-dev è già alla versione più recente (1:1.2.0-2).
+0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+libxi-dev è già alla versione più recente (2:1.7.10-0ubuntu1).
+0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+Executing: /tmp/apt-key-gpghome.WfCVxjc08G/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
+Stai per aggiungere il seguente PPA:
  PLEASE READ: don't email me to report bugs, unless you are sure it's a packaging bug. Not only is email not a good tool for tracking bugs, it also excludes anybody else from tracking or working on the issue. Please read the section "Debugging and reporting problems" below.
 
 Also, please don't ask me to include non-free drivers, I won't do it.
@@ -164,52 +171,65 @@ $ sudo ppa-purge ppa:oibaf/graphics-drivers
 
 === Donations ===
 Some people asked me if I can accept donations to support this work. I don't, but if you have some spare money I would be happy if you could do a donation to a charity of your choice (for the poors, animals, whatever else you may think it might need it). Then feel free to send me a note about it!
- More info: https://launchpad.net/~oibaf/+archive/ubuntu/graphics-drivers
-Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
-Hit:2 http://archive.canonical.com/ubuntu focal InRelease
-Hit:3 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
-Hit:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Ign:5 http://dl.google.com/linux/chrome-remote-desktop/deb stable InRelease
-Hit:6 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Hit:7 http://ppa.launchpad.net/openshot.developers/ppa/ubuntu focal InRelease
-Hit:8 http://dl.google.com/linux/chrome-remote-desktop/deb stable Release
-Get:9 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
-Ign:10 http://packages.linuxmint.com uma InRelease
-Hit:11 http://security.ubuntu.com/ubuntu focal-security InRelease
-Hit:12 http://packages.linuxmint.com uma Release
-Err:9 https://packages.microsoft.com/repos/edge stable InRelease
-  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EB3E94ADBE1229CF
-Reading package lists...
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libvulkan-dev is already the newest version (1.2.131.2-1).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libvulkan1 is already the newest version (1.2.131.2-1).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-mesa-vulkan-drivers is already the newest version (22.0~git2112250600.222487~oibaf~f).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-vulkan-utils is already the newest version (1.2.131.1+dfsg1-1).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libusb-dev is already the newest version (2:0.1.12-32).
-0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
+ Maggiori informazioni: https://launchpad.net/~oibaf/+archive/ubuntu/graphics-drivers
+Ignorato:1 http://dl.google.com/linux/chrome-remote-desktop/deb stable InRelease
+Trovato:2 http://archive.ubuntu.com/ubuntu focal InRelease
+Trovato:3 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Trovato:4 http://packages.microsoft.com/repos/code stable InRelease
+Trovato:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Trovato:6 http://dl.google.com/linux/chrome-remote-desktop/deb stable Release
+Trovato:7 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Trovato:8 http://ppa.launchpad.net/openshot.developers/ppa/ubuntu focal InRelease
+Scaricamento di:9 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
+Trovato:10 http://security.ubuntu.com/ubuntu focal-security InRelease
+Ignorato:11 http://packages.linuxmint.com uma InRelease
+Trovato:12 http://archive.canonical.com/ubuntu focal InRelease
+Trovato:13 http://packages.linuxmint.com uma Release
+Recuperati 7.343 B in 3s (2.833 B/s)
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+20 pacchetti possono essere aggiornati: eseguire "apt list --upgradable" per vederli.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+libvulkan-dev è già alla versione più recente (1.2.131.2-1).
+0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+libvulkan1 è già alla versione più recente (1.2.131.2-1).
+0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+I seguenti pacchetti saranno aggiornati:
+  mesa-vulkan-drivers
+1 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
+È necessario scaricare 5.049 kB di archivi.
+Dopo quest'operazione, verranno occupati 0 B di spazio su disco.
+Scaricamento di:1 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal/main amd64 mesa-vulkan-drivers amd64 22.0~git2112310600.273edf~oibaf~f [5.049 kB]
+Recuperati 5.049 kB in 2s (2.572 kB/s)
+(Lettura del database... (Lettura del database... 5%(Lettura del database... 10%(Lettura del database... 15%(Lettura del database... 20%(Lettura del database... 25%(Lettura del database... 30%(Lettura del database... 35%(Lettura del database... 40%(Lettura del database... 45%(Lettura del database... 50%(Lettura del database... 55%(Lettura del database... 60%(Lettura del database... 65%(Lettura del database... 70%(Lettura del database... 75%(Lettura del database... 80%(Lettura del database... 85%(Lettura del database... 90%(Lettura del database... 95%(Lettura del database... 100%(Lettura del database... 345153 file e directory attualmente installati.)
+Preparativi per estrarre .../mesa-vulkan-drivers_22.0~git2112310600.273edf~oibaf~f_amd64.deb...
+Estrazione di mesa-vulkan-drivers:amd64 (22.0~git2112310600.273edf~oibaf~f) su (22.0~git2112280600.ff7aee~oibaf~f)...
+Configurazione di mesa-vulkan-drivers:amd64 (22.0~git2112310600.273edf~oibaf~f)...
+Elaborazione dei trigger per libc-bin (2.31-0ubuntu9.2)...
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+vulkan-utils è già alla versione più recente (1.2.131.1+dfsg1-1).
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
+Lettura elenco dei pacchetti...
+Generazione albero delle dipendenze...
+Lettura informazioni sullo stato...
+libusb-dev è già alla versione più recente (2:0.1.12-32).
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 
 ```
 
 ```bash $shci call$
-cd SH-Engine && mkdir build && cd build && cmake .. && make
+cd _SH-Engine && mkdir build && cd build && cmake .. && make
 -- The C compiler identification is GNU 9.3.0
 -- Check for working C compiler: /usr/bin/cc
 -- Check for working C compiler: /usr/bin/cc -- works
@@ -246,7 +266,7 @@ cd SH-Engine && mkdir build && cd build && cmake .. && make
 -- Looking for sys/resource.h - found
 -- Looking for getrusage
 -- Looking for getrusage - found
--- Wrote /home/mrsinho/Desktop/ShCI-implementation/bin/SH-Engine/build/Externals/json-c/apps_config.h
+-- Wrote /home/mrsinho/Desktop/ShCI-implementation/build/_SH-Engine/build/Externals/json-c/apps_config.h
 -- Looking for fcntl.h
 -- Looking for fcntl.h - found
 -- Looking for inttypes.h
@@ -359,8 +379,8 @@ cd SH-Engine && mkdir build && cd build && cmake .. && make
 -- Performing Test HAVE_ATOMIC_BUILTINS - Success
 -- Performing Test HAVE___THREAD
 -- Performing Test HAVE___THREAD - Success
--- Wrote /home/mrsinho/Desktop/ShCI-implementation/bin/SH-Engine/build/Externals/json-c/config.h
--- Wrote /home/mrsinho/Desktop/ShCI-implementation/bin/SH-Engine/build/Externals/json-c/json_config.h
+-- Wrote /home/mrsinho/Desktop/ShCI-implementation/build/_SH-Engine/build/Externals/json-c/config.h
+-- Wrote /home/mrsinho/Desktop/ShCI-implementation/build/_SH-Engine/build/Externals/json-c/json_config.h
 -- Performing Test REENTRANT_WORKS
 -- Performing Test REENTRANT_WORKS - Success
 -- Performing Test BSYMBOLIC_WORKS
@@ -368,133 +388,146 @@ cd SH-Engine && mkdir build && cd build && cmake .. && make
 -- Performing Test VERSION_SCRIPT_WORKS
 -- Performing Test VERSION_SCRIPT_WORKS - Success
 -- Found Doxygen: /usr/bin/doxygen (found version "1.8.17") found components: doxygen missing components: dot
--- Wrote /home/mrsinho/Desktop/ShCI-implementation/bin/SH-Engine/build/Externals/json-c/doc/Doxyfile
+-- Wrote /home/mrsinho/Desktop/ShCI-implementation/build/_SH-Engine/build/Externals/json-c/doc/Doxyfile
 -- Found Vulkan: /usr/lib/x86_64-linux-gnu/libvulkan.so  
--- looking for glslc
--- glslc not found, required for shader compilation, install before executing the engine in debug mode
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/mrsinho/Desktop/ShCI-implementation/bin/SH-Engine/build
+-- Build files have been written to: /home/mrsinho/Desktop/ShCI-implementation/build/_SH-Engine/build
 Scanning dependencies of target ShSerial
 [  1%] Building C object Externals/ShSerial/CMakeFiles/ShSerial.dir/ShSerial/src/ShSerial.c.o
 [  2%] Linking C static library ../../../Externals/ShSerial/bin/libShSerial.a
 [  2%] Built target ShSerial
 Scanning dependencies of target ShLinearAlgebra
-[  3%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shIntersection.c.o
-[  4%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shLineSolver.c.o
-[  5%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shMatrix.c.o
-[  6%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shScalar.c.o
-[  7%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shVector.c.o
+[  2%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shIntersection.c.o
+[  3%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shLineSolver.c.o
+[  4%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shMatrix.c.o
+[  5%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shScalar.c.o
+[  6%] Building C object Externals/ShPhysics/CMakeFiles/ShLinearAlgebra.dir/ShLinearAlgebra/src/shVector.c.o
 [  7%] Linking C static library libShLinearAlgebra.a
 [  7%] Built target ShLinearAlgebra
 Scanning dependencies of target ShUtilities
-[  8%] Building C object CMakeFiles/ShUtilities.dir/ShUtilities/src/shUtilities.c.o
-[  9%] Linking C static library ../bin/libShUtilities.a
-[  9%] Built target ShUtilities
-Scanning dependencies of target PlyImporter
-[ 10%] Building C object Externals/PlyImporter/CMakeFiles/PlyImporter.dir/PlyImporter/src/PlyImporter.c.o
-[ 11%] Linking C static library ../../../bin/libPlyImporter.a
-[ 11%] Built target PlyImporter
+[  8%] Building C object CMakeFiles/ShUtilities.dir/ShUtilities/src/shCheck.c.o
+[  9%] Building C object CMakeFiles/ShUtilities.dir/ShUtilities/src/shFile.c.o
+[ 10%] Linking C static library ../bin/libShUtilities.a
+[ 10%] Built target ShUtilities
 Scanning dependencies of target json-c
-[ 12%] Building C object Externals/json-c/CMakeFiles/json-c.dir/arraylist.c.o
-[ 13%] Building C object Externals/json-c/CMakeFiles/json-c.dir/debug.c.o
-[ 14%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_c_version.c.o
-[ 15%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_object.c.o
+[ 11%] Building C object Externals/json-c/CMakeFiles/json-c.dir/arraylist.c.o
+[ 12%] Building C object Externals/json-c/CMakeFiles/json-c.dir/debug.c.o
+[ 13%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_c_version.c.o
+[ 14%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_object.c.o
 [ 15%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_object_iterator.c.o
 [ 16%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_tokener.c.o
-[ 17%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_util.c.o
-[ 18%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_visit.c.o
-[ 19%] Building C object Externals/json-c/CMakeFiles/json-c.dir/linkhash.c.o
-[ 20%] Building C object Externals/json-c/CMakeFiles/json-c.dir/printbuf.c.o
-[ 21%] Building C object Externals/json-c/CMakeFiles/json-c.dir/random_seed.c.o
-[ 22%] Building C object Externals/json-c/CMakeFiles/json-c.dir/strerror_override.c.o
-[ 23%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_pointer.c.o
-[ 24%] Linking C static library libjson-c.a
-[ 24%] Built target json-c
+[ 16%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_util.c.o
+[ 17%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_visit.c.o
+[ 18%] Building C object Externals/json-c/CMakeFiles/json-c.dir/linkhash.c.o
+[ 19%] Building C object Externals/json-c/CMakeFiles/json-c.dir/printbuf.c.o
+[ 20%] Building C object Externals/json-c/CMakeFiles/json-c.dir/random_seed.c.o
+[ 21%] Building C object Externals/json-c/CMakeFiles/json-c.dir/strerror_override.c.o
+[ 22%] Building C object Externals/json-c/CMakeFiles/json-c.dir/json_pointer.c.o
+[ 23%] Linking C static library libjson-c.a
+[ 23%] Built target json-c
+Scanning dependencies of target PlyImporter
+[ 24%] Building C object Externals/PlyImporter/CMakeFiles/PlyImporter.dir/PlyImporter/src/PlyImporter.c.o
+[ 25%] Linking C static library ../../../bin/libPlyImporter.a
+[ 25%] Built target PlyImporter
 Scanning dependencies of target ShPhysics
-[ 25%] Building C object Externals/ShPhysics/CMakeFiles/ShPhysics.dir/ShPhysics/src/shDynamics.c.o
-[ 26%] Building C object Externals/ShPhysics/CMakeFiles/ShPhysics.dir/ShPhysics/src/shPhysicsCollision.c.o
-[ 27%] Linking C static library ../../../bin/libShPhysics.a
-[ 27%] Built target ShPhysics
+[ 26%] Building C object Externals/ShPhysics/CMakeFiles/ShPhysics.dir/ShPhysics/src/shDynamics.c.o
+[ 27%] Building C object Externals/ShPhysics/CMakeFiles/ShPhysics.dir/ShPhysics/src/shPhysicsCollision.c.o
+[ 28%] Linking C static library ../../../bin/libShPhysics.a
+[ 28%] Built target ShPhysics
 Scanning dependencies of target ShDescriptorHandle
-[ 28%] Building C object CMakeFiles/ShDescriptorHandle.dir/ShDescriptorHandle/src/shDescriptorHandle.c.o
-[ 29%] Linking C static library libShDescriptorHandle.a
-[ 29%] Built target ShDescriptorHandle
+[ 29%] Building C object CMakeFiles/ShDescriptorHandle.dir/ShDescriptorHandle/src/shDescriptorHandle.c.o
+[ 30%] Linking C static library libShDescriptorHandle.a
+[ 30%] Built target ShDescriptorHandle
 Scanning dependencies of target glfw
-[ 30%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/context.c.o
-[ 31%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/init.c.o
-[ 32%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/input.c.o
-[ 32%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/monitor.c.o
-[ 33%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/platform.c.o
-[ 34%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/vulkan.c.o
-[ 35%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/window.c.o
-[ 36%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/egl_context.c.o
-[ 37%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.o
-[ 38%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_init.c.o
-[ 39%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_monitor.c.o
-[ 40%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_window.c.o
-[ 41%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.o
-[ 42%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/posix_module.c.o
-[ 43%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/posix_time.c.o
-[ 43%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/posix_thread.c.o
-[ 44%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/x11_init.c.o
-[ 45%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/x11_monitor.c.o
-[ 46%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/x11_window.c.o
-[ 47%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/xkb_unicode.c.o
-[ 48%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/glx_context.c.o
-[ 49%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/linux_joystick.c.o
-[ 50%] Linking C static library ../../../../bin/libglfw3.a
-[ 50%] Built target glfw
+[ 31%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/context.c.o
+[ 32%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/init.c.o
+[ 33%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/input.c.o
+[ 34%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/monitor.c.o
+[ 35%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/platform.c.o
+[ 36%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/vulkan.c.o
+[ 37%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/window.c.o
+[ 38%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/egl_context.c.o
+[ 39%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.o
+[ 39%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_init.c.o
+[ 40%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_monitor.c.o
+[ 41%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_window.c.o
+[ 42%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.o
+[ 43%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/posix_module.c.o
+[ 44%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/posix_time.c.o
+[ 45%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/posix_thread.c.o
+[ 46%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/x11_init.c.o
+[ 47%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/x11_monitor.c.o
+[ 48%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/x11_window.c.o
+[ 48%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/xkb_unicode.c.o
+[ 49%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/glx_context.c.o
+[ 50%] Building C object Externals/glfw/src/CMakeFiles/glfw.dir/linux_joystick.c.o
+[ 51%] Linking C static library ../../../../bin/libglfw3.a
+[ 51%] Built target glfw
 Scanning dependencies of target cglm
-[ 51%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/euler.c.o
-[ 52%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/affine.c.o
-[ 52%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/io.c.o
-[ 53%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/quat.c.o
-[ 54%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/cam.c.o
-[ 55%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec2.c.o
-[ 56%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec3.c.o
-[ 57%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec4.c.o
-[ 58%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat2.c.o
-[ 59%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat3.c.o
-[ 60%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat4.c.o
-[ 61%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/plane.c.o
-[ 62%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/frustum.c.o
-[ 63%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/box.c.o
-[ 63%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/project.c.o
-[ 64%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/sphere.c.o
-[ 65%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/ease.c.o
-[ 66%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/curve.c.o
-[ 67%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/bezier.c.o
-[ 68%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/ray.c.o
-[ 69%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/affine2d.c.o
-[ 70%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_zo.c.o
-[ 71%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_zo.c.o
-[ 72%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_no.c.o
+[ 52%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/euler.c.o
+[ 53%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/affine.c.o
+[ 54%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/io.c.o
+[ 55%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/quat.c.o
+[ 55%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/cam.c.o
+[ 56%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec2.c.o
+[ 57%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec3.c.o
+[ 58%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/vec4.c.o
+[ 59%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat2.c.o
+[ 60%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat3.c.o
+[ 61%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/mat4.c.o
+[ 62%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/plane.c.o
+[ 63%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/frustum.c.o
+[ 64%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/box.c.o
+[ 64%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/project.c.o
+[ 65%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/sphere.c.o
+[ 66%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/ease.c.o
+[ 67%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/curve.c.o
+[ 68%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/bezier.c.o
+[ 69%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/ray.c.o
+[ 70%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/affine2d.c.o
+[ 71%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_zo.c.o
+[ 72%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_zo.c.o
+[ 73%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_no.c.o
 [ 73%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_no.c.o
 [ 74%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_zo.c.o
-[ 74%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_zo.c.o
-[ 75%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_no.c.o
-[ 76%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_no.c.o
-[ 77%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_zo.c.o
-[ 78%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_zo.c.o
-[ 79%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_no.c.o
-[ 80%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_no.c.o
-[ 81%] Linking C shared library libcglm.so
-[ 81%] Built target cglm
+[ 75%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_zo.c.o
+[ 76%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_no.c.o
+[ 77%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_no.c.o
+[ 78%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_zo.c.o
+[ 79%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_zo.c.o
+[ 80%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_no.c.o
+[ 81%] Building C object Externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_no.c.o
+[ 82%] Linking C shared library libcglm.so
+[ 82%] Built target cglm
 Scanning dependencies of target SH-Engine
-[ 82%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shDrawLoop.c.o
-[ 83%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shEuler.c.o
-[ 84%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shInput.c.o
-[ 85%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shMaterial.c.o
-[ 86%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shProjection.c.o
-[ 87%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shSceneHandle.c.o
+[ 83%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shDrawLoop.c.o
+[ 84%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shImage.c.o
+[ 85%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shInput.c.o
+[ 86%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shMaterial.c.o
+[ 87%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shProjection.c.o
+[ 88%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shSceneHandle.c.o
 [ 88%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shTime.c.o
 [ 89%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shView.c.o
-[ 89%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkCore.c.o
-[ 90%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkMemoryInfo.c.o
-[ 91%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkPipelineData.c.o
-[ 92%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shWindow.c.o
-[ 93%] Linking C static library ../bin/libSH-Engine.a
-[ 93%] Built target SH-Engine
+[ 90%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkCheck.c.o
+[ 91%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkCore.c.o
+[ 92%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkMemoryInfo.c.o
+[ 93%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shVkPipelineData.c.o
+[ 94%] Building C object CMakeFiles/SH-Engine.dir/SH-Engine/src/shWindow.c.o
+[ 95%] Linking C static library ../bin/libSH-Engine.a
+[ 95%] Built target SH-Engine
 Scanning dependencies of target Editor
-[ 93%] Building C object CMakeFiles/Editor.dir/Editor/src/Editor.c.o
+[ 95%] Building C object CMakeFiles/Editor.dir/Editor/src/Editor.c.o
+[ 96%] Linking C executable ../bin/Editor
+[ 96%] Built target Editor
+Scanning dependencies of target docs
+[ 96%] Generating HTML documentation
+[ 96%] Built target docs
+Scanning dependencies of target json_parse
+[ 97%] Building C object Externals/json-c/apps/CMakeFiles/json_parse.dir/json_parse.c.o
+[ 98%] Linking C executable json_parse
+[ 98%] Built target json_parse
+Scanning dependencies of target ShPhysicsExample
+[100%] Building C object Externals/ShPhysics/CMakeFiles/ShPhysicsExample.dir/ShPhysicsExample/src/shPhysicsExample.c.o
+[100%] Linking C executable ../../../bin/ShPhysicsExample
+[100%] Built target ShPhysicsExample
