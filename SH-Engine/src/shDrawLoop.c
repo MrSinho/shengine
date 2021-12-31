@@ -68,11 +68,13 @@ void shPushConstants(const VkCommandBuffer graphicsCmdBuffer, const ShVkPipeline
 }
 
 void shBindDescriptorSets(const ShVkCore core, ShVkPipelineData pipeData) {
-	pipeData.writeDescriptorSet.pBufferInfo = &pipeData.descriptorBufferInfo;
-	//if (!pipeData.shared_uniform|| !uniform_updated) {
-	vkUpdateDescriptorSets(core.device, 1, &pipeData.writeDescriptorSet, 0, NULL);
-	//}
-	vkCmdBindDescriptorSets(core.p_cmd_buffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeData.mainPipelineLayout, 0, 1, &pipeData.descriptorSet, 0, NULL);
+	vkUpdateDescriptorSets(core.device, 
+		pipeData.uniform_buffer_count, pipeData.p_write_descriptor_sets, 
+		0, NULL);
+	vkCmdBindDescriptorSets(core.p_cmd_buffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS,
+		pipeData.mainPipelineLayout, 
+		0, pipeData.uniform_buffer_count, pipeData.p_descriptor_sets, 
+		0, NULL);
 }
 
 void shDraw(const VkCommandBuffer graphicsCmdBuffer, const uint32_t count, const uint32_t stride, const ShMesh mesh) {
@@ -123,7 +125,7 @@ void shFrameEnd(const ShVkCore core, const uint32_t swapchainImageIndex) {
 	vkQueuePresentKHR(core.graphics_queue, &presentInfo);
 }
 
-void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniform_size, void* p_uniform, ShMeshInfo* p_mesh_info, ShMesh* mesh) {
+void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniforms_size, void* p_uniforms, ShMeshInfo* p_mesh_info, ShMesh* mesh) {
 
 	//Map mesh buffers
 	if (p_mesh_info->flags & SH_MESH_SETUP_DYNAMIC_MESH) {
@@ -157,10 +159,16 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 	}
 
 	// bind uniform memory
-	if (uniform_size != 0 && p_uniform != NULL) {
-		shMapMemory(core.device, pipe_data.uniformBufferMemory, uniform_size, p_uniform);
-		shBindDescriptorSets(core, pipe_data);
+	uint32_t uniform_offset = 0;
+	for (uint32_t i = 0; i < pipe_data.uniform_buffer_count; i++) {
+			shMapMemory(core.device, 
+				pipe_data.p_uniform_buffers[i].uniform_buffer_memory, 
+				pipe_data.p_uniform_buffers[i].uniform_buffer_size, 
+				&((char*)p_uniforms)[uniform_offset]);
+			shBindDescriptorSets(core, pipe_data);
+			uniform_offset += pipe_data.p_uniform_buffers[i].uniform_buffer_size;
 	}
+	
 	
 	if (mesh->index_buffer_memory != NULL) { //indexed
 		shDraw(core.p_cmd_buffers[0], p_mesh_info->index_count, pipe_data.vertexStride / 4, *mesh);

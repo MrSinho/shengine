@@ -171,13 +171,11 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 			ShMeshInfo* mesh_info = shGetShMeshInfo(scene, entity);
 			ShMesh* mesh = shGetShMesh(scene, entity);
 
-			uint32_t uniform_buffer_index = 0;
-			void* p_uniform_buffer = NULL;
 			uint32_t push_constants_index = 0;
 			void* p_push_constants = NULL;
 
 			// push constants check
-			if (material->pipeline_data.setupFlags & SH_PIPELINE_SETUP_PUSH_CONSTANTS_BIT) {
+			if (material->pipeline_data.pushConstantRange.size != 0) {
 				p_push_constants = calloc(core.physical_device_properties.limits.maxPushConstantsSize, 1);
 				if (p_push_constants == NULL) { break; }
 				if (camera.flags != 0) {
@@ -186,46 +184,36 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 					push_constants_index += sizeof(mat4) * 2;
 				}
 			}
-			// uniform buffer check
-			if (material->pipeline_data.setupFlags & SH_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
-				if (shHasShTransform(scene, entity)) {
-					p_uniform_buffer = calloc(material->pipeline_data.uniformBufferSize, 1);
-					if (p_uniform_buffer == NULL) { break; }
-					ShTransform* transform = shGetShTransform(scene, entity);
-					memcpy((void*)&((char*)p_uniform_buffer)[uniform_buffer_index], transform->model, sizeof(mat4));
-					uniform_buffer_index += sizeof(mat4);
+			// uniform buffers check
+			void* p_uniform_buffers = NULL;
+			uint32_t uniform_buffers_size = 0;
+			uint32_t uniform_idx = 0;
+			if (shHasShTransform(scene, entity)) {
+				uniform_buffers_size += sizeof(shmat4);
+				uniform_idx++;
+			}
+			for (; uniform_idx < material->pipeline_data.uniform_buffer_count; uniform_idx++) {
+				uniform_buffers_size += material->pipeline_data.p_uniform_buffers[uniform_idx].uniform_buffer_size;
+			}
+			p_uniform_buffers = calloc(uniform_buffers_size, 1);
+			if (p_uniform_buffers != NULL) {
+				for (uint32_t i = 0; i < material->pipeline_data.uniform_buffer_count; i++) {
+					if (shHasShTransform(scene, entity)) {
+						memcpy(p_uniform_buffers, shGetShTransform(scene, entity)->model, sizeof(shmat4));
+					}
 				}
 			}
-			//int uniform_updated = 0;
-			//if (material->p_main_material != NULL) {
-			//	ShMaterial* p_main_material = material->p_main_material;
-			//	uniform_updated = p_main_material->pipeline_data.uniform_updated;
-			//	p_main_material->pipeline_data.uniform_updated = 1;
-			//}
-			if (p_uniform_buffer == NULL) { break; }
-			if (p_push_constants == NULL) { break; }
 
-			shRenderMesh(core, material->pipeline_data,
-				push_constants_index, p_push_constants,
-				uniform_buffer_index, p_uniform_buffer,
+			shRenderMesh(core, material->pipeline_data, 
+				push_constants_index, p_push_constants, 
+				uniform_buffers_size, p_uniform_buffers, 
 				mesh_info, mesh);
 
 
-			if (p_uniform_buffer != NULL) {
-				free(p_uniform_buffer);
-			}
-			if (p_push_constants != NULL) {
-				free(p_push_constants);
-			}
-			push_constants_index = 0;
-			uniform_buffer_index = 0;
+			if (p_uniform_buffers != NULL) { free(p_uniform_buffers); }
+			if (p_push_constants != NULL) { free(p_push_constants); }
 		}
-
-
-
 	}
-
-
 }
 
 void shSceneRelease(const ShVkCore core, ShScene* scene) {

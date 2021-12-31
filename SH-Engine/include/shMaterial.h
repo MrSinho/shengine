@@ -10,7 +10,7 @@
 typedef struct ShMaterial {
 
 	ShMaterialInfo			mat_info;
-	ShVkFixedStates		fixed_states;
+	ShVkFixedStates			fixed_states;
 	ShVkPipelineData		pipeline_data;
 
 } ShMaterial;
@@ -23,6 +23,4 @@ SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShMaterial, 2)
 
 extern void shSetupMaterial(const ShVkCore core, const ShMaterialInfo mat_info, ShMaterial* p_material);
 
-extern void shCreateMaterialInstance(const ShVkCore core, ShMaterial* src, ShMaterial* dst);
-
-#endif // SH_MATERIAL_H
+#endif//SH_MATERIAL_H

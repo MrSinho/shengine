@@ -13,13 +13,13 @@
 #pragma warning (disable: 6386)
 #endif//_MSC_VER
 
-void shAllocateUniformBufferData(const ShVkCore core, const uint32_t bufferSize, ShVkPipelineData* pPipeData) {
-	pPipeData->uniformBufferSize = bufferSize;
-	shCreateBuffer(core.device, pPipeData->uniformBufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, &pPipeData->uniformBuffer);
-	shAllocateMemory(core.device, core.physical_device, pPipeData->uniformBuffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &pPipeData->uniformBufferMemory);
+void shAllocateUniformBufferData(const ShVkCore core, const uint32_t bufferSize, ShUniformBuffer* p_uniform) {
+	p_uniform->uniform_buffer_size = bufferSize;
+	shCreateBuffer(core.device, p_uniform->uniform_buffer_size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, &p_uniform->uniform_buffer);
+	shAllocateMemory(core.device, core.physical_device, p_uniform->uniform_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &p_uniform->uniform_buffer_memory);
 }
 
-void shDescriptorSetLayout(const ShVkCore core, const uint32_t binding, const VkShaderStageFlags shaderStageFlags, ShVkPipelineData* pPipeData) {
+void shDescriptorSetLayout(const ShVkCore core, const uint32_t binding, const VkShaderStageFlags shaderStageFlags, ShUniformBuffer* p_uniform) {
 
 	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {
 		binding,							//binding;
@@ -36,10 +36,10 @@ void shDescriptorSetLayout(const ShVkCore core, const uint32_t binding, const Vk
 		1,														//bindingCount;
 		&descriptorSetLayoutBinding								//pBindings;
 	};
-	pPipeData->descriptorSetLayoutBinding = descriptorSetLayoutBinding;
+	p_uniform->descriptor_set_layout_binding = descriptorSetLayoutBinding;
 
 	shCheckVkResult(
-		vkCreateDescriptorSetLayout(core.device, &descriptorSetLayoutCreateInfo, NULL, &pPipeData->descriptorSetLayout),
+		vkCreateDescriptorSetLayout(core.device, &descriptorSetLayoutCreateInfo, NULL, &p_uniform->descriptor_set_layout),
 		"error creating descriptor set layout"
 	);
 }
@@ -60,46 +60,48 @@ void shCreateDescriptorPool(const ShVkCore core, ShVkPipelineData* pPipeData) {
 	};
 
 	shCheckVkResult(
-		vkCreateDescriptorPool(core.device, &descriptorPoolCreateInfo, NULL, &pPipeData->descriptorPool),
+		vkCreateDescriptorPool(core.device, &descriptorPoolCreateInfo, NULL, &pPipeData->descriptor_pool),
 		"error creating descriptor pool"
 	);
 }
 
-void shAllocateDescriptorSets(const ShVkCore core, ShVkPipelineData* pPipeData) {
-	
+void shAllocateDescriptorSets(const ShVkCore core, const uint32_t uniform_idx, ShVkPipelineData* p_pipe_data) {
+	ShUniformBuffer* p_uniform = &p_pipe_data->p_uniform_buffers[uniform_idx];
+
 	VkDescriptorSetAllocateInfo allocateInfo = {
 		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,	//sType;
 		NULL,											//pNext;
-		pPipeData->descriptorPool,						//descriptorPool;
+		p_pipe_data->descriptor_pool,						//descriptorPool;
 		1,												//descriptorSetCount;
-		&pPipeData->descriptorSetLayout					//pSetLayouts;
+		&p_uniform->descriptor_set_layout				//pSetLayouts;
 	};
 
 	shCheckVkResult(
-		vkAllocateDescriptorSets(core.device, &allocateInfo, &pPipeData->descriptorSet),
+		vkAllocateDescriptorSets(core.device, &allocateInfo, &p_pipe_data->p_descriptor_sets[uniform_idx]),
 		"error allocating descriptor set"
 	);
 
 	VkDescriptorBufferInfo descriptorBufferInfo = {
-		pPipeData->uniformBuffer,		//buffer;
+		p_uniform->uniform_buffer,		//buffer;
 		0,								//offset;
-		pPipeData->uniformBufferSize,	//range;
+		p_uniform->uniform_buffer_size,	//range;
 	};
-	pPipeData->descriptorBufferInfo = descriptorBufferInfo;
+	p_uniform->descriptor_buffer_info = descriptorBufferInfo;
 
 	VkWriteDescriptorSet writeDescriptorSet = {		
 		VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,					//sType;
 		NULL,													//pNext;
-		pPipeData->descriptorSet,								//dstSet;
+		p_pipe_data->p_descriptor_sets[uniform_idx],			//dstSet;
 		0,														//dstBinding;
 		0,														//dstArrayElement;
 		1,														//descriptorCount;
 		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,						//descriptorType;
 		NULL,													//pImageInfo;
-		&pPipeData->descriptorBufferInfo,						//pBufferInfo;
+		&p_uniform->descriptor_buffer_info,						//pBufferInfo;
 		NULL													//pTexelBufferView;
 	};
-	pPipeData->writeDescriptorSet = writeDescriptorSet;
+	p_pipe_data->p_write_descriptor_sets[uniform_idx] = writeDescriptorSet;
+	p_pipe_data->p_write_descriptor_sets[uniform_idx].pBufferInfo = &p_pipe_data->p_uniform_buffers[uniform_idx].descriptor_buffer_info;
 }
 
 void shSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, ShVkPipelineData* pPipeData) {
@@ -385,14 +387,17 @@ void shSetupGraphicsPipeline(const ShVkCore core, const ShVkFixedStates fStates,
 		NULL,											//pPushConstantRanges;
 	};
 
-	if (setupFlags & SH_PIPELINE_SETUP_PUSH_CONSTANTS_BIT) {
+	if (pPipeData->pushConstantRange.size != 0) {
 		mainPipelineLayoutCreateInfo.pushConstantRangeCount = 1;
 		mainPipelineLayoutCreateInfo.pPushConstantRanges = &pPipeData->pushConstantRange;
 	}
-
-	if (setupFlags & SH_PIPELINE_SETUP_UNIFORM_BUFFER_BIT) {
-		mainPipelineLayoutCreateInfo.setLayoutCount = 1;
-		mainPipelineLayoutCreateInfo.pSetLayouts = &pPipeData->descriptorSetLayout;
+	VkDescriptorSetLayout* p_descriptor_set_layouts = calloc(pPipeData->uniform_buffer_count, sizeof(VkDescriptorSetLayout));
+	if (p_descriptor_set_layouts != NULL) {
+		mainPipelineLayoutCreateInfo.setLayoutCount = pPipeData->uniform_buffer_count;
+		for (uint32_t i = 0; i < pPipeData->uniform_buffer_count; i++) {
+			p_descriptor_set_layouts[i] = pPipeData->p_uniform_buffers[i].descriptor_set_layout;
+		}
+		mainPipelineLayoutCreateInfo.pSetLayouts = p_descriptor_set_layouts;
 	}											   
 
 	VkPipelineDepthStencilStateCreateInfo depthStencilStateCreateInfo = {
@@ -445,18 +450,26 @@ void shSetupGraphicsPipeline(const ShVkCore core, const ShVkFixedStates fStates,
 		"error creating graphics pipeline"
 	);
 
-	
+	if (p_descriptor_set_layouts != NULL) { free(p_descriptor_set_layouts); }
 }
 
 void shDestroyPipeline(const ShVkCore core, ShVkPipelineData* pPipeData) {
-	shClearBufferMemory(core.device, pPipeData->uniformBuffer, pPipeData->uniformBufferMemory);
-	vkDestroyDescriptorPool(core.device, pPipeData->descriptorPool, NULL);
-	vkDestroyDescriptorSetLayout(core.device, pPipeData->descriptorSetLayout, NULL);
+	for (uint32_t i = 0; i < pPipeData->uniform_buffer_count; i++) {
+		shClearBufferMemory(core.device, pPipeData->p_uniform_buffers[i].uniform_buffer, pPipeData->p_uniform_buffers[i].uniform_buffer_memory);
+	}
+	vkDestroyDescriptorPool(core.device, pPipeData->descriptor_pool, NULL);
+	for (uint32_t i = 0; i < pPipeData->uniform_buffer_count; i++) {
+		vkDestroyDescriptorSetLayout(core.device, pPipeData->p_uniform_buffers[i].descriptor_set_layout, NULL);
+	}
+	
 	vkDestroyPipelineLayout(core.device, pPipeData->mainPipelineLayout, NULL);
 	vkDestroyPipeline(core.device, pPipeData->pipeline, NULL);
 	vkDestroyShaderModule(core.device, pPipeData->pShaderModules[0], NULL);
 	vkDestroyShaderModule(core.device, pPipeData->pShaderModules[1], NULL);
 	
-	free(pPipeData->pShaderStages);
-	free(pPipeData->pShaderModules);
-}
+	if (pPipeData->p_uniform_buffers		!= NULL) { free(pPipeData->p_uniform_buffers);		 }
+	if (pPipeData->p_descriptor_sets		!= NULL) { free(pPipeData->p_descriptor_sets);		 }
+	if (pPipeData->p_write_descriptor_sets	!= NULL) { free(pPipeData->p_write_descriptor_sets); }
+	if (pPipeData->pShaderStages			!= NULL) { free(pPipeData->pShaderStages);			 }
+	if (pPipeData->pShaderModules			!= NULL) { free(pPipeData->pShaderModules);			 }
+}																

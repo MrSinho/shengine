@@ -8,25 +8,25 @@
 #include "shMaterialInfo.h"
 
 typedef struct ShVkFixedStates {
-	
-	VkVertexInputBindingDescription vertex_binding_description;
-	uint32_t vertex_input_attribute_description_count;
-	VkVertexInputAttributeDescription* p_vertex_input_assembly_descriptions;
-	VkPipelineVertexInputStateCreateInfo vertex_input_state_info;
-	VkPipelineInputAssemblyStateCreateInfo input_assembly;
+	/*Shader inputs*/
+	VkVertexInputBindingDescription			vertex_binding_description;
+	uint32_t								vertex_input_attribute_description_count;
+	VkVertexInputAttributeDescription*		p_vertex_input_assembly_descriptions;
+	VkPipelineVertexInputStateCreateInfo	vertex_input_state_info;
+	VkPipelineInputAssemblyStateCreateInfo	input_assembly;
+	/*Viewport*/
+	VkViewport								viewport;
+	VkRect2D								scissor;
+	VkPipelineViewportStateCreateInfo		viewport_state;
+	/*Rasterizer*/
+	VkPipelineRasterizationStateCreateInfo	rasterizer;
+	/**/
+	VkPipelineColorBlendAttachmentState		color_blend_attachment;
+	VkPipelineColorBlendStateCreateInfo		color_blend_state;
 
-	VkViewport viewport;
-	VkRect2D scissor;
-	VkPipelineViewportStateCreateInfo viewport_state;
+	VkPipelineMultisampleStateCreateInfo	multisample_state_info;
 
-	VkPipelineRasterizationStateCreateInfo rasterizer;
-
-	VkPipelineColorBlendAttachmentState color_blend_attachment;
-	VkPipelineColorBlendStateCreateInfo color_blend_state;
-
-	VkPipelineMultisampleStateCreateInfo multisample_state_info;
-
-	ShFixedStateFlags fixed_state_flags;
+	ShFixedStateFlags						fixed_state_flags;
 
 } ShVkFixedStates;
 
@@ -35,39 +35,39 @@ typedef enum ShPipelineSetupFlags {
 	SH_PIPELINE_SETUP_UNIFORM_BUFFER_BIT = 0b0010,
 } ShPipelineSetupFlags;
 
+typedef struct ShUniformBuffer {
+	VkBuffer						uniform_buffer;
+	uint32_t						uniform_buffer_size;
+	VkDeviceMemory					uniform_buffer_memory;
+	VkDescriptorSetLayoutBinding	descriptor_set_layout_binding;
+	VkDescriptorSetLayout			descriptor_set_layout;
+	VkDescriptorBufferInfo			descriptor_buffer_info;
+} ShUniformBuffer;
+
 typedef struct ShVkPipelineData {
 
 	uint32_t vertexStride;
 
 	/*Shaders*/
-	uint32_t shaderStageCount;
+	uint32_t						 shaderStageCount;
 	VkPipelineShaderStageCreateInfo* pShaderStages;
-	uint32_t shaderModuleCount;
-	VkShaderModule* pShaderModules;
+	uint32_t						 shaderModuleCount;
+	VkShaderModule*					 pShaderModules;
 
 	/*Push constants*/
-	VkPushConstantRange		pushConstantRange;
+	VkPushConstantRange pushConstantRange;
 
-	/*Descriptor stuff*/
-	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding;
-	VkDescriptorSetLayout descriptorSetLayout;
-	VkDescriptorPool descriptorPool;
-	VkDescriptorBufferInfo descriptorBufferInfo;
-	//int	uniform_updated;
-	//int	shared_uniform;
-	VkWriteDescriptorSet writeDescriptorSet;
-	VkDescriptorSet descriptorSet;
-
-	/*Uniform buffer*/
-	VkBuffer uniformBuffer;
-	uint32_t uniformBufferSize;
-	VkDeviceMemory uniformBufferMemory;
+	/*Uniform buffers*/	
+	VkDescriptorPool		descriptor_pool;
+	uint32_t				uniform_buffer_count;
+	ShUniformBuffer*		p_uniform_buffers;
+	VkWriteDescriptorSet*	p_write_descriptor_sets;
+	VkDescriptorSet*		p_descriptor_sets;
 
 	/*Pipeline*/
-	VkPipelineLayout mainPipelineLayout;
-	VkPipeline pipeline;
-
-	ShPipelineSetupFlags setupFlags;
+	VkPipelineLayout		mainPipelineLayout;
+	VkPipeline				pipeline;
+	ShPipelineSetupFlags	setupFlags;
 
 } ShVkPipelineData;
 
@@ -100,14 +100,13 @@ extern void shCreateInputAssembly(VkPipelineInputAssemblyStateCreateInfo* input_
 extern void shSetPushConstants(const VkShaderStageFlags shaderStageFlags, const uint32_t offset, const uint32_t size, ShVkPipelineData* pPipeData);
 
 
-extern void shAllocateUniformBufferData(const ShVkCore core, const uint32_t bufferSize, ShVkPipelineData* pPipeData);
+extern void shAllocateUniformBufferData(const ShVkCore core, const uint32_t bufferSize, ShUniformBuffer* p_uniform);
 
-extern void shDescriptorSetLayout(const ShVkCore core, const uint32_t binding, const VkShaderStageFlags shaderStageFlags, ShVkPipelineData* pPipeData);
+extern void shDescriptorSetLayout(const ShVkCore core, const uint32_t binding, const VkShaderStageFlags shaderStageFlags, ShUniformBuffer* p_uniform);
 
 extern void shCreateDescriptorPool(const ShVkCore core, ShVkPipelineData* pPipeData);
 
-extern void shAllocateDescriptorSets(const ShVkCore core, ShVkPipelineData* pPipeData);
-
+extern void shAllocateDescriptorSets(const ShVkCore core, const uint32_t uniform_idx, ShVkPipelineData* p_pipe_data);
 
 
 extern void shSetupShaders(const ShVkCore core, const char* vertexspv, const char* fragmentspv, ShVkPipelineData* pipeData);

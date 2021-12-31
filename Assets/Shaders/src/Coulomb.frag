@@ -1,6 +1,6 @@
 #version 460
 //INPUTS:
-layout (location = 0) flat in mat4 MV;
+layout (location = 0) flat in mat4 PV;
 layout (location = 4) in vec4 fragPosition;
 
 //DECLARATIONS/DEFINITIONS:
@@ -18,13 +18,13 @@ const uint chargeCount = 4;
 // The charges are in the scene 3 dimensional space
 Charge charges[4] = Charge[4](
     //center
-    Charge(MV * vec4( 0.0f, 2.0f, 0.0f, 1.0f), 85.0f, vec3(1.0f, 0.0f, 0.0f) ),
+    Charge(PV * vec4( 0.0f, 2.0f, 0.0f, 1.0f), 85.0f, vec3(1.0f, 0.0f, 0.0f) ),
     //left
-    Charge(MV * vec4( 1.5f, 0.0f, 0.0f, 1.0f), 85.0f, vec3(0.0f, 1.0f, 0.0f) ),
+    Charge(PV * vec4( 1.5f, 0.0f, 0.0f, 1.0f), 85.0f, vec3(0.0f, 1.0f, 0.0f) ),
     //right
-    Charge(MV * vec4(-1.5f, 0.0f, 0.0f, 1.0f), 85.0f, vec3(0.0f, 0.0f, 1.0f) ),
+    Charge(PV * vec4(-1.5f, 0.0f, 0.0f, 1.0f), 85.0f, vec3(0.0f, 0.0f, 1.0f) ),
     //up
-    Charge(MV * vec4( 0.0f,-1.0f, 0.0f, 1.0f), 105.0f, vec3(0.5f, 0.5f, 0.0f) )
+    Charge(PV * vec4( 0.0f,-1.0f, 0.0f, 1.0f), 105.0f, vec3(0.5f, 0.5f, 0.0f) )
 );
 
 void main(){

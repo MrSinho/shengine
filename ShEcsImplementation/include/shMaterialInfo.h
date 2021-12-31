@@ -18,24 +18,26 @@ typedef enum ShFixedStateFlags {
 
 
 typedef enum ShShaderStageFlags {
-
 	SH_SHADER_STAGE_VERTEX_BIT 	= 0x00000001,
     SH_SHADER_STAGE_GEOMETRY_BIT 	= 0x00000008,
     SH_SHADER_STAGE_FRAGMENT_BIT 	= 0x00000010
-
 } ShShaderStageFlags;
 
+
+typedef struct ShUniformBufferInfo {
+	uint32_t				uniformSize;
+	ShShaderStageFlags		uniformStage;
+} ShUniformBufferInfo;
 
 
 typedef struct ShMaterialInfo {
 	const char* 			vertex_shader_path;
 	const char* 			fragment_shader_path;	
-	uint32_t				uniformSize;
-	ShShaderStageFlags		uniformStage;
+	uint32_t				uniform_buffer_count;
+	ShUniformBufferInfo*	p_uniform_buffers;
 	uint32_t				pConstSize; 
 	ShShaderStageFlags		pConstStage;
 	ShFixedStateFlags		fixed_states_flags;
-
 } ShMaterialInfo;
 
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShMaterialInfo, 5)

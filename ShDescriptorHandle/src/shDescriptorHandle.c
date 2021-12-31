@@ -131,14 +131,14 @@ void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMateria
     json_object* json_materials = json_object_object_get(parser, "materials");
     uint32_t mat_info_count = (uint32_t)json_object_array_length(json_materials);
     ShMaterialInfo* p_mat_infos = calloc(mat_info_count, sizeof(ShMaterialInfo));
-    if (p_mat_infos == NULL) { return; }
+    if (p_mat_infos == NULL || mat_info_count == 0) { return; }
     for (uint32_t i = 0; i < mat_info_count; i++) {
         json_object* json_material = json_object_array_get_idx(json_materials, i);
         ShMaterialInfo material_info = {
             json_object_get_string(json_object_object_get(json_material, "vertex_shader")),                         // vertex_shader_path;
             json_object_get_string(json_object_object_get(json_material, "fragment_shader")),                       // fragment_shader_path;	
-            (uint32_t)json_object_get_int(json_object_object_get(json_material, "uniform_size")),                       // uniformSize;
-            shStringFlagToInt(json_object_get_string(json_object_object_get(json_material, "uniform_stage"))),         // uniformStage;
+            0,
+            NULL,
             (uint32_t)json_object_get_int(json_object_object_get(json_material, "push_constants_size")),                // pConstSize; 
             shStringFlagToInt(json_object_get_string(json_object_object_get(json_material, "push_constants_stage"))),  // pConstStage;
             0                                                                                                           // fixed_states_flags;
@@ -149,6 +149,16 @@ void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMateria
                 json_object* json_flag = json_object_array_get_idx(json_fixed_states_flags, i);
                 ShFixedStateFlags flag = shStringFlagToInt(json_object_get_string(json_flag));
                 material_info.fixed_states_flags |= flag;
+            }
+        }
+        json_object* json_uniforms = json_object_object_get(json_material, "uniform_buffers");
+        material_info.uniform_buffer_count = (uint32_t)json_object_array_length(json_uniforms);
+        if (json_uniforms != NULL) {
+            material_info.p_uniform_buffers = calloc(material_info.uniform_buffer_count, sizeof(ShUniformBufferInfo));
+            for (uint32_t i = 0; i < material_info.uniform_buffer_count; i++) {
+                json_object* json_uniform_buffer = json_object_array_get_idx(json_uniforms, i);
+                material_info.p_uniform_buffers->uniformSize = (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "size"));
+                material_info.p_uniform_buffers->uniformStage = shStringFlagToInt(json_object_get_string(json_object_object_get(json_uniform_buffer, "stage")));
             }
         }
         p_mat_infos[i] = material_info;
