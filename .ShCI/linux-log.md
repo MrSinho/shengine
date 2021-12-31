@@ -1,7 +1,7 @@
 # SH-Engine
 ![linux_badge](linux-status.svg)
 ## [Linux/Unix build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 36.25s`
+  `Build ran for 34.90s`
 ```bash $shci call$
 apt install -y wget gcc cmake make gdb
 Lettura elenco dei pacchetti...
@@ -12,7 +12,7 @@ gcc è già alla versione più recente (4:9.3.0-1ubuntu2).
 make è già alla versione più recente (4.2.1-1.2).
 gdb è già alla versione più recente (9.2-0ubuntu1~20.04).
 wget è già alla versione più recente (1.20.3-1ubuntu2).
-0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 
 ```
 
@@ -34,59 +34,55 @@ sudo apt install -y mesa-vulkan-drivers
 sudo apt install -y vulkan-utils
 
 sudo apt install -y libusb-dev
-Trovato:1 http://archive.ubuntu.com/ubuntu focal InRelease
-Ignorato:2 http://dl.google.com/linux/chrome-remote-desktop/deb stable InRelease
-Trovato:3 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
-Trovato:4 http://packages.microsoft.com/repos/code stable InRelease
-Trovato:5 http://security.ubuntu.com/ubuntu focal-security InRelease
-Trovato:6 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Trovato:7 http://dl.google.com/linux/chrome-remote-desktop/deb stable Release
-Trovato:8 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Trovato:9 http://ppa.launchpad.net/openshot.developers/ppa/ubuntu focal InRelease
-Scaricamento di:10 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
-Ignorato:11 http://packages.linuxmint.com uma InRelease
+Trovato:1 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Trovato:2 http://packages.microsoft.com/repos/code stable InRelease
+Trovato:3 http://archive.ubuntu.com/ubuntu focal InRelease
+Ignorato:4 http://dl.google.com/linux/chrome-remote-desktop/deb stable InRelease
+Trovato:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Trovato:6 http://ppa.launchpad.net/openshot.developers/ppa/ubuntu focal InRelease
+Scaricamento di:7 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
+Trovato:8 http://dl.google.com/linux/chrome-remote-desktop/deb stable Release
+Trovato:9 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Ignorato:10 http://packages.linuxmint.com uma InRelease
+Trovato:11 http://security.ubuntu.com/ubuntu focal-security InRelease
 Trovato:12 http://archive.canonical.com/ubuntu focal InRelease
 Trovato:13 http://packages.linuxmint.com uma Release
-Scaricamento di:14 http://archive.ubuntu.com/ubuntu focal/main Translation-it [488 kB]
-Scaricamento di:15 http://archive.ubuntu.com/ubuntu focal/restricted Translation-it [1.272 B]
-Scaricamento di:16 http://archive.ubuntu.com/ubuntu focal/universe Translation-it [4.006 kB]
-Scaricamento di:18 http://archive.ubuntu.com/ubuntu focal/multiverse Translation-it [25,3 kB]
-Recuperati 4.528 kB in 3s (1.705 kB/s)
+Recuperati 7.343 B in 3s (2.868 B/s)
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
-20 pacchetti possono essere aggiornati: eseguire "apt list --upgradable" per vederli.
+19 pacchetti possono essere aggiornati: eseguire "apt list --upgradable" per vederli.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
 libx11-dev è già alla versione più recente (2:1.6.9-2ubuntu1.2).
-0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
 doxygen è già alla versione più recente (1.8.17-0ubuntu2).
-0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
 libxrandr-dev è già alla versione più recente (2:1.5.2-0ubuntu1).
-0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
 libxinerama-dev è già alla versione più recente (2:1.1.4-2).
-0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
 libxcursor-dev è già alla versione più recente (1:1.2.0-2).
-0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
 libxi-dev è già alla versione più recente (2:1.7.10-0ubuntu1).
-0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
-Executing: /tmp/apt-key-gpghome.WfCVxjc08G/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
+Executing: /tmp/apt-key-gpghome.m1FKUTLFOW/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
 Stai per aggiungere il seguente PPA:
  PLEASE READ: don't email me to report bugs, unless you are sure it's a packaging bug. Not only is email not a good tool for tracking bugs, it also excludes anybody else from tracking or working on the issue. Please read the section "Debugging and reporting problems" below.
 
@@ -173,48 +169,38 @@ $ sudo ppa-purge ppa:oibaf/graphics-drivers
 Some people asked me if I can accept donations to support this work. I don't, but if you have some spare money I would be happy if you could do a donation to a charity of your choice (for the poors, animals, whatever else you may think it might need it). Then feel free to send me a note about it!
  Maggiori informazioni: https://launchpad.net/~oibaf/+archive/ubuntu/graphics-drivers
 Ignorato:1 http://dl.google.com/linux/chrome-remote-desktop/deb stable InRelease
-Trovato:2 http://archive.ubuntu.com/ubuntu focal InRelease
-Trovato:3 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
-Trovato:4 http://packages.microsoft.com/repos/code stable InRelease
-Trovato:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Trovato:6 http://dl.google.com/linux/chrome-remote-desktop/deb stable Release
-Trovato:7 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Trovato:8 http://ppa.launchpad.net/openshot.developers/ppa/ubuntu focal InRelease
-Scaricamento di:9 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
-Trovato:10 http://security.ubuntu.com/ubuntu focal-security InRelease
-Ignorato:11 http://packages.linuxmint.com uma InRelease
-Trovato:12 http://archive.canonical.com/ubuntu focal InRelease
+Trovato:2 http://archive.canonical.com/ubuntu focal InRelease
+Trovato:3 http://archive.ubuntu.com/ubuntu focal InRelease
+Trovato:4 http://security.ubuntu.com/ubuntu focal-security InRelease
+Trovato:5 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Trovato:6 http://packages.microsoft.com/repos/code stable InRelease
+Trovato:7 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Trovato:8 http://dl.google.com/linux/chrome-remote-desktop/deb stable Release
+Trovato:9 http://ppa.launchpad.net/openshot.developers/ppa/ubuntu focal InRelease
+Trovato:10 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Scaricamento di:11 https://packages.microsoft.com/repos/edge stable InRelease [7.343 B]
+Ignorato:12 http://packages.linuxmint.com uma InRelease
 Trovato:13 http://packages.linuxmint.com uma Release
-Recuperati 7.343 B in 3s (2.833 B/s)
+Recuperati 7.343 B in 3s (2.878 B/s)
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
-20 pacchetti possono essere aggiornati: eseguire "apt list --upgradable" per vederli.
+19 pacchetti possono essere aggiornati: eseguire "apt list --upgradable" per vederli.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
 libvulkan-dev è già alla versione più recente (1.2.131.2-1).
-0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
 libvulkan1 è già alla versione più recente (1.2.131.2-1).
-0 aggiornati, 0 installati, 0 da rimuovere e 20 non aggiornati.
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
-I seguenti pacchetti saranno aggiornati:
-  mesa-vulkan-drivers
-1 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
-È necessario scaricare 5.049 kB di archivi.
-Dopo quest'operazione, verranno occupati 0 B di spazio su disco.
-Scaricamento di:1 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal/main amd64 mesa-vulkan-drivers amd64 22.0~git2112310600.273edf~oibaf~f [5.049 kB]
-Recuperati 5.049 kB in 2s (2.572 kB/s)
-(Lettura del database... (Lettura del database... 5%(Lettura del database... 10%(Lettura del database... 15%(Lettura del database... 20%(Lettura del database... 25%(Lettura del database... 30%(Lettura del database... 35%(Lettura del database... 40%(Lettura del database... 45%(Lettura del database... 50%(Lettura del database... 55%(Lettura del database... 60%(Lettura del database... 65%(Lettura del database... 70%(Lettura del database... 75%(Lettura del database... 80%(Lettura del database... 85%(Lettura del database... 90%(Lettura del database... 95%(Lettura del database... 100%(Lettura del database... 345153 file e directory attualmente installati.)
-Preparativi per estrarre .../mesa-vulkan-drivers_22.0~git2112310600.273edf~oibaf~f_amd64.deb...
-Estrazione di mesa-vulkan-drivers:amd64 (22.0~git2112310600.273edf~oibaf~f) su (22.0~git2112280600.ff7aee~oibaf~f)...
-Configurazione di mesa-vulkan-drivers:amd64 (22.0~git2112310600.273edf~oibaf~f)...
-Elaborazione dei trigger per libc-bin (2.31-0ubuntu9.2)...
+mesa-vulkan-drivers è già alla versione più recente (22.0~git2112310600.273edf~oibaf~f).
+0 aggiornati, 0 installati, 0 da rimuovere e 19 non aggiornati.
 Lettura elenco dei pacchetti...
 Generazione albero delle dipendenze...
 Lettura informazioni sullo stato...
