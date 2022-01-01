@@ -2,7 +2,7 @@
 
 layout (location = 0) in vec3 position;
 
-layout (location = 0) out mat4 MV;
+layout (location = 0) out mat4 PV;
 layout (location = 4) out vec4 fragPosition;
 
 layout (push_constant) uniform constants {
@@ -16,8 +16,7 @@ layout (set = 0, binding = 0) uniform modelUbo {
 } ubo;
 
 void main() {
-    
-    MV = pushConstants.projection * pushConstants.view;
-    fragPosition = MV * ubo.transform * vec4(position, 1.0f);
+    PV = pushConstants.projection * pushConstants.view;
+    fragPosition = PV * ubo.transform * vec4(position, 1.0f);
     gl_Position = fragPosition;
 }
