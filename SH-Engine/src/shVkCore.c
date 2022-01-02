@@ -199,7 +199,7 @@ void shSetPhysicalDevice(ShVkCore* p_core) {
 	free(pDevices);
 
 	vkGetPhysicalDeviceProperties(p_core->physical_device, &p_core->physical_device_properties);
-
+	vkGetPhysicalDeviceFeatures(p_core->physical_device, &p_core->physical_device_features);
 #ifndef NDEBUG
 		printf("using %s \n", p_core->physical_device_properties.deviceName);
 #endif

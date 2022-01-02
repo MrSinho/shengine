@@ -30,6 +30,7 @@ typedef struct ShVkCore {
 	VkInstance instance;
 	VkPhysicalDevice physical_device;
 	VkPhysicalDeviceProperties physical_device_properties;
+	VkPhysicalDeviceFeatures physical_device_features;
 	VkDevice device;
 	
 	/*Window and surface stuff*/
@@ -73,8 +74,6 @@ extern void shCreateWindowSurface(ShVkCore* p_core);
 
 extern VkSurfaceCapabilitiesKHR shGetSurfaceCapabilities(const VkPhysicalDevice pDevice, const VkSurfaceKHR surface);
 
-
-
 extern ShVkCore shVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char* title);
 
 extern void shCreateInstance(ShVkCore* p_core);
@@ -83,15 +82,11 @@ extern void shSetPhysicalDevice(ShVkCore* p_core);
 
 extern int CheckPhysicalDeviceExtensions(const ShVkCore core, const VkPhysicalDevice pDevice);
 
-
-
 extern VkDeviceQueueCreateInfo shSetQueueInfo(const uint32_t queueFamilyIndex, const float* priority);
 
 extern void shSetLogicalDevice(ShVkCore* p_core);
 
 extern void shGetGraphicsQueue(ShVkCore* p_core);
-
-
 
 extern void shCreateSwapchain(ShVkCore* p_core);
 
@@ -110,8 +105,6 @@ extern void shInitCommands(ShVkCore* p_core);
 extern VkCommandPool shCreateCmdPool(const VkDevice device, uint32_t queueFamilyIndex);
 
 extern VkCommandBuffer shCreateCmdBuffer(const VkDevice device, const VkCommandPool cmdPool);
-
-
 
 extern void shCreateRenderPass(ShVkCore* p_core);
 

@@ -159,10 +159,9 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShPhysicsHost* physic
 			ShMeshInfo* mesh_info = shGetShMeshInfo(scene, entity);
 			ShMesh* mesh = shGetShMesh(scene, entity);
 
-			char* p_push_constants[128];
+			void* p_push_constants[128];
 			uint32_t push_constants_size = 0;
 			if (material->pipeline_data.pushConstantRange.size != 0) {
-				if (p_push_constants == NULL) { break; }
 				if (camera.flags != 0) {
 					vec4* p_cam_const[2] = { camera.projection, camera.view };
 					memcpy((void*)&((char*)p_push_constants)[push_constants_size], &p_cam_const[0][0], sizeof(mat4) * 2);
@@ -170,19 +169,23 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShPhysicsHost* physic
 				}
 			}
 			
-			char* p_uniform_buffers[64000];
+			void* p_uniform_buffers[64000];
 			uint32_t uniform_buffers_size = 0;
-			if (p_uniform_buffers != NULL) {
-				if (shHasShTransform(scene, entity)) {
-					memcpy(&((char*)p_uniform_buffers)[uniform_buffers_size], shGetShTransform(scene, entity)->model, 64);
+			if (material->pipeline_data.uniform_buffer_count != 0) {
+				ShTransform* transform = shGetShTransform(scene, entity);
+				ShPhysicsClient* client = shGetShPhysicsClient(scene, entity);
+				if (transform != NULL) {
+					memcpy(&((char*)p_uniform_buffers)[uniform_buffers_size], transform->model, 64);
 					uniform_buffers_size += 64;
 				}
-				if (shHasShPhysicsClient(scene, entity)) {
-					ShPhysicsClient* client = shGetShPhysicsClient(scene, entity);
+				if (client != NULL) {
 					if (*client & SH_PHYSICS_CLIENT_ELECTROSTATICS) {
-						memcpy(&((char*)p_uniform_buffers)[uniform_buffers_size], 
-							physics->electrostaticWorld.charges, 32 * 32);
-						uniform_buffers_size += 32 * 32;
+						memcpy(&((char*)&p_uniform_buffers)[uniform_buffers_size], 
+							physics->electrostaticWorld.charges, 16 * 32);
+						uniform_buffers_size += 16 * 32;
+						float dtime[1] = { (float)time.delta_time };
+						memcpy(&((char*)&p_uniform_buffers)[uniform_buffers_size], dtime, 16);
+						uniform_buffers_size += 16;
 					}
 				}
 			}

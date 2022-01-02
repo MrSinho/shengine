@@ -12,8 +12,8 @@ typedef enum ShPhysicsClient {
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShPhysicsClient, 8)
 
 typedef struct ShElectricalCharge {
-    float position[4];
-    float intensity[4];
+    float position[3];
+    float intensity[1];
 } ShElectricalCharge;
 
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShElectricalCharge, 9)

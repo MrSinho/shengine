@@ -355,12 +355,12 @@ void shLoadPhysicsWorld(const char* path, ShPhysicsHost* p_host) {
                 }
             }
             json_object* json_intensity = json_object_object_get(json_charge, "intensity");
-            if (json_intensity != NULL) {
-                for (uint32_t j = 0; j < 4; j++) {
-                    json_object* json_intens = json_object_array_get_idx(json_intensity, j);
-                    p_host->electrostaticWorld.charges[i].intensity[j] = json_intens != NULL ? (float)json_object_get_double(json_intens) : 0.0f;
-                }
-            }
+            p_host->electrostaticWorld.charges[i].intensity[0] = json_intensity != NULL ? (float)json_object_get_double(json_intensity) : 0.0f;
+            //for (uint32_t j = 0; j < 4; j++) {
+            //    json_object* json_intens = json_object_array_get_idx(json_intensity, j);
+            //    p_host->electrostaticWorld.charges[i].intensity[j] = json_intens != NULL ? (float)json_object_get_double(json_intens) : 0.0f;
+            //}
+            //
         }
     }
     

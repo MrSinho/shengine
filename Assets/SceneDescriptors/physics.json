@@ -4,15 +4,15 @@
     "electrostatic_charges": [ 
       {
         "position":  [ 0, 2, 0, 1 ],
-        "intensity": [ 1, 0, 0, 150 ]
+        "intensity": 150
       },
       {
         "position":  [1.5, 0, 0, 1 ],
-        "intensity": [  0, 1, 0, 75 ]
+        "intensity": 75
       },
       {
         "position":  [-1.5, 0, 0, 1 ],
-        "intensity": [  0, 0, 1, 75 ]
+        "intensity": 75
       }
     ]
   }
