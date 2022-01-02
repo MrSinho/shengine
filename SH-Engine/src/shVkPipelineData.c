@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <shVkMemoryInfo.h>
+#include "shVkMemoryInfo.h"
 
 #ifdef _MSC_VER
 #pragma warning (disable: 6386)
