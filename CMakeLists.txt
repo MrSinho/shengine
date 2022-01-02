@@ -13,7 +13,6 @@ add_subdirectory(Externals/glfw)
 add_subdirectory(Externals/cglm)
 add_subdirectory(Externals/json-c)
 add_subdirectory(Externals/PlyImporter)
-add_subdirectory(Externals/ShPhysics)
 add_subdirectory(Externals/ShSerial)
 
 #INSTALLED PACKAGES
@@ -51,7 +50,6 @@ target_link_libraries(ShDescriptorHandle PUBLIC
     ShUtilities
     json-c
     PlyImporter
-    ShPhysics
 )
 
 #SH-ENGINE
@@ -79,7 +77,6 @@ add_executable(Editor ${EDITOR_SRC})
 target_link_libraries(Editor PUBLIC 
     SH-Engine
     ShUtilities
-    ShPhysics
     ShSerial
 )
 target_include_directories(Editor PUBLIC

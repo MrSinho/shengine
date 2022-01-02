@@ -13,9 +13,6 @@
 [submodule "Externals/json-c"]
 	path = Externals/json-c
 	url = https://github.com/json-c/json-c
-[submodule "Externals/ShPhysics"]
-	path = Externals/ShPhysics
-	url = https://github.com/MrSinho/ShPhysics
 [submodule "Externals/ShSerial"]
 	path = Externals/ShSerial
 	url = https://github.com/MrSinho/ShSerial

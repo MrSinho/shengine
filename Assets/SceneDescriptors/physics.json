@@ -1,4 +1,19 @@
 {
-  "dynamics_world": [ "DYNAMICS_WORLD_GRAVITY", "DYNAMICS_WORLD_NEWTON_3RD_LAW" ],
-  "speed": 2E3
+  "speed": 2E3,
+  "physics_host": {
+    "electrostatic_charges": [ 
+      {
+        "position":  [ 0, 2, 0, 1 ],
+        "intensity": [ 1, 0, 0, 150 ]
+      },
+      {
+        "position":  [1.5, 0, 0, 1 ],
+        "intensity": [  0, 1, 0, 75 ]
+      },
+      {
+        "position":  [-1.5, 0, 0, 1 ],
+        "intensity": [  0, 0, 1, 75 ]
+      }
+    ]
+  }
 }

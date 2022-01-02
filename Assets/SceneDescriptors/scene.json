@@ -10,7 +10,7 @@
   "entities": [
     {
       "transform": {
-        "position": [0, 0, 20]
+        "position": [0, 0, 3]
       },
       "camera": {
         "fov": 45,
@@ -33,12 +33,9 @@
         "scale": [ 1.5, 1.5, 1.5 ]
       },
       "material": 1,
-      "rigidbody": {
-        "mass": 500,
-        "fulcrum": "position",
-        "shape": "COLLISION_SHAPE_SPHERE",
-        "radius": 1.5
-      }
+      "physics_client": [ 
+        "PHYSICS_CLIENT_ELECTROSTATICS"
+      ]
     },
     {
       "identity": {
@@ -52,12 +49,7 @@
         "rotation": [ 0, 0, 0],
         "scale": [1, 1, 1]
       },
-      "material": 1,
-      "rigidbody": {
-        "mass": 8,
-        "shape": "COLLISION_SHAPE_SPHERE",
-        "radius": 1
-      }
+      "material": 0
     },
     {
       "identity": {
@@ -71,12 +63,7 @@
         "rotation": [ 0, 0, 0],
         "scale": [1, 1, 1]
       },
-      "material": 0,
-      "rigidbody": {
-        "mass": 100,
-        "shape": "COLLISION_SHAPE_SPHERE",
-        "radius": 1
-      }
+      "material": 0
     }
   ]
 }

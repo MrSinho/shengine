@@ -21,9 +21,6 @@
 
 typedef struct stat ShFileStats;
 
-typedef struct ShDynamicsWorld ShDynamicsWorld;
-
-
 typedef struct ShDescriptorHandle {
 
 	const char* path;
@@ -31,8 +28,6 @@ typedef struct ShDescriptorHandle {
 	ShFileStats stats1;
 
 } ShDescriptorHandle;
-
-
 
 
 extern uint8_t shListenDescriptor(ShDescriptorHandle* descriptor_handle);
@@ -45,7 +40,6 @@ extern void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, Sh
 
 extern void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p_scene);
 
-extern void shLoadPhysicsWorld(const char* path, ShScene* p_scene, ShDynamicsWorld* p_dynamics);
+extern void shLoadPhysicsWorld(const char* path, ShPhysicsHost* p_host);
 
-
-#endif // SH_DESCRIPTOR_HANDLE_H
+#endif//SH_DESCRIPTOR_HANDLE_H

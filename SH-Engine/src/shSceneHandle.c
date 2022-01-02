@@ -9,22 +9,22 @@
 #include "shView.h"
 #include "shDrawLoop.h"
 #include "shInput.h"
-
-#include "shLinearAlgebra.h"
-#include "shMatrix.h"
 #include "shEuler.h"
-#include "shVector.h"
-#include "shPhysicsInfo.h"
 
 #include <string.h>
+#include <cglm/cglm.h>
+
+#ifdef _MSC_VER
+#pragma warning (disable: 6385)
+#endif//_MSC_VER
 
 void shUpdateTransform(ShTransform* t) {
 	glm_mat4_identity(t->model);
-	shMat4Translate(t->model, t->position, t->model);
-	shMat4Scale(t->model, t->scale, t->model);
-	shMat4Rotate(t->model, SH_DEGREES_TO_RADIANS(t->rotation[0]), (shvec3) { 1.0f, 0.0f, 0.0f }, t->model);
-	shMat4Rotate(t->model, SH_DEGREES_TO_RADIANS(t->rotation[1]), (shvec3) { 0.0f, 1.0f, 0.0f }, t->model);
-	shMat4Rotate(t->model, SH_DEGREES_TO_RADIANS(t->rotation[2]), (shvec3) { 0.0f, 0.0f, 1.0f }, t->model);
+	glm_translate(t->model, t->position);
+	glm_scale(t->model, t->scale);
+	glm_rotate_x(t->model, SH_DEGREES_TO_RADIANS(t->rotation[0]), t->model);
+	glm_rotate_y(t->model, SH_DEGREES_TO_RADIANS(t->rotation[1]), t->model);
+	glm_rotate_z(t->model, SH_DEGREES_TO_RADIANS(t->rotation[2]), t->model);
 }
 
 void shSceneInit(const ShVkCore core, ShScene* scene) {
@@ -65,17 +65,12 @@ void shSceneInit(const ShVkCore core, ShScene* scene) {
 			ShTransform* t = shGetShTransform(scene, entity);
 			t->position[1] *= -1.0f;
 			shUpdateTransform(t);
-			if (shHasShRigidBody(scene, entity)) {
-				ShRigidBody* p_rb = shGetShRigidBody(scene, entity);
-				memcpy(p_rb->transform, t->model, sizeof(shmat4));
-			}
 		}
-
 	}
 
 }
 
-void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
+void shSceneUpdate(const ShVkCore core, const ShTime time, ShPhysicsHost* physics, ShScene* scene) {
 
 	ShCamera camera = { 0 };
 
@@ -83,59 +78,52 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 
 		if (shHasShTransform(scene, entity)) {
 			ShTransform* t = shGetShTransform(scene, entity);
-			if (shHasShRigidBody(scene, entity)) {
-				ShRigidBody* p_rb = shGetShRigidBody(scene, entity);
-				//printf("pos %f\n", p_rb->transform[3][1]);
-				memcpy(t->model, p_rb->transform, sizeof(shmat4));
-			}
-			else {
 				shUpdateTransform(t);
-			}
 			
-			shEulerToVector(t->rotation, t->front);
+				shEulerToVector(t->rotation, t->front);
 			
-			shVec3Cross((shvec3) { 0.0f, 1.0f, 0.0f }, t->front, t->left);
-			shVec3Normalize(t->left, t->left);
+			glm_vec3_cross((vec3) { 0.0f, 1.0f, 0.0f }, t->front, t->left);
+			glm_vec3_normalize(t->left);
 
-			shVec3Cross(t->front, t->left, t->up);
-			shVec3Normalize(t->up, t->up);
+			glm_vec3_cross(t->front, t->left, t->up);
+			glm_vec3_normalize(t->up);
 
 			if (shHasShCamera(scene, entity)) {
 				camera = *shGetShCamera(scene, entity);
 				if (camera.flags & SH_CAMERA_SETUP_FREE_FLIGHT_BIT) {
-					shvec3 displacement = { 0.0f, 0.0f, 0.0f };
+					float displacement[3] = { 0.0f, 0.0f, 0.0f };
 					if (shIsKeyPressed(core.window, SH_KEY_W)) {
-						memcpy(displacement, t->front, sizeof(shvec3));
+						memcpy(displacement, t->front, 12);
 						displacement[0] *= camera.speed;
 						displacement[1] *= camera.speed;
 						displacement[2] *= camera.speed;
 					}
 					if (shIsKeyPressed(core.window, SH_KEY_A)) {
-						memcpy(displacement, t->left, sizeof(shvec3));
+						memcpy(displacement, t->left, 12);
 						displacement[0] *= camera.speed;
 						displacement[1] *= camera.speed;
 						displacement[2] *= camera.speed;
 					}
 					if (shIsKeyPressed(core.window, SH_KEY_S)) {
-						memcpy(displacement, t->front, sizeof(shvec3));
+						memcpy(displacement, t->front, 12);
 						displacement[0] *= -1.0f * camera.speed;
 						displacement[1] *= -1.0f * camera.speed;
 						displacement[2] *= -1.0f * camera.speed;
 					}
 					if (shIsKeyPressed(core.window, SH_KEY_D)) {
-						memcpy(displacement, t->left, sizeof(shvec3));
+						memcpy(displacement, t->left, 12);
 						displacement[0] *= -1.0f * camera.speed;
 						displacement[1] *= -1.0f * camera.speed;
 						displacement[2] *= -1.0f * camera.speed;
 					}
 					if (shIsKeyPressed(core.window, SH_KEY_E)) {
-						memcpy(displacement, t->up, sizeof(shvec3));
+						memcpy(displacement, t->up, 12);
 						displacement[0] *= -1.0f * camera.speed;
 						displacement[1] *= -1.0f * camera.speed;
 						displacement[2] *= -1.0f * camera.speed;
 					}
 					if (shIsKeyPressed(core.window, SH_KEY_Q)) {
-						memcpy(displacement, t->up, sizeof(shvec3));
+						memcpy(displacement, t->up, 12);
 						displacement[0] *= camera.speed;
 						displacement[1] *= camera.speed;
 						displacement[2] *= camera.speed;
@@ -171,47 +159,38 @@ void shSceneUpdate(const ShVkCore core, const ShTime time, ShScene* scene) {
 			ShMeshInfo* mesh_info = shGetShMeshInfo(scene, entity);
 			ShMesh* mesh = shGetShMesh(scene, entity);
 
-			uint32_t push_constants_index = 0;
-			void* p_push_constants = NULL;
-
-			// push constants check
+			char* p_push_constants[128];
+			uint32_t push_constants_size = 0;
 			if (material->pipeline_data.pushConstantRange.size != 0) {
-				p_push_constants = calloc(core.physical_device_properties.limits.maxPushConstantsSize, 1);
 				if (p_push_constants == NULL) { break; }
 				if (camera.flags != 0) {
 					vec4* p_cam_const[2] = { camera.projection, camera.view };
-					memcpy((void*)&((char*)p_push_constants)[push_constants_index], &p_cam_const[0][0], sizeof(mat4) * 2);
-					push_constants_index += sizeof(mat4) * 2;
+					memcpy((void*)&((char*)p_push_constants)[push_constants_size], &p_cam_const[0][0], sizeof(mat4) * 2);
+					push_constants_size += sizeof(mat4) * 2;
 				}
 			}
-			// uniform buffers check
-			void* p_uniform_buffers = NULL;
+			
+			char* p_uniform_buffers[64000];
 			uint32_t uniform_buffers_size = 0;
-			uint32_t uniform_idx = 0;
-			if (shHasShTransform(scene, entity)) {
-				uniform_buffers_size += sizeof(shmat4);
-				uniform_idx++;
-			}
-			for (; uniform_idx < material->pipeline_data.uniform_buffer_count; uniform_idx++) {
-				uniform_buffers_size += material->pipeline_data.p_uniform_buffers[uniform_idx].uniform_buffer_size;
-			}
-			p_uniform_buffers = calloc(uniform_buffers_size, 1);
 			if (p_uniform_buffers != NULL) {
-				for (uint32_t i = 0; i < material->pipeline_data.uniform_buffer_count; i++) {
-					if (shHasShTransform(scene, entity)) {
-						memcpy(p_uniform_buffers, shGetShTransform(scene, entity)->model, sizeof(shmat4));
+				if (shHasShTransform(scene, entity)) {
+					memcpy(&((char*)p_uniform_buffers)[uniform_buffers_size], shGetShTransform(scene, entity)->model, 64);
+					uniform_buffers_size += 64;
+				}
+				if (shHasShPhysicsClient(scene, entity)) {
+					ShPhysicsClient* client = shGetShPhysicsClient(scene, entity);
+					if (*client & SH_PHYSICS_CLIENT_ELECTROSTATICS) {
+						memcpy(&((char*)p_uniform_buffers)[uniform_buffers_size], 
+							physics->electrostaticWorld.charges, 32 * 32);
+						uniform_buffers_size += 32 * 32;
 					}
 				}
 			}
 
 			shRenderMesh(core, material->pipeline_data, 
-				push_constants_index, p_push_constants, 
-				uniform_buffers_size, p_uniform_buffers, 
+				push_constants_size, p_push_constants, 
+				uniform_buffers_size, p_uniform_buffers,
 				mesh_info, mesh);
-
-
-			if (p_uniform_buffers != NULL) { free(p_uniform_buffers); }
-			if (p_push_constants != NULL) { free(p_push_constants); }
 		}
 	}
 }

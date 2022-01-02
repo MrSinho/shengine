@@ -1,6 +1,4 @@
 #include <SH_API.h>
-#include <shLinearAlgebraTypes.h>
-#include <shPhysics.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,7 +9,6 @@ void initBehaviour(ShScene* scene) {
 		if (shHasShIdentity(scene, entity)) {
 			ShIdentity* identity = shGetShIdentity(scene, entity);
 			if (strcmp(identity->name, "moon") == 0) {
-				ShRigidBody* rb = shGetShRigidBody(scene, entity);
 				
 			}
 		}
@@ -50,8 +47,8 @@ int main() {
 	shCreateScene(&scene);
 	shLoadScene(scene_descriptor.path, p_mat_infos, &scene);
 
-	ShDynamicsWorld dynamics = { 0 };
-	shLoadPhysicsWorld(physics_descriptor.path, &scene, &dynamics);
+	ShPhysicsHost physics = { 0 };
+	shLoadPhysicsWorld(physics_descriptor.path, &physics);
 
 	shSceneInit(core, &scene);
 	initBehaviour(&scene);
@@ -71,7 +68,7 @@ int main() {
 		}
 		if (shListenDescriptor(&scene_descriptor) || shListenDescriptor(&physics_descriptor)) {
 			shReloadScene(core, scene_descriptor, p_mat_infos, &scene);
-			shReloadPhysicsWorld(physics_descriptor, &scene, &dynamics);
+			shReloadPhysicsWorld(physics_descriptor, &scene, &physics);
 			shSetTime(0.0, &time);
 			initBehaviour(&scene);
 		}
@@ -79,7 +76,7 @@ int main() {
 		uint32_t image_index = 0;
 		shFrameBegin(core, &image_index);
 		
-		shSceneUpdate(core, time, &scene);
+		shSceneUpdate(core, time, &physics, &scene);
 
 		updateBehaviour(core.window, time, &scene);
 

@@ -86,6 +86,16 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     if (strcmp(s_flag, "MESH_SETUP_RUNTIME_MESH") == 0) {
         return SH_MESH_SETUP_RUNTIME_MESH;
     }
+    if (strcmp(s_flag, "PHYSICS_CLIENT_DYNAMICS") == 0) {
+        return SH_PHYSICS_CLIENT_DYNAMICS;
+    }
+    if (strcmp(s_flag, "PHYSICS_CLIENT_THERMODYNAMICS") == 0) {
+        return SH_PHYSICS_CLIENT_THERMODYNAMICS;
+    }
+    if (strcmp(s_flag, "PHYSICS_CLIENT_ELECTROSTATICS") == 0) {
+        return SH_PHYSICS_CLIENT_ELECTROSTATICS;
+    }
+#if 0
     if (strcmp(s_flag, "COLLISION_SHAPE_SPHERE") == 0) {
         return SH_COLLISION_SHAPE_SPHERE;
     }
@@ -101,6 +111,7 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     if (strcmp(s_flag, "DYNAMICS_WORLD_NEWTON_3RD_LAW") == 0) {
         return SH_DYNAMICS_WORLD_NEWTON_3RD_LAW;
     }
+#endif
     return 0;
 }
 
@@ -157,8 +168,8 @@ void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMateria
             material_info.p_uniform_buffers = calloc(material_info.uniform_buffer_count, sizeof(ShUniformBufferInfo));
             for (uint32_t i = 0; i < material_info.uniform_buffer_count; i++) {
                 json_object* json_uniform_buffer = json_object_array_get_idx(json_uniforms, i);
-                material_info.p_uniform_buffers->uniformSize = (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "size"));
-                material_info.p_uniform_buffers->uniformStage = shStringFlagToInt(json_object_get_string(json_object_object_get(json_uniform_buffer, "stage")));
+                material_info.p_uniform_buffers[i].uniformSize = (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "size"));
+                material_info.p_uniform_buffers[i].uniformStage = shStringFlagToInt(json_object_get_string(json_object_object_get(json_uniform_buffer, "stage")));
             }
         }
         p_mat_infos[i] = material_info;
@@ -202,11 +213,11 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
         json_object* json_entity = json_object_array_get_idx(json_entities, i);
 
         json_object* json_transform = json_object_object_get(json_entity, "transform");
-        json_object* json_mesh = json_object_object_get(json_entity, "mesh");
-        json_object* json_camera = json_object_object_get(json_entity, "camera");
-        json_object* json_material = json_object_object_get(json_entity, "material");
-        json_object* json_identity = json_object_object_get(json_entity, "identity");
-        json_object* json_rigidbody = json_object_object_get(json_entity, "rigidbody");
+        json_object* json_mesh      = json_object_object_get(json_entity, "mesh");
+        json_object* json_camera    = json_object_object_get(json_entity, "camera");
+        json_object* json_material  = json_object_object_get(json_entity, "material");
+        json_object* json_identity  = json_object_object_get(json_entity, "identity");
+        json_object* json_physics_client = json_object_object_get(json_entity, "physics_client");
 
         if (json_transform != NULL) {
             json_object* json_position = json_object_object_get(json_transform, "position");
@@ -289,6 +300,13 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
             (json_tag    != NULL) && (p_identity->tag = json_object_get_string(json_tag));
             (json_subtag != NULL) && (p_identity->subtag = json_object_get_string(json_subtag));
         }
+        if (json_physics_client != NULL) {
+            ShPhysicsClient* client = shAddShPhysicsClient(p_scene, entity);
+            for (uint32_t j = 0; j < json_object_array_length(json_physics_client); j++) {
+                *client |= shStringFlagToInt(json_object_get_string(json_object_array_get_idx(json_physics_client, j)));
+            }
+        }
+#if 0
         if (json_rigidbody != NULL) {
             json_object* json_mass = json_object_object_get(json_rigidbody, "mass");
             json_object* json_shape = json_object_object_get(json_rigidbody, "shape");
@@ -309,21 +327,44 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
                 //shDynamicsSetCollisionSphereRadius(radius, p_rb);
             }
         }
+#endif
     }
     
     free(ply_meshes);
     free(buffer);
 }
 
-void shLoadPhysicsWorld(const char* path, ShScene* p_scene, ShDynamicsWorld* p_dynamics) {
-    assert(p_scene != NULL && p_dynamics != NULL);
+void shLoadPhysicsWorld(const char* path, ShPhysicsHost* p_host) {
+    assert(p_host != NULL);
     char* buffer = (char*)shReadText(path, NULL);
     if (buffer == NULL) { return; }
 
     json_object* parser = json_tokener_parse(buffer);
     if (parser == NULL) { return; }
-    
 
+    json_object* json_physics_host = json_object_object_get(parser, "physics_host");
+    if (json_physics_host != NULL) {
+        json_object* json_electrostatic = json_object_object_get(json_physics_host, "electrostatic_charges");
+        for (uint32_t i = 0; i < json_object_array_length(json_electrostatic); i++) {
+            json_object* json_charge = json_object_array_get_idx(json_electrostatic, i);
+            json_object* json_position = json_object_object_get(json_charge, "position");
+            if (json_position != NULL) {
+                for (uint32_t j = 0; j < 3; j++) {
+                    json_object* json_pos = json_object_array_get_idx(json_position, j);
+                    p_host->electrostaticWorld.charges[i].position[j] = json_pos != NULL ? (float)json_object_get_double(json_pos) : 0.0f;
+                }
+            }
+            json_object* json_intensity = json_object_object_get(json_charge, "intensity");
+            if (json_intensity != NULL) {
+                for (uint32_t j = 0; j < 4; j++) {
+                    json_object* json_intens = json_object_array_get_idx(json_intensity, j);
+                    p_host->electrostaticWorld.charges[i].intensity[j] = json_intens != NULL ? (float)json_object_get_double(json_intens) : 0.0f;
+                }
+            }
+        }
+    }
+    
+#if 0
     json_object* json_dynamics  = json_object_object_get(parser, "dynamics_world");
     json_object* json_speed     = json_object_object_get(parser, "speed");
     if (json_dynamics != NULL) {
@@ -351,6 +392,7 @@ void shLoadPhysicsWorld(const char* path, ShScene* p_scene, ShDynamicsWorld* p_d
         }
         *p_dynamics = dynamics;
     }
+#endif
     free(buffer);
 }
 

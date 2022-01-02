@@ -3,9 +3,28 @@
 
 #include "shEcsImplementation.h"
 
-#include "shDynamics.h"
+typedef enum ShPhysicsClient {
+    SH_PHYSICS_CLIENT_DYNAMICS        = 0b001,
+    SH_PHYSICS_CLIENT_THERMODYNAMICS  = 0b010,
+    SH_PHYSICS_CLIENT_ELECTROSTATICS  = 0b100
+} ShPhysicsClient;
 
-SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShRigidBody, 7)
+SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShPhysicsClient, 8)
+
+typedef struct ShElectricalCharge {
+    float position[4];
+    float intensity[4];
+} ShElectricalCharge;
+
+SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShElectricalCharge, 9)
+
+typedef struct ShElectrostaticWorld {
+    ShElectricalCharge charges[32];
+} ShElectrostaticWorld;
+
+typedef struct ShPhysicsHost {
+    ShElectrostaticWorld electrostaticWorld;
+} ShPhysicsHost;
 
 
 #endif//SH_PHYSICS_INFO_H

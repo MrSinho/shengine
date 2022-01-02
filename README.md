@@ -11,7 +11,7 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 
 ## Current features (tested):
  - Entity Component System using [ShECS](https://github.com/MrSinho/ShECS) by MrSinho
- - Material creation and usage
+ - Full glsl shader customization
  - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter) by MrSinho
  - Indexed and not indexed drawing
  - Uniform buffer object support
@@ -19,11 +19,10 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Custom shader handling (more about that in the Coulomb shader and example)
  - Depth buffer
  - Physics support using [ShPhysics](https://github.com/MrSinho/ShPhysics) by MrSinho
- 
+
 ## To do:
  - Double/triple buffering
  - Textures
- - Shader system sucks
  - Scripting (native preferred)
  - Audio
  - Import/export scene binaries

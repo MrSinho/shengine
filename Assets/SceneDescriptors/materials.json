@@ -42,8 +42,8 @@
           "stage": "SHADER_STAGE_VERTEX"
         },
         {
-          "size": 32,
-          "stage": "SH_SHADER_STAGE_FRAGMENT"
+          "size": 1024,
+          "stage": "SHADER_STAGE_FRAGMENT"
         }
       ]
     }

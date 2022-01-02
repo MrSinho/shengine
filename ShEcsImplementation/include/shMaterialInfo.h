@@ -47,4 +47,4 @@ static void shMaterialInfosRelease(uint32_t* p_mat_info_count, ShMaterialInfo** 
 }
 
 
-#endif // SH_MATERIAL_INFO_H
+#endif//SH_MATERIAL_INFO_H

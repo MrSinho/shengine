@@ -4,6 +4,6 @@
 #include "shCglmImplementation.h"
 
 
-extern void shSetView(vec3 position, vec3 front, vec3 up, mat4 view);
+extern void shSetView(float* position, float* front, float* up, float view[4][4]);
 
 #endif

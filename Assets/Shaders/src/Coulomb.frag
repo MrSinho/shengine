@@ -12,27 +12,26 @@ struct ShSphere {
 uint shSphereSphereIntersection(in ShSphere sphere0, in ShSphere sphere1, out vec3 dstIntersection0, out vec3 dstIntersection1);
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 
-struct Charge {
+struct ShElectricalCharge {
     vec4 position;
-    float intensity;
-    vec3 colorID;
+    vec4 intensity;
 };
 
-layout (set = 0, binding = 0) uniform uniformBuffer {
-    Charge charges[32];
+layout (set = 1, binding = 0) uniform uniformBuffer {
+    ShElectricalCharge charges[32];
 } ubo;
 
-vec3 shElectricFieldIntensity(float intensityCoefficient, uint chargeIdx);
+vec4 shElectricFieldIntensity(float intensityCoefficient, uint chargeIdx);
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 void main(){
 
     float k = 0.01;
-    vec3 fieldIntensity = vec3(0.0);
+    vec4 fieldIntensity = vec4(0.0);
     for (uint i = 0; i < 32; i++) {
         fieldIntensity += shElectricFieldIntensity(k, i);
     }
-    fragColor = vec4(fieldIntensity, 1.0f);
+    fragColor = fieldIntensity;
 }
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
@@ -52,9 +51,9 @@ uint shSphereSphereIntersection(in ShSphere sphere0, in ShSphere sphere1, out ve
     return 0;
 }
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
-vec3 shElectricFieldIntensity(float intensityCoefficient, uint chargeIdx) {
-    float r = distance(fragPosition, ubo.charges[chargeIdx].position);
-    return intensityCoefficient * ubo.charges[chargeIdx].colorID * ubo.charges[chargeIdx].intensity / (r*r);
+vec4 shElectricFieldIntensity(float intensityCoefficient, uint chargeIdx) {
+    float r = distance(fragPosition, PV * vec4(ubo.charges[chargeIdx].position.xyz, 1.0));
+    return intensityCoefficient * ubo.charges[chargeIdx].intensity * ubo.charges[chargeIdx].intensity.w / (r*r);
 }
 
 //RANGE OF VALUES MUST BE BETWEEN 0 AND 1

@@ -129,14 +129,6 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 
 	//Map mesh buffers
 	if (p_mesh_info->flags & SH_MESH_SETUP_DYNAMIC_MESH) {
-		//if (mesh->flags & SH_MESH_SETUP_RUNTIME_MESH) {
-		//	if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
-		//		shAllocateMeshVertexData(core, mesh);
-		//	}
-		//	if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
-		//		shAllocateMeshIndexData(core, mesh);
-		//	}
-		//}
 		shMapVertexBufferMemory(core, p_mesh_info, mesh);
 		if (mesh->index_buffer_memory != NULL) {
 			shMapIndexBufferMemory(core, p_mesh_info, mesh);
@@ -169,21 +161,12 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 			uniform_offset += pipe_data.p_uniform_buffers[i].uniform_buffer_size;
 	}
 	
-	
-	if (mesh->index_buffer_memory != NULL) { //indexed
-		shDraw(core.p_cmd_buffers[0], p_mesh_info->index_count, pipe_data.vertexStride / 4, *mesh);
+	if (mesh->vertex_buffer_memory != NULL) {
+		if (mesh->index_buffer_memory != NULL) {
+			shDraw(core.p_cmd_buffers[0], p_mesh_info->index_count, pipe_data.vertexStride / 4, *mesh);
+		}
+		else {
+			shDraw(core.p_cmd_buffers[0], p_mesh_info->vertex_count, pipe_data.vertexStride / 4, *mesh);
+		}
 	}
-	else { //not indexed
-		shDraw(core.p_cmd_buffers[0], p_mesh_info->vertex_count, pipe_data.vertexStride / 4, *mesh);
-	}
-
-	//if (mesh->flags & SH_MESH_SETUP_DYNAMIC_MESH & SH_MESH_SETUP_RUNTIME_MESH) {
-	//	if (mesh->vertex_count >= 0 && mesh->p_vertices != NULL) {
-	//		shClearBufferMemory(core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
-	//	}
-	//	if (mesh->index_count >= 0 && mesh->p_indices != NULL) {
-	//		shClearBufferMemory(core.device, mesh->index_buffer, mesh->index_buffer_memory);
-	//	}
-	//}
-	//
 }
