@@ -26,5 +26,11 @@ typedef struct ShPhysicsHost {
     ShElectrostaticWorld electrostaticWorld;
 } ShPhysicsHost;
 
+static void ShPhysicsHostRelease(ShPhysicsHost* p_host) {
+    ShElectricalCharge charge = { 0 };
+    for (uint32_t i = 0; i < 32; i++) {
+        p_host->electrostaticWorld.charges[i] = charge;
+    }
+}
 
 #endif//SH_PHYSICS_INFO_H

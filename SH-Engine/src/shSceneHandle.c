@@ -30,8 +30,10 @@ void shUpdateTransform(ShTransform* t) {
 void shSceneInit(const ShVkCore core, ShScene* scene) {
 
 	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
-		if (shHasShMeshInfo(scene, entity)) {
-			ShMeshInfo* mesh_info = shGetShMeshInfo(scene, entity);
+		ShMeshInfo* mesh_info = shGetShMeshInfo(scene, entity);
+		ShTransform* transform = shGetShTransform(scene, entity);
+
+		if (mesh_info != NULL) {
 			ShMesh* mesh = shAddShMesh(scene, entity);
 
 			//Allocate memory
@@ -61,10 +63,9 @@ void shSceneInit(const ShVkCore core, ShScene* scene) {
 			shSetupMaterial(core, *shGetShMaterialInfo(scene, entity), shAddShMaterial(scene, entity));
 		}
 
-		if (shHasShTransform(scene, entity)) {
-			ShTransform* t = shGetShTransform(scene, entity);
-			t->position[1] *= -1.0f;
-			shUpdateTransform(t);
+		if (transform != NULL) {
+			transform->position[1] *= -1.0f;
+			shUpdateTransform(transform);
 		}
 	}
 

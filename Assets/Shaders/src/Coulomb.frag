@@ -1,6 +1,5 @@
 #version 460
-layout (location = 0) flat in mat4 PV;
-layout (location = 4) in vec4 fragPosition;
+layout (location = 0) in vec4 fragPosition;
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 layout (location = 0) out vec4 fragColor;
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
@@ -30,7 +29,7 @@ void main(){
     float k = 0.01;
     vec4 fieldIntensity = vec4(0.0);
     for (uint i = 0; i < 32; i++) {
-        fieldIntensity += shElectricFieldIntensity(ubo.dtime, i);
+        fieldIntensity += shElectricFieldIntensity(k, i);
     }
     fragColor = fieldIntensity;
 }
@@ -40,8 +39,8 @@ uint shSphereSphereIntersection(in ShSphere sphere0, in ShSphere sphere1, out ve
     if (sphere0.position == sphere1.position) {
         return 1;
     }
-    vec4 pos0 = PV * vec4(sphere0.position, 1.0);
-    vec4 pos1 = PV * vec4(sphere1.position, 1.0);
+    vec4 pos0 = vec4(sphere0.position, 1.0);
+    vec4 pos1 = vec4(sphere1.position, 1.0);
     vec4 dir =  pos1 - pos0;
     float distance = dir.length();
     if (distance <= (sphere0.radius + sphere1.radius)) {
@@ -55,6 +54,6 @@ uint shSphereSphereIntersection(in ShSphere sphere0, in ShSphere sphere1, out ve
 }
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 vec4 shElectricFieldIntensity(float intensityCoefficient, uint chargeIdx) {
-    float r = distance(fragPosition, PV * vec4(ubo.charges[chargeIdx].position, 1.0));
+    float r = distance(fragPosition, vec4(ubo.charges[chargeIdx].position, 1.0));
     return vec4(intensityCoefficient * ubo.charges[chargeIdx].intensity / (r*r));
 }

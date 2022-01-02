@@ -3,16 +3,12 @@
   "physics_host": {
     "electrostatic_charges": [ 
       {
-        "position":  [ 0, 2, 0, 1 ],
-        "intensity": 150
+        "position":  [ 0, -2, 0, 1 ],
+        "intensity": 50
       },
       {
-        "position":  [1.5, 0, 0, 1 ],
-        "intensity": 75
-      },
-      {
-        "position":  [-1.5, 0, 0, 1 ],
-        "intensity": 75
+        "position":  [-2, 0, 0, 1 ],
+        "intensity": 50
       }
     ]
   }

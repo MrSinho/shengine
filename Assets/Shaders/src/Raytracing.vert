@@ -11,7 +11,7 @@ layout (location = 0) out vec4 fragPosition;
 layout (push_constant) uniform constants {
 	mat4 projection;
 	mat4 view;
-} pconst;
+} pushConstants;
 
 layout (set = 0, binding = 0) uniform uniformBuffer {
     mat4 model;
@@ -19,5 +19,10 @@ layout (set = 0, binding = 0) uniform uniformBuffer {
 
 
 void main() {
-  gl_Position = pconst.projection * pconst.view * ubo.model * vec4(position, 1.0);
+
+  fragPosition = pushConstants.projection * pushConstants.view * ubo.model * vec4(position, 1.0f);
+  //fragNormal = normals;
+  //fragUV = uvs;
+
+  gl_Position = fragPosition;
 }

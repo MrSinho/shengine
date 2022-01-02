@@ -46,6 +46,7 @@ static void shReloadScene(const ShVkCore core, const ShDescriptorHandle scene_de
 }
 
 static void shReloadPhysicsWorld(const ShDescriptorHandle physics_descriptor, ShScene* p_scene, ShPhysicsHost* p_host) {
+	ShPhysicsHostRelease(p_host);
 	shLoadPhysicsWorld(physics_descriptor.path, p_host);
 }
 

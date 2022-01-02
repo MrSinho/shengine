@@ -63,6 +63,7 @@ int main() {
 		if (shListenDescriptor(&mat_info_descriptor)) {
 			shReloadMaterialInfos(mat_info_descriptor, &mat_info_count, &p_mat_infos);
 			shReloadScene(core, scene_descriptor, p_mat_infos, &scene);
+			shReloadPhysicsWorld(physics_descriptor, &scene, &physics);
 			shSetTime(0.0, &time);
 			initBehaviour(&scene);
 		}
