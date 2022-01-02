@@ -1,5 +1,4 @@
 {
-  "auto_compile_shaders": false,
   "shader_sources": [
     "../Assets/Shaders/src/Mesh.vert", "../Assets/Shaders/bin/Mesh.vert.spv",
     "../Assets/Shaders/src/Mesh.frag", "../Assets/Shaders/bin/Mesh.frag.spv",
