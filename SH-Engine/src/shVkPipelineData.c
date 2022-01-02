@@ -44,7 +44,7 @@ void shDescriptorSetLayout(const ShVkCore core, const uint32_t binding, const Vk
 	);
 }
 
-void shCreateDescriptorPool(const ShVkCore core, ShVkPipelineData* pPipeData) {
+void shCreateDescriptorPool(const ShVkCore core, ShUniformBuffer* p_uniform) {
 	VkDescriptorPoolSize descriptorPoolSize = {
 		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,	//type;
 		core.swapchain_image_count			//descriptorCount;
@@ -60,7 +60,7 @@ void shCreateDescriptorPool(const ShVkCore core, ShVkPipelineData* pPipeData) {
 	};
 
 	shCheckVkResult(
-		vkCreateDescriptorPool(core.device, &descriptorPoolCreateInfo, NULL, &pPipeData->descriptor_pool),
+		vkCreateDescriptorPool(core.device, &descriptorPoolCreateInfo, NULL, &p_uniform->descriptor_pool),
 		"error creating descriptor pool"
 	);
 }
@@ -69,11 +69,11 @@ void shAllocateDescriptorSets(const ShVkCore core, const uint32_t uniform_idx, S
 	ShUniformBuffer* p_uniform = &p_pipe_data->p_uniform_buffers[uniform_idx];
 
 	VkDescriptorSetAllocateInfo allocateInfo = {
-		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,	//sType;
-		NULL,											//pNext;
-		p_pipe_data->descriptor_pool,						//descriptorPool;
-		1,												//descriptorSetCount;
-		&p_uniform->descriptor_set_layout				//pSetLayouts;
+		VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,				//sType;
+		NULL,														//pNext;
+		p_pipe_data->p_uniform_buffers[uniform_idx].descriptor_pool,//descriptorPool;
+		1,															//descriptorSetCount;
+		&p_uniform->descriptor_set_layout							//pSetLayouts;
 	};
 
 	shCheckVkResult(
@@ -457,8 +457,8 @@ void shDestroyPipeline(const ShVkCore core, ShVkPipelineData* pPipeData) {
 	for (uint32_t i = 0; i < pPipeData->uniform_buffer_count; i++) {
 		shClearBufferMemory(core.device, pPipeData->p_uniform_buffers[i].uniform_buffer, pPipeData->p_uniform_buffers[i].uniform_buffer_memory);
 	}
-	vkDestroyDescriptorPool(core.device, pPipeData->descriptor_pool, NULL);
 	for (uint32_t i = 0; i < pPipeData->uniform_buffer_count; i++) {
+		vkDestroyDescriptorPool(core.device, pPipeData->p_uniform_buffers[i].descriptor_pool, NULL);
 		vkDestroyDescriptorSetLayout(core.device, pPipeData->p_uniform_buffers[i].descriptor_set_layout, NULL);
 	}
 	

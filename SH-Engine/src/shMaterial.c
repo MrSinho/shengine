@@ -20,8 +20,8 @@ void shSetupMaterial(const ShVkCore core, const ShMaterialInfo mat_info, ShMater
 	for (uint32_t i = 0; i < mat_info.uniform_buffer_count; i++) {
 		if (mat_info.p_uniform_buffers[i].uniformSize != 0 && mat_info.p_uniform_buffers[i].uniformStage != 0) {
 			shAllocateUniformBufferData(core, mat_info.p_uniform_buffers[i].uniformSize, &mat.pipeline_data.p_uniform_buffers[i]);
+			shCreateDescriptorPool(core, &mat.pipeline_data.p_uniform_buffers[i]);
 			shDescriptorSetLayout(core, 0, mat_info.p_uniform_buffers[i].uniformStage, &mat.pipeline_data.p_uniform_buffers[i]);
-			shCreateDescriptorPool(core, &mat.pipeline_data);
 			shAllocateDescriptorSets(core, i, &mat.pipeline_data);/*work here*/
 		}
 	}
