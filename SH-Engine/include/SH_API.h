@@ -26,6 +26,7 @@ static void shInitVulkan(ShVkCore* p_core) {
 	shSetPhysicalDevice(p_core);
 	shSetLogicalDevice(p_core);
 	shGetGraphicsQueue(p_core);
+	shGetComputeQueue(p_core);
 	shInitSwapchainData(p_core);
 	shInitDepthData(p_core);
 	shCreateRenderPass(p_core);

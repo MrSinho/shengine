@@ -28,7 +28,8 @@ ShVkCore shVkCoreInitPrerequisites(uint32_t width, uint32_t height, const char *
 	};
 
 	ShVkCore core = { 0 };
-	core.required_queue_flag = VK_QUEUE_GRAPHICS_BIT;
+	core.graphics_queue.required_queue_flag	= VK_QUEUE_GRAPHICS_BIT;
+	core.compute_queue.required_queue_flag	= VK_QUEUE_COMPUTE_BIT;
 	core.swapchain_image_format = SH_SWAPCHAIN_IMAGE_FORMAT;
 	core.window = window;
 
@@ -131,12 +132,12 @@ void shSetPhysicalDevice(ShVkCore* p_core) {
 			}
 
 			// GRAPHICS QUEUE
-			if (pQueueFamilyProperties[j].queueFlags & p_core->required_queue_flag) {
+			if (pQueueFamilyProperties[j].queueFlags &p_core->graphics_queue.required_queue_flag) {
 				graphicsQueueFamilyIndices[i] = j;
 			}
 
 			//SUITABLE
-			if (pQueueFamilyProperties[j].queueFlags & p_core->required_queue_flag && surfaceSupport) {
+			if (pQueueFamilyProperties[j].queueFlags & p_core->graphics_queue.required_queue_flag && surfaceSupport) {
 				suitableDeviceCount += 1;
 				break;
 			}
@@ -167,32 +168,22 @@ void shSetPhysicalDevice(ShVkCore* p_core) {
 	}
 
 	if (suitableDeviceCount > 1) {
-
 		for (uint32_t i = 1; i < suitableDeviceCount; i++) {
 			if (scores[i] > scores[i - 1]) {
 				p_core->physical_device = pDevices[i];
-				p_core->graphics_queue_index = graphicsQueueFamilyIndices[i];
-				p_core->present_queue_index = surfaceQueueFamilyIndices[i];
+				p_core->graphics_queue.queue_family_index = graphicsQueueFamilyIndices[i];
 			}
 			else {
 				p_core->physical_device = pDevices[i - 1 ];
-				p_core->graphics_queue_index = graphicsQueueFamilyIndices[i - 1];
-				p_core->present_queue_index = surfaceQueueFamilyIndices[i - 1];
+				p_core->graphics_queue.queue_family_index = graphicsQueueFamilyIndices[i - 1];
 			}
 		}
 	}
 	else {
 		p_core->physical_device = pDevices[0];
-		p_core->graphics_queue_index = graphicsQueueFamilyIndices[0];
-		p_core->present_queue_index = surfaceQueueFamilyIndices[0];
+		p_core->graphics_queue.queue_family_index = graphicsQueueFamilyIndices[0];
 	}
 	
-	if (p_core->graphics_queue_index == p_core->present_queue_index) {
-		p_core->queue_family_index_count = 1;
-	}
-	else {
-		p_core->queue_family_index_count = 2;
-	}
 	free(scores);
 	free(graphicsQueueFamilyIndices);
 	free(surfaceQueueFamilyIndices);
@@ -229,16 +220,17 @@ VkDeviceQueueCreateInfo shSetQueueInfo(const uint32_t queueFamilyIndex, const fl
 void shSetLogicalDevice(ShVkCore* p_core) {
 	
 	const float queue_priority = 1.0f;
-	VkDeviceQueueCreateInfo graphicsQueueInfo = shSetQueueInfo(p_core->graphics_queue_index, &queue_priority);
-
+	VkDeviceQueueCreateInfo queuesInfo[2] = {
+		shSetQueueInfo(p_core->graphics_queue.queue_family_index, &queue_priority),
+		shSetQueueInfo(p_core->compute_queue.required_queue_flag, &queue_priority)
+	};
 	const char* swapchain_extension_name = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
-
 	VkDeviceCreateInfo deviceCreateInfo = {
 		VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,	//sType;
 		NULL,									//pNext;
 		0,										//flags;
-		1, 										//queueCreateInfoCount;
-		&graphicsQueueInfo,						//pQueueCreateInfos;
+		2, 										//queueCreateInfoCount;
+		queuesInfo,							//pQueueCreateInfos;
 		0, 										//enabledLayerCount;
 		NULL,									//ppEnabledLayerNames;
 		1, 										//enabledExtensionCount;
@@ -258,7 +250,11 @@ void shSetLogicalDevice(ShVkCore* p_core) {
 }
 
 void shGetGraphicsQueue(ShVkCore* p_core) {
-	vkGetDeviceQueue(p_core->device, p_core->graphics_queue_index, 0, &p_core->graphics_queue);
+	vkGetDeviceQueue(p_core->device, p_core->graphics_queue.queue_family_index, 0, &p_core->graphics_queue.queue);
+}
+
+void shGetComputeQueue(ShVkCore* p_core) {
+	vkGetDeviceQueue(p_core->device, p_core->compute_queue.queue_family_index, 0, &p_core->compute_queue.queue);
 }
 
 void shInitSwapchainData(ShVkCore* p_core) {
@@ -377,16 +373,7 @@ void shCreateSwapchain(ShVkCore* p_core) {
     swapchain_ci.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     swapchain_ci.queueFamilyIndexCount = 0;
     swapchain_ci.pQueueFamilyIndices = NULL;
-    uint32_t queueFamilyIndices[2] = {(uint32_t)p_core->graphics_queue_index, (uint32_t)p_core->present_queue_index};
-    if (p_core->graphics_queue_index != p_core->present_queue_index) {
-        // If the graphics and present queues are from different queue families,
-        // we either have to explicitly transfer ownership of images between
-        // the queues, or we have to create the swapchain with imageSharingMode
-        // as VK_SHARING_MODE_CONCURRENT
-        swapchain_ci.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-        swapchain_ci.queueFamilyIndexCount = 2;
-        swapchain_ci.pQueueFamilyIndices = queueFamilyIndices;
-    }
+    uint32_t queueFamilyIndices[2] = {(uint32_t)p_core->graphics_queue.queue_family_index, (uint32_t)p_core->graphics_queue.queue_family_index };
 
 	shCheckVkResult(
 		vkCreateSwapchainKHR(p_core->device, &swapchain_ci, NULL, &p_core->swapchain),
@@ -439,20 +426,8 @@ void shCreateSwapchainImageViews(ShVkCore* p_core) {
 }
 
 void shInitCommands(ShVkCore* p_core) {
-
-	p_core->p_cmd_pools = (VkCommandPool*)malloc(p_core->queue_family_index_count * sizeof(VkCommandPool));
-
-	uint32_t* pQueueFamilyIndices = (uint32_t*)malloc(p_core->queue_family_index_count * sizeof(uint32_t));
-	p_core->p_cmd_pools[0] = shCreateCmdPool(p_core->device, p_core->graphics_queue_index);
-	if (p_core->queue_family_index_count == 2) {
-		p_core->p_cmd_pools[1] = shCreateCmdPool(p_core->device, p_core->present_queue_index);
-	}
-	free(pQueueFamilyIndices);
-
-	p_core->p_cmd_buffers = (VkCommandBuffer*)malloc(p_core->queue_family_index_count * sizeof(VkCommandBuffer));
-	for (uint32_t i = 0; i < p_core->queue_family_index_count; i++) {
-		p_core->p_cmd_buffers[i] = shCreateCmdBuffer(p_core->device, p_core->p_cmd_pools[i]);;
-	}
+	p_core->cmd_pools[0]	= shCreateCmdPool(p_core->device, p_core->graphics_queue.queue_family_index);
+	p_core->cmd_buffers[0]	= shCreateCmdBuffer(p_core->device, p_core->cmd_pools[0]);;
 }
 
 VkCommandPool shCreateCmdPool(const VkDevice device, uint32_t queueFamilyIndex) {
@@ -607,10 +582,7 @@ void shSetFramebuffers(ShVkCore* p_core) {
 		1											//layers;
 	};
 
-	//NOTE: ONE FRAMEBUFFER FOR EACH ATTACHMENT
-
 	p_core->p_frame_buffers = (VkFramebuffer*)malloc(p_core->swapchain_image_count * sizeof(VkFramebuffer));
-
 	for (uint32_t i = 0; i < p_core->swapchain_image_count; i++) {
 		VkImageView attachments[2] = {
 			p_core->p_swapchain_image_views[i], p_core->depth_image_view 
@@ -693,17 +665,8 @@ void shCmdRelease(ShVkCore* p_core) {
 	vkDestroySemaphore(p_core->device, p_core->render_semaphore, NULL);
 	vkDestroyFence(p_core->device, p_core->render_fence, NULL);
 
-	vkFreeCommandBuffers(p_core->device, p_core->p_cmd_pools[0], 1, &p_core->p_cmd_buffers[0]);
-	vkDestroyCommandPool(p_core->device, p_core->p_cmd_pools[0], NULL);
-	if (p_core->present_queue_index != p_core->graphics_queue_index) {
-		vkFreeCommandBuffers(p_core->device, p_core->p_cmd_pools[1], 1, &p_core->p_cmd_buffers[1]);
-		vkDestroyCommandPool(p_core->device, p_core->p_cmd_pools[1], NULL);
-	}
-
-	free(p_core->p_cmd_buffers);
-	free(p_core->p_cmd_pools); 
-
-	p_core->queue_family_index_count = 0;
+	vkFreeCommandBuffers(p_core->device, p_core->cmd_pools[0], 1, &p_core->cmd_buffers[0]);
+	vkDestroyCommandPool(p_core->device, p_core->cmd_pools[0], NULL);
 }
 
 void shRenderPassRelease(ShVkCore* p_core) {

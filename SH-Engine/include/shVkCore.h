@@ -14,7 +14,6 @@ typedef struct ShVkPipelineData ShVkPipelineData;
 
 typedef struct ShMesh ShMesh;
 
-
 typedef enum shImageType {
 	SH_SWAPCHAIN_IMAGE = 0b001,
 	SH_DEPTH_IMAGE = 0b010
@@ -24,49 +23,44 @@ typedef enum shImageType {
 
 #define SH_SWAPCHAIN_IMAGE_FORMAT VK_FORMAT_R8G8B8A8_UNORM
 
+typedef struct ShQueue {
+	VkQueueFlags	required_queue_flag;
+	uint32_t		queue_family_index;
+	VkQueue			queue;
+} ShQueue;
+
 typedef struct ShVkCore {
-	
-	/*Initialization stuff*/
-	VkInstance instance;
-	VkPhysicalDevice physical_device;
-	VkPhysicalDeviceProperties physical_device_properties;
-	VkPhysicalDeviceFeatures physical_device_features;
-	VkDevice device;
-	
-	/*Window and surface stuff*/
-	ShWindow window;
-	VkSurfaceKHR surface;
-
+	/*Primary*/
+	VkInstance					instance;
+	VkPhysicalDevice			physical_device;
+	VkPhysicalDeviceProperties	physical_device_properties;
+	VkPhysicalDeviceFeatures	physical_device_features;
+	VkDevice		device;
+	/*Window and surface*/
+	ShWindow		window;
+	VkSurfaceKHR	surface;
 	/*Queues*/
-	VkQueueFlags required_queue_flag;
-	uint32_t queue_family_index_count;
-	uint32_t graphics_queue_index;
-	uint32_t present_queue_index;
-	VkQueue graphics_queue;
-
+	ShQueue			graphics_queue;
+	ShQueue			compute_queue;
 	/*Commands*/
-	VkCommandPool* p_cmd_pools;
-	VkCommandBuffer* p_cmd_buffers;
-
+	VkCommandPool	cmd_pools[2];
+	VkCommandBuffer cmd_buffers[2];
 	/*Swapchain*/
-	VkSwapchainKHR swapchain;
-	VkFormat swapchain_image_format;
-	uint32_t swapchain_image_count;
-	VkImage* p_swapchain_images;
-	VkImageView* p_swapchain_image_views;
-	VkFramebuffer* p_frame_buffers;
-
+	VkSwapchainKHR	swapchain;
+	VkFormat		swapchain_image_format;
+	uint32_t		swapchain_image_count;
+	VkImage*		p_swapchain_images;
+	VkImageView*	p_swapchain_image_views;
+	VkFramebuffer*	p_frame_buffers;
 	/*Depth buffer*/
-	VkImage depth_image;
-	VkDeviceMemory depth_image_memory;
-	VkImageView depth_image_view;
-
+	VkImage			depth_image;
+	VkDeviceMemory	depth_image_memory;
+	VkImageView		depth_image_view;
 	/*Render pass + sync objects*/
-	VkRenderPass render_pass;
-	VkSemaphore render_semaphore;
-	VkSemaphore present_semaphore;
-	VkFence render_fence;
-
+	VkRenderPass	render_pass;
+	VkSemaphore		render_semaphore;
+	VkSemaphore		present_semaphore;
+	VkFence			render_fence;
 } ShVkCore;
 
 
@@ -87,6 +81,8 @@ extern VkDeviceQueueCreateInfo shSetQueueInfo(const uint32_t queueFamilyIndex, c
 extern void shSetLogicalDevice(ShVkCore* p_core);
 
 extern void shGetGraphicsQueue(ShVkCore* p_core);
+
+extern void shGetComputeQueue(ShVkCore* p_core);
 
 extern void shCreateSwapchain(ShVkCore* p_core);
 

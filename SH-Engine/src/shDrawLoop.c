@@ -9,7 +9,7 @@ void shFrameReset(const ShVkCore core) {
 	vkWaitForFences(core.device, 1, &core.render_fence, 1, 1000000000);
 	vkResetFences(core.device, 1, &core.render_fence);
 
-	vkResetCommandBuffer(core.p_cmd_buffers[0], 0);
+	vkResetCommandBuffer(core.cmd_buffers[0], 0);
 }
 
 void shFrameBegin(const ShVkCore core, uint32_t* pSwapchainImageIndex) {
@@ -42,9 +42,9 @@ void shFrameBegin(const ShVkCore core, uint32_t* pSwapchainImageIndex) {
 		renderPassBeginInfo.clearValueCount = 2;
 	}
 
-	vkBeginCommandBuffer(core.p_cmd_buffers[0], &cmdBufferBeginInfo);
+	vkBeginCommandBuffer(core.cmd_buffers[0], &cmdBufferBeginInfo);
 
-	vkCmdBeginRenderPass(core.p_cmd_buffers[0], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+	vkCmdBeginRenderPass(core.cmd_buffers[0], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
 void shBindPipeline(const VkCommandBuffer graphicsCmdBuffer, const ShVkPipelineData pipeData) {
@@ -54,11 +54,11 @@ void shBindPipeline(const VkCommandBuffer graphicsCmdBuffer, const ShVkPipelineD
 
 void shBindVertexBuffers(const ShVkCore core, const ShMesh mesh) {
 	const VkDeviceSize offset = 0;
-	vkCmdBindVertexBuffers(core.p_cmd_buffers[0], 0, 1, &mesh.vertex_buffer, &offset);
+	vkCmdBindVertexBuffers(core.cmd_buffers[0], 0, 1, &mesh.vertex_buffer, &offset);
 }
 
 void shBindIndexBuffers(const ShVkCore core, const ShMesh mesh) {
-	vkCmdBindIndexBuffer(core.p_cmd_buffers[0], mesh.index_buffer, 0, VK_INDEX_TYPE_UINT32);
+	vkCmdBindIndexBuffer(core.cmd_buffers[0], mesh.index_buffer, 0, VK_INDEX_TYPE_UINT32);
 }
 
 void shPushConstants(const VkCommandBuffer graphicsCmdBuffer, const ShVkPipelineData pipeData, const void* pPushConstantsData) {
@@ -71,7 +71,7 @@ void shBindDescriptorSets(const ShVkCore core, ShVkPipelineData pipeData) {
 	vkUpdateDescriptorSets(core.device, 
 		pipeData.uniform_buffer_count, pipeData.p_write_descriptor_sets, 
 		0, NULL);
-	vkCmdBindDescriptorSets(core.p_cmd_buffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS,
+	vkCmdBindDescriptorSets(core.cmd_buffers[0], VK_PIPELINE_BIND_POINT_GRAPHICS,
 		pipeData.mainPipelineLayout, 
 		0, pipeData.uniform_buffer_count, pipeData.p_descriptor_sets, 
 		0, NULL);
@@ -89,8 +89,8 @@ void shDraw(const VkCommandBuffer graphicsCmdBuffer, const uint32_t count, const
 
 void shFrameEnd(const ShVkCore core, const uint32_t swapchainImageIndex) {
 
-	vkCmdEndRenderPass(core.p_cmd_buffers[0]);
-	vkEndCommandBuffer(core.p_cmd_buffers[0]);
+	vkCmdEndRenderPass(core.cmd_buffers[0]);
+	vkEndCommandBuffer(core.cmd_buffers[0]);
 
 	VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
@@ -103,12 +103,12 @@ void shFrameEnd(const ShVkCore core, const uint32_t swapchainImageIndex) {
 		&core.present_semaphore,		//pWaitSemaphores;
 		&waitStage,						//pWaitDstStageMask;
 		1,								//commandBufferCount;
-		&core.p_cmd_buffers[0],			//pCommandBuffers;
+		&core.cmd_buffers[0],			//pCommandBuffers;
 		1,								//signalSemaphoreCount;
 		&core.render_semaphore,			//pSignalSemaphores;
 	};
 
-	vkQueueSubmit(core.graphics_queue, 1, &submitInfo, core.render_fence);
+	vkQueueSubmit(core.graphics_queue.queue, 1, &submitInfo, core.render_fence);
 
 	// Present the ready image
 	VkPresentInfoKHR presentInfo = {
@@ -122,7 +122,7 @@ void shFrameEnd(const ShVkCore core, const uint32_t swapchainImageIndex) {
 		NULL								//pResults;
 	};
 
-	vkQueuePresentKHR(core.graphics_queue, &presentInfo);
+	vkQueuePresentKHR(core.graphics_queue.queue, &presentInfo);
 }
 
 void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniforms_size, void* p_uniforms, ShMeshInfo* p_mesh_info, ShMesh* mesh) {
@@ -143,11 +143,11 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 		shBindIndexBuffers(core, *mesh);
 	}
 
-	shBindPipeline(core.p_cmd_buffers[0], pipe_data);
+	shBindPipeline(core.cmd_buffers[0], pipe_data);
 
 	//push constants
 	if (push_const_size != 0 && p_push_const != NULL) {
-		shPushConstants(core.p_cmd_buffers[0], pipe_data, p_push_const);
+		shPushConstants(core.cmd_buffers[0], pipe_data, p_push_const);
 	}
 
 	// bind uniform memory
@@ -163,10 +163,10 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 	
 	if (mesh->vertex_buffer_memory != NULL) {
 		if (mesh->index_buffer_memory != NULL) {
-			shDraw(core.p_cmd_buffers[0], p_mesh_info->index_count, pipe_data.vertexStride / 4, *mesh);
+			shDraw(core.cmd_buffers[0], p_mesh_info->index_count, pipe_data.vertexStride / 4, *mesh);
 		}
 		else {
-			shDraw(core.p_cmd_buffers[0], p_mesh_info->vertex_count, pipe_data.vertexStride / 4, *mesh);
+			shDraw(core.cmd_buffers[0], p_mesh_info->vertex_count, pipe_data.vertexStride / 4, *mesh);
 		}
 	}
 }
