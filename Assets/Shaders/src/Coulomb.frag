@@ -3,12 +3,13 @@ layout (location = 0) in vec4 fragPosition;
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 layout (location = 0) out vec4 fragColor;
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
-struct ShSphere {
+/*struct ShSphere {
     vec3      position;
     float     radius;
 };
 
 uint shSphereSphereIntersection(in ShSphere sphere0, in ShSphere sphere1, out vec4 dstIntersection0, out vec4 dstIntersection1);
+*/
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 
 struct ShElectricalCharge {
@@ -35,7 +36,7 @@ void main(){
 }
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
-uint shSphereSphereIntersection(in ShSphere sphere0, in ShSphere sphere1, out vec4 dstIntersection0, out vec4 dstIntersection1) {
+/*uint shSphereSphereIntersection(in ShSphere sphere0, in ShSphere sphere1, out vec4 dstIntersection0, out vec4 dstIntersection1) {
     if (sphere0.position == sphere1.position) {
         return 1;
     }
@@ -51,7 +52,7 @@ uint shSphereSphereIntersection(in ShSphere sphere0, in ShSphere sphere1, out ve
         return 1;
     }
     return 0;
-}
+}*/
 //*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*//
 vec4 shElectricFieldIntensity(float intensityCoefficient, uint chargeIdx) {
     float r = distance(fragPosition, vec4(ubo.charges[chargeIdx].position, 1.0));
