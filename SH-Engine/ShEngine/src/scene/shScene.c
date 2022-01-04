@@ -212,16 +212,16 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 	//Map mesh buffers
 	if (p_mesh_info->flags & SH_MESH_SETUP_DYNAMIC_MESH) {
 		shMapVertexBufferMemory(core, p_mesh_info, mesh);
-		if (mesh->index_buffer_memory != NULL) {
+		if ((size_t)mesh->index_buffer_memory != 0) {
 			shMapIndexBufferMemory(core, p_mesh_info, mesh);
 		}
 	}
 
 	//Bind vertex and index buffers
-	if (mesh->vertex_buffer_memory != NULL) {
+	if ((size_t)mesh->vertex_buffer_memory != 0) {
 		shBindVertexBuffer(core, &mesh->vertex_buffer);
 	}
-	if (mesh->index_buffer_memory != NULL) {
+	if ((size_t)mesh->index_buffer_memory != 0) {
 		shBindIndexBuffer(core, &mesh->index_buffer);
 	}
 
@@ -243,8 +243,8 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 		uniform_offset += pipe_data.p_uniform_buffers[i].uniform_buffer_size;
 	}
 
-	if (mesh->vertex_buffer_memory != NULL) {
-		if (mesh->index_buffer_memory != NULL) {
+	if ((size_t)mesh->vertex_buffer_memory != 0) {
+		if ((size_t)mesh->index_buffer_memory != 0) {
 			shDraw(core.cmd_buffers[0], p_mesh_info->index_count, 1);
 		}
 		else {
@@ -261,10 +261,10 @@ void shSceneRelease(ShEngine* p_engine, const uint32_t scene_idx) {
 
 		if (shHasShMesh(&p_engine->scenes[scene_idx], entity)) {
 			ShMesh* mesh = shGetShMesh(&p_engine->scenes[scene_idx], entity);
-			if (mesh->vertex_buffer_memory != NULL) {
+			if ((size_t)mesh->vertex_buffer_memory != 0) {
 				shClearBufferMemory(p_engine->core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
 			}
-			if (mesh->index_buffer_memory != NULL) {
+			if ((size_t)mesh->index_buffer_memory != 0) {
 				shClearBufferMemory(p_engine->core.device, mesh->index_buffer, mesh->index_buffer_memory);
 			}
 			mesh = NULL;

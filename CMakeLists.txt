@@ -63,7 +63,7 @@ target_include_directories(Editor PUBLIC
 )
 
 #OUTPUT
-set_target_properties(ShEngine glfw cglm PROPERTIES
+set_target_properties(Editor ShEngine glfw cglm PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
