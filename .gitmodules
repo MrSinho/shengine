@@ -3,10 +3,10 @@
 	url = https://github.com/glfw/glfw.git
 [submodule "externals/cglm"]
 	path = externals/cglm
-	url = https://github.com/recp/cglm.git
+	url = https://github.com/recp/cglm
 [submodule "externals/PlyImporter"]
 	path = externals/PlyImporter
-	url = https://github.com/MrSinho/PlyImporter.git
+	url = https://github.com/MrSinho/PlyImporter
 [submodule "externals/ShECS"]
 	path = externals/ShECS
 	url = https://github.com/MrSinho/ShECS.git

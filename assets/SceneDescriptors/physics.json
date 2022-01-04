@@ -1,0 +1,15 @@
+{
+  "speed": 2E3,
+  "physics_host": {
+    "electrostatic_charges": [ 
+      {
+        "position":  [ 0, -2, 0, 1 ],
+        "intensity": 50
+      },
+      {
+        "position":  [-2, 0, 0, 1 ],
+        "intensity": 50
+      }
+    ]
+  }
+}
