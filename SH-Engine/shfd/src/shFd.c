@@ -1,11 +1,12 @@
-#include "shFd.h"
-#include "shFile.h"
+#include "shfd/shFd.h"
+#include "shfd/shFile.h"
+
 #include "ecs/shCamera.h"
 #include "ecs/shTransform.h"
 #include "ecs/shIdentity.h"
-#include "ecs/shPhysicsInfo.h"
+#include "ecs/shPhysics.h"
 #include "ecs/shMaterial.h"
-#include "ecs/shMeshInfo.h"
+#include "ecs/shMesh.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

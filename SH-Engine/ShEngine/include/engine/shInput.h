@@ -157,4 +157,4 @@ extern void shMouseOffset(const ShWindow window, double* pdx, double* pdy);
 #define SH_MOUSE_BUTTON_RIGHT     SH_MOUSE_BUTTON_2
 #define SH_MOUSE_BUTTON_MIDDLE    SH_MOUSE_BUTTON_3
 
-#endif
+#endif//SH_INPUT_H

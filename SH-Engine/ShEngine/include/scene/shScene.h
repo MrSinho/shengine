@@ -7,6 +7,8 @@
 
 typedef struct ShEngine ShEngine;
 
+typedef struct ShMeshInfo ShMeshInfo;
+
 extern void shSceneInit(ShEngine* p_engine, const uint32_t scene_idx);
 
 extern void shSceneUpdate(ShEngine* p_engine, const uint32_t scene_idx);

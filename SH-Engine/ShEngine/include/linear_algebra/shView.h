@@ -3,7 +3,6 @@
 
 #include "shCglmImplementation.h"
 
-
 extern void shSetView(float* position, float* front, float* up, float view[4][4]);
 
 #endif

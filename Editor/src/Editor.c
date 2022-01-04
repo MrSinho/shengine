@@ -3,58 +3,11 @@
 #include <string.h>
 #include <stdint.h>
 
-#include <shFd.h>
+#include <engine/shEngine.h>
 
 #include <shVkCore.h>
 #include <shVkMemoryInfo.h>
 #include <shVkDrawLoop.h>
-
-#include <ecs/shMaterial.h>
-#include <ecs/shIdentity.h>
-#include <ecs/shPhysicsInfo.h>
-
-#include <scene/shScene.h>
-#include <engine/shEngine.h>
-#include <engine/shWindow.h>
-#include <engine/shInput.h>
-
-void shReloadMaterialInfos(const ShFd mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterialInfo** pp_mat_infos) {
-	shMaterialInfosRelease(p_mat_info_count, pp_mat_infos);
-	shLoadMaterialInfos(mat_info_descriptor.path, p_mat_info_count, pp_mat_infos);
-}
-
-void shReloadScene(ShEngine* p_engine, const uint32_t scene_idx, const ShFd scene_descriptor, ShMaterialInfo* p_mat_infos) {
-	shSceneRelease(p_engine, scene_idx);
-	shLoadScene(scene_descriptor.path, p_mat_infos, &p_engine->scenes[scene_idx]);
-	shSceneInit(p_engine, scene_idx);
-}
-
-void shReloadPhysicsWorld(const ShFd physics_descriptor, ShScene* p_scene, ShPhysicsHost* p_host) {
-	ShPhysicsHostRelease(p_host);
-	shLoadPhysicsWorld(physics_descriptor.path, p_host);
-}
-
-//void initBehaviour(ShScene* scene) {
-//	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
-//		if (shHasShIdentity(scene, entity)) {
-//			ShIdentity* identity = shGetShIdentity(scene, entity);
-//			if (strcmp(identity->name, "moon") == 0) {
-//				
-//			}
-//		}
-//	}
-//}
-
-//void updateBehaviour(const ShWindow window, const ShTime time, ShScene* scene) {
-//	for (uint32_t entity = 0; entity < scene->entity_count; entity++) {
-//		if (shHasShIdentity(scene, entity)) {
-//			ShIdentity* identity = shGetShIdentity(scene, entity);
-//			if (strcmp(identity->name, "moon") == 0) {
-//				
-//			}
-//		}
-//	}
-//}
 
 int main() {
 
@@ -91,7 +44,6 @@ int main() {
 	shLoadPhysicsWorld(physics_descriptor.path, &engine.physics_host);
 
 	shSceneInit(&engine, 0);
-	//initBehaviour(&engine.scenes[0]);
 	
 	while (shIsWindowActive(engine.window.window)) {
 
@@ -104,21 +56,17 @@ int main() {
 			shReloadScene(&engine, 0, scene_descriptor, p_mat_infos);
 			shReloadPhysicsWorld(physics_descriptor, &engine.scenes[0], &engine.physics_host);
 			shSetTime(0.0, &engine.time);
-			//initBehaviour(&engine.scenes[0]);
 		}
 		if (shListenFd(&scene_descriptor) || shListenFd(&physics_descriptor)) {
 			shReloadScene(&engine, 0, scene_descriptor, p_mat_infos);
 			shReloadPhysicsWorld(physics_descriptor, &engine.scenes[0], &engine.physics_host);
 			shSetTime(0.0, &engine.time);
-			//initBehaviour(&engine.scenes[0]);
 		}
 
 		uint32_t image_index = 0;
 		shFrameBegin(engine.core, &image_index);
 		
 		shSceneUpdate(&engine, 0);
-
-		//updateBehaviour(engine.window, engine.time, &engine.scenes[0]);
 
 		shFrameEnd(engine.core, image_index);
 	}

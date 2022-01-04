@@ -1,9 +1,8 @@
 #include "engine/shWindow.h"
+#include "engine/shEngine.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "engine/shEngine.h"
 
 #include <shVkCheck.h>
 

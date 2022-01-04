@@ -14,7 +14,7 @@
 #include "ecs/shTransform.h"
 #include "ecs/shCamera.h"
 #include "ecs/shMaterial.h"
-#include "ecs/shMeshInfo.h"
+#include "ecs/shMesh.h"
 #include "ecs/shMesh.h"
 
 #include "scene/shScene.h"

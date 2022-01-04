@@ -1,24 +1,24 @@
-[submodule "Externals/glfw"]
-	path = Externals/glfw
+[submodule "externals/glfw"]
+	path = externals/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "Externals/cglm"]
-	path = Externals/cglm
+[submodule "externals/cglm"]
+	path = externals/cglm
 	url = https://github.com/recp/cglm.git
-[submodule "PlyImporter"]
-	path = Externals/PlyImporter
+[submodule "externals/PlyImporter"]
+	path = externals/PlyImporter
 	url = https://github.com/MrSinho/PlyImporter.git
-[submodule "Externals/ShECS"]
-	path = Externals/ShECS
+[submodule "externals/ShECS"]
+	path = externals/ShECS
 	url = https://github.com/MrSinho/ShECS.git
-[submodule "Externals/json-c"]
-	path = Externals/json-c
+[submodule "externals/json-c"]
+	path = externals/json-c
 	url = https://github.com/json-c/json-c
-[submodule "Externals/ShSerial"]
-	path = Externals/ShSerial
+[submodule "externals/ShSerial"]
+	path = externals/ShSerial
 	url = https://github.com/MrSinho/ShSerial
-[submodule "Externals/stb"]
-	path = Externals/stb
+[submodule "externals/stb"]
+	path = externals/stb
 	url = https://github.com/nothings/stb.git
-[submodule "Externals/ShVulkan"]
-	path = Externals/ShVulkan
+[submodule "externals/ShVulkan"]
+	path = externals/ShVulkan
 	url = https://github.com/MrSinho/ShVulkan

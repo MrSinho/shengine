@@ -1,5 +1,5 @@
-#include "ecs/shImage.h"
-#include "stb_image.h"
+//#include "ecs/shImage.h"
+//#include "stb_image.h"
 
 //#ifndef NDEBUG
 //#include "shCheck.h"

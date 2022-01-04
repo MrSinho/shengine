@@ -7,7 +7,6 @@ typedef struct ShTime {
 	double last_time;
 } ShTime;
 
-
 extern void shGetTime(ShTime* time);
 
 extern void shSetTime(double now, ShTime* time);
