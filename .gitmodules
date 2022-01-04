@@ -9,7 +9,7 @@
 	url = https://github.com/MrSinho/PlyImporter
 [submodule "externals/ShECS"]
 	path = externals/ShECS
-	url = https://github.com/MrSinho/ShECS.git
+	url = https://github.com/MrSinho/ShECS
 [submodule "externals/json-c"]
 	path = externals/json-c
 	url = https://github.com/json-c/json-c
