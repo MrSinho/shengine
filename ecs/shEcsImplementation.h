@@ -1,0 +1,9 @@
+#ifndef SH_ECS_IMPLEMENTATION_H
+#define SH_ECS_IMPLEMENTATION_H
+
+#define SH_ECS_MAX_ENTITIES 16
+#define SH_ECS_MAX_COMPONENTS 12
+
+#include "../../Externals/ShECS/ShECS/include/ShECS.h"
+
+#endif//SH_ECS_IMPLEMENTATION

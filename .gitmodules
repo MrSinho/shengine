@@ -19,3 +19,6 @@
 [submodule "Externals/stb"]
 	path = Externals/stb
 	url = https://github.com/nothings/stb.git
+[submodule "Externals/ShVulkan"]
+	path = Externals/ShVulkan
+	url = https://github.com/MrSinho/ShVulkan
