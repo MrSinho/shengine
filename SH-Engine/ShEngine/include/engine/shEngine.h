@@ -1,8 +1,7 @@
 #ifndef SH_ENGINE_H
 #define SH_ENGINE_H
 
-#include <shVkCore.h>
-#include <stdint.h>
+#include <shvulkan/shVkCore.h>
 
 #include "ecs/shEcsImplementation.h"
 #include "ecs/shPhysics.h"
@@ -15,6 +14,8 @@
 #include "scene/shScene.h"
 
 #include "shfd/shFd.h"
+
+#include <stdint.h>
 
 typedef struct ShEngine {
     ShVkCore        core;

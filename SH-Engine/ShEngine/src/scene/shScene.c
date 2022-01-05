@@ -1,6 +1,6 @@
-#include <shVkMemoryInfo.h>
-#include <shVkPipelineData.h>
-#include <shVkDrawLoop.h>
+#include <shvulkan/shVkMemoryInfo.h>
+#include <shvulkan/shVkPipelineData.h>
+#include <shvulkan/shVkDrawLoop.h>
 
 #include "engine/shEngine.h"
 #include "engine/shInput.h"
@@ -79,6 +79,8 @@ void shSceneInit(ShEngine* p_engine, const uint32_t scene_idx) {
 void shSceneUpdate(ShEngine* p_engine, const uint32_t scene_idx) {
 
 	ShCamera camera = { 0 };
+	void* p_push_constants[128];
+	void* p_uniform_buffers[64000];
 
 	for (uint32_t entity = 0; entity < p_engine->scenes[scene_idx].entity_count; entity++) {
 
@@ -164,7 +166,6 @@ void shSceneUpdate(ShEngine* p_engine, const uint32_t scene_idx) {
 			ShMaterial* material = shGetShMaterial(&p_engine->scenes[scene_idx], entity);
 			ShMesh* p_mesh = shGetShMesh(&p_engine->scenes[scene_idx], entity);
 
-			void* p_push_constants[128];
 			uint32_t push_constants_size = 0;
 			if (material->pipeline_data.push_constant_range.size != 0) {
 				if (camera.flags != 0) {
@@ -174,7 +175,6 @@ void shSceneUpdate(ShEngine* p_engine, const uint32_t scene_idx) {
 				}
 			}
 			
-			void* p_uniform_buffers[64000];
 			uint32_t uniform_buffers_size = 0;
 			if (material->pipeline_data.uniform_buffer_count != 0) {
 				ShTransform* transform = shGetShTransform(&p_engine->scenes[scene_idx], entity);

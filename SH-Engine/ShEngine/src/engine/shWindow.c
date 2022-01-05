@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <shVkCheck.h>
+#include <shvulkan/shVkCheck.h>
 
 void shWindowSetup(const char* title, const uint32_t width, const uint32_t height, ShWindow* p_window) {
 

@@ -3,8 +3,8 @@
 
 #include "ecs/shEcsImplementation.h"
 
-#include <shVkCore.h>
-#include <shVkPipelineData.h>
+#include <shvulkan/shVkCore.h>
+#include <shvulkan/shVkPipelineData.h>
 
 typedef enum ShShaderStageFlags {
 	SH_SHADER_STAGE_VERTEX 		= 0x00000001,

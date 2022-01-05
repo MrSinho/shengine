@@ -1,5 +1,6 @@
 #include "linear_algebra/shProjection.h"
 #include "linear_algebra/shCglmImplementation.h"
+
 #include "engine/shWindow.h"
 
 #include <assert.h>

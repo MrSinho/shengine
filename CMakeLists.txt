@@ -36,7 +36,6 @@ target_link_libraries(ShEngine PUBLIC
     glfw
     ShVulkan
     cglm
-    PlyImporter
     shfd
 )
 

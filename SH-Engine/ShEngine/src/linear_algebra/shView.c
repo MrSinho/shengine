@@ -1,4 +1,5 @@
 #include "linear_algebra/shView.h"
+
 #include <assert.h>
 
 void shSetView(float* position, float* front, float* up, float view[4][4]) {

@@ -5,9 +5,9 @@
 
 #include <engine/shEngine.h>
 
-#include <shVkCore.h>
-#include <shVkMemoryInfo.h>
-#include <shVkDrawLoop.h>
+#include <shvulkan/shVkCore.h>
+#include <shvulkan/shVkMemoryInfo.h>
+#include <shvulkan/shVkDrawLoop.h>
 
 int main() {
 

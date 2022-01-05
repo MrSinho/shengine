@@ -1,7 +1,7 @@
 #include "ecs/shMaterial.h" 
 
 #include <memory.h>
-#include <shVkCore.h>
+#include <shvulkan/shVkCore.h>
 
 #include "shfd/shFile.h"
 

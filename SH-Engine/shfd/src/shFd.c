@@ -20,7 +20,7 @@
 #include <stdio.h>
 #endif
 
-#include <PlyImporter.h>
+#include <plyimporter/PlyImporter.h>
 
 #ifdef _MSC_VER
 #pragma warning (disable: 26451 6386)

@@ -1,7 +1,7 @@
 #ifndef SH_MESH_H
 #define SH_MESH_H
 
-#include <shVkMemoryInfo.h>
+#include <shvulkan/shVkMemoryInfo.h>
 
 #include "shEcsImplementation.h"
 

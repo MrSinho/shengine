@@ -1,7 +1,6 @@
 #ifndef SH_TRANSFORM_H
 #define SH_TRANSFORM_H
 
-
 #include "shEcsImplementation.h"
 
 typedef struct ShTransform {
