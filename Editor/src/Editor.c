@@ -27,19 +27,19 @@ int main() {
 	shSetSyncObjects(&engine.core);
 	shInitCommands(&engine.core);
 
-	ShFd mat_info_descriptor = { "../assets/SceneDescriptors/materials.json" };
+	ShFd materials_descriptor = { "../assets/SceneDescriptors/materials.json" };
 	ShFd scene_descriptor = { "../assets/SceneDescriptors/scene.json" };
 	ShFd physics_descriptor = { "../assets/SceneDescriptors/physics.json" };
-	shInitDescriptor(&mat_info_descriptor);
+	shInitDescriptor(&materials_descriptor);
 	shInitDescriptor(&scene_descriptor);
 	shInitDescriptor(&physics_descriptor);
 
-	uint32_t mat_info_count = 0;
-	ShMaterialInfo* p_mat_infos = NULL;
-	shLoadMaterialInfos(mat_info_descriptor.path, &mat_info_count, &p_mat_infos);
+	uint32_t material_count = 0;
+	ShMaterial* p_materials = NULL;
+	shLoadMaterials(materials_descriptor.path, &material_count, &p_materials);
 
 	shCreateScene(&engine.scenes[0]);
-	shLoadScene(scene_descriptor.path, p_mat_infos, &engine.scenes[0]);
+	shLoadScene(scene_descriptor.path, p_materials, &engine.scenes[0]);
 
 	shLoadPhysicsWorld(physics_descriptor.path, &engine.physics_host);
 
@@ -51,14 +51,14 @@ int main() {
 		shGetTime(&engine.time);
 		shFrameReset(engine.core);
 		shGetCursorPosition(engine.window, &engine.window.cursor_pos_x, &engine.window.cursor_pos_y);
-		if (shListenFd(&mat_info_descriptor)) {
-			shReloadMaterialInfos(mat_info_descriptor, &mat_info_count, &p_mat_infos);
-			shReloadScene(&engine, 0, scene_descriptor, p_mat_infos);
+		if (shListenFd(&materials_descriptor)) {
+			shReloadMaterialInfos(materials_descriptor, &material_count, &p_materials);
+			shReloadScene(&engine, 0, scene_descriptor, p_materials);
 			shReloadPhysicsWorld(physics_descriptor, &engine.scenes[0], &engine.physics_host);
 			shSetTime(0.0, &engine.time);
 		}
 		if (shListenFd(&scene_descriptor) || shListenFd(&physics_descriptor)) {
-			shReloadScene(&engine, 0, scene_descriptor, p_mat_infos);
+			shReloadScene(&engine, 0, scene_descriptor, p_materials);
 			shReloadPhysicsWorld(physics_descriptor, &engine.scenes[0], &engine.physics_host);
 			shSetTime(0.0, &engine.time);
 		}
@@ -71,7 +71,7 @@ int main() {
 		shFrameEnd(engine.core, image_index);
 	}
 
-	shMaterialInfosRelease(&mat_info_count, &p_mat_infos);
+	shMaterialsRelease(&material_count, &p_materials);
 	shSceneRelease(&engine, 0);
 
 	shVulkanRelease(&engine.core);

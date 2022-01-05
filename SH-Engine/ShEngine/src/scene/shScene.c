@@ -15,7 +15,6 @@
 #include "ecs/shCamera.h"
 #include "ecs/shMaterial.h"
 #include "ecs/shMesh.h"
-#include "ecs/shMesh.h"
 
 #include "scene/shScene.h"
 
@@ -38,42 +37,40 @@ void shUpdateTransform(ShTransform* t) {
 void shSceneInit(ShEngine* p_engine, const uint32_t scene_idx) {
 
 	for (uint32_t entity = 0; entity < p_engine->scenes[scene_idx].entity_count; entity++) {
-		ShMeshInfo* mesh_info = shGetShMeshInfo(&p_engine->scenes[scene_idx], entity);
-		ShTransform* transform = shGetShTransform(&p_engine->scenes[scene_idx], entity);
+		ShMesh* p_mesh = shGetShMesh(&p_engine->scenes[scene_idx], entity);
+		ShTransform* p_transform = shGetShTransform(&p_engine->scenes[scene_idx], entity);
 
-		if (mesh_info != NULL) {
-			ShMesh* mesh = shAddShMesh(&p_engine->scenes[scene_idx], entity);
-
+		if (p_mesh != NULL) {
 			//Allocate memory
-			if (!(mesh_info->flags & SH_MESH_SETUP_RUNTIME_MESH)) {
-				if (mesh_info->vertex_count > 0 && mesh_info->p_vertices != NULL) {
-					shCreateVertexBuffer(p_engine->core, mesh_info, mesh);
-					shAllocateVertexBuffer(p_engine->core, mesh);
+			if (!(p_mesh->mesh_info.flags & SH_MESH_SETUP_RUNTIME_MESH)) {
+				if (p_mesh->mesh_info.vertex_count > 0 && p_mesh->mesh_info.p_vertices != NULL) {
+					shCreateVertexBuffer(p_engine->core, p_mesh->mesh_info.vertex_count * 4, &p_mesh->vertex_buffer);
+					shAllocateVertexBuffer(p_engine->core, p_mesh->vertex_buffer, &p_mesh->vertex_buffer_memory);
 				}
-				if (mesh_info->index_count > 0 && mesh_info->p_indices != NULL) {
-					shCreateIndexBuffer(p_engine->core, mesh_info, mesh);
-					shAllocateIndexBuffer(p_engine->core, mesh);
+				if (p_mesh->mesh_info.index_count > 0 && p_mesh->mesh_info.p_indices != NULL) {
+					shCreateIndexBuffer(p_engine->core, p_mesh->mesh_info.index_count * 4, &p_mesh->index_buffer);
+					shAllocateIndexBuffer(p_engine->core, p_mesh->index_buffer, &p_mesh->index_buffer_memory);
 				}
 			}
 
 			//Map memory
-			if (mesh_info->flags & SH_MESH_SETUP_STATIC_MESH) {
-				if (mesh_info->vertex_count > 0 && mesh_info->p_vertices != NULL) {
-					shMapVertexBufferMemory(p_engine->core, mesh_info, mesh);
+			if (p_mesh->mesh_info.flags & SH_MESH_SETUP_STATIC_MESH) {
+				if (p_mesh->mesh_info.vertex_count > 0 && p_mesh->mesh_info.p_vertices != NULL) {
+					shMapVertexBufferMemory(p_engine->core, p_mesh->vertex_buffer_memory, p_mesh->mesh_info.vertex_count * 4, p_mesh->mesh_info.p_vertices);
 				}
-				if (mesh_info->index_count > 0 && mesh_info->p_indices != NULL) {
-					shMapIndexBufferMemory(p_engine->core, mesh_info, mesh);
+				if (p_mesh->mesh_info.index_count > 0 && p_mesh->mesh_info.p_indices != NULL) {
+					shMapIndexBufferMemory(p_engine->core, p_mesh->index_buffer_memory, p_mesh->mesh_info.index_count * 4, p_mesh->mesh_info.p_indices);
 				}
 			}
 		}
 
-		if (shHasShMaterialInfo(&p_engine->scenes[scene_idx], entity)) {
-			shSetupMaterial(p_engine->core, *shGetShMaterialInfo(&p_engine->scenes[scene_idx], entity), shAddShMaterial(&p_engine->scenes[scene_idx], entity));
+		if (shHasShMaterial(&p_engine->scenes[scene_idx], entity)) {
+			shSetupMaterial(p_engine->core, shGetShMaterial(&p_engine->scenes[scene_idx], entity));
 		}
 
-		if (transform != NULL) {
-			transform->position[1] *= -1.0f;
-			shUpdateTransform(transform);
+		if (p_transform != NULL) {
+			p_transform->position[1] *= -1.0f;
+			shUpdateTransform(p_transform);
 		}
 	}
 
@@ -163,10 +160,9 @@ void shSceneUpdate(ShEngine* p_engine, const uint32_t scene_idx) {
 			}
 		}
 
-		if (shHasShMeshInfo(&p_engine->scenes[scene_idx], entity) && shHasShMaterial(&p_engine->scenes[scene_idx], entity)) {
+		if (shHasShMesh(&p_engine->scenes[scene_idx], entity) && shHasShMaterial(&p_engine->scenes[scene_idx], entity)) {
 			ShMaterial* material = shGetShMaterial(&p_engine->scenes[scene_idx], entity);
-			ShMeshInfo* mesh_info = shGetShMeshInfo(&p_engine->scenes[scene_idx], entity);
-			ShMesh* mesh = shGetShMesh(&p_engine->scenes[scene_idx], entity);
+			ShMesh* p_mesh = shGetShMesh(&p_engine->scenes[scene_idx], entity);
 
 			void* p_push_constants[128];
 			uint32_t push_constants_size = 0;
@@ -202,27 +198,27 @@ void shSceneUpdate(ShEngine* p_engine, const uint32_t scene_idx) {
 			shRenderMesh(p_engine->core, material->pipeline_data, 
 				push_constants_size, p_push_constants, 
 				uniform_buffers_size, p_uniform_buffers,
-				mesh_info, mesh);
+				p_mesh);
 		}
 	}
 }
 
-void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniforms_size, void* p_uniforms, ShMeshInfo* p_mesh_info, ShMesh* mesh) {
+void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const uint32_t push_const_size, void* p_push_const, const uint32_t uniforms_size, void* p_uniforms, ShMesh* p_mesh) {
 
 	//Map mesh buffers
-	if (p_mesh_info->flags & SH_MESH_SETUP_DYNAMIC_MESH) {
-		shMapVertexBufferMemory(core, p_mesh_info, mesh);
-		if ((size_t)mesh->index_buffer_memory != 0) {
-			shMapIndexBufferMemory(core, p_mesh_info, mesh);
+	if (p_mesh->mesh_info.flags & SH_MESH_SETUP_DYNAMIC_MESH) {
+		shMapVertexBufferMemory(core, p_mesh->vertex_buffer_memory, p_mesh->mesh_info.vertex_count * 4, p_mesh->mesh_info.p_vertices);
+		if ((size_t)p_mesh->index_buffer_memory != 0) {
+			shMapVertexBufferMemory(core, p_mesh->index_buffer_memory, p_mesh->mesh_info.index_count * 4, p_mesh->mesh_info.p_indices);
 		}
 	}
 
 	//Bind vertex and index buffers
-	if ((size_t)mesh->vertex_buffer_memory != 0) {
-		shBindVertexBuffer(core, &mesh->vertex_buffer);
+	if ((size_t)p_mesh->vertex_buffer_memory != 0) {
+		shBindVertexBuffer(core, &p_mesh->vertex_buffer);
 	}
-	if ((size_t)mesh->index_buffer_memory != 0) {
-		shBindIndexBuffer(core, &mesh->index_buffer);
+	if ((size_t)p_mesh->index_buffer_memory != 0) {
+		shBindIndexBuffer(core, &p_mesh->index_buffer);
 	}
 
 	shBindPipeline(core.cmd_buffers[0], pipe_data);
@@ -243,12 +239,12 @@ void shRenderMesh(const ShVkCore core, const ShVkPipelineData pipe_data, const u
 		uniform_offset += pipe_data.p_uniform_buffers[i].uniform_buffer_size;
 	}
 
-	if ((size_t)mesh->vertex_buffer_memory != 0) {
-		if ((size_t)mesh->index_buffer_memory != 0) {
-			shDraw(core.cmd_buffers[0], p_mesh_info->index_count, 1);
+	if ((size_t)p_mesh->vertex_buffer_memory != 0) {
+		if ((size_t)p_mesh->index_buffer_memory != 0) {
+			shDraw(core.cmd_buffers[0], p_mesh->mesh_info.index_count, 1);
 		}
 		else {
-			shDraw(core.cmd_buffers[0], p_mesh_info->vertex_count / pipe_data.vertexStride / 4, 0);
+			shDraw(core.cmd_buffers[0], p_mesh->mesh_info.vertex_count / pipe_data.vertexStride / 4, 0);
 		}
 	}
 }
@@ -260,20 +256,20 @@ void shSceneRelease(ShEngine* p_engine, const uint32_t scene_idx) {
 	for (uint32_t entity = 0; entity < p_engine->scenes[scene_idx].entity_count; entity++) {
 
 		if (shHasShMesh(&p_engine->scenes[scene_idx], entity)) {
-			ShMesh* mesh = shGetShMesh(&p_engine->scenes[scene_idx], entity);
-			if ((size_t)mesh->vertex_buffer_memory != 0) {
-				shClearBufferMemory(p_engine->core.device, mesh->vertex_buffer, mesh->vertex_buffer_memory);
+			ShMesh* p_mesh = shGetShMesh(&p_engine->scenes[scene_idx], entity);
+			if ((size_t)p_mesh->vertex_buffer_memory != 0) {
+				shClearBufferMemory(p_engine->core.device, p_mesh->vertex_buffer, p_mesh->vertex_buffer_memory);
 			}
-			if ((size_t)mesh->index_buffer_memory != 0) {
-				shClearBufferMemory(p_engine->core.device, mesh->index_buffer, mesh->index_buffer_memory);
+			if ((size_t)p_mesh->index_buffer_memory != 0) {
+				shClearBufferMemory(p_engine->core.device, p_mesh->index_buffer, p_mesh->index_buffer_memory);
 			}
-			mesh = NULL;
+			p_mesh = NULL;
 		}
 
 		if (shHasShMaterial(&p_engine->scenes[scene_idx], entity)) {
-			ShMaterial* mat = shGetShMaterial(&p_engine->scenes[scene_idx], entity);
-			shDestroyPipeline(p_engine->core, &mat->pipeline_data);
-			mat = NULL;
+			ShMaterial* p_material = shGetShMaterial(&p_engine->scenes[scene_idx], entity);
+			shDestroyPipeline(p_engine->core, &p_material->pipeline_data);
+			p_material = NULL;
 		}
 
 	}

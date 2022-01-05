@@ -1,7 +1,7 @@
 {
   "meshes": [
     {
-      "path": "../Assets/Meshes/sphere.ply"
+      "path": "../Assets/Meshes/stanfordLucy.ply"
     },
     {
       "path": "../Assets/Meshes/cube.ply"

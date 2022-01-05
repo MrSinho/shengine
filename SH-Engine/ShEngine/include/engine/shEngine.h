@@ -25,14 +25,14 @@ typedef struct ShEngine {
     ShPhysicsHost   physics_host;
 }ShEngine;
 
-static void shReloadMaterialInfos(const ShFd mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterialInfo** pp_mat_infos) {
-	shMaterialInfosRelease(p_mat_info_count, pp_mat_infos);
-	shLoadMaterialInfos(mat_info_descriptor.path, p_mat_info_count, pp_mat_infos);
+static void shReloadMaterialInfos(const ShFd mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterial** pp_materials) {
+	shMaterialsRelease(p_mat_info_count, pp_materials);
+	shLoadMaterials(mat_info_descriptor.path, p_mat_info_count, pp_materials);
 }
 
-static void shReloadScene(ShEngine* p_engine, const uint32_t scene_idx, const ShFd scene_descriptor, ShMaterialInfo* p_mat_infos) {
+static void shReloadScene(ShEngine* p_engine, const uint32_t scene_idx, const ShFd scene_descriptor, ShMaterial* p_materials) {
 	shSceneRelease(p_engine, scene_idx);
-	shLoadScene(scene_descriptor.path, p_mat_infos, &p_engine->scenes[scene_idx]);
+	shLoadScene(scene_descriptor.path, p_materials, &p_engine->scenes[scene_idx]);
 	shSceneInit(p_engine, scene_idx);
 }
 

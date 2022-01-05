@@ -116,8 +116,8 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     return 0;
 }
 
-void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMaterialInfo** pp_mat_infos) {
-    assert(p_mat_info_count != NULL);
+void shLoadMaterials(const char* path, uint32_t* p_material_count, ShMaterial** pp_materials) {
+    assert(p_material_count != NULL && pp_materials != NULL);
 
     char* buffer = (char*)shReadText(path, NULL);
     if (buffer == NULL) { return; }
@@ -141,12 +141,12 @@ void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMateria
 
     //MATERIALS
     json_object* json_materials = json_object_object_get(parser, "materials");
-    uint32_t mat_info_count = (uint32_t)json_object_array_length(json_materials);
-    ShMaterialInfo* p_mat_infos = calloc(mat_info_count, sizeof(ShMaterialInfo));
-    if (p_mat_infos == NULL || mat_info_count == 0) { return; }
-    for (uint32_t i = 0; i < mat_info_count; i++) {
+    uint32_t mat_count = (uint32_t)json_object_array_length(json_materials);
+    ShMaterial* p_materials = calloc(mat_count, sizeof(ShMaterial));
+    if (p_materials == NULL || mat_count == 0) { return; }
+    for (uint32_t i = 0; i < mat_count; i++) {
         json_object* json_material = json_object_array_get_idx(json_materials, i);
-        ShMaterialInfo material_info = {
+        ShMaterial material = {
             json_object_get_string(json_object_object_get(json_material, "vertex_shader")),                         // vertex_shader_path;
             json_object_get_string(json_object_object_get(json_material, "fragment_shader")),                       // fragment_shader_path;	
             0,
@@ -160,35 +160,34 @@ void shLoadMaterialInfos(const char* path, uint32_t* p_mat_info_count, ShMateria
             for (uint32_t i = 0; i < json_object_array_length(json_fixed_states_flags); i++) {
                 json_object* json_flag = json_object_array_get_idx(json_fixed_states_flags, i);
                 ShFixedStateFlags flag = shStringFlagToInt(json_object_get_string(json_flag));
-                material_info.fixed_states_flags |= flag;
+                material.material_info.fixed_states_flags |= flag;
             }
         }
         json_object* json_uniforms = json_object_object_get(json_material, "uniform_buffers");
-        material_info.uniform_buffer_count = (uint32_t)json_object_array_length(json_uniforms);
+        material.material_info.uniform_buffer_count = (uint32_t)json_object_array_length(json_uniforms);
         if (json_uniforms != NULL) {
-            material_info.p_uniform_buffers = calloc(material_info.uniform_buffer_count, sizeof(ShUniformBufferInfo));
-            for (uint32_t i = 0; i < material_info.uniform_buffer_count; i++) {
+            material.material_info.p_uniform_buffers = calloc(material.material_info.uniform_buffer_count, sizeof(ShUniformBufferInfo));
+            for (uint32_t i = 0; i < material.material_info.uniform_buffer_count; i++) {
                 json_object* json_uniform_buffer = json_object_array_get_idx(json_uniforms, i);
-                material_info.p_uniform_buffers[i].uniformSize = (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "size"));
-                material_info.p_uniform_buffers[i].uniformStage = shStringFlagToInt(json_object_get_string(json_object_object_get(json_uniform_buffer, "stage")));
+                material.material_info.p_uniform_buffers[i].uniformSize = (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "size"));
+                material.material_info.p_uniform_buffers[i].uniformStage = shStringFlagToInt(json_object_get_string(json_object_object_get(json_uniform_buffer, "stage")));
             }
         }
-        p_mat_infos[i] = material_info;
+        p_materials[i] = material;
     }
-    (p_mat_infos != NULL) && (*pp_mat_infos = p_mat_infos);
-    (p_mat_info_count != NULL) && (*p_mat_info_count = mat_info_count);
+    (pp_materials != NULL) && (*pp_materials = p_materials);
+    (p_material_count != NULL) && (*p_material_count = mat_count);
     free(buffer);
 }
 
-void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p_scene) {
-    assert(p_scene != NULL && p_mat_infos != NULL);
+void shLoadScene(const char* path, const ShMaterial* p_materials, ShScene* p_scene) {
+    assert(p_scene != NULL && p_materials != NULL);
 
     char* buffer = (char*)shReadText(path, NULL);
     if (buffer == NULL) { return; }
 
     json_object* parser = json_tokener_parse(buffer);
     if (parser == NULL) { return; }
-
 
     //MESHES
     json_object* json_meshes = json_object_object_get(parser, "meshes");
@@ -260,16 +259,16 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
             memcpy(p_transform->rotation, rotation, 12);
         }
         if (json_mesh != NULL) {
-            ShMeshInfo* p_mesh_info = shAddShMeshInfo(p_scene, entity);
+            ShMesh* p_mesh_info = shAddShMesh(p_scene, entity);
             json_object* json_data_index = json_object_object_get(json_mesh, "data_index");
             if (json_data_index != NULL) {
                 uint32_t data_index = json_object_get_int(json_data_index);
-                p_mesh_info->vertex_count = ply_meshes[data_index].vertexCount * ply_meshes[data_index].vertexStride;
-                p_mesh_info->p_vertices = ply_meshes[data_index].pVertices;
-                p_mesh_info->index_count = ply_meshes[data_index].indexCount;
-                p_mesh_info->p_indices = ply_meshes[data_index].pIndices;
+                p_mesh_info->mesh_info.vertex_count = ply_meshes[data_index].vertexCount * ply_meshes[data_index].vertexStride;
+                p_mesh_info->mesh_info.p_vertices = ply_meshes[data_index].pVertices;
+                p_mesh_info->mesh_info.index_count = ply_meshes[data_index].indexCount;
+                p_mesh_info->mesh_info.p_indices = ply_meshes[data_index].pIndices;
                 json_object* json_flags = json_object_object_get(json_mesh, "flags");
-                p_mesh_info->flags = json_flags != NULL ? shStringFlagToInt(json_object_get_string(json_flags)) : SH_MESH_SETUP_STATIC_MESH;
+                p_mesh_info->mesh_info.flags = json_flags != NULL ? shStringFlagToInt(json_object_get_string(json_flags)) : SH_MESH_SETUP_STATIC_MESH;
             }
         }
         if (json_camera != NULL) {
@@ -288,9 +287,9 @@ void shLoadScene(const char* path, const ShMaterialInfo* p_mat_infos, ShScene* p
             *p_camera = camera;
         }
         if (json_material != NULL) {
-            ShMaterialInfo* p_material_info = shAddShMaterialInfo(p_scene, entity);
-            uint32_t material_info_index = json_object_get_int(json_material);
-            *p_material_info = p_mat_infos[material_info_index];
+            ShMaterial* p_material = shAddShMaterial(p_scene, entity);
+            uint32_t material_index = json_object_get_int(json_material);
+            *p_material = p_materials[material_index];
         }
         if (json_identity != NULL) {
             ShIdentity* p_identity  = shAddShIdentity(p_scene, entity);
