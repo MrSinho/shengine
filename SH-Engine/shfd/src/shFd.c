@@ -169,8 +169,8 @@ void shLoadMaterials(const char* path, uint32_t* p_material_count, ShMaterial** 
             material.material_info.p_uniform_buffers = calloc(material.material_info.uniform_buffer_count, sizeof(ShUniformBufferInfo));
             for (uint32_t i = 0; i < material.material_info.uniform_buffer_count; i++) {
                 json_object* json_uniform_buffer = json_object_array_get_idx(json_uniforms, i);
-                material.material_info.p_uniform_buffers[i].uniformSize = (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "size"));
-                material.material_info.p_uniform_buffers[i].uniformStage = shStringFlagToInt(json_object_get_string(json_object_object_get(json_uniform_buffer, "stage")));
+                material.material_info.p_uniform_buffers[i].uniform_size = (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "size"));
+                material.material_info.p_uniform_buffers[i].uniform_stage = shStringFlagToInt(json_object_get_string(json_object_object_get(json_uniform_buffer, "stage")));
             }
         }
         p_materials[i] = material;

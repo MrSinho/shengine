@@ -26,7 +26,7 @@ typedef struct ShEngine {
     ShPhysicsHost   physics_host;
 }ShEngine;
 
-static void shReloadMaterialInfos(const ShFd mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterial** pp_materials) {
+static void shReloadMaterials(const ShFd mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterial** pp_materials) {
 	shMaterialsRelease(p_mat_info_count, pp_materials);
 	shLoadMaterials(mat_info_descriptor.path, p_mat_info_count, pp_materials);
 }

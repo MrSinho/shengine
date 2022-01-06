@@ -52,7 +52,7 @@ int main() {
 		shFrameReset(engine.core);
 		shGetCursorPosition(engine.window, &engine.window.cursor_pos_x, &engine.window.cursor_pos_y);
 		if (shListenFd(&materials_descriptor)) {
-			shReloadMaterialInfos(materials_descriptor, &material_count, &p_materials);
+			shReloadMaterials(materials_descriptor, &material_count, &p_materials);
 			shReloadScene(&engine, 0, scene_descriptor, p_materials);
 			shReloadPhysicsWorld(physics_descriptor, &engine.scenes[0], &engine.physics_host);
 			shSetTime(0.0, &engine.time);

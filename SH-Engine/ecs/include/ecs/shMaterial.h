@@ -13,8 +13,8 @@ typedef enum ShShaderStageFlags {
 } ShShaderStageFlags;
 
 typedef struct ShUniformBufferInfo {
-	uint32_t				uniformSize;
-	ShShaderStageFlags		uniformStage;
+	uint32_t				uniform_size;
+	ShShaderStageFlags		uniform_stage;
 } ShUniformBufferInfo;
 
 typedef struct ShMaterialInfo {

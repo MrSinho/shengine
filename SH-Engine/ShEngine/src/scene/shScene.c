@@ -79,8 +79,8 @@ void shSceneInit(ShEngine* p_engine, const uint32_t scene_idx) {
 void shSceneUpdate(ShEngine* p_engine, const uint32_t scene_idx) {
 
 	ShCamera camera = { 0 };
-	void* p_push_constants[128];
-	void* p_uniform_buffers[64000];
+	void* p_push_constants[128/8];
+	void* p_uniform_buffers[64000/8];
 
 	for (uint32_t entity = 0; entity < p_engine->scenes[scene_idx].entity_count; entity++) {
 
