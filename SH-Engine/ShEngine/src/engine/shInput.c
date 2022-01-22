@@ -17,19 +17,10 @@ int shIsMouseButtonReleased(const ShWindow window, const uint32_t button) {
 	return glfwGetMouseButton(window.window, button) == GLFW_RELEASE;
 }
 
-void shGetCursorPosition(const ShWindow window, double* pX, double* pY) {
-	static double x, y;
-	glfwGetCursorPos(window.window, &x, &y);
-	if (pX != NULL && pY != NULL) {
-		*pX = x;
-		*pY = y;
-	}
-}
-
-void shMouseOffset(const ShWindow window, double* pdx, double* pdy) {
-	double x, y;
-	glfwGetCursorPos(window.window, &x, &y);
-
-	*pdx = window.cursor_pos_x - x;
-	*pdy = window.cursor_pos_y - y;
+void shGetCursorPosition(ShWindow* p_window) {
+	double old_x = p_window->cursor_pos_x;
+	double old_y = p_window->cursor_pos_y;
+	glfwGetCursorPos(p_window->window, &p_window->cursor_pos_x, &p_window->cursor_pos_y);
+	p_window->d_cursor_pos_x = old_x - p_window->cursor_pos_x;
+	p_window->d_cursor_pos_y = old_y - p_window->cursor_pos_y;
 }

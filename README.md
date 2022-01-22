@@ -21,7 +21,9 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Physics support using [ShPhysics](https://github.com/MrSinho/ShPhysics) by MrSinho
 
 ## To do:
+ - Map materials function instead of using multiple loops   
  - Graphics pipeline optimization
+ - Compute Shaders
  - Double/triple buffering
  - Textures
  - Scripting (native preferred)

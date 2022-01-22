@@ -8,10 +8,10 @@
 typedef enum ShMeshInfoFlags {
 	SH_MESH_SETUP_STATIC_MESH  = 0b001,
 	SH_MESH_SETUP_DYNAMIC_MESH = 0b010,
-	SH_MESH_SETUP_RUNTIME_MESH = 0b100,
 } ShMeshInfoFlags;
 
 typedef struct ShMeshInfo {
+	uint32_t		vertex_stride;
 	uint32_t		vertex_count;
 	float*			p_vertices;
 	uint32_t		index_count;

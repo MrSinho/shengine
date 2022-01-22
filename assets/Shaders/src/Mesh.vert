@@ -13,7 +13,7 @@ layout (push_constant) uniform constants {
 	mat4 view;
 } pconst;
 
-layout (set = 0, binding = 0) uniform uniformBuffer {
+layout (set = 0, binding = 1) uniform uniformBuffer {
     mat4 model;
 } ubo;
 

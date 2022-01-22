@@ -16,7 +16,7 @@
         "fov": 45,
         "nc": 0.1,
         "fc": 10E20,
-        "speed": 5,
+        "speed": 25,
         "flags": "CAMERA_SETUP_FREE_FLIGHT"
       }
     },
@@ -32,7 +32,7 @@
         "position": [ 0, 0, 0 ],
         "scale": [ 1.5, 1.5, 1.5 ]
       },
-      "material": 1,
+      "material": 0,
       "physics_client": [ 
         "PHYSICS_CLIENT_ELECTROSTATICS"
       ]

@@ -23,7 +23,6 @@ add_library(ShEngine STATIC
     ${SH_ENGINE_SRC_DIR}/linear_algebra/shProjection.c
     ${SH_ENGINE_SRC_DIR}/linear_algebra/shView.c
     ${SH_ENGINE_SRC_DIR}/scene/shScene.c
-    ${SH_ENGINE_SRC_DIR}/components/shMaterial.c
     ${SH_ENGINE_SRC_DIR}/components/shImage.c
 )
 target_include_directories(ShEngine PUBLIC 

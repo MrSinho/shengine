@@ -26,9 +26,9 @@ typedef struct ShFd {
 
 
 typedef struct ShScene ShScene;
-typedef struct ShMaterial ShMaterial;
+typedef struct ShMaterialHost ShMaterialHost;
 typedef struct ShPhysicsHost ShPhysicsHost;
-
+typedef struct ShVkCore ShVkCore;
 
 extern uint8_t shListenFd(ShFd* descriptor_handle);
 
@@ -36,9 +36,9 @@ extern void shGetFileStats(const char* path, ShFileStats* stats);
 
 extern void shInitDescriptor(ShFd* descriptor_handle);
 
-extern void shLoadMaterials(const char* path, uint32_t* p_material_count, ShMaterial** pp_materials);
+extern void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_count, ShMaterialHost** pp_materials);
 
-extern void shLoadScene(const char* path, const ShMaterial* p_materials, ShScene* p_scene);
+extern void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene);
 
 extern void shLoadPhysicsWorld(const char* path, ShPhysicsHost* p_host);
 

@@ -23,5 +23,7 @@ const char* shReadCode(const char* path, const char* mode, uint32_t* p_code_size
 	fread(code, code_size, 1, stream);
 	(p_code_size != NULL) && (*p_code_size = code_size);
 
+	fclose(stream);
+
 	return code;
 }

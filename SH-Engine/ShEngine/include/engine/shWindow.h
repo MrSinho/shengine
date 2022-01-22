@@ -13,6 +13,8 @@ typedef struct ShWindow {
 	const char*		title;
 	double			cursor_pos_x;
 	double			cursor_pos_y;
+	double			d_cursor_pos_x;
+	double			d_cursor_pos_y;
 	const char**	pp_instance_extensions;
 	uint32_t		instance_extension_count;
 } ShWindow;

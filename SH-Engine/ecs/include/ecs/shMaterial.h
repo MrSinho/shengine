@@ -5,6 +5,7 @@
 
 #include <shvulkan/shVkCore.h>
 #include <shvulkan/shVkPipelineData.h>
+#include <shvulkan/shVkMemoryInfo.h>
 
 typedef enum ShShaderStageFlags {
 	SH_SHADER_STAGE_VERTEX 		= 0x00000001,
@@ -12,34 +13,24 @@ typedef enum ShShaderStageFlags {
     SH_SHADER_STAGE_FRAGMENT 	= 0x00000010
 } ShShaderStageFlags;
 
-typedef struct ShUniformBufferInfo {
-	uint32_t				uniform_size;
-	ShShaderStageFlags		uniform_stage;
-} ShUniformBufferInfo;
-
-typedef struct ShMaterialInfo {
-	const char*				vertex_shader_path;
-	const char*				fragment_shader_path;
-	uint32_t				uniform_buffer_count;
-	ShUniformBufferInfo*	p_uniform_buffers;
-	uint32_t				pConstSize;
-	ShShaderStageFlags		pConstStage;
-	ShFixedStateFlags		fixed_states_flags;
-} ShMaterialInfo;
-
-typedef struct ShMaterial {
-	ShMaterialInfo			material_info;
+typedef struct ShMaterialHost {
 	ShVkFixedStates			fixed_states;
-	ShVkPipelineData		pipeline_data;
-} ShMaterial;
-SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShMaterial, 2)
+	ShVkGraphicsPipeline	pipeline;
+	uint32_t				entity_count;
+	uint32_t				entities[SH_ECS_MAX_ENTITIES];
+} ShMaterialHost;
 
-static void shMaterialsRelease(uint32_t* p_mat_info_count, ShMaterial** pp_materials) {
+#include <assert.h>
+
+static void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {
+	assert(p_mat_info_count != NULL && pp_materials != NULL);
+	for (uint32_t i = 0; i < *p_mat_info_count; i++) {
+		for (uint32_t j = 0; j < (*pp_materials)[i].pipeline.uniform_count; j++) {
+			shClearUniformBufferMemory(p_core, j, &(*pp_materials)[i].pipeline);
+		}
+		shDestroyPipeline(p_core, &(*pp_materials)[i].pipeline);
+	}
 	free(*pp_materials); *p_mat_info_count = 0;
 }
-
-extern void shSetupShaders(const ShVkCore core, const char* vertexspv, const char* fragmentspv, ShVkPipelineData* p_pipe_data);
-
-extern void shSetupMaterial(const ShVkCore core, ShMaterial* p_material);
 
 #endif//SH_MATERIAL_H

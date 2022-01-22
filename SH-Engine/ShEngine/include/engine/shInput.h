@@ -11,9 +11,7 @@ extern int shIsMouseButtonPressed(const ShWindow window, const uint32_t button);
 
 extern int shIsMouseButtonReleased(const ShWindow window, const uint32_t button);
 
-extern void shGetCursorPosition(const ShWindow window, double* x, double* y);
-
-extern void shMouseOffset(const ShWindow window, double* pdx, double* pdy);
+extern void shGetCursorPosition(ShWindow* p_window);
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
