@@ -39,6 +39,8 @@ target_link_libraries(ShEngine PUBLIC
 )
 
 #shfd
+option(SH_ENGINE_USE_SHFD OFF)
+if (SH_ENGINE_USE_SHFD)
 set(SH_FD_SRC SH-Engine/shfd/src)
 add_library(shfd STATIC 
     ${SH_FD_SRC}/shFile.c
@@ -49,6 +51,8 @@ target_include_directories(shfd PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/SH-Engine/ecs/include
 )
 target_link_libraries(shfd PUBLIC json-c ShVulkan PlyImporter)
+set_target_properties(shfd PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+endif()
 
 #EDITOR
 add_executable(Editor editor/src/editor.c)
