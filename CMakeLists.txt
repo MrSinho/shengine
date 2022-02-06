@@ -11,7 +11,6 @@ set(CGLM_STATIC ON)
 add_subdirectory(externals/ShVulkan)
 add_subdirectory(externals/glfw)
 add_subdirectory(externals/cglm)
-add_subdirectory(externals/json-c)
 add_subdirectory(externals/PlyImporter)
 
 #ShEngine
@@ -50,6 +49,7 @@ target_include_directories(shfd PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/SH-Engine/shfd/include
     ${CMAKE_CURRENT_SOURCE_DIR}/SH-Engine/ecs/include
 )
+add_subdirectory(externals/json-c)
 target_link_libraries(shfd PUBLIC json-c ShVulkan PlyImporter)
 set_target_properties(shfd PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 endif()
