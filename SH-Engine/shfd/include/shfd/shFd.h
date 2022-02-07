@@ -38,6 +38,8 @@ extern void shInitDescriptor(ShFd* descriptor_handle);
 
 extern void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_count, ShMaterialHost** pp_materials);
 
+extern void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials);
+
 extern void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene);
 
 extern void shLoadPhysicsWorld(const char* path, ShPhysicsHost* p_host);

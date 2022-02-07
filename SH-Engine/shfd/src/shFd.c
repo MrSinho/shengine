@@ -244,6 +244,17 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
     free(buffer);
 }
 
+void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {
+	assert(p_mat_info_count != NULL && pp_materials != NULL);
+	for (uint32_t i = 0; i < *p_mat_info_count; i++) {
+		for (uint32_t j = 0; j < (*pp_materials)[i].pipeline.uniform_count; j++) {
+			shClearUniformBufferMemory(p_core, j, &(*pp_materials)[i].pipeline);
+		}
+		shDestroyPipeline(p_core, &(*pp_materials)[i].pipeline);
+	}
+	free(*pp_materials); *p_mat_info_count = 0;
+}
+
 void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene) {
     assert(p_scene != NULL && pp_materials != NULL);
 

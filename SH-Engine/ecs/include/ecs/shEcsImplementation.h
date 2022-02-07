@@ -4,6 +4,6 @@
 #define SH_ECS_MAX_ENTITIES 16
 #define SH_ECS_MAX_COMPONENTS 12
 
-#include "../../Externals/ShECS/ShECS/include/ShECS.h"
+#include <shecs/shECS.h>
 
 #endif//SH_ECS_IMPLEMENTATION

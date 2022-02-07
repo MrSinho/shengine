@@ -5,6 +5,8 @@
 
 #include <engine/shEngine.h>
 
+#include <shfd/shFd.h>
+
 #include <shvulkan/shVkCore.h>
 #include <shvulkan/shVkMemoryInfo.h>
 #include <shvulkan/shVkDrawLoop.h>
@@ -13,7 +15,7 @@ int main() {
 
 	ShEngine engine = { 0 };
 	shWindowSetup("SH-Engine Editor", 720, 480, &engine.window);
-	shCreateInstance(&engine.core, "SH-Engine editor", "SH-Engine", engine.window.instance_extension_count, engine.window.pp_instance_extensions);
+	shCreateInstance(&engine.core, "SH-Engine editor", "SH-Engine", 1, engine.window.instance_extension_count, engine.window.pp_instance_extensions);
 	shCreateWindowSurface(&engine);
 	shSelectPhysicalDevice(&engine.core, VK_QUEUE_GRAPHICS_BIT);
 	shSetLogicalDevice(&engine.core);

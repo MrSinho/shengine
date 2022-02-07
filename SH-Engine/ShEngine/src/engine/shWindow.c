@@ -21,6 +21,7 @@ void shWindowSetup(const char* title, const uint32_t width, const uint32_t heigh
 		exit(-1);
 	}
 
+	assert(glfwVulkanSupported() != GLFW_FALSE);
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
