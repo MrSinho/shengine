@@ -1,6 +1,10 @@
 #ifndef SH_INPUT_H
 #define SH_INPUT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 typedef struct ShWindow ShWindow;
 
 extern int shIsKeyPressed(const ShWindow window, const uint32_t key);
@@ -154,5 +158,9 @@ extern void shGetCursorPosition(ShWindow* p_window);
 #define SH_MOUSE_BUTTON_LEFT      SH_MOUSE_BUTTON_1
 #define SH_MOUSE_BUTTON_RIGHT     SH_MOUSE_BUTTON_2
 #define SH_MOUSE_BUTTON_MIDDLE    SH_MOUSE_BUTTON_3
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
 
 #endif//SH_INPUT_H

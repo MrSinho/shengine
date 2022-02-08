@@ -1,3 +1,6 @@
+//#ifdef __cplusplus
+//extern "C" {
+//#endif//__cplusplus
 //#include "ecs/shImage.h"
 //#include "stb_image.h"
 
@@ -13,3 +16,7 @@
 //#endif//NDEBUG
 //	return (p_image->raw != NULL) ? 1 : 0;
 //}
+//
+//#ifdef __cplusplus
+//}
+//#endif//__cplusplus

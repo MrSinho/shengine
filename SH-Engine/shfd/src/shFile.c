@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include "shfd/shFile.h"
 
 #include <stdlib.h>
@@ -27,3 +31,7 @@ const char* shReadCode(const char* path, const char* mode, uint32_t* p_code_size
 
 	return code;
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus

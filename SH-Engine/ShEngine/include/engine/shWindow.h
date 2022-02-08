@@ -1,6 +1,10 @@
 #ifndef SH_WINDOW_H
 #define SH_WINDOW_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #define GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -30,5 +34,9 @@ extern void shPollEvents();
 extern void shClearWindow(GLFWwindow* window);
 
 extern void shCreateWindowSurface(ShEngine* p_engine);
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
 
 #endif//SH_WINDOW_H

@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -77,3 +81,7 @@ int main() {
 
 	return 0;
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus

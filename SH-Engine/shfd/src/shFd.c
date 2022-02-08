@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include "shfd/shFd.h"
 #include "shfd/shFile.h"
 
@@ -486,3 +490,7 @@ uint8_t shListenFd(ShFd* descriptor_handle) {
     }
     return 0;
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus

@@ -1,6 +1,10 @@
 #ifndef SH_DESCRIPTOR_HANDLE_H
 #define SH_DESCRIPTOR_HANDLE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -43,5 +47,9 @@ extern void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShM
 extern void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene);
 
 extern void shLoadPhysicsWorld(const char* path, ShPhysicsHost* p_host);
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
 
 #endif//SH_DESCRIPTOR_HANDLE_H

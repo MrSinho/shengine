@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include "linear_algebra/shProjection.h"
 #include "linear_algebra/shCglmImplementation.h"
 
@@ -13,3 +17,7 @@ void shSetProjection(const ShWindow window, float fov, float nc, float fc, float
 	glm_perspective(fov, (float)window.width / (float)window.height, nc, fc, proj);
 	memcpy(projection, proj, 64);
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus

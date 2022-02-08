@@ -1,6 +1,10 @@
 #ifndef SH_CAMERA_H
 #define SH_CAMERA_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include "shEcsImplementation.h"
 
 typedef enum ShCameraSetupFlags {
@@ -21,5 +25,9 @@ typedef struct ShCamera {
 
 } ShCamera;
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShCamera, 3);
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
 
 #endif//SH_CAMERA_H

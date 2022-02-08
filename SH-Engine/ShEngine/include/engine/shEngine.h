@@ -1,6 +1,10 @@
 #ifndef SH_ENGINE_H
 #define SH_ENGINE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include <shvulkan/shVkCore.h>
 
 #include "ecs/shEcsImplementation.h"
@@ -41,5 +45,9 @@ typedef struct ShEngine {
 //	ShPhysicsHostRelease(p_host);
 //	shLoadPhysicsWorld(physics_descriptor.path, p_host);
 //}
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
 
 #endif//SH_ENGINE_H

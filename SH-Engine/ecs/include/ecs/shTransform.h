@@ -1,6 +1,10 @@
 #ifndef SH_TRANSFORM_H
 #define SH_TRANSFORM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include "shEcsImplementation.h"
 
 typedef struct ShTransform {
@@ -13,5 +17,9 @@ typedef struct ShTransform {
 	float up[3];
 } ShTransform;
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShTransform, 0)
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
 
 #endif//SH_TRANSFORM_H

@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
@@ -15,3 +19,7 @@ void shSetTime(double now, ShTime *time) {
 	time->now = now;
 	glfwSetTime(time->now);
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus

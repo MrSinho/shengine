@@ -1,6 +1,10 @@
 #ifndef SH_PHYSICS_INFO_H
 #define SH_PHYSICS_INFO_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include "shEcsImplementation.h"
 
 typedef enum ShPhysicsClient {
@@ -30,5 +34,9 @@ static void ShPhysicsHostRelease(ShPhysicsHost* p_host) {
         p_host->electrostatic_world.charges[i] = charge;
     }
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
 
 #endif//SH_PHYSICS_INFO_H

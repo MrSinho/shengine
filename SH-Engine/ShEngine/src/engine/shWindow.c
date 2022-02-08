@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include "engine/shWindow.h"
 #include "engine/shEngine.h"
 
@@ -50,3 +54,7 @@ void shCreateWindowSurface(ShEngine* p_engine) {
 		"error creating window surface"
 	);
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus

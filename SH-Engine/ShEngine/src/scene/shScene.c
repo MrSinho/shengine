@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include <shvulkan/shVkMemoryInfo.h>
 #include <shvulkan/shVkPipelineData.h>
 #include <shvulkan/shVkDrawLoop.h>
@@ -339,3 +343,7 @@ void shSceneRelease(ShEngine* p_engine, const uint32_t scene_idx) {
 	}
 	shClearScene(&p_engine->scenes[scene_idx]);
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus

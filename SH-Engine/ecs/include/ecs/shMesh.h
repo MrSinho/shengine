@@ -1,6 +1,10 @@
 #ifndef SH_MESH_H
 #define SH_MESH_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include <shvulkan/shVkMemoryInfo.h>
 
 #include "shEcsImplementation.h"
@@ -27,5 +31,9 @@ typedef struct ShMesh {
 	VkDeviceMemory	index_buffer_memory;
 } ShMesh;
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShMesh, 4)
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
 
 #endif//SH_MESH_H

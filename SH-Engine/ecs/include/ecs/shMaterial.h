@@ -1,6 +1,10 @@
 #ifndef SH_MATERIAL_H
 #define SH_MATERIAL_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include "ecs/shEcsImplementation.h"
 
 #include <shvulkan/shVkCore.h>
@@ -19,5 +23,9 @@ typedef struct ShMaterialHost {
 	uint32_t				entity_count;
 	uint32_t				entities[SH_ECS_MAX_ENTITIES];
 } ShMaterialHost;
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
 
 #endif//SH_MATERIAL_H
