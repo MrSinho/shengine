@@ -62,6 +62,7 @@ int main() {
 		//	shReloadPhysicsWorld(physics_descriptor, &engine.scenes[0], &engine.physics_host);
 		//	shSetTime(0.0, &engine.time);
 		//}
+		shFrameReset(&engine.core);
 
 		uint32_t image_index = 0;
 		shFrameBegin(&engine.core, &image_index);
