@@ -55,6 +55,13 @@ void shCreateWindowSurface(ShEngine* p_engine) {
 	);
 }
 
+void shUpdateWindow(ShEngine* p_engine) {
+	shPollEvents();
+	shGetTime(&p_engine->time);
+	shFrameReset(&p_engine->core);
+	shGetCursorPosition(&p_engine->window);
+}
+
 #ifdef __cplusplus
 }
 #endif//__cplusplus

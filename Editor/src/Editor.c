@@ -49,11 +49,8 @@ int main() {
 	shSceneInit(&engine, 0);
 	
 	while (shIsWindowActive(engine.window.window)) {
-
-		shPollEvents();
-		shGetTime(&engine.time);
-		shFrameReset(&engine.core);
-		shGetCursorPosition(&engine.window);
+		shUpdateWindow(&engine);
+		
 		//if (shListenFd(&materials_descriptor)) {
 		//	shReloadMaterials(&engine.core, materials_descriptor, &material_count, &p_materials);
 		//	shReloadScene(&engine, 0, scene_descriptor, p_materials);

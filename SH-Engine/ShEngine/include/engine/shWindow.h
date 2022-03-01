@@ -35,6 +35,8 @@ extern void shClearWindow(GLFWwindow* window);
 
 extern void shCreateWindowSurface(ShEngine* p_engine);
 
+extern void shUpdateWindow(ShEngine* p_engine);
+
 #ifdef __cplusplus
 }
 #endif//__cplusplus
