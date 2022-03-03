@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
-project(SH-Engine C)
+project(ShEngine C)
 
 #SUBDIRECTORIES OPTIONS
 set(CGLM_USE_C99 ON)
@@ -13,9 +13,9 @@ add_subdirectory(externals/glfw)
 add_subdirectory(externals/cglm)
 add_subdirectory(externals/PlyImporter)
 
-#ShEngine
-set(SH_ENGINE_SRC_DIR SH-Engine/ShEngine/src)
-add_library(ShEngine STATIC 
+#shengine
+set(SH_ENGINE_SRC_DIR ShEngine/shengine/src)
+add_library(shengine STATIC 
     ${SH_ENGINE_SRC_DIR}/engine/shInput.c
     ${SH_ENGINE_SRC_DIR}/engine/shTime.c
     ${SH_ENGINE_SRC_DIR}/engine/shWindow.c
@@ -24,18 +24,18 @@ add_library(ShEngine STATIC
     ${SH_ENGINE_SRC_DIR}/scene/shScene.c
     ${SH_ENGINE_SRC_DIR}/components/shImage.c
 )
-target_include_directories(ShEngine PUBLIC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/SH-Engine/ShEngine/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/SH-Engine/ecs/include
+target_include_directories(shengine PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/ShEngine/shengine/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/ShEngine/ecs/include
     ${CMAKE_CURRENT_SOURCE_DIR}/externals/stb
     ${CMAKE_CURRENT_SOURCE_DIR}/externals/ShECS/include
 )
-target_link_libraries(ShEngine PUBLIC
+target_link_libraries(shengine PUBLIC
     glfw
-    ShVulkan
+    shvulkan
     cglm
 )
-set_target_properties(ShEngine glfw ShVulkan cglm PROPERTIES
+set_target_properties(shengine glfw shvulkan cglm PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
 
@@ -47,33 +47,33 @@ set(SH_ENGINE_BUILD_SHFD ON)
 endif(SH_ENGINE_BUILD_EDITOR)
 
 if (SH_ENGINE_BUILD_SHFD)
-set(SH_FD_SRC SH-Engine/shfd/src)
+set(SH_FD_SRC ShEngine/shfd/src)
 add_library(shfd STATIC 
     ${SH_FD_SRC}/shFile.c
     ${SH_FD_SRC}/shfd.c
 )
 target_include_directories(shfd PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/externals/ShECS/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/SH-Engine/ecs/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/SH-Engine/shfd/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/ShEngine/ecs/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/ShEngine/shfd/include
 )
 add_subdirectory(externals/json-c)
-target_link_libraries(shfd PUBLIC json-c ShVulkan PlyImporter)
+target_link_libraries(shfd PUBLIC json-c shvulkan PlyImporter)
 set_target_properties(shfd PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 endif(SH_ENGINE_BUILD_SHFD)
 
 #editor
 option(SH_ENGINE_BUILD_EDITOR OFF)
 if(SH_ENGINE_BUILD_EDITOR)
-add_executable(ShEditor editor/src/editor.c)
-target_link_libraries(ShEditor PUBLIC 
-    ShEngine
+add_executable(sheditor editor/src/editor.c)
+target_link_libraries(sheditor PUBLIC 
+    shengine
     shfd
 )
-target_include_directories(ShEditor PUBLIC
+target_include_directories(sheditor PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/editor/include
 )
-set_target_properties(ShEditor PROPERTIES
+set_target_properties(sheditor PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
