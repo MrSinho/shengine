@@ -51,12 +51,13 @@ if (SH_ENGINE_BUILD_EDITOR)
 set(SH_ENGINE_BUILD_SHFD ON)
 endif(SH_ENGINE_BUILD_EDITOR)
 
+if (SH_ENGINE_BUILD_SHFD)
+
 if(NOT SH_ENGINE_BUILD_PLY_IMPORTER)
 set(SH_ENGINE_BUILD_PLY_IMPORTER ON)
 add_subdirectory(externals/PlyImporter)
 endif(SH_ENGINE_BUILD_PLY_IMPORTER)
 
-if (SH_ENGINE_BUILD_SHFD)
 set(SH_FD_SRC ShEngine/shfd/src)
 add_library(shfd STATIC 
     ${SH_FD_SRC}/shFile.c
