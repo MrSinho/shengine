@@ -11,7 +11,12 @@ set(CGLM_STATIC ON)
 add_subdirectory(externals/ShVulkan)
 add_subdirectory(externals/glfw)
 add_subdirectory(externals/cglm)
+
+#plyimporter
+option(SH_ENGINE_BUILD_PLY_IMPORTER OFF)
+if(SH_ENGINE_BUILD_PLY_IMPORTER)
 add_subdirectory(externals/PlyImporter)
+endif(SH_ENGINE_BUILD_PLY_IMPORTER)
 
 #shengine
 set(SH_ENGINE_SRC_DIR ShEngine/shengine/src)
@@ -45,6 +50,11 @@ option(SH_ENGINE_USE_SHFD OFF)
 if (SH_ENGINE_BUILD_EDITOR)
 set(SH_ENGINE_BUILD_SHFD ON)
 endif(SH_ENGINE_BUILD_EDITOR)
+
+if(NOT SH_ENGINE_BUILD_PLY_IMPORTER)
+set(SH_ENGINE_BUILD_PLY_IMPORTER ON)
+add_subdirectory(externals/PlyImporter)
+endif(SH_ENGINE_BUILD_PLY_IMPORTER)
 
 if (SH_ENGINE_BUILD_SHFD)
 set(SH_FD_SRC ShEngine/shfd/src)
