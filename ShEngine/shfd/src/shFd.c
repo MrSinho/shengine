@@ -48,9 +48,6 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     if (strcmp(s_flag, "SHADER_STAGE_FRAGMENT") == 0) {
         return SH_SHADER_STAGE_FRAGMENT;
     }
-    if (strcmp(s_flag, "SHADER_STAGE_GEOMETRY") == 0) {
-        return SH_SHADER_STAGE_GEOMETRY;
-    }
     if (strcmp(s_flag, "VEC1_SIGNED_FLOAT") == 0) {
         return SH_VEC1_SIGNED_FLOAT;
     }
@@ -251,22 +248,50 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
 void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {
 	assert(p_mat_info_count != NULL && pp_materials != NULL);
 	for (uint32_t i = 0; i < *p_mat_info_count; i++) {
-		for (uint32_t j = 0; j < (*pp_materials)[i].pipeline.uniform_count; j++) {
-			shClearUniformBufferMemory(p_core, j, &(*pp_materials)[i].pipeline);
+        ShMaterialHost* p_material = &(*pp_materials)[i];
+		for (uint32_t j = 0; j < p_material->pipeline.uniform_count; j++) {
+			shClearUniformBufferMemory(p_core, j, &p_material->pipeline);
 		}
-		shDestroyPipeline(p_core, &(*pp_materials)[i].pipeline);
-	}
+        shDestroyPipeline(p_core, &(*pp_materials)[i].pipeline);
+
+        for (uint32_t j = 0; j < p_material->entity_count; j++) {
+            if (p_material->material_clients[j].p_push_constant_parameters != NULL) {
+                free(p_material->material_clients[j].p_push_constant_parameters);
+            }
+            if (p_material->material_clients[j].p_uniform_parameters != NULL) {
+                free(p_material->material_clients[j].p_uniform_parameters);
+            }
+        }
+        
+    }
 	free(*pp_materials); *p_mat_info_count = 0;
+}
+
+void shReadMaterialParameters(json_object* json_parameters, ShMaterialClient* p_client) {
+    assert(json_parameters != NULL && p_client != NULL);
+    uint32_t offset = 0;
+    for (uint32_t j = 0; j < (uint32_t)json_object_array_length(json_parameters); j += 2) {
+        const char* s_type = json_object_get_string(json_object_array_get_idx(json_parameters, j));
+        if (strcmp(s_type, "float") == 0) {
+            float value = (float)json_object_get_double(json_object_array_get_idx(json_parameters, j + 1));
+            memcpy((void*)&((char*)p_client->p_uniform_parameters)[offset], &value, 4);
+        }
+        if (strcmp(s_type, "int") == 0) {
+            uint32_t value = (uint32_t)json_object_get_int(json_object_array_get_idx(json_parameters, j + 1));
+            memcpy((void*)&((char*)p_client->p_uniform_parameters)[offset], &value, 4);
+        }
+        offset += 4;
+    }
 }
 
 void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene) {
     assert(p_scene != NULL && pp_materials != NULL);
 
     char* buffer = (char*)shReadText(path, NULL);
-    if (buffer == NULL) { return; }
+    assert(buffer != NULL);
 
     json_object* parser = json_tokener_parse(buffer);
-    if (parser == NULL) { return; }
+    assert(parser != NULL);
 
     //MESHES
     json_object* json_meshes = json_object_object_get(parser, "meshes");
@@ -367,12 +392,41 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
             *p_camera = camera;
         }
         if (json_material != NULL) {
-            const uint32_t idx = json_object_get_int(json_material);
+            const uint32_t idx = json_object_get_int(json_object_object_get(json_material, "index"));
+            ShMaterialHost* p_material = &(*pp_materials)[idx];
             for (uint32_t j = 0; j < (*pp_materials)[idx].pipeline.uniform_count; j++) {
-                (*pp_materials)[idx].pipeline.write_descriptor_sets[j].pBufferInfo = &(*pp_materials)[idx].pipeline.descriptor_buffer_infos[j];
+                p_material->pipeline.write_descriptor_sets[j].pBufferInfo = &p_material->pipeline.descriptor_buffer_infos[j];
             }
-            (*pp_materials)[idx].entities[(*pp_materials)[idx].entity_count] = entity;
-            (*pp_materials)[idx].entity_count++;
+            p_material->entities[(*pp_materials)[idx].entity_count] = entity;
+        
+            ShMaterialClient client = {
+                calloc(1, (*pp_materials)[idx].pipeline.push_constant_range.size),
+                NULL
+            };
+            
+            uint32_t uniform_total_size = 0;
+            for (uint32_t j = 0; j < p_material->pipeline.uniform_count; j++) {
+                uniform_total_size += p_material->pipeline.uniform_buffers_size[j];
+            }
+            client.p_uniform_parameters = calloc(1, uniform_total_size);
+
+            json_object* json_push_constant_parameters = json_object_object_get(json_material, "push_constant_parameters");
+            json_object* json_uniform_parameters = json_object_object_get(json_material, "uniform_parameters");
+
+            if (json_push_constant_parameters != NULL) {
+                for (uint32_t j = 0; j < json_object_array_length(json_push_constant_parameters); j++) {//for each push constant
+                    shReadMaterialParameters(json_object_array_get_idx(json_push_constant_parameters, j), &client);
+                }
+            }
+            
+            if (json_uniform_parameters != NULL) {
+                for (uint32_t j = 0; j < json_object_array_length(json_uniform_parameters); j++) {//for each uniform
+                    shReadMaterialParameters(json_object_array_get_idx(json_uniform_parameters, j), &client);
+                }
+            }
+
+            p_material->material_clients[entity] = client;
+            p_material->entity_count++;
         }
         if (json_identity != NULL) {
             ShIdentity* p_identity  = shAddShIdentity(p_scene, entity);
@@ -383,13 +437,13 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
             (json_tag    != NULL) && (p_identity->tag = json_object_get_string(json_tag));
             (json_subtag != NULL) && (p_identity->subtag = json_object_get_string(json_subtag));
         }
+#if 0
         if (json_physics_client != NULL) {
             ShPhysicsClient* client = shAddShPhysicsClient(p_scene, entity);
             for (uint32_t j = 0; j < json_object_array_length(json_physics_client); j++) {
                 *client |= shStringFlagToInt(json_object_get_string(json_object_array_get_idx(json_physics_client, j)));
             }
         }
-#if 0
         if (json_rigidbody != NULL) {
             json_object* json_mass = json_object_object_get(json_rigidbody, "mass");
             json_object* json_shape = json_object_object_get(json_rigidbody, "shape");

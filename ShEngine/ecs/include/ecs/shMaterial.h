@@ -12,16 +12,21 @@ extern "C" {
 #include <shvulkan/shVkMemoryInfo.h>
 
 typedef enum ShShaderStageFlags {
-	SH_SHADER_STAGE_VERTEX 		= 0x00000001,
-    SH_SHADER_STAGE_GEOMETRY 	= 0x00000008,
-    SH_SHADER_STAGE_FRAGMENT 	= 0x00000010
+	SH_SHADER_STAGE_VERTEX 		= VK_SHADER_STAGE_VERTEX_BIT,
+    SH_SHADER_STAGE_FRAGMENT 	= VK_SHADER_STAGE_FRAGMENT_BIT
 } ShShaderStageFlags;
+
+typedef struct ShMaterialClient {
+	void*		p_push_constant_parameters;
+	void*		p_uniform_parameters;
+} ShMaterialClient;
 
 typedef struct ShMaterialHost {
 	ShVkFixedStates			fixed_states;
 	ShVkGraphicsPipeline	pipeline;
 	uint32_t				entity_count;
 	uint32_t				entities[SH_ECS_MAX_ENTITIES];
+	ShMaterialClient		material_clients[SH_ECS_MAX_ENTITIES];
 } ShMaterialHost;
 
 #ifdef __cplusplus

@@ -69,7 +69,7 @@ target_include_directories(shfd PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/ShEngine/shfd/include
 )
 add_subdirectory(externals/json-c)
-target_link_libraries(shfd PUBLIC json-c shvulkan PlyImporter)
+target_link_libraries(shfd PUBLIC json-c shvulkan plyimporter)
 set_target_properties(shfd PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 endif(SH_ENGINE_BUILD_SHFD)
 

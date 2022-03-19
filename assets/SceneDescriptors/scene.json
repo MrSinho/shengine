@@ -4,66 +4,82 @@
       "path": "../Assets/Meshes/stanfordLucy.ply"
     },
     {
-      "path": "../Assets/Meshes/cube.ply"
-    }
+      "path": "../Assets/Meshes/diorama.ply"
+    },
   ],
   "entities": [
-    {
+      {
       "transform": {
-        "position": [0, 0, 3]
+      	"position": [0.0, 0.0, 2.5]
       },
       "camera": {
         "fov": 45,
         "nc": 0.1,
-        "fc": 10E20,
-        "speed": 25,
+        "fc": 150,
+        "speed": 5,
         "flags": "CAMERA_SETUP_FREE_FLIGHT"
       }
     },
     {
-      "identity": {
-        "name": "earth"
+      "mesh": {
+        "data_index": 1
       },
+      "transform": {
+        "position": [ 0.0, 1.0, 0.0 ],
+        "rotation": [ 0.0, 0.0, 0.0],
+        "scale": [2.0, 2.0, 2.0]
+      },
+      "material": {
+          "index": 1,
+          "uniform_parameters": [
+              [
+                  "float", 0.0
+              ],
+              [
+                  "float",-1.0,
+                  "float", 0.0,
+                  "float", 0.0,
+                  "float", 1.0,
+                  
+                  "float", 1.0,
+                  "float", 0.5,
+                  "float", 0.5,
+                  "float", 1.0,
+                  
+                  "float", 1.0,
+                  "float", 0.0,
+                  "float", 0.0,
+                  "float", 1.0,
+                  
+                  "float", 0.5,
+                  "float", 0.5,
+                  "float", 1.0,
+                  "float", 1.0
+              ]
+          ]
+      }
+    },
+    {
       "mesh": {
         "data_index": 0,
         "flags": "MESH_SETUP_STATIC_MESH"
       },
       "transform": {
-        "position": [ 0, 0, 0 ],
-        "scale": [ 1.5, 1.5, 1.5 ]
+        "position": [ 0.0, 0.05, 0.0 ],
+        "scale": [  0.7, 0.7, 0.7 ]
       },
-      "material": 0,
-      "physics_client": [ 
-        "PHYSICS_CLIENT_ELECTROSTATICS"
-      ]
-    },
-    {
       "identity": {
-        "name": "moon"
+        "name": "rotator"
       },
-      "mesh": {
-        "data_index": 0
-      },
-      "transform": {
-        "position": [ 3, 0, 0 ],
-        "rotation": [ 0, 0, 0],
-        "scale": [1, 1, 1]
-      },
-      "material": 0
-    },
-    {
-      "identity": {
-        "name": "mars"
-      },
-      "mesh": {
-        "data_index": 0
-      },
-      "transform": {
-        "position": [ -3, 2, 0 ],
-        "rotation": [ 0, 0, 0],
-        "scale": [1, 1, 1]
-      },
-      "material": 0
+      "material": {
+          "index": 0,
+          "uniform_parameters": [
+              [
+                  "float", 0.0
+              ]
+          ]
+          
+      }
     }
   ]
 }
