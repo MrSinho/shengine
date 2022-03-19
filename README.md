@@ -17,8 +17,7 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Depth buffer
  - Physics support using [ShPhysics](https://github.com/MrSinho/ShPhysics) by MrSinho
 
-## To do:
- - Map materials function instead of using multiple loops   
+## To do: 
  - Graphics pipeline optimization
  - Compute Shaders
  - Double/triple buffering
