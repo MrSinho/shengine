@@ -5,12 +5,12 @@ extern "C" {
 #include "shfd/shFd.h"
 #include "shfd/shFile.h"
 
-#include "ecs/shCamera.h"
-#include "ecs/shTransform.h"
-#include "ecs/shIdentity.h"
-#include "ecs/shPhysics.h"
-#include "ecs/shMaterial.h"
-#include "ecs/shMesh.h"
+#include "shecs/shCamera.h"
+#include "shecs/shTransform.h"
+#include "shecs/shIdentity.h"
+#include "shecs/shPhysics.h"
+#include "shecs/shMaterial.h"
+#include "shecs/shMesh.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

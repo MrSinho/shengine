@@ -1,0 +1,10 @@
+{
+  "simulations": [
+    {
+      "name": "example",
+      "entry_point": "setup",
+      "on_frame": "update",
+      "entity": 0
+    }
+  ]
+}

@@ -53,5 +53,6 @@ dkms.conf
 
 bin/*
 build/*
+simulations/build/*
 .vscode/*
 .vs/*
