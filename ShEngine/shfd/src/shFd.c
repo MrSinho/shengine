@@ -245,6 +245,10 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
     free(buffer);
 }
 
+#ifdef _MSC_VER
+#pragma warning (disable: 6001)
+#endif//_MSC_VER
+
 void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {
 	assert(p_mat_info_count != NULL && pp_materials != NULL);
 	for (uint32_t i = 0; i < *p_mat_info_count; i++) {
@@ -255,32 +259,39 @@ void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterial
         shDestroyPipeline(p_core, &(*pp_materials)[i].pipeline);
 
         for (uint32_t j = 0; j < p_material->entity_count; j++) {
-            if (p_material->material_clients[j].p_push_constant_parameters != NULL) {
-                free(p_material->material_clients[j].p_push_constant_parameters);
-            }
-            if (p_material->material_clients[j].p_uniform_parameters != NULL) {
-                free(p_material->material_clients[j].p_uniform_parameters);
-            }
+            //if (p_material->material_clients[j].p_push_constant_parameters != NULL) {
+            //    free(p_material->material_clients[j].p_push_constant_parameters);
+            //}
+            //if (p_material->material_clients[j].p_uniform_parameters != NULL) {
+            //    free(p_material->material_clients[j].p_uniform_parameters);
+            //}
         }
         
     }
 	free(*pp_materials); *p_mat_info_count = 0;
 }
 
-void shReadMaterialParameters(json_object* json_parameters, ShMaterialClient* p_client) {
-    assert(json_parameters != NULL && p_client != NULL);
-    uint32_t offset = 0;
-    for (uint32_t j = 0; j < (uint32_t)json_object_array_length(json_parameters); j += 2) {
+void shReadUniformParameters(json_object* json_parameters, const uint32_t entity, const uint32_t uniform_idx, ShMaterialHost* p_material) {
+    assert(json_parameters != NULL && p_material != NULL);
+
+    uint32_t uniform_offset = shGetUniformOffset(p_material, uniform_idx);
+
+    for (uint32_t j = 0; j < (uint32_t)json_object_array_length(json_parameters); j += 2) {//FOR EACH UNIFORM PARAMETER VALUE
         const char* s_type = json_object_get_string(json_object_array_get_idx(json_parameters, j));
+
         if (strcmp(s_type, "float") == 0) {
             float value = (float)json_object_get_double(json_object_array_get_idx(json_parameters, j + 1));
-            memcpy((void*)&((char*)p_client->p_uniform_parameters)[offset], &value, 4);
+            memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[uniform_offset], &value, 4);
         }
         if (strcmp(s_type, "int") == 0) {
             uint32_t value = (uint32_t)json_object_get_int(json_object_array_get_idx(json_parameters, j + 1));
-            memcpy((void*)&((char*)p_client->p_uniform_parameters)[offset], &value, 4);
+            memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[uniform_offset], &value, 4);
         }
-        offset += 4;
+        if (strcmp(s_type, "transform") == 0) { //EXTENSION STRUCTURES
+            p_material->extensions.transform_uniform_offset = uniform_offset;
+            uniform_offset += 64;
+        }
+        uniform_offset += 4;
     }
 }
 
@@ -394,38 +405,31 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
         if (json_material != NULL) {
             const uint32_t idx = json_object_get_int(json_object_object_get(json_material, "index"));
             ShMaterialHost* p_material = &(*pp_materials)[idx];
-            for (uint32_t j = 0; j < (*pp_materials)[idx].pipeline.uniform_count; j++) {
+            for (uint32_t j = 0; j < p_material->pipeline.uniform_count; j++) {
                 p_material->pipeline.write_descriptor_sets[j].pBufferInfo = &p_material->pipeline.descriptor_buffer_infos[j];
             }
-            p_material->entities[(*pp_materials)[idx].entity_count] = entity;
+            p_material->entities[p_material->entity_count] = entity;
         
-            ShMaterialClient client = {
-                calloc(1, (*pp_materials)[idx].pipeline.push_constant_range.size),
-                NULL
-            };
-            
-            uint32_t uniform_total_size = 0;
-            for (uint32_t j = 0; j < p_material->pipeline.uniform_count; j++) {
-                uniform_total_size += p_material->pipeline.uniform_buffers_size[j];
-            }
-            client.p_uniform_parameters = calloc(1, uniform_total_size);
-
             json_object* json_push_constant_parameters = json_object_object_get(json_material, "push_constant_parameters");
             json_object* json_uniform_parameters = json_object_object_get(json_material, "uniform_parameters");
 
-            if (json_push_constant_parameters != NULL) {
-                for (uint32_t j = 0; j < json_object_array_length(json_push_constant_parameters); j++) {//for each push constant
-                    shReadMaterialParameters(json_object_array_get_idx(json_push_constant_parameters, j), &client);
-                }
-            }
+            //if (json_push_constant_parameters != NULL) {
+            //    for (uint32_t push_constant_idx = 0; push_constant_idx < json_object_array_length(json_push_constant_parameters); push_constant_idx++) {//for each push constant (single)
+            //        shReadMaterialParameters(json_object_array_get_idx(json_push_constant_parameters, push_constant_idx), 0, &p_material->material_clients[entity]);
+            //    }
+            //}
             
             if (json_uniform_parameters != NULL) {
-                for (uint32_t j = 0; j < json_object_array_length(json_uniform_parameters); j++) {//for each uniform
-                    shReadMaterialParameters(json_object_array_get_idx(json_uniform_parameters, j), &client);
+                for (uint32_t uniform_idx = 0; uniform_idx < json_object_array_length(json_uniform_parameters); uniform_idx++) {//for each uniform
+                    shReadUniformParameters(json_object_array_get_idx(json_uniform_parameters, uniform_idx), entity, uniform_idx, p_material);
+                    p_material->material_clients[entity].parameters = 1;
                 }
             }
 
-            p_material->material_clients[entity] = client;
+            //float values[256];
+            //uint32_t sz = shGetUniformTotalSize(p_material);
+            //memcpy(values, p_material->material_clients[entity].p_uniform_parameters, sz);
+
             p_material->entity_count++;
         }
         if (json_identity != NULL) {

@@ -7,13 +7,16 @@ extern "C" {
 #include <string.h>
 #include <stdint.h>
 
-#include <shengine/shEngine.h>
-
+#include <shsharedhost/shSharedHost.h>
 #include <shfd/shFd.h>
+
+#include <shengine/shEngine.h>
 
 #include <shvulkan/shVkCore.h>
 #include <shvulkan/shVkMemoryInfo.h>
 #include <shvulkan/shVkDrawLoop.h>
+
+#include <shecs/shTransform.h>
 
 int main() {
 
@@ -34,16 +37,24 @@ int main() {
 
 	ShFd materials_descriptor = { "../assets/descriptors/materials.json" };
 	ShFd scene_descriptor = { "../assets/descriptors/scene.json" };
-	shInitDescriptor(&materials_descriptor);
-	shInitDescriptor(&scene_descriptor);
-
+	ShFd simulation_descriptor = { "../assets/descriptors/simulation.json" };
+	//shInitDescriptor(&materials_descriptor);
+	//shInitDescriptor(&scene_descriptor);
+	//shInitDescriptor(&simulation_descriptor);
+	
 	shLoadMaterials(&engine.core, materials_descriptor.path, &engine.material_count, &engine.p_materials);
 
 	shCreateScene(&engine.scene);
 	shLoadScene(scene_descriptor.path, &engine.p_materials, &engine.scene);
 
-	shSceneInit(&engine, 0);
-	
+	shSceneInit(&engine);
+
+	ShSimulationHandle simulation = { 0 };	
+	shLoadSimulation(simulation_descriptor.path, &engine, &simulation);
+	shSimulationLoadSymbols(&simulation);
+
+	shSimulationStart(&simulation, &engine);
+
 	while (shIsWindowActive(engine.window.window)) {
 		shUpdateWindow(&engine);
 		
@@ -63,13 +74,14 @@ int main() {
 		uint32_t image_index = 0;
 		shFrameBegin(&engine.core, &image_index);
 		
-		shSceneUpdate(&engine, 0);
+		shSimulationUpdate(&simulation, &engine);
+		shSceneUpdate(&engine);
 
 		shFrameEnd(&engine.core, image_index);
 	}
 
 	shMaterialsRelease(&engine.core, &engine.material_count, &engine.p_materials);
-	shSceneRelease(&engine, 0);
+	shSceneRelease(&engine);
 
 	shVulkanRelease(&engine.core);
 

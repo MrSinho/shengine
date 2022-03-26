@@ -1,0 +1,6 @@
+{
+    "run": 1,
+    "name": "simulation-sample",
+    "start": "simulation_start",
+    "update": "simulation_update"
+}
