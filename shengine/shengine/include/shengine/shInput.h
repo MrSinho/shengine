@@ -12,6 +12,10 @@ extern void shGetCursorPosition(ShWindow* p_window);
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#define SH_RELEASE	GLFW_RELEASE
+#define SH_PRESS	GLFW_PRESS  
+#define SH_REPEAT	GLFW_REPEAT 
+
 /* Printable keys */
 #define SH_KEY_SPACE              32
 #define SH_KEY_APOSTROPHE         39  /* ' */
