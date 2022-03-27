@@ -7,14 +7,6 @@ extern "C" {
 
 typedef struct ShWindow ShWindow;
 
-extern int shIsKeyPressed(const ShWindow window, const uint32_t key);
-
-extern int shIsKeyReleased(const ShWindow window, const uint32_t key);
-
-extern int shIsMouseButtonPressed(const ShWindow window, const uint32_t button);
-
-extern int shIsMouseButtonReleased(const ShWindow window, const uint32_t button);
-
 extern void shGetCursorPosition(ShWindow* p_window);
 
 #define GLFW_INCLUDE_NONE
@@ -146,6 +138,8 @@ extern void shGetCursorPosition(ShWindow* p_window);
 
 #define SH_KEY_LAST               SH_KEY_MENU
 
+typedef int8_t shKeyParameters[SH_KEY_LAST + 1];
+
 #define SH_MOUSE_BUTTON_1         0
 #define SH_MOUSE_BUTTON_2         1
 #define SH_MOUSE_BUTTON_3         2
@@ -158,6 +152,54 @@ extern void shGetCursorPosition(ShWindow* p_window);
 #define SH_MOUSE_BUTTON_LEFT      SH_MOUSE_BUTTON_1
 #define SH_MOUSE_BUTTON_RIGHT     SH_MOUSE_BUTTON_2
 #define SH_MOUSE_BUTTON_MIDDLE    SH_MOUSE_BUTTON_3
+
+#define SH_JOYSTICK_1             0
+#define SH_JOYSTICK_2             1
+#define SH_JOYSTICK_3             2
+#define SH_JOYSTICK_4             3
+#define SH_JOYSTICK_5             4
+#define SH_JOYSTICK_6             5
+#define SH_JOYSTICK_7             6
+#define SH_JOYSTICK_8             7
+#define SH_JOYSTICK_9             8
+#define SH_JOYSTICK_10            9
+#define SH_JOYSTICK_11            10
+#define SH_JOYSTICK_12            11
+#define SH_JOYSTICK_13            12
+#define SH_JOYSTICK_14            13
+#define SH_JOYSTICK_15            14
+#define SH_JOYSTICK_16            15
+#define SH_JOYSTICK_LAST          SH_JOYSTICK_16
+
+#define SH_GAMEPAD_BUTTON_A               0
+#define SH_GAMEPAD_BUTTON_B               1
+#define SH_GAMEPAD_BUTTON_X               2
+#define SH_GAMEPAD_BUTTON_Y               3
+#define SH_GAMEPAD_BUTTON_LEFT_BUMPER     4
+#define SH_GAMEPAD_BUTTON_RIGHT_BUMPER    5
+#define SH_GAMEPAD_BUTTON_BACK            6
+#define SH_GAMEPAD_BUTTON_START           7
+#define SH_GAMEPAD_BUTTON_GUIDE           8
+#define SH_GAMEPAD_BUTTON_LEFT_THUMB      9
+#define SH_GAMEPAD_BUTTON_RIGHT_THUMB     10
+#define SH_GAMEPAD_BUTTON_DPAD_UP         11
+#define SH_GAMEPAD_BUTTON_DPAD_RIGHT      12
+#define SH_GAMEPAD_BUTTON_DPAD_DOWN       13
+#define SH_GAMEPAD_BUTTON_DPAD_LEFT       14
+#define SH_GAMEPAD_BUTTON_LAST            SH_GAMEPAD_BUTTON_DPAD_LEFT
+
+#define SH_GAMEPAD_BUTTON_CROSS       SH_GAMEPAD_BUTTON_A
+#define SH_GAMEPAD_BUTTON_CIRCLE      SH_GAMEPAD_BUTTON_B
+#define SH_GAMEPAD_BUTTON_SQUARE      SH_GAMEPAD_BUTTON_X
+#define SH_GAMEPAD_BUTTON_TRIANGLE    SH_GAMEPAD_BUTTON_Y
+
+#define SH_GAMEPAD_AXIS_LEFT_X        0
+#define SH_GAMEPAD_AXIS_LEFT_Y        1
+#define SH_GAMEPAD_AXIS_RIGHT_X       2
+#define SH_GAMEPAD_AXIS_RIGHT_Y       3
+#define SH_GAMEPAD_AXIS_LEFT_TRIGGER  4
+#define SH_GAMEPAD_AXIS_RIGHT_TRIGGER 5
+#define SH_GAMEPAD_AXIS_LAST          SH_GAMEPAD_AXIS_RIGHT_TRIGGER
 
 #ifdef __cplusplus
 }

@@ -10,7 +10,12 @@ extern "C" {
 
 #include <shvulkan/shVkCheck.h>
 
+#include <shengine/shInput.h>
+
+#include <assert.h>
+
 void shWindowSetup(const char* title, const uint32_t width, const uint32_t height, ShWindow* p_window) {
+	assert(p_window != NULL);
 
 	ShWindow window = {
 		NULL,
@@ -20,10 +25,7 @@ void shWindowSetup(const char* title, const uint32_t width, const uint32_t heigh
 	};
 	*p_window = window;
 
-	if (!glfwInit()) {
-		puts("Error intializing gflfw!");
-		exit(-1);
-	}
+	assert(glfwInit());
 
 	assert(glfwVulkanSupported() != GLFW_FALSE);
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -33,20 +35,9 @@ void shWindowSetup(const char* title, const uint32_t width, const uint32_t heigh
 	p_window->pp_instance_extensions = glfwGetRequiredInstanceExtensions(&p_window->instance_extension_count);
 }
 
-int shIsWindowActive(GLFWwindow *window) {
-	return !glfwWindowShouldClose(window);
-}
-
-void shPollEvents() {
-	glfwPollEvents();
-}
-
-void shClearWindow(GLFWwindow* window) {
-	glfwDestroyWindow(window);
-	glfwTerminate();
-}
-
 void shCreateWindowSurface(ShEngine* p_engine) {
+	assert(p_engine != NULL);
+
 	p_engine->core.surface.width = p_engine->window.width;
 	p_engine->core.surface.height = p_engine->window.height;
 	shCheckVkResult(
@@ -55,10 +46,21 @@ void shCreateWindowSurface(ShEngine* p_engine) {
 	);
 }
 
+void shUpdateInput(ShWindow* p_window) {
+	assert(p_window != NULL);
+	for (uint32_t i = 0; i < (uint32_t)(SH_KEY_LAST + 1); i++) {
+		p_window->input.key_actions[i] = glfwGetKey(p_window->window, i);
+	}
+}
+
 void shUpdateWindow(ShEngine* p_engine) {
+	assert(p_engine != NULL);
+
 	shPollEvents();
 	shGetTime(&p_engine->time);
 	shGetCursorPosition(&p_engine->window);
+
+	shUpdateInput(&p_engine->window);
 }
 
 #ifdef __cplusplus

@@ -43,6 +43,10 @@ typedef struct ShSimulationHandle {
 
 extern void shLoadSimulation(const char* path, ShEngine* p_engine, ShSimulationHandle* p_simulation);
 
+#ifdef _MSC_VER
+#pragma warning (disable: 4113)
+#endif//_MSC_VER
+
 static void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
 	assert(p_simulation != NULL);
 	p_simulation->p_start	= shSharedLoadSymbol(p_simulation->shared, p_simulation->s_start);

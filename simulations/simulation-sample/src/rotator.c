@@ -31,6 +31,12 @@ void SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine, const uint3
             p_transform->rotation[1] += 50.0f * (float)p_engine->time.delta_time;
         }
     }
+    if (p_engine->window.input.key_actions[SH_KEY_1] == GLFW_PRESS) {
+        shGetShTransform(&p_engine->scene, 2)->position[1] += 5.0f * (float)p_engine->time.delta_time;
+    }
+    if (p_engine->window.input.key_actions[SH_KEY_2] == GLFW_PRESS) {
+        shGetShTransform(&p_engine->scene, 2)->position[1] -= 5.0f * (float)p_engine->time.delta_time;
+    }
 }
 
 #ifdef __cplusplus

@@ -13,16 +13,20 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Entity Component System using [ShECS](https://github.com/MrSinho/ShECS) by MrSinho
  - Full glsl shader customization
  - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter) by MrSinho
+ - Depth buffer support
+ - Scene creation and customization by setting up a scene.json file
  - Custom shader handling (more about that in the Coulomb shader and example)
- - Depth buffer
- - Physics support using [ShPhysics](https://github.com/MrSinho/ShPhysics) by MrSinho
+    * define shader general properties in materials.json
+    * set up shader input parameters for each entity (if required) in scene.json
+    * material extension structures support
+ - Native scripting in C:
+    * simulation.json sets up some properties for a shared library, which functions are called in runtime
+    * to generate the cmake target given the external application name, run export-simulation.py
 
-## To do: 
- - Graphics pipeline optimization
+## To do:
  - Compute Shaders
  - Double/triple buffering
  - Textures
- - Scripting (native preferred)
  - Audio
  - Import/export scene binaries
  - Edit shortcuts when navigating in the window

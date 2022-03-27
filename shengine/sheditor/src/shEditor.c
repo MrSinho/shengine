@@ -75,6 +75,7 @@ int main() {
 		shFrameBegin(&engine.core, &image_index);
 		
 		shSimulationUpdate(&simulation, &engine);
+
 		shSceneUpdate(&engine);
 
 		shFrameEnd(&engine.core, image_index);
