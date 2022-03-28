@@ -5,6 +5,9 @@
       },
       {
          "path":"../Assets/Meshes/diorama.ply"
+      },
+      {
+         "path":"../Assets/Meshes/cube.ply"
       }
    ],
    "entities":[
@@ -32,11 +35,6 @@
             "position":[
                0.0,
                1.0,
-               0.0
-            ],
-            "rotation":[
-               0.0,
-               0.0,
                0.0
             ],
             "scale":[
@@ -100,6 +98,37 @@
             "uniform_parameters":[
                [
                   "transform"
+               ]
+            ]
+         }
+      },
+      {
+         "identity": {
+            "name": "circle"
+         },
+         "transform": {
+         },
+         "mesh": {
+            "data_index": 2,
+            "flags": "MESH_SETUP_STATIC_MESH"
+         },
+         "material": {
+            "index": 2,
+            "uniform_parameters": [
+               [
+                  "transform"
+               ],
+               [
+                  "float", 0.0,
+                  "float", 0.4,
+                  "float", 1.0,
+                  "float", 1.0,
+
+                  "float", 0.0,
+                  "float", 0.2,
+                  "float", 0.5,
+                  
+                  "float", 0.25
                ]
             ]
          }

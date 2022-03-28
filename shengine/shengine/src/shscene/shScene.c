@@ -66,15 +66,14 @@ void shSceneInit(ShEngine* p_engine) {
 			if (p_material->material_clients[entity].parameters) {
 				uint32_t uniform_total_size = shGetUniformTotalSize(p_material);
 				memcpy(p_material->uniform_buffers, p_material->material_clients[entity].p_uniform_parameters, uniform_total_size);
-				//float values[256];
-				//memcpy(values, p_material->uniform_buffers, uniform_total_size);
-				//memcpy(values, p_material->uniform_buffers, uniform_total_size);
 			}
 		}
-		float values[256];
-		uint32_t uniform_total_size = shGetUniformTotalSize(p_material);
-		memcpy(values, p_material->uniform_buffers, uniform_total_size);
-		memcpy(values, p_material->uniform_buffers, uniform_total_size);
+		for (uint32_t uniform_idx = 0; uniform_idx < p_material->pipeline.uniform_count; uniform_idx++) {//WRITE STATIC UNIFORMS 
+			if (!p_material->pipeline.dynamic_uniforms[uniform_idx]) {
+				uint32_t uniform_offset = shGetUniformOffset(p_material, uniform_idx);
+				shWriteUniformBufferMemory(&p_engine->core, uniform_idx, &((char*)p_material->uniform_buffers)[uniform_offset], &p_material->pipeline);
+			}
+		}
 	}
 }
 
@@ -188,17 +187,15 @@ void shSceneUpdate(ShEngine* p_engine) {
 		if (p_material->pipeline.uniform_count) {
 			shUpdateUniformBuffers(&p_engine->core, &p_material->pipeline);//UPDATE ALL UNIFORMS
 		
-			for (uint32_t uniform_idx = 0; uniform_idx < p_material->pipeline.uniform_count; uniform_idx++) {//WRITE AND BIND STATIC UNIFORMS 
+			for (uint32_t uniform_idx = 0; uniform_idx < p_material->pipeline.uniform_count; uniform_idx++) {//BIND STATIC UNIFORMS (WRITE ONLY IF TRIGGERED)
 				if (!p_material->pipeline.dynamic_uniforms[uniform_idx]) {
-					uint32_t uniform_offset = shGetUniformOffset(p_material, uniform_idx);
-					shWriteUniformBufferMemory(&p_engine->core, uniform_idx, &((char*)p_material->uniform_buffers)[uniform_offset], &p_material->pipeline);
+					if (p_material->update_parameters & SH_UPDATE_UNIFORM_PARAMETERS) {
+						uint32_t uniform_offset = shGetUniformOffset(p_material, uniform_idx);
+						shWriteUniformBufferMemory(&p_engine->core, uniform_idx, &((char*)p_material->uniform_buffers)[uniform_offset], &p_material->pipeline);
+					}
 					shBindUniformBuffer(&p_engine->core, uniform_idx, &p_material->pipeline);
 				}
 			}
-			//float values[256];
-			//uint32_t uniform_total_size = shGetUniformTotalSize(p_material);
-			//memcpy(values, p_material->uniform_buffers, uniform_total_size);
-			//memcpy(values, p_material->uniform_buffers, uniform_total_size);
 		}
 
 		//FOR DYNAMIC UNIFORMS AND MESH RELATED DATA
@@ -211,7 +208,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 					if (p_mesh->mesh_info.vertex_count != 0) {
 
 						//dynamic uniforms
-						for (uint32_t uniform_idx = 0; uniform_idx < p_material->pipeline.uniform_count; uniform_idx++) {//WRITE AND BIND STATIC UNIFORMS 
+						for (uint32_t uniform_idx = 0; uniform_idx < p_material->pipeline.uniform_count; uniform_idx++) {//WRITE AND BIND DYNAMIC UNIFORMS 
 							if (p_material->pipeline.dynamic_uniforms[uniform_idx]) {
 
 								//DYNAMIC EXTENSION STRUCTURES
@@ -258,6 +255,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 		}
 
 		shEndPipeline(&p_material->pipeline);
+		p_material->update_parameters = 0;
 	}
 }
 

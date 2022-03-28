@@ -56,11 +56,15 @@ extern void shUpdateInput(ShWindow* p_window);
 extern void shUpdateWindow(ShEngine* p_engine);
 
 static int shIsKeyPressed(const ShWindow window, const uint32_t key) {
-	return glfwGetKey(window.window, key) == GLFW_PRESS;
+	return window.input.key_actions[key] == GLFW_PRESS;
 }
 
 static int shIsKeyReleased(const ShWindow window, const uint32_t key) {
-	return glfwGetKey(window.window, key) == GLFW_RELEASE;
+	return window.input.key_actions[key] == GLFW_RELEASE;
+}
+
+static int shIsKeyRepeated(const ShWindow window, const uint32_t key) {
+	return window.input.key_actions[key] == GLFW_REPEAT;
 }
 
 static int shIsMouseButtonPressed(const ShWindow window, const uint32_t button) {

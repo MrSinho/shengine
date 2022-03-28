@@ -27,6 +27,9 @@ typedef struct ShMaterialHostExtensionStructures {
 	//other stuff like phyisics inputs
 } ShMaterialHostExtensionStructures;
 
+#define SH_UPDATE_PUSH_CONSTANT_PARAMETERS 1 << 0
+#define SH_UPDATE_UNIFORM_PARAMETERS 1 << 1
+
 typedef struct ShMaterialHost {
 	ShVkFixedStates						fixed_states;
 	ShVkGraphicsPipeline				pipeline;
@@ -36,34 +39,18 @@ typedef struct ShMaterialHost {
 	ShMaterialHostExtensionStructures	extensions;
 	void*								push_constant[128 / sizeof(void*)];
 	void*								uniform_buffers[64000 / sizeof(void*) * 32];
-
+	uint8_t								update_parameters;
 } ShMaterialHost;
 
-static uint32_t shGetUniformOffset(ShMaterialHost* p_material, const uint32_t uniform_idx) {
-	uint32_t uniform_offset = 0;
-	for (uint32_t i = 0; i < p_material->pipeline.uniform_count; i++) {
-		if (i == uniform_idx) {
-			return uniform_offset;
-}
-		uniform_offset += p_material->pipeline.uniform_buffers_size[i];
-	}
-	return uniform_offset;
-}
+extern uint32_t shGetUniformOffset(ShMaterialHost* p_material, const uint32_t uniform_idx);
 
-static uint32_t shGetUniformTotalSize(ShMaterialHost* p_material) {
-	uint32_t uniform_total_size = 0;
-	for (uint32_t i = 0; i < p_material->pipeline.uniform_count; i++) {
-		uniform_total_size += p_material->pipeline.uniform_buffers_size[i];
-	}
-	return uniform_total_size;
-}
+extern uint32_t shGetUniformTotalSize(ShMaterialHost* p_material);
 
-static uint8_t shEntityInMaterial(const uint32_t entity, ShMaterialHost* p_material) {
-	for (uint32_t i = 0; i < p_material->entity_count; i++) {
-		if (entity == p_material->entities[i]) { return 1; }
-	}
-	return 0;
-}
+extern uint8_t shEntityInMaterial(const uint32_t entity, ShMaterialHost* p_material);
+
+typedef struct ShEngine ShEngine;
+
+extern void shUpdateUniformParameters(ShEngine* p_engine, const uint32_t uniform_idx, ShMaterialHost* p_material);
 
 #ifdef __cplusplus
 }
