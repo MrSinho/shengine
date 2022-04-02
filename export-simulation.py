@@ -1,17 +1,19 @@
 import sys
 import os
+import pathlib
 
-def main():#example call: python export_simulation.py simulation-sample SHARED
+def main():#example call: python export_simulation.py simulation-sample SHARED;;;; optional last arg: ../simulation-sample
     
+    python_src_dir = str(pathlib.Path(__file__).parent.resolve().as_posix())
 
     src_path = "."
     if len(sys.argv) == 4:
-        src_path = "../simulations/" + str(sys.argv[1]) + "/source-files.txt"
+        src_path = python_src_dir + "/" + str(sys.argv[3])
     else:
-        src_path = "simulations/" + str(sys.argv[1]) + "/source-files.txt"
+        src_path = python_src_dir + "/simulations/" + str(sys.argv[1])
 
-    print(f"loading {src_path}")
-    src_stream = open(src_path, "r")
+    print(f"loading {src_path}/source-files.txt")
+    src_stream = open(src_path + "/source-files.txt", "r")
     src = src_stream.read()
     src_stream.close()
 
@@ -27,15 +29,15 @@ project(${{SH_SIMULATION_NAME}})
 option(SH_SIMULATION_BINARY_TYPE "EXECUTABLE")
 if("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "STATIC")
     add_library(${{SH_SIMULATION_NAME}} STATIC 
-    {str(sys.argv[1])}/src/{src}
+    {src_path}/src/{src}
 )
 elseif("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "SHARED")
     add_library(${{SH_SIMULATION_NAME}} SHARED 
-    {str(sys.argv[1])}/src/{src}
+    {src_path}/src/{src}
 )
 elseif("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "EXECUTABLE")
     add_executable(${{SH_SIMULATION_NAME}}  
-    {str(sys.argv[1])}/src/{src}
+    {src_path}/src/{src}
 )
 endif()
 target_include_directories(${{SH_SIMULATION_NAME}} PUBLIC 
@@ -49,11 +51,10 @@ RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
 """
     print(cmake_file)
 
-    dst_stream = open("simulations/CMakeLists.txt", "w")
+    dst_stream = open(src_path.rsplit("/", 1)[0]+"/CMakeLists.txt", "w")
     dst_stream.write(cmake_file)
     dst_stream.close()
 
-    
     os.system("mkdir build")
     cmd = "cd build && cmake .. -DBUILD_SH_ENGINE=ON -DSH_ENGINE_BUILD_EDITOR=ON -DBUILD_SIMULATIONS=ON -DSH_SIMULATION_NAME="
     cmd += str(sys.argv[1])
