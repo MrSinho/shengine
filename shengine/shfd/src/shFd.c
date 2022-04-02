@@ -297,22 +297,24 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
 
     //MESHES
     json_object* json_meshes = json_object_object_get(parser, "meshes");
-    uint32_t mesh_info_count = (uint32_t)json_object_array_length(json_meshes);
-    ShMeshInfo* mesh_infos = calloc(mesh_info_count, sizeof(ShMeshInfo));
-    
-    uint32_t ply_mesh_count = 0; 
-    for (uint32_t i = 0; i < mesh_info_count; i++) {
-        json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
-        json_object_object_get(json_mesh, "path") != NULL && ply_mesh_count++;
-    }
-    PlyFileData* ply_meshes = calloc(ply_mesh_count, sizeof(PlyFileData));
-    for (uint32_t i = 0; i < ply_mesh_count; i++) {
-        json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
-        char mesh_path[256];
-        json_object* json_path = json_object_object_get(json_mesh, "path");
-        if (json_path != NULL) {
-            shMakeAssetsPath(json_object_get_string(json_path), mesh_path);
-            plyLoadFile(mesh_path, &ply_meshes[i], 0);
+    if (json_meshes) {
+        uint32_t mesh_info_count = (uint32_t)json_object_array_length(json_meshes);
+        ShMeshInfo* mesh_infos = calloc(mesh_info_count, sizeof(ShMeshInfo));
+
+        uint32_t ply_mesh_count = 0;
+        for (uint32_t i = 0; i < mesh_info_count; i++) {
+            json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
+            json_object_object_get(json_mesh, "path") != NULL && ply_mesh_count++;
+        }
+        PlyFileData* ply_meshes = calloc(ply_mesh_count, sizeof(PlyFileData));
+        for (uint32_t i = 0; i < ply_mesh_count; i++) {
+            json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
+            char mesh_path[256];
+            json_object* json_path = json_object_object_get(json_mesh, "path");
+            if (json_path != NULL) {
+                shMakeAssetsPath(json_object_get_string(json_path), mesh_path);
+                plyLoadFile(mesh_path, &ply_meshes[i], 0);
+            }
         }
     }
 
