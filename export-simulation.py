@@ -2,16 +2,16 @@ import sys
 import os
 import pathlib
 
-def main():#example call: python export_simulation.py simulation-sample SHARED;;;; optional last arg: ../simulation-sample
+def main():#example call: python export_simulation.py simulation-sample SHARED;;;; optional last arg: ../simulations
     
     python_src_dir = str(pathlib.Path(__file__).parent.resolve().as_posix())
 
-    src_path = "."
+    simulation_path = python_src_dir + "/simulations/"
     if len(sys.argv) == 4:
-        src_path = python_src_dir + "/" + str(sys.argv[3])
-    else:
-        src_path = python_src_dir + "/simulations/" + str(sys.argv[1])
+        simulation_path = python_src_dir + "/" + str(sys.argv[3])
 
+    src_path =  simulation_path + "/" + str(sys.argv[1])
+    
     print(f"loading {src_path}/source-files.txt")
     src_stream = open(src_path + "/source-files.txt", "r")
     src = src_stream.read()
@@ -58,7 +58,7 @@ RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
     os.system("mkdir build")
     cmd = f"cd {python_src_dir} && mkdir build"
     os.system(cmd)
-    cmd = f"cd {python_src_dir}/build && cmake .. -DBUILD_SH_ENGINE=ON -DSH_ENGINE_BUILD_EDITOR=ON -DBUILD_SIMULATIONS=ON -DSH_SIMULATION_NAME="
+    cmd = f"cd {python_src_dir}/build && cmake .. -DBUILD_SH_ENGINE=ON -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH={simulation_path} -DSH_SIMULATION_NAME="
     cmd += str(sys.argv[1])
     cmd += " -DSH_SIMULATION_BINARY_TYPE=" #could be STATIC SHARED EXECUTABLE
     cmd += str(sys.argv[2])

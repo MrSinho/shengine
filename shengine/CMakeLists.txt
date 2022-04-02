@@ -18,7 +18,7 @@ option(SH_ENGINE_ASSETS_PATH OFF)
 
 if (NOT SH_EDITOR_ASSETS_PATH)
     set(SH_EDITOR_ASSETS_PATH "../assets")
-endif(SH_EDITOR_ASSETS_PATH)
+endif()
 
 function(build_shengine)
 add_library(shengine 
