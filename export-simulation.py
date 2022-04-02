@@ -29,15 +29,15 @@ project(${{SH_SIMULATION_NAME}})
 option(SH_SIMULATION_BINARY_TYPE "EXECUTABLE")
 if("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "STATIC")
     add_library(${{SH_SIMULATION_NAME}} STATIC 
-    {src_path}/src/{src}
+    {src_path}/{src}
 )
 elseif("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "SHARED")
     add_library(${{SH_SIMULATION_NAME}} SHARED 
-    {src_path}/src/{src}
+    {src_path}/{src}
 )
 elseif("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "EXECUTABLE")
     add_executable(${{SH_SIMULATION_NAME}}  
-    {src_path}/src/{src}
+    {src_path}/{src}
 )
 endif()
 target_include_directories(${{SH_SIMULATION_NAME}} PUBLIC 
