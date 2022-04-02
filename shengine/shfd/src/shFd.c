@@ -296,6 +296,7 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
     assert(parser != NULL);
 
     //MESHES
+    PlyFileData* ply_meshes = NULL;
     json_object* json_meshes = json_object_object_get(parser, "meshes");
     if (json_meshes) {
         uint32_t mesh_info_count = (uint32_t)json_object_array_length(json_meshes);
@@ -306,7 +307,7 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
             json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
             json_object_object_get(json_mesh, "path") != NULL && ply_mesh_count++;
         }
-        PlyFileData* ply_meshes = calloc(ply_mesh_count, sizeof(PlyFileData));
+        ply_meshes = calloc(ply_mesh_count, sizeof(PlyFileData));
         for (uint32_t i = 0; i < ply_mesh_count; i++) {
             json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
             char mesh_path[256];
