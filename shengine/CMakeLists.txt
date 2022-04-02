@@ -10,9 +10,15 @@ set(CGLM_STATIC ON)
 #SUBDIRECTORIES
 add_subdirectory(../externals [EXCLUDE_FROM_ALL])
 
+#OPTIONS
 option(SH_ENGINE_BUILD_EDITOR OFF)
 option(SH_ENGINE_USE_SHFD OFF)
 option(SH_ENGINE_BUILD_SHARED_HOST OFF)
+option(SH_ENGINE_ASSETS_PATH OFF)
+
+if (NOT SH_EDITOR_ASSETS_PATH)
+    set(SH_EDITOR_ASSETS_PATH "../assets")
+endif(SH_EDITOR_ASSETS_PATH)
 
 function(build_shengine)
 add_library(shengine 
@@ -73,6 +79,7 @@ set_target_properties(sheditor PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
+target_compile_definitions(sheditor PUBLIC SH_EDITOR_ASSETS_PATH="${SH_EDITOR_ASSETS_PATH}")
 endfunction()
 
 

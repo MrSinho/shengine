@@ -6,6 +6,7 @@ project(shprojects)
 option(BUILD_SH_ENGINE OFF)
 option(BUILD_SIMULATIONS OFF)
 
+
 if (BUILD_SH_ENGINE)
 add_subdirectory(shengine)
 endif(BUILD_SH_ENGINE)

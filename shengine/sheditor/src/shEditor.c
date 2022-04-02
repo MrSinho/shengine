@@ -18,6 +18,22 @@ extern "C" {
 
 #include <shecs/shTransform.h>
 
+#ifndef SH_EDITOR_ASSETS_PATH //defined with CMake
+#define SH_EDITOR_ASSETS_PATH "../assets"
+#endif//SH_ENGINE_ASSETS_PATH
+
+#include <string.h>
+
+#ifdef _MSC_VER
+#pragma warning (disable: 4996)
+#endif//_MSC_VER
+
+char* shMakeAssetsPath(const char* src_path, char* dst_path) {
+	strcpy(dst_path, SH_EDITOR_ASSETS_PATH);
+	strcat(dst_path, src_path);
+	return dst_path;
+}
+
 int main() {
 
 	ShEngine engine = { 0 };
@@ -35,13 +51,16 @@ int main() {
 	shSetSyncObjects(&engine.core);
 	shCreateGraphicsCommandBuffer(&engine.core);
 
-	ShFd materials_descriptor = { "../assets/descriptors/materials.json" };
-	ShFd scene_descriptor = { "../assets/descriptors/scene.json" };
-	ShFd simulation_descriptor = { "../assets/descriptors/simulation.json" };
+	ShFd materials_descriptor = { 0 };
+	ShFd scene_descriptor = { 0 };
+	ShFd simulation_descriptor = { 0 };
 	//shInitDescriptor(&materials_descriptor);
 	//shInitDescriptor(&scene_descriptor);
 	//shInitDescriptor(&simulation_descriptor);
-	
+	shMakeAssetsPath("/descriptors/materials.json", materials_descriptor.path);
+	shMakeAssetsPath("/descriptors/scene.json", scene_descriptor.path);
+	shMakeAssetsPath("/descriptors/simulation.json", simulation_descriptor.path);
+
 	shLoadMaterials(&engine.core, materials_descriptor.path, &engine.material_count, &engine.p_materials);
 
 	shCreateScene(&engine.scene);

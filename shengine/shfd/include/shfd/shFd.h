@@ -23,7 +23,7 @@ extern "C" {
 typedef struct stat ShFileStats;
 
 typedef struct ShFd {
-	const char* path;
+	char		path[256];
 	ShFileStats stats0;
 	ShFileStats stats1;
 } ShFd;

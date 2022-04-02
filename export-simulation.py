@@ -23,7 +23,7 @@ def main():#example call: python export_simulation.py simulation-sample SHARED;;
 cmake_minimum_required(VERSION 3.0)
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
-option(SH_SIMULATION_NAME EmptyProject)
+option(SH_SIMULATION_NAME emptytarget)
 project(${{SH_SIMULATION_NAME}})
 
 option(SH_SIMULATION_BINARY_TYPE "EXECUTABLE")
