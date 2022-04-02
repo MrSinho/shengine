@@ -3,7 +3,13 @@ import os
 
 def main():#example call: python export_simulation.py simulation-sample SHARED
     
-    src_path = "simulations/" + str(sys.argv[1]) + "/source-files.txt"
+
+    src_path = "."
+    if len(sys.argv) == 4:
+        src_path = "../simulations/" + str(sys.argv[1]) + "/source-files.txt"
+    else:
+        src_path = "simulations/" + str(sys.argv[1]) + "/source-files.txt"
+
     print(f"loading {src_path}")
     src_stream = open(src_path, "r")
     src = src_stream.read()
