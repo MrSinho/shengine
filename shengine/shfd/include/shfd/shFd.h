@@ -36,9 +36,13 @@ typedef struct ShVkCore ShVkCore;
 
 extern uint8_t shListenFd(ShFd* descriptor_handle);
 
-extern void shGetFileStats(const char* path, ShFileStats* stats);
+#define shGetFileStats(path, stats)\
+	stat(path, stats)
 
-extern void shInitDescriptor(ShFd* descriptor_handle);
+#define shInitDescriptor(p_descriptor_handle)\
+	shGetFileStats((p_descriptor_handle)->path, &(p_descriptor_handle)->stats0)
+
+extern void shMakeAssetsPath(const char* src_path, char* dst_path);
 
 extern void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_count, ShMaterialHost** pp_materials);
 

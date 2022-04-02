@@ -18,21 +18,10 @@ extern "C" {
 
 #include <shecs/shTransform.h>
 
-#ifndef SH_EDITOR_ASSETS_PATH //defined with CMake
-#define SH_EDITOR_ASSETS_PATH "../assets"
-#endif//SH_ENGINE_ASSETS_PATH
 
 #include <string.h>
 
-#ifdef _MSC_VER
-#pragma warning (disable: 4996)
-#endif//_MSC_VER
 
-char* shMakeAssetsPath(const char* src_path, char* dst_path) {
-	strcpy(dst_path, SH_EDITOR_ASSETS_PATH);
-	strcat(dst_path, src_path);
-	return dst_path;
-}
 
 int main() {
 

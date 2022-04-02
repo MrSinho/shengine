@@ -29,16 +29,14 @@ extern "C" {
 #include <plyimporter/PlyImporter.h>
 
 #ifdef _MSC_VER
-#pragma warning (disable: 26451 6386)
+#pragma warning (disable: 26451 6386 4996)
 #endif // _MSC_VER
 #include <json.h>
 
-void shGetFileStats(const char* path, ShFileStats* stats) {
-    stat(path, stats);
-}
-
-void shInitDescriptor(ShFd* descriptor_handle) {
-    shGetFileStats(descriptor_handle->path, &descriptor_handle->stats0);
+void shMakeAssetsPath(const char* src_path, char* dst_path) {
+    strcpy(dst_path, SH_EDITOR_ASSETS_PATH); //CMake defined macro
+    strcat(dst_path, "/");
+    strcat(dst_path, src_path);
 }
 
 uint32_t shStringFlagToInt(const char* s_flag) {
@@ -146,17 +144,6 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
     // AUTO COMPILE SHADERS
     uint32_t compile_shaders = (uint32_t)json_object_get_int(json_object_object_get(parser, "auto_compile_shaders"));
     
-    // SHADER SOURCES
-    json_object* json_shader_sources = json_object_object_get(parser, "shader_sources");
-    uint32_t shader_source_count = (uint32_t)json_object_array_length(json_shader_sources);
-    if (compile_shaders > 0) {
-        for (uint32_t i = 0; i < shader_source_count; i += 2) {
-            const char* shader_source = json_object_get_string(json_object_array_get_idx(json_shader_sources, i));
-            const char* bin = json_object_get_string(json_object_array_get_idx(json_shader_sources, (size_t)i + 1));
-            //shCompileGLSLShader(shader_source, bin);
-        }
-    }
-
     //MATERIALS
     json_object* json_materials = json_object_object_get(parser, "materials");
     uint32_t mat_count = (uint32_t)json_object_array_length(json_materials);
@@ -200,12 +187,16 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
 
         uint32_t vertex_shader_size = 0;
         uint32_t fragment_shader_size = 0;
+        char vertex_path[256];
+        char fragment_path[256];
+        shMakeAssetsPath(json_object_get_string(json_object_object_get(json_material, "vertex_shader")), vertex_path);
+        shMakeAssetsPath(json_object_get_string(json_object_object_get(json_material, "fragment_shader")), fragment_path);
         const char* vertex_code = shReadBinary(
-            json_object_get_string(json_object_object_get(json_material, "vertex_shader")), 
+            vertex_path,
             &vertex_shader_size
         );
         const char* fragment_code = shReadBinary(
-            json_object_get_string(json_object_object_get(json_material, "fragment_shader")), 
+            fragment_path,
             &fragment_shader_size
         );
         assert(vertex_code != NULL && fragment_code != NULL);
@@ -312,13 +303,17 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
     uint32_t ply_mesh_count = 0; 
     for (uint32_t i = 0; i < mesh_info_count; i++) {
         json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
-        json_object_get_string(json_object_object_get(json_mesh, "path")) != NULL && ply_mesh_count++;
+        json_object_object_get(json_mesh, "path") != NULL && ply_mesh_count++;
     }
     PlyFileData* ply_meshes = calloc(ply_mesh_count, sizeof(PlyFileData));
     for (uint32_t i = 0; i < ply_mesh_count; i++) {
         json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
-        const char* path = json_object_get_string(json_object_object_get(json_mesh, "path"));
-        if (path != NULL) { plyLoadFile(path, &ply_meshes[i], 0); }
+        char mesh_path[256];
+        json_object* json_path = json_object_object_get(json_mesh, "path");
+        if (json_path != NULL) {
+            shMakeAssetsPath(json_object_get_string(json_path), mesh_path);
+            plyLoadFile(mesh_path, &ply_meshes[i], 0);
+        }
     }
 
     //ENTITIES

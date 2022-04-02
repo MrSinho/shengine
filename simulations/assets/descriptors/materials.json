@@ -1,15 +1,9 @@
 {
-  "shader_sources": [
-    "../Assets/Shaders/src/Mesh.vert", "../Assets/Shaders/bin/Mesh.vert.spv",
-    "../Assets/Shaders/src/Mesh.frag", "../Assets/Shaders/bin/Mesh.frag.spv",
-    "../Assets/Shaders/src/Coulomb.vert", "../Assets/Shaders/bin/Coulomb.vert.spv",
-    "../Assets/Shaders/src/Coulomb.frag", "../Assets/Shaders/bin/Coulomb.frag.spv"
-  ],
   "materials": [   
       {
       "COMMENT": "WIREFRAME MESH",
-      "vertex_shader": "../Assets/Shaders/bin/Mesh.vert.spv",
-      "fragment_shader": "../Assets/Shaders/bin/Mesh.frag.spv",
+      "vertex_shader": "shaders/bin/Mesh.vert.spv",
+      "fragment_shader": "shaders/bin/Mesh.frag.spv",
       "push_constants_size": 128,
       "push_constants_stage": "SHADER_STAGE_VERTEX",
       "fixed_states": {
@@ -48,8 +42,8 @@
     },
     {
       "COMMENT": "POINT LIGHTS",
-      "vertex_shader": "../Assets/Shaders/bin/Coulomb.vert.spv",
-      "fragment_shader": "../Assets/Shaders/bin/Coulomb.frag.spv",
+      "vertex_shader": "shaders/bin/Coulomb.vert.spv",
+      "fragment_shader": "shaders/bin/Coulomb.frag.spv",
       "push_constants_size": 128,
       "push_constants_stage": "SHADER_STAGE_VERTEX",
       "fixed_states": {
@@ -94,8 +88,8 @@
     },
     {
       "COMMENT": "SPHERE",
-      "vertex_shader": "../Assets/Shaders/bin/Sphere.vert.spv",
-      "fragment_shader": "../Assets/Shaders/bin/Sphere.frag.spv",
+      "vertex_shader": "shaders/bin/Sphere.vert.spv",
+      "fragment_shader": "shaders/bin/Sphere.frag.spv",
       "push_constants_size": 128,
       "push_constants_stage": "SHADER_STAGE_VERTEX",
       "fixed_states": {

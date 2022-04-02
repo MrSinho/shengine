@@ -1,13 +1,13 @@
 {
    "meshes":[
       {
-         "path":"../Assets/Meshes/stanfordLucy.ply"
+         "path":"meshes/stanfordLucy.ply"
       },
       {
-         "path":"../Assets/Meshes/diorama.ply"
+         "path":"meshes/diorama.ply"
       },
       {
-         "path":"../Assets/Meshes/cube.ply"
+         "path":"meshes/cube.ply"
       }
    ],
    "entities":[

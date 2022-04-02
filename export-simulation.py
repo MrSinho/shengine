@@ -58,7 +58,7 @@ RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
     os.system("mkdir build")
     cmd = f"cd {python_src_dir} && mkdir build"
     os.system(cmd)
-    cmd = f"cd {python_src_dir}/build && cmake .. -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH={simulation_path} -DSH_EDITOR_ASSETS_PATH={simulation_path} -DSH_SIMULATION_NAME="
+    cmd = f"cd {python_src_dir}/build && cmake .. -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH={simulation_path} -DSH_EDITOR_ASSETS_PATH={simulation_path}/assets -DSH_SIMULATION_NAME="
     cmd += str(sys.argv[1])
     cmd += " -DSH_SIMULATION_BINARY_TYPE=" #could be STATIC SHARED EXECUTABLE
     cmd += str(sys.argv[2])
