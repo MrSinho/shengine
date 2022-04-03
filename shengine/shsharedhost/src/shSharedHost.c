@@ -38,11 +38,11 @@ void shLoadSimulation(const char* path, ShEngine* p_engine, ShSimulationHandle* 
 
     char shared_path[256];
     strcpy(shared_path, shared_name);
-#ifdef _WIN32
+#ifdef _MSC_VER
     strcat(shared_path, ".dll");
 #else
     strcat(shared_path, ".so");
-#endif//_WIN32
+#endif//_MSC_VER
 
     p_simulation->shared = shLoadShared(shared_path);
     if (p_simulation->run) {

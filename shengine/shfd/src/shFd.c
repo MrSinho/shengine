@@ -373,7 +373,7 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
         }
         if (json_mesh != NULL) {
             ShMesh* p_mesh_info = shAddShMesh(p_scene, entity);
-            json_object* json_data_index = json_object_object_get(json_mesh, "data_index");
+            json_object* json_data_index = json_object_object_get(json_mesh, "index");
             if (json_data_index != NULL) {
                 uint32_t data_index = json_object_get_int(json_data_index);
                 p_mesh_info->mesh_info.vertex_count = ply_meshes[data_index].vertex_count;

@@ -29,7 +29,7 @@
       },
       {
          "mesh":{
-            "data_index":1
+            "index":1
          },
          "transform":{
             "position":[
@@ -75,7 +75,7 @@
       },
       {
          "mesh":{
-            "data_index":0,
+            "index":0,
             "flags":"MESH_SETUP_STATIC_MESH"
          },
          "transform":{
@@ -109,7 +109,7 @@
          "transform": {
          },
          "mesh": {
-            "data_index": 2,
+            "index": 2,
             "flags": "MESH_SETUP_STATIC_MESH"
          },
          "material": {
