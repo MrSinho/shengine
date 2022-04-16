@@ -3,20 +3,20 @@ cmake_minimum_required(VERSION 3.0)
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 option(SH_SIMULATION_NAME emptytarget)
-project(${SH_SIMULATION_NAME} C)
+project(${SH_SIMULATION_NAME})
 
 option(SH_SIMULATION_BINARY_TYPE "EXECUTABLE")
 if("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "STATIC")
     add_library(${SH_SIMULATION_NAME} STATIC 
-    C:/Users/sino3/Desktop/GitHub/SH-Engine/simulations/simulation-sample/src/rotator.c
+    C:/Users/sino3/Desktop/GitHub/SH-Engine/simulations//simulation-sample/src/rotator.c
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "SHARED")
     add_library(${SH_SIMULATION_NAME} SHARED 
-    C:/Users/sino3/Desktop/GitHub/SH-Engine/simulations/simulation-sample/src/rotator.c
+    C:/Users/sino3/Desktop/GitHub/SH-Engine/simulations//simulation-sample/src/rotator.c
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
     add_executable(${SH_SIMULATION_NAME}  
-    C:/Users/sino3/Desktop/GitHub/SH-Engine/simulations/simulation-sample/src/rotator.c
+    C:/Users/sino3/Desktop/GitHub/SH-Engine/simulations//simulation-sample/src/rotator.c
 )
 endif()
 target_include_directories(${SH_SIMULATION_NAME} PUBLIC 
