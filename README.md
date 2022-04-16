@@ -28,8 +28,6 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Double/triple buffering
  - Textures
  - Audio
- - Import/export scene binaries
- - Edit shortcuts when navigating in the window
 
 ## Prerequisites
 
