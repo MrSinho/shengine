@@ -26,7 +26,7 @@ extern "C" {
 #include <stdio.h>
 #endif
 
-#include <plyimporter/PlyImporter.h>
+#include <plyimporter/plyImporter.h>
 
 #ifdef _MSC_VER
 #pragma warning (disable: 26451 6386 4996)
