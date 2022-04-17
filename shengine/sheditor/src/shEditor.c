@@ -69,7 +69,7 @@ int main() {
 	while (shIsWindowActive(engine.window.window)) {
 		shUpdateWindow(&engine);
 
-		double input_dtime = engine.time.now - input_last_time;
+		input_dtime = engine.time.now - input_last_time;
 		if (input_dtime >= 2.0) {
 			if (shIsKeyPressed(engine.window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(engine.window, SH_KEY_R)) {
 				input_last_time = engine.time.now;
