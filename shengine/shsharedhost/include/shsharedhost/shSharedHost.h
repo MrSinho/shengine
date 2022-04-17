@@ -12,6 +12,7 @@ extern "C" {
 #define shSharedLoadSymbol GetProcAddress
 #define shSharedRelease FreeLibrary
 #else
+#include <dlfcn.h>
 #define shLoadShared(path) dlopen(path, RTLD_LAZY) 
 #define shSharedLoadSymbol dlsym
 #define shSharedRelease dlclose
