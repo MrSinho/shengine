@@ -57,3 +57,4 @@ simulations/build/*
 .vscode/*
 .vs/*
 simulations/CMakeLists.txt
+simulations/CMakeLists.txt

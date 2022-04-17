@@ -57,31 +57,40 @@ int main() {
 
 	shSceneInit(&engine);
 
-	ShSimulationHandle simulation = { 0 };	
+	ShSimulationHandle simulation = { 0 };
 	shLoadSimulation(simulation_descriptor.path, &engine, &simulation);
 	shSimulationLoadSymbols(&simulation);
 
 	shSimulationStart(&simulation, &engine);
 
+	double input_dtime = 0.0;
+	double input_last_time = 0.0;
+
 	while (shIsWindowActive(engine.window.window)) {
 		shUpdateWindow(&engine);
-		
-		//if (shListenFd(&materials_descriptor)) {
-		//	shReloadMaterials(&engine.core, materials_descriptor, &material_count, &p_materials);
-		//	shReloadScene(&engine, 0, scene_descriptor, p_materials);
-		//	shReloadPhysicsWorld(physics_descriptor, &engine.scene, &engine.physics_host);
-		//	shSetTime(0.0, &engine.time);
-		//}
-		//if (shListenFd(&scene_descriptor) || shListenFd(&physics_descriptor)) {
-		//	shReloadScene(&engine, 0, scene_descriptor, p_materials);
-		//	shReloadPhysicsWorld(physics_descriptor, &engine.scene, &engine.physics_host);
-		//	shSetTime(0.0, &engine.time);
-		//}
+
+		double input_dtime = engine.time.now - input_last_time;
+		if (input_dtime >= 2.0) {
+			if (shIsKeyPressed(engine.window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(engine.window, SH_KEY_R)) {
+				input_last_time = engine.time.now;
+				shMaterialsRelease(&engine.core, &engine.material_count, &engine.p_materials);
+				shLoadMaterials(&engine.core, materials_descriptor.path, &engine.material_count, &engine.p_materials);
+				shSceneRelease(&engine);
+				shLoadScene(scene_descriptor.path, &engine.p_materials, &engine.scene);
+				shSceneInit(&engine);
+				shSetTime(0.0, &engine.time);
+				shLoadSimulation(simulation_descriptor.path, &engine, &simulation);
+				shSimulationLoadSymbols(&simulation);
+				shSimulationStart(&simulation, &engine);
+				input_last_time = 0.0;
+			}
+		}
+
 		shFrameReset(&engine.core);
 
 		uint32_t image_index = 0;
 		shFrameBegin(&engine.core, &image_index);
-		
+
 		shSimulationUpdate(&simulation, &engine);
 
 		shSceneUpdate(&engine);
