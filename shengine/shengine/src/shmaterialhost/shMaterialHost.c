@@ -5,7 +5,7 @@ extern "C" {
 #include "shecs/shMaterial.h"
 #include "shengine/shEngine.h"
 
-#include "shvulkan/shVkDrawloop.h"
+#include "shvulkan/shVkDrawLoop.h"
 
 uint32_t shGetUniformOffset(ShMaterialHost* p_material, const uint32_t uniform_idx) {
 	uint32_t uniform_offset = 0;
