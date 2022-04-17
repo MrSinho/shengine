@@ -38,6 +38,7 @@ typedef struct ShMaterialHost {
 	ShMaterialClient					material_clients[SH_ECS_MAX_ENTITIES];
 	ShMaterialHostExtensionStructures	extensions;
 	void*								push_constant[128 / sizeof(void*)];
+	uint32_t							uniform_total_size;
 	void*								uniform_buffers[64000 / sizeof(void*) * 32];
 	uint8_t								update_parameters;
 } ShMaterialHost;

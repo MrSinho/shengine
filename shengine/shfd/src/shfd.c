@@ -21,6 +21,7 @@ extern "C" {
 #include <string.h>
 
 #include <shvulkan/shVkCore.h>
+#include <shvulkan/shVkCheck.h>
 
 #ifndef NDEBUG
 #include <stdio.h>
@@ -199,7 +200,8 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
             fragment_path,
             &fragment_shader_size
         );
-        assert(vertex_code != NULL && fragment_code != NULL);
+        shVkAssert(vertex_code != NULL, "invalid vertex shader");
+        shVkAssert(fragment_code!= NULL, "invalid fragment shader");
         shCreateShaderModule(p_core->device, vertex_shader_size, vertex_code, &pipeline);
         shCreateShaderModule(p_core->device, fragment_shader_size, fragment_code, &pipeline);
         shCreateShaderStage(p_core->device, pipeline.shader_modules[0], VK_SHADER_STAGE_VERTEX_BIT, &pipeline);

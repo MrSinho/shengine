@@ -3,17 +3,17 @@ extern "C" {
 #endif//__cplusplus
 
 #include <shsharedhost/shSharedHost.h>
+
 #include <shfd/shFile.h>
+#include <json.h>
 
 #include <string.h>
-
-#include <json.h>
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4996)
 #endif//_MSC_VER
 
-void shLoadSimulation(const char* path, ShEngine* p_engine, ShSimulationHandle* p_simulation) {
+void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_simulation) {
     assert(path != NULL && p_engine != NULL && p_simulation != NULL);
 
     char* buffer = (char*)shReadText(path, NULL);

@@ -39,6 +39,8 @@ target_link_libraries(shengine PUBLIC
     glfw
     shvulkan
     cglm
+    shsharedhost
+    shfd
 )
 set_target_properties(shengine PROPERTIES 
 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
@@ -70,8 +72,6 @@ function(build_sheditor)
 add_executable(sheditor sheditor/src/shEditor.c)
 target_link_libraries(sheditor PUBLIC 
     shengine
-    shfd
-    shsharedhost
 )
 target_include_directories(sheditor PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/sheditor/include
@@ -91,7 +91,7 @@ shsharedhost/src/shSharedHost.c
 target_include_directories(shsharedhost PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/shsharedhost/include
 )
-target_link_libraries(shsharedhost PUBLIC shengine shfd)
+target_link_libraries(shsharedhost PUBLIC shfd)
 endfunction()
 
 

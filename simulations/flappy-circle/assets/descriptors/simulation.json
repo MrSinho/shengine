@@ -1,0 +1,6 @@
+{
+    "run": 1,
+    "name": "flappy-circle",
+    "start": "flappy_circle_start",
+    "update": "flappy_circle_update"
+}

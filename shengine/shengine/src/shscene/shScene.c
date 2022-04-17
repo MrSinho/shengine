@@ -73,6 +73,7 @@ void shSceneInit(ShEngine* p_engine) {
 				uint32_t uniform_offset = shGetUniformOffset(p_material, uniform_idx);
 				shWriteUniformBufferMemory(&p_engine->core, uniform_idx, &((char*)p_material->uniform_buffers)[uniform_offset], &p_material->pipeline);
 			}
+			p_material->uniform_total_size += p_material->pipeline.uniform_buffers_size[uniform_idx];
 		}
 	}
 }
@@ -206,10 +207,13 @@ void shSceneUpdate(ShEngine* p_engine) {
 			if (shEntityInMaterial(entity, p_material)) {
 				if (p_mesh != NULL) {
 					if (p_mesh->mesh_info.vertex_count != 0) {
-
+						//COPY ALL ENTITY UNIFORM PARAMETERS
+						memcpy(p_material->uniform_buffers, p_material->material_clients[entity].p_uniform_parameters, p_material->uniform_total_size); 
+						
 						//dynamic uniforms
 						for (uint32_t uniform_idx = 0; uniform_idx < p_material->pipeline.uniform_count; uniform_idx++) {//WRITE AND BIND DYNAMIC UNIFORMS 
 							if (p_material->pipeline.dynamic_uniforms[uniform_idx]) {
+
 
 								//DYNAMIC EXTENSION STRUCTURES
 								if (p_transform != NULL) {//TRANSFORM

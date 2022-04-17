@@ -5,6 +5,10 @@
 extern "C" {
 #endif//__cplusplus
 
+#ifdef _MSC_VER
+#pragma warning (disable: 4005 4996)
+#endif//_MSC_VER
+
 #ifdef _WIN32
 #include <windows.h>
 #include <libloaderapi.h>
@@ -19,15 +23,16 @@ extern "C" {
 #endif//_WIN32
 
 #include <stdint.h>
-#include <shengine/shEngine.h>
+
+#include <assert.h>
 
 typedef void* ShSharedHandle;
-typedef void (ShEntityFunc) (ShEngine*, uint32_t);
+typedef void (ShEntityFunc) (void*, uint32_t);
 
-static void shSharedSceneRun(ShEntityFunc* p_func, ShEngine* p_engine) {
+static void shSharedSceneRun(ShEntityFunc* p_func, void* p_engine, const uint32_t entity_count) {
 	assert(p_engine != NULL);
 	if (p_func != NULL) {
-		for (uint32_t i = 0; i < p_engine->scene.entity_count; i++) {
+		for (uint32_t i = 0; i < entity_count; i++) {
 			p_func(p_engine, i);
 		}
 	}
@@ -42,7 +47,7 @@ typedef struct ShSimulationHandle {
 	ShEntityFunc*	p_update;
 } ShSimulationHandle;
 
-extern void shLoadSimulation(const char* path, ShEngine* p_engine, ShSimulationHandle* p_simulation);
+extern void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_simulation);
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4113)
@@ -54,11 +59,11 @@ static void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
 	p_simulation->p_update	= shSharedLoadSymbol(p_simulation->shared, p_simulation->s_update);
 }
 
-#define shSimulationStart(p_simulation, p_engine)\
-	shSharedSceneRun((p_simulation)->p_start, p_engine)
+#define shSimulationStart(p_simulation, p_engine, entity_count)\
+	shSharedSceneRun((p_simulation)->p_start, p_engine, entity_count)
 
-#define shSimulationUpdate(p_simulation, p_engine)\
-	shSharedSceneRun((p_simulation)->p_update, p_engine)
+#define shSimulationUpdate(p_simulation, p_engine, entity_count)\
+	shSharedSceneRun((p_simulation)->p_update, p_engine, entity_count)
 
 #ifdef __cplusplus
 }

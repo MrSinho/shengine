@@ -17,18 +17,35 @@ extern "C" {
 
 #include "shscene/shScene.h"
 
+#include <shfd/shFd.h>
+
+#include "shsharedhost/shSharedHost.h"
+
 #include <stdint.h>
 
 typedef struct ShEngine {
-    ShVkCore        core;
-    ShWindow        window;
-    ShTime          time;
-    ShScene         scene;
-    uint32_t        scene_count;
-	ShMaterialHost*	p_materials;
-	uint32_t		material_count;
-    ShPhysicsHost   physics_host;
+    ShVkCore            core;
+    ShWindow            window;
+    ShTime              time;
+    ShFd                materials_descriptor;
+    ShFd                scene_descriptor;
+    ShFd                simulation_descriptor;
+    ShScene             scene;
+    uint32_t            scene_count;
+	ShMaterialHost*	    p_materials;
+    ShSimulationHandle  simulation_host;
+    uint32_t		    material_count;
+    ShPhysicsHost       physics_host;
 }ShEngine;
+
+static void shResetEngineState(ShEngine* p_engine) {
+    shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
+    shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
+    shSceneRelease(p_engine);
+    shLoadScene(p_engine->scene_descriptor.path, &p_engine->p_materials, &p_engine->scene);
+    shSceneInit(p_engine);
+    shSimulationStart(&p_engine->simulation_host, p_engine, p_engine->scene.entity_count);
+}
 
 //static void shReloadMaterials(ShVkCore* p_core, const ShFd mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {
 //	shMaterialsRelease(p_core, p_mat_info_count, pp_materials);

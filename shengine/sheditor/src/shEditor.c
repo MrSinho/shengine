@@ -40,28 +40,26 @@ int main() {
 	shSetSyncObjects(&engine.core);
 	shCreateGraphicsCommandBuffer(&engine.core);
 
-	ShFd materials_descriptor = { 0 };
-	ShFd scene_descriptor = { 0 };
-	ShFd simulation_descriptor = { 0 };
+	
 	//shInitDescriptor(&materials_descriptor);
 	//shInitDescriptor(&scene_descriptor);
 	//shInitDescriptor(&simulation_descriptor);
-	shMakeAssetsPath("/descriptors/materials.json", materials_descriptor.path);
-	shMakeAssetsPath("/descriptors/scene.json", scene_descriptor.path);
-	shMakeAssetsPath("/descriptors/simulation.json", simulation_descriptor.path);
+	shMakeAssetsPath("/descriptors/materials.json", engine.materials_descriptor.path);
+	shMakeAssetsPath("/descriptors/scene.json", engine.scene_descriptor.path);
+	shMakeAssetsPath("/descriptors/simulation.json", engine.simulation_descriptor.path);
 
-	shLoadMaterials(&engine.core, materials_descriptor.path, &engine.material_count, &engine.p_materials);
+	shLoadMaterials(&engine.core, engine.materials_descriptor.path, &engine.material_count, &engine.p_materials);
 
 	shCreateScene(&engine.scene);
-	shLoadScene(scene_descriptor.path, &engine.p_materials, &engine.scene);
+	shLoadScene(engine.scene_descriptor.path, &engine.p_materials, &engine.scene);
 
 	shSceneInit(&engine);
 
-	ShSimulationHandle simulation = { 0 };
-	shLoadSimulation(simulation_descriptor.path, &engine, &simulation);
-	shSimulationLoadSymbols(&simulation);
+	//ShSimulationHandle simulation = { 0 };
+	shLoadSimulation(engine.simulation_descriptor.path, &engine, &engine.simulation_host);
+	shSimulationLoadSymbols(&engine.simulation_host);
 
-	shSimulationStart(&simulation, &engine);
+	shSimulationStart(&engine.simulation_host, &engine, engine.scene.entity_count);
 
 	double input_dtime = 0.0;
 	double input_last_time = 0.0;
@@ -73,15 +71,8 @@ int main() {
 		if (input_dtime >= 2.0) {
 			if (shIsKeyPressed(engine.window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(engine.window, SH_KEY_R)) {
 				input_last_time = engine.time.now;
-				shMaterialsRelease(&engine.core, &engine.material_count, &engine.p_materials);
-				shLoadMaterials(&engine.core, materials_descriptor.path, &engine.material_count, &engine.p_materials);
-				shSceneRelease(&engine);
-				shLoadScene(scene_descriptor.path, &engine.p_materials, &engine.scene);
-				shSceneInit(&engine);
 				shSetTime(0.0, &engine.time);
-				shLoadSimulation(simulation_descriptor.path, &engine, &simulation);
-				shSimulationLoadSymbols(&simulation);
-				shSimulationStart(&simulation, &engine);
+				shResetEngineState(&engine);
 				input_last_time = 0.0;
 			}
 		}
@@ -91,7 +82,7 @@ int main() {
 		uint32_t image_index = 0;
 		shFrameBegin(&engine.core, &image_index);
 
-		shSimulationUpdate(&simulation, &engine);
+		shSimulationUpdate(&engine.simulation_host, &engine, engine.scene.entity_count);
 
 		shSceneUpdate(&engine);
 
