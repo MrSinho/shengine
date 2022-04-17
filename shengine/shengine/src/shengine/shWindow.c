@@ -40,10 +40,7 @@ void shCreateWindowSurface(ShEngine* p_engine) {
 
 	p_engine->core.surface.width = p_engine->window.width;
 	p_engine->core.surface.height = p_engine->window.height;
-	shCheckVkResult(
-		glfwCreateWindowSurface(p_engine->core.instance, p_engine->window.window, NULL, &p_engine->core.surface.surface),
-		"error creating window surface"
-	);
+	glfwCreateWindowSurface(p_engine->core.instance, p_engine->window.window, NULL, &p_engine->core.surface.surface);
 }
 
 void shUpdateInput(ShWindow* p_window) {
