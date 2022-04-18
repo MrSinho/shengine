@@ -4,12 +4,11 @@
 
 [Current features](#current-features)
 * [To do](#to-do)
-* [Bugs and issues](#bugs-and-issues)
 
 [Build from source](#build-from-source)
 * [Engine targets only](#engine-targets-only)
-* [simulation-sample](#gaiawritevertexbuffers)
-* [flappy-circle](#gaiaengineshutdown)
+* [simulation-sample](#simulation-sample)
+* [flappy-circle](#flappy-circle)
 
 ---
 
