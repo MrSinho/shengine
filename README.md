@@ -19,7 +19,7 @@
 
 The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
-![coulomb](saved/pictures/coulomb.png)
+![coulomb](saved/pictures/flappy-circle.png)
 
 # Current features:
  - Entity Component System using [ShECS](https://github.com/MrSinho/ShECS) by MrSinho
