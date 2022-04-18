@@ -6,7 +6,7 @@ def main():#example call: python export_simulation.py simulation-sample SHARED;;
     
     python_src_dir = str(pathlib.Path(__file__).parent.resolve().as_posix())
 
-    simulation_path = python_src_dir + "/simulations/"
+    simulation_path = python_src_dir + "/simulations"
     if len(sys.argv) == 4:
         simulation_path = python_src_dir + "/" + str(sys.argv[3])
 

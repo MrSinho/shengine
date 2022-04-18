@@ -277,7 +277,7 @@ void shReadUniformParameters(json_object* json_parameters, const uint32_t entity
             memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[uniform_offset], &value, 4);
         }
         if (strcmp(s_type, "int") == 0) {
-            uint32_t value = (uint32_t)json_object_get_int(json_object_array_get_idx(json_parameters, j + 1));
+            int value = (uint32_t)json_object_get_int(json_object_array_get_idx(json_parameters, j + 1));
             memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[uniform_offset], &value, 4);
         }
         if (strcmp(s_type, "transform") == 0) { //EXTENSION STRUCTURES

@@ -14,7 +14,7 @@
                 "nc":0.1,
                 "fc":500,
                 "speed":15,
-                "flags": "CAMERA_SETUP_STATIC"
+                "flags": "CAMERA_SETUP_FREE_FLIGHT"
             },
             "transform": {
                 "position": [

@@ -1,47 +1,83 @@
 {
    "meshes":[
-      {
-         "path":"meshes/stanfordLucy.ply"
-      },
-      {
-         "path":"meshes/diorama.ply"
-      },
-      {
-         "path":"meshes/cube.ply"
-      }
+      { "path":"meshes/stanfordLucy.ply" },
+      { "path":"meshes/diorama.ply" },
+      { "path":"meshes/cube.ply" }
    ],
    "entities":[
       {
-         "transform":{
-            "position":[
-               0.0,
-               0.0,
-               2.5
-            ]
-         },
+         "transform":{ "position": [ 0.0, 0.0, 2.5 ] },
          "camera":{
-            "fov":45,
-            "nc":0.1,
-            "fc":150,
-            "speed":5,
+            "fov": 45,
+            "nc": 0.1,
+            "fc": 150,
+            "speed": 5,
             "flags":"CAMERA_SETUP_FREE_FLIGHT"
          }
       },
       {
          "mesh":{
-            "index":1
+            "index":0,
+            "flags":"MESH_SETUP_STATIC_MESH"
          },
          "transform":{
             "position":[
                0.0,
-               1.0,
+               0.05,
                0.0
             ],
             "scale":[
-               2.0,
-               2.0,
-               2.0
+               0.7,
+               0.7,
+               0.7
             ]
+         },
+         "identity":{ "name":"rotator" },
+         "material":{
+            "index":0,
+            "uniform_parameters":[
+               [
+                  "transform"
+               ]
+            ]
+         }
+      },
+      {
+         "identity": { "name": "circle" },
+         "transform": {},
+         "mesh": {
+            "index": 2,
+            "flags": "MESH_SETUP_STATIC_MESH"
+         },
+         "material": {
+            "index": 2,
+            "uniform_parameters": [
+               [
+                  "transform"
+               ],
+               [
+                  "float", 0.0,
+                  "float", 0.4,
+                  "float", 1.0,
+                  "float", 1.0,
+
+                  "float", 0.5,
+                  "float", 0.0,
+                  "float", 1.0,
+                  
+                  "float", 0.25
+               ]
+            ]
+         }
+      },
+      {
+         "identity": {
+            "name": "diorama"
+         },
+         "mesh":{ "index": 1 },
+         "transform":{
+            "position":[ 0.0, 1.0, 0.0 ],
+            "scale":[ 2.0, 2.0, 2.0 ]
          },
          "material":{
             "index":1,
@@ -69,66 +105,6 @@
                   "float", 0.5,
                   "float", 1.0,
                   "float", 1.0
-               ]
-            ]
-         }
-      },
-      {
-         "mesh":{
-            "index":0,
-            "flags":"MESH_SETUP_STATIC_MESH"
-         },
-         "transform":{
-            "position":[
-               0.0,
-               0.05,
-               0.0
-            ],
-            "scale":[
-               0.7,
-               0.7,
-               0.7
-            ]
-         },
-         "identity":{
-            "name":"rotator"
-         },
-         "material":{
-            "index":0,
-            "uniform_parameters":[
-               [
-                  "transform"
-               ]
-            ]
-         }
-      },
-      {
-         "identity": {
-            "name": "circle"
-         },
-         "transform": {
-         },
-         "mesh": {
-            "index": 2,
-            "flags": "MESH_SETUP_STATIC_MESH"
-         },
-         "material": {
-            "index": 2,
-            "uniform_parameters": [
-               [
-                  "transform"
-               ],
-               [
-                  "float", 0.0,
-                  "float", 0.4,
-                  "float", 1.0,
-                  "float", 1.0,
-
-                  "float", 0.0,
-                  "float", 0.2,
-                  "float", 0.5,
-                  
-                  "float", 0.25
                ]
             ]
          }

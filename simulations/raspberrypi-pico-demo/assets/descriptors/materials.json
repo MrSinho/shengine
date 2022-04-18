@@ -1,0 +1,56 @@
+{
+    "materials": [   
+      {
+        "vertex_shader": "/shaders/bin/Mesh.vert.spv",
+        "fragment_shader": "/shaders/bin/Mesh.frag.spv",
+        "push_constants_size": 128,
+        "push_constants_stage": "SHADER_STAGE_VERTEX",
+        "fixed_states": {
+          "flags": [
+            "FIXED_STATES_POLYGON_MODE_FACE"
+          ],
+          "vertex_inputs": [
+            {
+              "location": 0,
+              "format": "VEC3_SIGNED_FLOAT",
+              "offset": 0,
+              "size": 12
+            },
+            {
+              "location": 1,
+              "format": "VEC3_SIGNED_FLOAT",
+              "offset": 12,
+              "size": 12
+            },
+            {
+              "location": 2,
+              "format": "VEC2_SIGNED_FLOAT",
+              "offset": 24,
+              "size": 8
+            }
+          ]
+        },
+        "uniform_buffers": [ 
+          {
+            "set": 0,
+            "size": 64,
+            "stage": "SHADER_STAGE_VERTEX",
+            "dynamic": 1
+          },
+          {
+            "set": 1,
+            "size": 16,
+            "stage": "SHADER_STAGE_FRAGMENT",
+            "dynamic": 1
+          },
+          {
+              "set": 2,
+              "size": 128,
+              "stage": "SHADER_STAGE_FRAGMENT",
+              "dynamic": 0
+          }
+        ]
+      }
+    ]
+  }
+  

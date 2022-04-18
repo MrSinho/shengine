@@ -8,15 +8,15 @@ project(${SH_SIMULATION_NAME})
 option(SH_SIMULATION_BINARY_TYPE "EXECUTABLE")
 if("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "STATIC")
     add_library(${SH_SIMULATION_NAME} STATIC 
-    C:/Users/sino3/Desktop/GitHub/shengine/simulations//flappy-circle/src/flappy-circle.c
+    C:/Users/sino3/Desktop/GitHub/shengine/simulations/simulation-sample/src/rotator.c
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "SHARED")
     add_library(${SH_SIMULATION_NAME} SHARED 
-    C:/Users/sino3/Desktop/GitHub/shengine/simulations//flappy-circle/src/flappy-circle.c
+    C:/Users/sino3/Desktop/GitHub/shengine/simulations/simulation-sample/src/rotator.c
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
     add_executable(${SH_SIMULATION_NAME}  
-    C:/Users/sino3/Desktop/GitHub/shengine/simulations//flappy-circle/src/flappy-circle.c
+    C:/Users/sino3/Desktop/GitHub/shengine/simulations/simulation-sample/src/rotator.c
 )
 endif()
 target_include_directories(${SH_SIMULATION_NAME} PUBLIC 

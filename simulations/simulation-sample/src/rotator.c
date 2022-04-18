@@ -34,14 +34,13 @@ void SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine, const uint3
         }
         if (strcmp(p_identity->name, "circle") == 0) {
             ShMaterialHost* p_material = &p_engine->p_materials[2];
-            float* p_red = (float*)&((char*)p_material->uniform_buffers)[80];
+            float* p_red = (float*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[80];
             if (shIsKeyPressed(p_engine->window, SH_KEY_Z)) {
                 *p_red += 1.0f * (float)p_engine->time.delta_time;
             }
             else if (shIsKeyPressed(p_engine->window, SH_KEY_X)) {
                 *p_red -= 1.0f * (float)p_engine->time.delta_time;
             }
-            p_material->update_parameters |= SH_UPDATE_UNIFORM_PARAMETERS;
         }
     }
     
