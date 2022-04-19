@@ -12,7 +12,6 @@ add_subdirectory(../externals [EXCLUDE_FROM_ALL])
 
 #OPTIONS
 option(SH_ENGINE_BUILD_EDITOR OFF)
-option(SH_ENGINE_USE_SHFD OFF)
 option(SH_ENGINE_BUILD_SHARED_HOST OFF)
 option(SH_ENGINE_ASSETS_PATH OFF)
 
@@ -97,21 +96,11 @@ endfunction()
 
 
 function(main)
-
+build_shfd()
+build_shshared_host()
 build_shengine()
 
-if(SH_ENGINE_BUILD_SHFD)
-build_shfd()
-endif(SH_ENGINE_BUILD_SHFD)
-
-if(SH_ENGINE_BUILD_SHARED_HOST)
-build_shfd()
-build_shshared_host()
-endif(SH_ENGINE_BUILD_SHARED_HOST)
-
 if(SH_ENGINE_BUILD_EDITOR)
-build_shfd()
-build_shshared_host()
 build_sheditor()
 endif(SH_ENGINE_BUILD_EDITOR)
 
