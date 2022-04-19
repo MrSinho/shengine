@@ -10,3 +10,12 @@
 [submodule "externals/shserial"]
 	path = externals/shserial
 	url = https://github.com/MrSinho/shserial.git
+[submodule "externals/shecs"]
+	path = externals/shecs
+	url = https://github.com/mrsinho/shecs.git
+[submodule "externals/shvulkan"]
+	path = externals/shvulkan
+	url = https://github.com/mrsinho/shvulkan.git
+[submodule "externals/plyimporter"]
+	path = externals/plyimporter
+	url = https://github.com/mrsinho/plyimporter.git
