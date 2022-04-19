@@ -66,7 +66,7 @@ cmake --build .
 
 ## simulation-sample
 
-Just a random scene
+Just a random scene.
 
 ![simulation-sample](saved/pictures/simulation-sample.png)
 
@@ -80,7 +80,7 @@ cmake --build .
 
 ## flappy-circle
 
-A Flappy Bird clone in a circular map.
+A Flappy Bird clone in a circular map. Press `SPACE` to let it survive.
 
 ![flappy-circle](saved/pictures/flappy-circle.png)
 
@@ -94,6 +94,8 @@ cmake --build .
 
 ## serial-demo
 
+Any variation of analog input for the Raspberry Pi Pico affects the lighting in the scene.
+
 ![serial-demo](saved/pictures/serial-demo.png)
 
 ```batch
@@ -102,6 +104,13 @@ cd build
 cmake --build .
 ```
 Note: because the simulation does not include multithreading, reading serial data blocks all gpu calls.
+
+## Pinout for the Raspberry Pi pico and UF2 binary
+It's connected to a `1.5V` solar panel (it could be a potentiometer or any analogic sensor). The negative charged cable (in red) is connected to `ADC input 0`, `GPIO 26`. The program to run on the Raspberry Pi Pico is located at [simulations/serial-demo/pico-bin/shengine_sample_raw.uf2](simulations/serial-demo/pico-bin/shengine_sample_raw.uf2).
+
+You should correct the serial port name in case the one at [simulations/serial-demo/src/serial-demo.c](simulations/serial-demo/src/serial-demo.c) doesn't match.
+
+![serial-pinout](saved/pictures/serial-demo-pinout.jpg)
 
 ---
 
