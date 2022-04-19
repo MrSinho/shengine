@@ -4,21 +4,9 @@
 [submodule "externals/cglm"]
 	path = externals/cglm
 	url = https://github.com/recp/cglm.git
-[submodule "externals/plyimporter"]
-	path = externals/plyimporter
-	url = https://github.com/MrSinho/plyimporter.git
-[submodule "externals/shecs"]
-	path = externals/shecs
-	url = https://github.com/MrSinho/shecs.git
 [submodule "externals/json-c"]
 	path = externals/json-c
 	url = https://github.com/json-c/json-c.git
-[submodule "externals/stb"]
-	path = externals/stb
-	url = https://github.com/nothings/stb.git
-[submodule "externals/shvulkan"]
-	path = externals/shvulkan
-	url = https://github.com/MrSinho/shvulkan.git
 [submodule "externals/shserial"]
 	path = externals/shserial
 	url = https://github.com/MrSinho/shserial.git
