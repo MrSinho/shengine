@@ -2,5 +2,6 @@
     "run": 1,
     "name": "simulation-sample",
     "start": "simulation_start",
-    "update": "simulation_update"
+    "update": "simulation_update",
+    "close": "simulation_close"
 }

@@ -35,7 +35,7 @@ void bird_input(ShEngine* p_engine, const uint32_t bird_entity) {
 
 	p_bird->y_force -= GRAVITY_FORCE * delta_time;
 
-	if (p_transform->position[1] >= 40 || p_transform->position[1] <= -40) { //nice collision detection dude
+	if (p_transform->position[1] >= 40 || p_transform->position[1] <= -40.0) { //nice collision detection dude
 		shResetEngineState(p_engine);
 	}
 }
@@ -65,4 +65,8 @@ void SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine, const ui
 		memcpy(p_transform, shGetShTransform(p_scene, BIRD_ENTITY), sizeof(ShTransform));
 	}
 
+}
+
+void SH_ENGINE_EXPORT_FUNCTION flappy_circle_close(ShEngine* p_engine, const uint32_t entity) {
+	return;
 }

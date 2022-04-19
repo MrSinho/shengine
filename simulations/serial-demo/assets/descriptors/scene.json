@@ -1,0 +1,116 @@
+{
+    "meshes": [
+        { "path": "/meshes/pico-green.ply" },
+        { "path": "/meshes/pico-gold.ply" },
+        { "path": "/meshes/pico-black.ply" },
+        { "path": "/meshes/pico-white.ply" },
+        { "path": "/meshes/skysphere.ply" }
+    ],
+    "entities": [
+        {
+            "camera": {
+                "fov":45,
+                "nc":0.001,
+                "fc":500,
+                "speed":0.2,
+                "flags": "CAMERA_SETUP_FREE_FLIGHT"
+            },
+            "transform": {
+                "position": [
+                    0.0, 0.0, 0.3
+                ]
+            }
+        },
+        {
+            "MAIN BOARD": 0,
+            "mesh": {
+                "index": 0
+            },
+            "transform": {},
+            "material": {
+                "index": 0,
+                "uniform_parameters": [
+                    [ "transform" ],
+                    [
+                        "float", 0.0, "float", 0.5, "float", 0.0, "float", 1.0
+                    ],
+                    [ "float", 0.0 ]
+                ]
+            }
+        },
+        {
+            "GOLD": 0,
+            "mesh": {
+                "index": 1
+            },
+            "transform": {},
+            "material": {
+                "index": 0,
+                "uniform_parameters": [
+                    [ "transform" ],
+                    [
+                        "float", 1.0, "float", 0.7, "float", 0.0, "float", 1.0
+                    ],
+                    [ "float", 0.0 ]
+                ]
+            }
+        },
+        {
+            "BLACK": 0,
+            "mesh": {
+                "index": 2
+            },
+            "transform": {},
+            "material": {
+                "index": 0,
+                "uniform_parameters": [
+                    [ "transform" ],
+                    [
+                        "float", 0.15, "float", 0.1, "float", 0.1, "float", 1.0
+                    ],
+                    [ "float", 0.0 ]
+                ]
+            }
+        },
+        {
+            "WHITE": 0,
+            "mesh": {
+                "index": 3
+            },
+            "transform": {},
+            "material": {
+                "index": 0,
+                "uniform_parameters": [
+                    [ "transform" ],
+                    [
+                        "float", 0.8, "float", 0.8, "float", 0.8, "float", 1.0
+                    ],
+                    [ "float", 0.0 ]
+                ]
+            }
+        },
+        {
+            "SKYSPHERE": 0,
+            "mesh": {
+                "index": 4
+            },
+            "transform": {},
+            "material": {
+                "index": 0,
+                "uniform_parameters": [
+                    [ "transform" ],
+                    [
+                        "float", 0.0, "float", 1.0, "float", 1.0, "float", 1.0
+                    ],
+                    [ 
+                        "float", 0.0, "float",-0.2, "float", 0.0, "float", 1.0,
+                        
+                        "float", 1.0, "float", 1.0, "float", 1.0, "float", 1.0,
+                        
+                        "float", 0.5, "float", 0.0, "float", 0.0, "float", 1.0 
+                    ]
+                ]
+            }
+        }
+    ]
+}

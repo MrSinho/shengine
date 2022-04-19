@@ -474,7 +474,7 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
 #endif
     }
     
-    free(ply_meshes);
+    if (ply_meshes != NULL) { free(ply_meshes); }
     free(buffer);
 }
 

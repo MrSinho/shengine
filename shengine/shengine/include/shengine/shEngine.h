@@ -39,6 +39,7 @@ typedef struct ShEngine {
 }ShEngine;
 
 static void shResetEngineState(ShEngine* p_engine) {
+    shSimulationClose(&p_engine->simulation_host, p_engine, p_engine->scene.entity_count);
     shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
     shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
     shSceneRelease(p_engine);

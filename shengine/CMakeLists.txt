@@ -33,7 +33,7 @@ add_library(shengine
 target_include_directories(shengine PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/shengine/include
     ${CMAKE_CURRENT_SOURCE_DIR}/shecs/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../externals/ShECS/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../externals/shecs/include
 )
 target_link_libraries(shengine PUBLIC
     glfw
@@ -41,6 +41,7 @@ target_link_libraries(shengine PUBLIC
     cglm
     shsharedhost
     shfd
+    shserial
 )
 set_target_properties(shengine PROPERTIES 
 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
@@ -56,7 +57,7 @@ add_library(shfd STATIC
     shfd/src/shfd.c
 )
 target_include_directories(shfd PUBLIC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../externals/ShECS/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../externals/shecs/include
     ${CMAKE_CURRENT_SOURCE_DIR}/shecs/include
     ${CMAKE_CURRENT_SOURCE_DIR}/shfd/include
 )

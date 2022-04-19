@@ -1,6 +1,0 @@
-{
-    "run": 1,
-    "name": "raspberrypi-pico-demo",
-    "start": "pico_start",
-    "update": "pico_update"
-}

@@ -1,0 +1,7 @@
+{
+    "run": 1,
+    "name": "serial-demo",
+    "start": "serial_start",
+    "update": "serial_update",
+    "close": "serial_close"
+}

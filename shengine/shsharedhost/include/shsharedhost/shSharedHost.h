@@ -43,8 +43,10 @@ typedef struct ShSimulationHandle {
 	uint8_t			run;
 	char*			s_start;
 	char*			s_update;
+	char*			s_close;
 	ShEntityFunc*	p_start;
 	ShEntityFunc*	p_update;
+	ShEntityFunc*	p_close;
 } ShSimulationHandle;
 
 extern void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_simulation);
@@ -57,6 +59,7 @@ static void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
 	assert(p_simulation != NULL);
 	p_simulation->p_start	= shSharedLoadSymbol(p_simulation->shared, p_simulation->s_start);
 	p_simulation->p_update	= shSharedLoadSymbol(p_simulation->shared, p_simulation->s_update);
+	p_simulation->p_close	= shSharedLoadSymbol(p_simulation->shared, p_simulation->s_close);
 }
 
 #define shSimulationStart(p_simulation, p_engine, entity_count)\
@@ -64,6 +67,9 @@ static void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
 
 #define shSimulationUpdate(p_simulation, p_engine, entity_count)\
 	shSharedSceneRun((p_simulation)->p_update, p_engine, entity_count)
+
+#define shSimulationClose(p_simulation, p_engine, entity_count)\
+	shSharedSceneRun((p_simulation)->p_close, p_engine, entity_count)
 
 #ifdef __cplusplus
 }

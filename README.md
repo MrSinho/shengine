@@ -9,6 +9,7 @@
 * [Engine targets only](#engine-targets-only)
 * [simulation-sample](#simulation-sample)
 * [flappy-circle](#flappy-circle)
+* [serial-demo](#serial-demo)
 
 ---
 
@@ -22,10 +23,11 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 ![coulomb](saved/pictures/flappy-circle.png)
 
 # Current features:
- - Entity Component System using [ShECS](https://github.com/MrSinho/ShECS) by MrSinho
+ - Entity Component System using [shecs](https://github.com/MrSinho/shecs)
  - Full glsl shader customization
- - Ply mesh loader using [PlyImporter](https://github.com/MrSinho/PlyImporter) by MrSinho
+ - Ply mesh loader using [plyimporter](https://github.com/MrSinho/plyimporter)
  - Depth buffer support
+ - Serial communication using [shserial](https://github.com/MrSinho/shserial)
  - Scene creation and customization by setting up a scene.json file
  - Custom shader handling (more about that in the Coulomb shader and example)
     * define shader general properties in materials.json
@@ -36,6 +38,7 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
     * to generate the cmake target given the external application name, run export-simulation.py
 
 ## To do:
+ * Multithreaded rendering
  * Compute Shaders
  * Double/triple buffering
  * Textures
@@ -63,6 +66,8 @@ cmake --build .
 
 ## simulation-sample
 
+Just a random scene
+
 ![simulation-sample](saved/pictures/simulation-sample.png)
 
 ```batch
@@ -75,6 +80,8 @@ cmake --build .
 
 ## flappy-circle
 
+A Flappy Bird clone in a circular map.
+
 ![flappy-circle](saved/pictures/flappy-circle.png)
 
 ```batch
@@ -82,6 +89,19 @@ python export-simulation.py "flappy-circle" SHARED
 cd build 
 cmake --build .
 ```
+
+---
+
+## serial-demo
+
+![serial-demo](saved/pictures/serial-demo.png)
+
+```batch
+python export-simulation.py "serial-demo" SHARED
+cd build 
+cmake --build .
+```
+Note: because the simulation does not include multithreading, reading serial data blocks all gpu calls.
 
 ---
 

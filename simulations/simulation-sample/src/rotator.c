@@ -46,6 +46,10 @@ void SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine, const uint3
     
 }
 
+void SH_ENGINE_EXPORT_FUNCTION simulation_close(ShEngine* p_engine, const uint32_t entity) {
+    return;
+}
+
 #ifdef __cplusplus
 }
 #endif//__cplusplus
