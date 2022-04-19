@@ -6,7 +6,7 @@ project(shprojects C)
 option(SIMULATION_PATH OFF)
 
 if (NOT SIMULATION_PATH)
-set(SIMULATION_PATH "simulations")
+set(SIMULATION_PATH "simulations/flappy-circle/")
 endif()
 
 add_subdirectory(shengine)
