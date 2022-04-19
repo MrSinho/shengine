@@ -10,6 +10,7 @@
 * [simulation-sample](#simulation-sample)
 * [flappy-circle](#flappy-circle)
 * [serial-demo](#serial-demo)
+   * [Pinout for the Raspberry Pi pico and UF2 binary](#pinout-for-the-raspberry-pi-pico-and-uf2-binary)
 
 ---
 
@@ -105,7 +106,7 @@ cmake --build .
 ```
 Note: because the simulation does not include multithreading, reading serial data blocks all gpu calls.
 
-## Pinout for the Raspberry Pi pico and UF2 binary
+## Pinout for the Raspberry Pi Pico and UF2 binary
 It's connected to a `1.5V` solar panel (it could be a potentiometer or any analogic sensor). The negative charged cable (in red) is connected to `ADC input 0`, `GPIO 26`. The program to run on the Raspberry Pi Pico is located at [simulations/serial-demo/pico-bin/shengine_sample_raw.uf2](simulations/serial-demo/pico-bin/shengine_sample_raw.uf2).
 
 You should correct the serial port name in case the one at [simulations/serial-demo/src/serial-demo.c](simulations/serial-demo/src/serial-demo.c) doesn't match.
