@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif//__cplusplus
+
 #include <shengine/shEngine.h>
 #include <shengine/shExport.h>
 
@@ -70,3 +74,7 @@ void SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine, const ui
 void SH_ENGINE_EXPORT_FUNCTION flappy_circle_close(ShEngine* p_engine, const uint32_t entity) {
 	return;
 }
+
+#ifdef __cplusplus
+}
+#endif//__cplusplus
