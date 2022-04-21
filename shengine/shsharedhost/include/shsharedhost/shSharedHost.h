@@ -25,7 +25,8 @@ extern "C" {
 #include <stdint.h>
 
 #include <assert.h>
-
+#include <stddef.h>
+	
 typedef void* ShSharedHandle;
 typedef void (ShEntityFunc) (void*, uint32_t);
 
