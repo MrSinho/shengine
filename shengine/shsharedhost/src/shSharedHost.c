@@ -39,7 +39,10 @@ void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_si
     free(buffer);
 
     char shared_path[256];
-    strcpy(shared_path, shared_name);
+#ifndef _MSC_VER
+    strcat(shared_path, "lib");
+#endif//_MSC_VER
+    strcat(shared_path, shared_name);
 #ifdef _MSC_VER
     strcat(shared_path, ".dll");
 #else

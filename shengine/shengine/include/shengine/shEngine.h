@@ -39,13 +39,13 @@ typedef struct ShEngine {
 }ShEngine;
 
 static void shResetEngineState(ShEngine* p_engine) {
-    shSimulationClose(&p_engine->simulation_host, p_engine, p_engine->scene.entity_count);
+    shSimulationClose(p_engine);
     shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
     shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
     shSceneRelease(p_engine);
     shLoadScene(p_engine->scene_descriptor.path, &p_engine->p_materials, &p_engine->scene);
     shSceneInit(p_engine);
-    shSimulationStart(&p_engine->simulation_host, p_engine, p_engine->scene.entity_count);
+    shSimulationStart(p_engine);
 }
 
 //static void shReloadMaterials(ShVkCore* p_core, const ShFd mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {

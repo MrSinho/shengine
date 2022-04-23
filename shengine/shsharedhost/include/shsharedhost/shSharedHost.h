@@ -63,14 +63,14 @@ static void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
 	p_simulation->p_close	= shSharedLoadSymbol(p_simulation->shared, p_simulation->s_close);
 }
 
-#define shSimulationStart(p_simulation, p_engine, entity_count)\
-	shSharedSceneRun((p_simulation)->p_start, p_engine, entity_count)
+#define shSimulationStart(p_engine)\
+	shSharedSceneRun((p_engine)->simulation_host.p_start, p_engine, (p_engine)->scene.entity_count)
 
-#define shSimulationUpdate(p_simulation, p_engine, entity_count)\
-	shSharedSceneRun((p_simulation)->p_update, p_engine, entity_count)
+#define shSimulationUpdate(p_engine)\
+	shSharedSceneRun((p_engine)->simulation_host.p_update, p_engine, (p_engine)->scene.entity_count)
 
-#define shSimulationClose(p_simulation, p_engine, entity_count)\
-	shSharedSceneRun((p_simulation)->p_close, p_engine, entity_count)
+#define shSimulationClose(p_engine)\
+	shSharedSceneRun((p_engine)->simulation_host.p_close, p_engine, (p_engine)->scene.entity_count)
 
 #ifdef __cplusplus
 }

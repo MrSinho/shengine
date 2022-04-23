@@ -59,7 +59,7 @@ int main() {
 	shLoadSimulation(engine.simulation_descriptor.path, &engine, &engine.simulation_host);
 	shSimulationLoadSymbols(&engine.simulation_host);
 
-	shSimulationStart(&engine.simulation_host, &engine, engine.scene.entity_count);
+	shSimulationStart(&engine);
 
 	double input_dtime = 0.0;
 	double input_last_time = 0.0;
@@ -82,7 +82,7 @@ int main() {
 		uint32_t image_index = 0;
 		shFrameBegin(&engine.core, &image_index);
 
-		shSimulationUpdate(&engine.simulation_host, &engine, engine.scene.entity_count);
+		shSimulationUpdate(&engine);
 
 		shSceneUpdate(&engine);
 
@@ -91,6 +91,7 @@ int main() {
 
 	shMaterialsRelease(&engine.core, &engine.material_count, &engine.p_materials);
 	shSceneRelease(&engine);
+	shSimulationClose(&engine);
 
 	shVulkanRelease(&engine.core);
 
