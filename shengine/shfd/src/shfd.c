@@ -153,37 +153,38 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
     for (uint32_t i = 0; i < mat_count; i++) {
         json_object* json_material = json_object_array_get_idx(json_materials, i);
 
-        ShVkGraphicsPipeline pipeline = { 0 };
+        ShVkPipeline pipeline = { 0 };
 
         const uint32_t push_constant_size = (uint32_t)json_object_get_int(json_object_object_get(json_material, "push_constants_size"));
         const ShShaderStageFlags push_constant_stage = shStringFlagToInt(json_object_get_string(json_object_object_get(json_material, "push_constants_stage")));
         shSetPushConstants(push_constant_stage, 0, push_constant_size, &pipeline);
 
-        json_object* json_uniforms = json_object_object_get(json_material, "uniform_buffers");
-        const uint8_t uniform_buffer_count = (uint8_t)json_object_array_length(json_uniforms);
-        if (json_uniforms != NULL) {
-            for (uint8_t i = 0; i < uniform_buffer_count; i++) {
-                json_object* json_uniform_buffer = json_object_array_get_idx(json_uniforms, i);
-                const uint32_t set  = (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "set"));
-                const uint32_t size = (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "size"));
-                if ((uint8_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "dynamic"))) {
-                    shCreateDynamicUniformBuffer(p_core, set, size, &pipeline);
+        json_object* json_descriptors = json_object_object_get(json_material, "uniform_buffers");
+        const uint8_t descriptor_buffer_count = (uint8_t)json_object_array_length(json_descriptors);
+        if (json_descriptors != NULL) {
+            for (uint8_t i = 0; i < descriptor_buffer_count; i++) {
+                json_object* json_descriptor_buffer = json_object_array_get_idx(json_descriptors, i);
+                const uint32_t set  = (uint32_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "set"));
+                const uint32_t size = (uint32_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "size"));
+                const uint8_t dynamic = (uint8_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "dynamic"));
+                if (dynamic) {
+                    shPipelineCreateDynamicDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, size, SH_MAX_UNIFORM_BUFFER_SIZE, &pipeline);
                 }
                 else {
-                    shCreateUniformBuffer(p_core, set, size, &pipeline);
+                    shPipelineCreateDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, size, &pipeline);
                 }
-            }
-            shAllocateUniformBuffers(p_core, &pipeline);
-            for (uint8_t i = 0; i < uniform_buffer_count; i++) {
-                json_object* json_uniform_buffer = json_object_array_get_idx(json_uniforms, i);
-                shDescriptorSetLayout(p_core, 
-                    (uint32_t)json_object_get_int(json_object_object_get(json_uniform_buffer, "set")),
-                    shStringFlagToInt(json_object_get_string(json_object_object_get(json_uniform_buffer, "stage"))), 
+                shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, i, &pipeline);
+                shPipelineBindDescriptorBufferMemory(p_core->device, i, &pipeline);
+                shPipelineDescriptorSetLayout(p_core->device, 
+                    set,
+                    dynamic ? 1 : 0,
+                    dynamic ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC : VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                    shStringFlagToInt(json_object_get_string(json_object_object_get(json_descriptor_buffer, "stage"))), 
                     &pipeline
                 );
+                shPipelineCreateDescriptorPool(p_core->device, i, &pipeline);
+                shPipelineAllocateDescriptorSet(p_core->device, i, &pipeline);
             }
-            shCreateDescriptorPools(p_core, &pipeline);
-            shAllocateDescriptorSets(p_core, &pipeline);
         }
 
         uint32_t vertex_shader_size = 0;
@@ -202,10 +203,10 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
         );
         shVkAssert(vertex_code != NULL, "invalid vertex shader");
         shVkAssert(fragment_code!= NULL, "invalid fragment shader");
-        shCreateShaderModule(p_core->device, vertex_shader_size, vertex_code, &pipeline);
-        shCreateShaderModule(p_core->device, fragment_shader_size, fragment_code, &pipeline);
-        shCreateShaderStage(p_core->device, pipeline.shader_modules[0], VK_SHADER_STAGE_VERTEX_BIT, &pipeline);
-        shCreateShaderStage(p_core->device, pipeline.shader_modules[1], VK_SHADER_STAGE_FRAGMENT_BIT, &pipeline);
+        shPipelineCreateShaderModule(p_core->device, vertex_shader_size, vertex_code, &pipeline);
+        shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_VERTEX_BIT, &pipeline);
+        shPipelineCreateShaderModule(p_core->device, fragment_shader_size, fragment_code, &pipeline);
+        shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_FRAGMENT_BIT, &pipeline);
 
         ShVkFixedStates fixed_states = { 0 };
         json_object* json_fixed_states = json_object_object_get(json_material, "fixed_states");
@@ -228,8 +229,8 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
                 fixed_state_flags |= shStringFlagToInt(json_object_get_string(json_flag));
             }
         }
-	    shSetFixedStates(p_core, fixed_state_flags, &fixed_states);
-        shSetupGraphicsPipeline(p_core, fixed_states, &pipeline);
+	    shSetFixedStates(p_core->device, p_core->surface.width, p_core->surface.height, fixed_state_flags, &fixed_states);
+        shSetupGraphicsPipeline(p_core->device, p_core->render_pass, fixed_states, &pipeline);
         p_materials[i].fixed_states = fixed_states;
         p_materials[i].pipeline = pipeline;
     }
@@ -246,10 +247,10 @@ void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterial
 	assert(p_mat_info_count != NULL && pp_materials != NULL);
 	for (uint32_t i = 0; i < *p_mat_info_count; i++) {
         ShMaterialHost* p_material = &(*pp_materials)[i];
-		for (uint32_t j = 0; j < p_material->pipeline.uniform_count; j++) {
-			shClearUniformBufferMemory(p_core, j, &p_material->pipeline);
+		for (uint32_t j = 0; j < p_material->pipeline.descriptor_count; j++) {
+			shPipelineClearDescriptorBufferMemory(p_core->device, j, &p_material->pipeline);
 		}
-        shDestroyPipeline(p_core, &(*pp_materials)[i].pipeline);
+        shPipelineRelease(p_core->device, &(*pp_materials)[i].pipeline);
 
         for (uint32_t j = 0; j < p_material->entity_count; j++) {
             //if (p_material->material_clients[j].p_push_constant_parameters != NULL) {
@@ -264,27 +265,27 @@ void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterial
 	free(*pp_materials); *p_mat_info_count = 0;
 }
 
-void shReadUniformParameters(json_object* json_parameters, const uint32_t entity, const uint32_t uniform_idx, ShMaterialHost* p_material) {
+void shReadUniformParameters(json_object* json_parameters, const uint32_t entity, const uint32_t descriptor_idx, ShMaterialHost* p_material) {
     assert(json_parameters != NULL && p_material != NULL);
 
-    uint32_t uniform_offset = shGetUniformOffset(p_material, uniform_idx);
+    uint32_t descriptor_offset = shGetUniformOffset(p_material, descriptor_idx);
 
     for (uint32_t j = 0; j < (uint32_t)json_object_array_length(json_parameters); j += 2) {//FOR EACH UNIFORM PARAMETER VALUE
         const char* s_type = json_object_get_string(json_object_array_get_idx(json_parameters, j));
 
         if (strcmp(s_type, "float") == 0) {
             float value = (float)json_object_get_double(json_object_array_get_idx(json_parameters, j + 1));
-            memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[uniform_offset], &value, 4);
+            memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset], &value, 4);
         }
         if (strcmp(s_type, "int") == 0) {
             int value = (uint32_t)json_object_get_int(json_object_array_get_idx(json_parameters, j + 1));
-            memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[uniform_offset], &value, 4);
+            memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset], &value, 4);
         }
         if (strcmp(s_type, "transform") == 0) { //EXTENSION STRUCTURES
-            p_material->extensions.transform_uniform_offset = uniform_offset;
-            uniform_offset += 64;
+            p_material->extensions.transform_uniform_offset = descriptor_offset;
+            descriptor_offset += 64;
         }
-        uniform_offset += 4;
+        descriptor_offset += 4;
     }
 }
 
@@ -405,13 +406,13 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
         if (json_material != NULL) {
             const uint32_t idx = json_object_get_int(json_object_object_get(json_material, "index"));
             ShMaterialHost* p_material = &(*pp_materials)[idx];
-            for (uint32_t j = 0; j < p_material->pipeline.uniform_count; j++) {
+            for (uint32_t j = 0; j < p_material->pipeline.descriptor_count; j++) {
                 p_material->pipeline.write_descriptor_sets[j].pBufferInfo = &p_material->pipeline.descriptor_buffer_infos[j];
             }
             p_material->entities[p_material->entity_count] = entity;
         
             json_object* json_push_constant_parameters = json_object_object_get(json_material, "push_constant_parameters");
-            json_object* json_uniform_parameters = json_object_object_get(json_material, "uniform_parameters");
+            json_object* json_descriptor_parameters = json_object_object_get(json_material, "uniform_parameters");
 
             //if (json_push_constant_parameters != NULL) {
             //    for (uint32_t push_constant_idx = 0; push_constant_idx < json_object_array_length(json_push_constant_parameters); push_constant_idx++) {//for each push constant (single)
@@ -419,9 +420,9 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
             //    }
             //}
             
-            if (json_uniform_parameters != NULL) {
-                for (uint32_t uniform_idx = 0; uniform_idx < json_object_array_length(json_uniform_parameters); uniform_idx++) {//for each uniform
-                    shReadUniformParameters(json_object_array_get_idx(json_uniform_parameters, uniform_idx), entity, uniform_idx, p_material);
+            if (json_descriptor_parameters != NULL) {
+                for (uint32_t descriptor_idx = 0; descriptor_idx < json_object_array_length(json_descriptor_parameters); descriptor_idx++) {//for each descriptor
+                    shReadUniformParameters(json_object_array_get_idx(json_descriptor_parameters, descriptor_idx), entity, descriptor_idx, p_material);
                     p_material->material_clients[entity].parameters = 1;
                 }
             }

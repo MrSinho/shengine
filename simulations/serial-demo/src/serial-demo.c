@@ -40,15 +40,15 @@ void read_serial_data(ShEngine* p_engine, uint32_t entity) {
 	ShSerialHandle* p_serial = shGetShSerialHandle(p_scene, entity);
 
 	float serial_buffer[2] = { 0 };
-	float* p_uniform = (float*)&((char*)p_engine->p_materials[0].material_clients[SKYSPHERE_ENTITY].p_uniform_parameters)[80];
+	float* p_descriptor = (float*)&((char*)p_engine->p_materials[0].material_clients[SKYSPHERE_ENTITY].p_uniform_parameters)[80];
 
 	uint32_t bytes_read = 0;
 	if (shSerialReadBuffer(8, serial_buffer, &bytes_read, p_serial)) {
 		if (serial_buffer[0] >= 0.01f) {
 			
-			p_uniform[4] = serial_buffer[1];//light intensity;
-			p_uniform[5] = serial_buffer[1];
-			p_uniform[6] = serial_buffer[1];
+			p_descriptor[4] = serial_buffer[1];//light intensity;
+			p_descriptor[5] = serial_buffer[1];
+			p_descriptor[6] = serial_buffer[1];
 
 			printf("temperature: %f\nlight intensity: %f\n\n", serial_buffer[0], serial_buffer[1]);
 		}

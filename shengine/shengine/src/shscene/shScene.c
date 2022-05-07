@@ -39,18 +39,20 @@ void shSceneInit(ShEngine* p_engine) {
 
 		if (p_mesh != NULL) {
 			if (p_mesh->mesh_info.vertex_count > 0 && p_mesh->mesh_info.p_vertices != NULL) {
-				shCreateVertexBuffer(&p_engine->core, p_mesh->mesh_info.vertex_count * 4, &p_mesh->vertex_buffer);
-				shAllocateVertexBuffer(&p_engine->core, p_mesh->vertex_buffer, &p_mesh->vertex_buffer_memory);
+				shCreateVertexBuffer(p_engine->core.device, p_mesh->mesh_info.vertex_count * 4, &p_mesh->vertex_buffer);
+				shAllocateVertexBufferMemory(p_engine->core.device, p_engine->core.physical_device, p_mesh->vertex_buffer, &p_mesh->vertex_buffer_memory);
 				if (p_mesh->mesh_info.flags & SH_MESH_SETUP_STATIC_MESH) {
-					shWriteVertexBufferMemory(&p_engine->core, p_mesh->vertex_buffer_memory, p_mesh->mesh_info.vertex_count * 4, p_mesh->mesh_info.p_vertices);
+					shWriteVertexBufferMemory(p_engine->core.device, p_mesh->vertex_buffer_memory, p_mesh->mesh_info.vertex_count * 4, p_mesh->mesh_info.p_vertices);
 				}
+				shBindVertexBufferMemory(p_engine->core.device, p_mesh->vertex_buffer, p_mesh->vertex_buffer_memory);
 			}
 			if (p_mesh->mesh_info.index_count > 0 && p_mesh->mesh_info.p_indices != NULL) {
-				shCreateIndexBuffer(&p_engine->core, p_mesh->mesh_info.index_count * 4, &p_mesh->index_buffer);
-				shAllocateIndexBuffer(&p_engine->core, p_mesh->index_buffer, &p_mesh->index_buffer_memory);
+				shCreateIndexBuffer(p_engine->core.device, p_mesh->mesh_info.index_count * 4, &p_mesh->index_buffer);
+				shAllocateIndexBufferMemory(p_engine->core.device, p_engine->core.physical_device, p_mesh->index_buffer, &p_mesh->index_buffer_memory);
 				if (p_mesh->mesh_info.flags & SH_MESH_SETUP_STATIC_MESH) {
-					shWriteIndexBufferMemory(&p_engine->core, p_mesh->index_buffer_memory, p_mesh->mesh_info.index_count * 4, p_mesh->mesh_info.p_indices);
+					shWriteIndexBufferMemory(p_engine->core.device, p_mesh->index_buffer_memory, p_mesh->mesh_info.index_count * 4, p_mesh->mesh_info.p_indices);
 				}
+				shBindIndexBufferMemory(p_engine->core.device, p_mesh->index_buffer, p_mesh->index_buffer_memory);
 			}
 		}
 
@@ -158,31 +160,31 @@ void shSceneUpdate(ShEngine* p_engine) {
 	for (uint32_t material_idx = 0; material_idx < p_engine->material_count; material_idx++) {
 		ShMaterialHost* p_material = &p_engine->p_materials[material_idx];
 
-		shBindPipeline(&p_engine->core, &p_material->pipeline);
+		shBindPipeline(p_engine->core.graphics_cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 
 		if (p_material->pipeline.push_constant_range.size) {//WRITE PUSH CONSTANT DATA (CURRENTLY ONLY FOR PROJECTION AND VIEW MATRIX)
 			if (p_camera != NULL) {
 				memcpy(p_material->push_constant, p_camera->projection, 64);
 				memcpy(&((char*)p_material->push_constant)[64], p_camera->view, 64);
 			}
-			shPushConstants(&p_engine->core, p_material->push_constant, &p_material->pipeline);
+			shPipelinePushConstants(p_engine->core.graphics_cmd_buffer, p_material->push_constant, &p_material->pipeline);
 		}
 
-		if (p_material->pipeline.uniform_count) {//ALL UNIFORMS CHECK
-			shUpdateUniformBuffers(&p_engine->core, &p_material->pipeline);//UPDATE ALL UNIFORMS
+		if (p_material->pipeline.descriptor_count) {//ALL UNIFORMS CHECK
+			shPipelineUpdateDescriptorSets(p_engine->core.device, &p_material->pipeline);//UPDATE ALL UNIFORMS
 			
-			for (uint32_t uniform_idx = 0; uniform_idx < p_material->pipeline.uniform_count; uniform_idx++) {//WRITE AND BIND STATIC UNIFORMS
-				if (!p_material->pipeline.dynamic_uniforms[uniform_idx]) {
-					uint32_t uniform_offset = shGetUniformOffset(p_material, uniform_idx);
+			for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {//WRITE AND BIND STATIC UNIFORMS
+				if (p_material->pipeline.descriptor_set_layout_bindings[descriptor_idx].descriptorType != VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) {
+					uint32_t descriptor_offset = shGetUniformOffset(p_material, descriptor_idx);
 
 					for (uint32_t entity = 0; entity < p_scene->entity_count; entity++) {
 						if (shEntityInMaterial(entity, p_material)) {
-							memcpy(&((char*)p_material->uniform_buffers)[uniform_offset], &((char*)p_material->material_clients[entity].p_uniform_parameters)[uniform_offset], p_material->pipeline.uniform_buffers_size[uniform_idx]);
+							memcpy(&((char*)p_material->uniform_buffers)[descriptor_offset], &((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset], p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range);
 						}
 					}
 
-					shWriteUniformBufferMemory(&p_engine->core, uniform_idx, &((char*)p_material->uniform_buffers)[uniform_offset], &p_material->pipeline);
-					shBindUniformBuffer(&p_engine->core, uniform_idx, &p_material->pipeline);
+					shPipelineWriteDescriptorBufferMemory(p_engine->core.device, descriptor_idx, &((char*)p_material->uniform_buffers)[descriptor_offset], &p_material->pipeline);
+					shPipelineBindDescriptorSet(p_engine->core.graphics_cmd_buffer, descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 				}
 			}
 		}
@@ -195,22 +197,22 @@ void shSceneUpdate(ShEngine* p_engine) {
 			if (shEntityInMaterial(entity, p_material)) {	
 				
 				//WRITE AND BIND DYNAMIC UNIFORMS
-				for (uint32_t uniform_idx = 0; uniform_idx < p_material->pipeline.uniform_count; uniform_idx++) {//WRITE AND BIND DYNAMIC UNIFORMS 
+				for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {//WRITE AND BIND DYNAMIC UNIFORMS 
 					
-					uint32_t uniform_offset = shGetUniformOffset(p_material, uniform_idx);
+					uint32_t descriptor_offset = shGetUniformOffset(p_material, descriptor_idx);
 					
-					if (p_material->pipeline.dynamic_uniforms[uniform_idx]) {
+					if (p_material->pipeline.descriptor_set_layout_bindings[descriptor_idx].descriptorType == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) {
 						
 						//DYNAMIC EXTENSION STRUCTURES
-						if (uniform_offset == p_material->extensions.transform_uniform_offset && p_transform != NULL) {//TRANSFORM
+						if (descriptor_offset == p_material->extensions.transform_uniform_offset && p_transform != NULL) {//TRANSFORM
 							memcpy(&((char*)p_material->uniform_buffers)[p_material->extensions.transform_uniform_offset], p_transform->model, 64);
 						}
 						else {
-							memcpy(&((char*)p_material->uniform_buffers)[uniform_offset], &((char*)p_material->material_clients[entity].p_uniform_parameters)[uniform_offset], p_material->pipeline.uniform_buffers_size[uniform_idx]);
+							memcpy(&((char*)p_material->uniform_buffers)[descriptor_offset], &((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset], p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range);
 						}
 
-						shWriteDynamicUniformBufferMemory(&p_engine->core, uniform_idx, &((char*)p_material->uniform_buffers)[uniform_offset], &p_material->pipeline);
-						shBindDynamicUniformBuffer(&p_engine->core, uniform_idx, &p_material->pipeline);
+						shPipelineWriteDynamicDescriptorBufferMemory(p_engine->core.device, descriptor_idx, &((char*)p_material->uniform_buffers)[descriptor_offset], &p_material->pipeline);
+						shPipelineBindDynamicDescriptorSet(p_engine->core.graphics_cmd_buffer, descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 					}
 				}
 
@@ -218,31 +220,31 @@ void shSceneUpdate(ShEngine* p_engine) {
 					if (p_mesh->mesh_info.vertex_count != 0) {
 						if (p_mesh->mesh_info.flags & SH_MESH_SETUP_DYNAMIC_MESH) {
 							shWriteVertexBufferMemory(
-								&p_engine->core,
+								p_engine->core.device,
 								p_mesh->vertex_buffer_memory,
 								p_mesh->mesh_info.vertex_count * sizeof(p_mesh->mesh_info.p_vertices[0]),
 								p_mesh->mesh_info.p_vertices
 							);
 						}
-						shBindVertexBuffer(&p_engine->core, &p_mesh->vertex_buffer);
+						shBindVertexBuffer(p_engine->core.graphics_cmd_buffer, &p_mesh->vertex_buffer);
 					}
 					if (p_mesh->mesh_info.index_count != 0) {
 						if (p_mesh->mesh_info.flags & SH_MESH_SETUP_DYNAMIC_MESH) {
 							shWriteIndexBufferMemory(
-								&p_engine->core,
+								p_engine->core.device,
 								p_mesh->index_buffer_memory,
 								p_mesh->mesh_info.index_count * sizeof(p_mesh->mesh_info.p_indices[0]),
 								p_mesh->mesh_info.p_indices
 							);
 						}
-						shBindIndexBuffer(&p_engine->core, &p_mesh->index_buffer);
+						shBindIndexBuffer(p_engine->core.graphics_cmd_buffer, &p_mesh->index_buffer);
 					}
 
 					if (p_mesh->mesh_info.index_count != 0) {
-						shDrawIndexed(&p_engine->core, p_mesh->mesh_info.index_count);
+						shDrawIndexed(p_engine->core.graphics_cmd_buffer, p_mesh->mesh_info.index_count);
 					}
 					else if (p_mesh->mesh_info.index_count == 0 && p_mesh->mesh_info.vertex_count != 0) {
-						shDraw(&p_engine->core, p_mesh->mesh_info.vertex_count / p_mesh->mesh_info.vertex_stride);
+						shDraw(p_engine->core.graphics_cmd_buffer, p_mesh->mesh_info.vertex_count / p_mesh->mesh_info.vertex_stride);
 					}
 				}
 			}

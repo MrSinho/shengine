@@ -32,7 +32,7 @@ typedef struct ShMaterialHostExtensionStructures {
 
 typedef struct ShMaterialHost {
 	ShVkFixedStates						fixed_states;
-	ShVkGraphicsPipeline				pipeline;
+	ShVkPipeline						pipeline;
 	uint32_t							entity_count;
 	uint32_t							entities[SH_ECS_MAX_ENTITIES];
 	ShMaterialClient					material_clients[SH_ECS_MAX_ENTITIES];
