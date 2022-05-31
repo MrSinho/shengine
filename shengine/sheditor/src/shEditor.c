@@ -21,7 +21,7 @@ extern "C" {
 
 #include <string.h>
 
-
+#define SH_EDITOR_THREAD_COUNT 1
 
 int main() {
 
@@ -37,8 +37,9 @@ int main() {
 	shInitDepthData(&engine.core);
 	shCreateRenderPass(&engine.core);
 	shSetFramebuffers(&engine.core);
+	shCreateGraphicsCommandBuffers(&engine.core, SH_EDITOR_THREAD_COUNT);
+	shCreateComputeCommandBuffers(&engine.core, SH_EDITOR_THREAD_COUNT);
 	shSetSyncObjects(&engine.core);
-	shCreateGraphicsCommandBuffer(&engine.core);
 
 	
 	//shInitDescriptor(&materials_descriptor);
@@ -77,16 +78,16 @@ int main() {
 			}
 		}
 
-		shFrameReset(&engine.core);
+		shFrameReset(&engine.core, 0);
 
 		uint32_t image_index = 0;
-		shFrameBegin(&engine.core, &image_index);
+		shFrameBegin(&engine.core, 0, &image_index);
 
 		shSimulationUpdate(&engine);
 
 		shSceneUpdate(&engine);
 
-		shFrameEnd(&engine.core, image_index);
+		shFrameEnd(&engine.core, 0, image_index);
 	}
 
 	shMaterialsRelease(&engine.core, &engine.material_count, &engine.p_materials);

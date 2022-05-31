@@ -160,14 +160,14 @@ void shSceneUpdate(ShEngine* p_engine) {
 	for (uint32_t material_idx = 0; material_idx < p_engine->material_count; material_idx++) {
 		ShMaterialHost* p_material = &p_engine->p_materials[material_idx];
 
-		shBindPipeline(p_engine->core.graphics_cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
+		shBindPipeline(p_engine->core.p_graphics_commands[0].cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 
 		if (p_material->pipeline.push_constant_range.size) {//WRITE PUSH CONSTANT DATA (CURRENTLY ONLY FOR PROJECTION AND VIEW MATRIX)
 			if (p_camera != NULL) {
 				memcpy(p_material->push_constant, p_camera->projection, 64);
 				memcpy(&((char*)p_material->push_constant)[64], p_camera->view, 64);
 			}
-			shPipelinePushConstants(p_engine->core.graphics_cmd_buffer, p_material->push_constant, &p_material->pipeline);
+			shPipelinePushConstants(p_engine->core.p_graphics_commands[0].cmd_buffer, p_material->push_constant, &p_material->pipeline);
 		}
 
 		if (p_material->pipeline.descriptor_count) {//ALL UNIFORMS CHECK
@@ -184,7 +184,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 					}
 
 					shPipelineWriteDescriptorBufferMemory(p_engine->core.device, descriptor_idx, &((char*)p_material->uniform_buffers)[descriptor_offset], &p_material->pipeline);
-					shPipelineBindDescriptorSet(p_engine->core.graphics_cmd_buffer, descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
+					shPipelineBindDescriptorSet(p_engine->core.p_graphics_commands[0].cmd_buffer, descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 				}
 			}
 		}
@@ -212,7 +212,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 						}
 
 						shPipelineWriteDynamicDescriptorBufferMemory(p_engine->core.device, descriptor_idx, &((char*)p_material->uniform_buffers)[descriptor_offset], &p_material->pipeline);
-						shPipelineBindDynamicDescriptorSet(p_engine->core.graphics_cmd_buffer, descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
+						shPipelineBindDynamicDescriptorSet(p_engine->core.p_graphics_commands[0].cmd_buffer, descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 					}
 				}
 
@@ -226,7 +226,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 								p_mesh->mesh_info.p_vertices
 							);
 						}
-						shBindVertexBuffer(p_engine->core.graphics_cmd_buffer, &p_mesh->vertex_buffer);
+						shBindVertexBuffer(p_engine->core.p_graphics_commands[0].cmd_buffer, &p_mesh->vertex_buffer);
 					}
 					if (p_mesh->mesh_info.index_count != 0) {
 						if (p_mesh->mesh_info.flags & SH_MESH_SETUP_DYNAMIC_MESH) {
@@ -237,14 +237,14 @@ void shSceneUpdate(ShEngine* p_engine) {
 								p_mesh->mesh_info.p_indices
 							);
 						}
-						shBindIndexBuffer(p_engine->core.graphics_cmd_buffer, &p_mesh->index_buffer);
+						shBindIndexBuffer(p_engine->core.p_graphics_commands[0].cmd_buffer, &p_mesh->index_buffer);
 					}
 
 					if (p_mesh->mesh_info.index_count != 0) {
-						shDrawIndexed(p_engine->core.graphics_cmd_buffer, p_mesh->mesh_info.index_count);
+						shDrawIndexed(p_engine->core.p_graphics_commands[0].cmd_buffer, p_mesh->mesh_info.index_count);
 					}
 					else if (p_mesh->mesh_info.index_count == 0 && p_mesh->mesh_info.vertex_count != 0) {
-						shDraw(p_engine->core.graphics_cmd_buffer, p_mesh->mesh_info.vertex_count / p_mesh->mesh_info.vertex_stride);
+						shDraw(p_engine->core.p_graphics_commands[0].cmd_buffer, p_mesh->mesh_info.vertex_count / p_mesh->mesh_info.vertex_stride);
 					}
 				}
 			}
