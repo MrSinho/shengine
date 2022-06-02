@@ -1,7 +1,7 @@
 # shengine
 ![windows_badge](windows-status.svg)
 ## [Windows build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 0.02s`
+  `Build ran for 0.75s`
 ```bash $shci call$
 choco install -y curl mingw cmake
 Chocolatey v0.11.2
@@ -43,6 +43,10 @@ Warnings:
  - mingw - mingw v11.2.0.07112021 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
 
+Enjoy using Chocolatey? Explore more amazing features to take your
+experience to the next level at
+ https://chocolatey.org/compare
+
 ```
 
 ```bash $shci call$
@@ -51,4 +55,4 @@ mingw-get install gcc mingw32-make gdb
 ```
 
 ```bash $shci call$
-cd _shengine && python3 export_simulation.py flappy-circle SHARED && cd build && cmake --build .
+cd _shengine && python export_simulation.py flappy-circle SHARED && cd build && cmake --build .
