@@ -1,7 +1,7 @@
 # shengine
 ![linux_badge](linux-status.svg)
 ## [Linux/Unix build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 23.59s`
+  `Build ran for 25.62s`
 ```bash $shci call$
 apt install -y wget gcc cmake make gdb
 Reading package lists...
@@ -25,19 +25,19 @@ sudo add-apt-repository -y ppa:oibaf/graphics-drivers
 sudo apt install -y vulkan libvulkan-dev libvulkan1 mesa-vulkan-drivers vulkan-utils
 
 Hit:1 http://packages.microsoft.com/repos/code stable InRelease
-Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
+Hit:2 http://archive.canonical.com/ubuntu focal InRelease
 Hit:3 http://security.ubuntu.com/ubuntu focal-security InRelease
-Hit:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Hit:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Hit:6 https://packages.microsoft.com/repos/edge stable InRelease
-Hit:7 http://archive.canonical.com/ubuntu focal InRelease
-Ign:8 http://packages.linuxmint.com uma InRelease
-Get:9 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease [18,1 kB]
+Hit:4 https://packages.microsoft.com/repos/edge stable InRelease
+Get:5 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease [18,1 kB]
+Hit:6 http://archive.ubuntu.com/ubuntu focal InRelease
+Ign:7 http://packages.linuxmint.com uma InRelease
+Get:8 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease [23,9 kB]
+Hit:9 http://archive.ubuntu.com/ubuntu focal-updates InRelease
 Hit:10 http://packages.linuxmint.com uma Release
-Get:11 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease [23,9 kB]
-Err:9 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease
+Hit:11 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Err:5 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease
   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EFC71127F425E228
-Err:11 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Err:8 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 957D2708A03A4626
 Reading package lists...
 Reading package lists...
@@ -55,7 +55,7 @@ libxcursor-dev is already the newest version (1:1.2.0-2).
 libxi-dev is already the newest version (2:1.7.10-0ubuntu1).
 libxinerama-dev is already the newest version (2:1.1.4-2).
 0 upgraded, 0 newly installed, 0 to remove and 419 not upgraded.
-Executing: /tmp/apt-key-gpghome.221XbOOqBU/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
+Executing: /tmp/apt-key-gpghome.jZD5ICwZk1/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
 You are about to add the following PPA:
  PLEASE READ: don't email me to report bugs, unless you are sure it's a packaging bug. Not only is email not a good tool for tracking bugs, it also excludes anybody else from tracking or working on the issue. Please read the section "Debugging and reporting problems" below.
 
@@ -372,3 +372,13 @@ Scanning dependencies of target shvulkan
 [ 15%] Building C object shengine/[EXCLUDE_FROM_ALL]/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkMemoryInfo.c.o
 [ 16%] Building C object shengine/[EXCLUDE_FROM_ALL]/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkPipelineData.c.o
 [ 17%] Building C object shengine/[EXCLUDE_FROM_ALL]/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkCheck.c.o
+[ 18%] Building C object shengine/[EXCLUDE_FROM_ALL]/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkDrawLoop.c.o
+[ 19%] Linking C static library ../../../../bin/libshvulkan.a
+[ 19%] Built target shvulkan
+Scanning dependencies of target plyimporter
+[ 20%] Building C object shengine/[EXCLUDE_FROM_ALL]/plyimporter/CMakeFiles/plyimporter.dir/PlyImporter/src/plyimporter/plyImporter.c.o
+[ 21%] Linking C static library ../../../../bin/libplyimporter.a
+[ 21%] Built target plyimporter
+Scanning dependencies of target shfd
+[ 22%] Building C object shengine/CMakeFiles/shfd.dir/shfd/src/shFile.c.o
+[ 23%] Building C object shengine/CMakeFiles/shfd.dir/shfd/src/shfd.c.o
