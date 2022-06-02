@@ -1,7 +1,7 @@
 # shengine
 ![linux_badge](linux-status.svg)
 ## [Linux/Unix build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 0.39s`
+  `Build ran for 0.20s`
 ```bash $shci call$
 apt install -y wget gcc cmake make gdb
 Reading package lists...
@@ -12,7 +12,7 @@ gcc is already the newest version (4:9.3.0-1ubuntu2).
 make is already the newest version (4.2.1-1.2).
 gdb is already the newest version (9.2-0ubuntu1~20.04.1).
 wget is already the newest version (1.20.3-1ubuntu2).
-0 upgraded, 0 newly installed, 0 to remove and 418 not upgraded.
+0 upgraded, 0 newly installed, 0 to remove and 419 not upgraded.
 
 ```
 
@@ -23,54 +23,21 @@ sudo apt install -y libxinerama-dev libxcursor-dev libxi-dev
 
 sudo add-apt-repository -y ppa:oibaf/graphics-drivers
 sudo apt install -y vulkan libvulkan-dev libvulkan1 mesa-vulkan-drivers vulkan-utils
-Get:1 http://packages.microsoft.com/repos/code stable InRelease [10,4 kB]
-Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
-Get:3 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
-Hit:4 http://archive.canonical.com/ubuntu focal InRelease
-Get:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
-Get:6 https://packages.microsoft.com/repos/edge stable InRelease [7.342 B]
-Get:7 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease [23,9 kB]
-Get:8 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
-Get:9 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease [18,1 kB]
-Ign:10 http://packages.linuxmint.com uma InRelease
-Get:11 http://packages.microsoft.com/repos/code stable/main armhf Packages [87,2 kB]
-Hit:12 http://packages.linuxmint.com uma Release
-Get:13 http://packages.microsoft.com/repos/code stable/main arm64 Packages [87,7 kB]
-Get:14 http://packages.microsoft.com/repos/code stable/main amd64 Packages [86,7 kB]
-Get:15 https://packages.microsoft.com/repos/edge stable/main amd64 Packages [14,3 kB]
-Get:16 http://security.ubuntu.com/ubuntu focal-security/main i386 Packages [442 kB]
-Get:17 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [1.491 kB]
-Get:18 http://security.ubuntu.com/ubuntu focal-security/main Translation-en [257 kB]
-Get:19 http://security.ubuntu.com/ubuntu focal-security/main amd64 DEP-11 Metadata [40,6 kB]
-Get:20 http://security.ubuntu.com/ubuntu focal-security/main amd64 c-n-f Metadata [10,4 kB]
-Get:21 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [948 kB]
-Err:7 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
-  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 957D2708A03A4626
-Get:22 http://security.ubuntu.com/ubuntu focal-security/restricted Translation-en [135 kB]
-Get:23 http://security.ubuntu.com/ubuntu focal-security/universe i386 Packages [552 kB]
-Get:24 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [705 kB]
-Get:25 http://security.ubuntu.com/ubuntu focal-security/universe Translation-en [126 kB]
-Get:26 http://security.ubuntu.com/ubuntu focal-security/universe amd64 DEP-11 Metadata [66,3 kB]
-Get:27 http://security.ubuntu.com/ubuntu focal-security/universe amd64 c-n-f Metadata [14,5 kB]
-Get:28 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 DEP-11 Metadata [2.464 B]
-Get:29 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [1.833 kB]
-Get:30 http://archive.ubuntu.com/ubuntu focal-updates/main i386 Packages [660 kB]
-Get:31 http://archive.ubuntu.com/ubuntu focal-updates/main Translation-en [337 kB]
-Get:32 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 DEP-11 Metadata [278 kB]
-Get:33 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 c-n-f Metadata [15,4 kB]
-Get:34 http://archive.ubuntu.com/ubuntu focal-updates/universe i386 Packages [680 kB]
-Get:35 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [926 kB]
-Get:36 http://archive.ubuntu.com/ubuntu focal-updates/universe Translation-en [208 kB]
-Get:37 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 DEP-11 Metadata [390 kB]
-Get:38 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 c-n-f Metadata [20,7 kB]
-Get:39 http://archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 DEP-11 Metadata [944 B]
-Get:40 http://archive.ubuntu.com/ubuntu focal-backports/main amd64 DEP-11 Metadata [7.964 B]
-Get:41 http://archive.ubuntu.com/ubuntu focal-backports/universe i386 Packages [13,2 kB]
-Get:42 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 Packages [23,7 kB]
-Get:43 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 DEP-11 Metadata [30,5 kB]
-Get:44 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 c-n-f Metadata [860 B]
-Err:9 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease
+Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
+Hit:2 http://packages.microsoft.com/repos/code stable InRelease
+Hit:3 http://archive.canonical.com/ubuntu focal InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Hit:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease
+Hit:6 https://packages.microsoft.com/repos/edge stable InRelease
+Ign:7 http://packages.linuxmint.com uma InRelease
+Get:8 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease [18,1 kB]
+Hit:9 http://security.ubuntu.com/ubuntu focal-security InRelease
+Get:10 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease [23,9 kB]
+Hit:11 http://packages.linuxmint.com uma Release
+Err:8 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease
   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EFC71127F425E228
+Err:10 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 957D2708A03A4626
 Reading package lists...
 Reading package lists...
 Building dependency tree...
@@ -87,7 +54,7 @@ libxcursor-dev is already the newest version (1:1.2.0-2).
 libxi-dev is already the newest version (2:1.7.10-0ubuntu1).
 libxinerama-dev is already the newest version (2:1.1.4-2).
 0 upgraded, 0 newly installed, 0 to remove and 419 not upgraded.
-Executing: /tmp/apt-key-gpghome.kOjkbdVNiF/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
+Executing: /tmp/apt-key-gpghome.SGFolXZLB1/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
 You are about to add the following PPA:
  PLEASE READ: don't email me to report bugs, unless you are sure it's a packaging bug. Not only is email not a good tool for tracking bugs, it also excludes anybody else from tracking or working on the issue. Please read the section "Debugging and reporting problems" below.
 
