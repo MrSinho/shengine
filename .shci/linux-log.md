@@ -1,7 +1,7 @@
 # shengine
 ![linux_badge](linux-status.svg)
 ## [Linux/Unix build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 27.25s`
+  `Build ran for 39.23s`
 ```bash $shci call$
 apt install -y wget gcc cmake make gdb
 Reading package lists...
@@ -24,20 +24,20 @@ sudo apt install -y libxinerama-dev libxcursor-dev libxi-dev
 sudo add-apt-repository -y ppa:oibaf/graphics-drivers
 sudo apt install -y vulkan libvulkan-dev libvulkan1 mesa-vulkan-drivers vulkan-utils
 
-Hit:1 http://security.ubuntu.com/ubuntu focal-security InRelease
-Hit:2 http://packages.microsoft.com/repos/code stable InRelease
-Hit:3 http://archive.ubuntu.com/ubuntu focal InRelease
-Hit:4 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Hit:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Ign:6 http://packages.linuxmint.com uma InRelease
+Hit:1 http://packages.microsoft.com/repos/code stable InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
+Hit:3 http://archive.canonical.com/ubuntu focal InRelease
+Hit:4 http://security.ubuntu.com/ubuntu focal-security InRelease
+Hit:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease
+Hit:6 http://archive.ubuntu.com/ubuntu focal-backports InRelease
 Hit:7 https://packages.microsoft.com/repos/edge stable InRelease
-Hit:8 http://archive.canonical.com/ubuntu focal InRelease
-Get:9 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease [18,1 kB]
-Hit:10 http://packages.linuxmint.com uma Release
-Get:11 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease [23,9 kB]
-Err:9 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease
+Get:8 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease [18,1 kB]
+Ign:9 http://packages.linuxmint.com uma InRelease
+Get:10 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease [23,9 kB]
+Hit:11 http://packages.linuxmint.com uma Release
+Err:8 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease
   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EFC71127F425E228
-Err:11 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
+Err:10 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 957D2708A03A4626
 Reading package lists...
 Reading package lists...
@@ -55,7 +55,7 @@ libxcursor-dev is already the newest version (1:1.2.0-2).
 libxi-dev is already the newest version (2:1.7.10-0ubuntu1).
 libxinerama-dev is already the newest version (2:1.1.4-2).
 0 upgraded, 0 newly installed, 0 to remove and 419 not upgraded.
-Executing: /tmp/apt-key-gpghome.lKUx6BaM7C/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
+Executing: /tmp/apt-key-gpghome.kQ9RvhNoGT/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
 You are about to add the following PPA:
  PLEASE READ: don't email me to report bugs, unless you are sure it's a packaging bug. Not only is email not a good tool for tracking bugs, it also excludes anybody else from tracking or working on the issue. Please read the section "Debugging and reporting problems" below.
 
@@ -382,3 +382,97 @@ Scanning dependencies of target plyimporter
 Scanning dependencies of target shfd
 [ 22%] Building C object shengine/CMakeFiles/shfd.dir/shfd/src/shFile.c.o
 [ 23%] Building C object shengine/CMakeFiles/shfd.dir/shfd/src/shfd.c.o
+[ 24%] Linking C static library ../../bin/libshfd.a
+[ 24%] Built target shfd
+Scanning dependencies of target shsharedhost
+[ 25%] Building C object shengine/CMakeFiles/shsharedhost.dir/shsharedhost/src/shSharedHost.c.o
+[ 26%] Linking C static library libshsharedhost.a
+[ 26%] Built target shsharedhost
+Scanning dependencies of target shserial
+[ 27%] Building C object shengine/[EXCLUDE_FROM_ALL]/shserial/CMakeFiles/shserial.dir/ShSerial/src/shserial/shSerial.c.o
+[ 28%] Linking C static library ../../../../externals/shserial/bin/libshserial.a
+[ 28%] Built target shserial
+Scanning dependencies of target glfw
+[ 29%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/context.c.o
+[ 30%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/init.c.o
+[ 31%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/input.c.o
+[ 32%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/monitor.c.o
+[ 33%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/platform.c.o
+[ 34%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/vulkan.c.o
+[ 35%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/window.c.o
+[ 36%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/egl_context.c.o
+[ 37%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.o
+[ 38%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/null_init.c.o
+[ 39%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/null_monitor.c.o
+[ 40%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/null_window.c.o
+[ 41%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.o
+[ 41%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/posix_module.c.o
+[ 42%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/posix_time.c.o
+[ 43%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/posix_thread.c.o
+[ 44%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/x11_init.c.o
+[ 45%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/x11_monitor.c.o
+[ 46%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/x11_window.c.o
+[ 47%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/xkb_unicode.c.o
+[ 48%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/glx_context.c.o
+[ 49%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/linux_joystick.c.o
+[ 50%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/posix_poll.c.o
+[ 51%] Linking C static library libglfw3.a
+[ 51%] Built target glfw
+Scanning dependencies of target cglm
+[ 51%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/euler.c.o
+[ 52%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/affine.c.o
+[ 53%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/io.c.o
+[ 54%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/quat.c.o
+[ 55%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/cam.c.o
+[ 56%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/vec2.c.o
+[ 57%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/vec3.c.o
+[ 58%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/vec4.c.o
+[ 59%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ivec2.c.o
+[ 60%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ivec3.c.o
+[ 61%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ivec4.c.o
+[ 62%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/mat2.c.o
+[ 63%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/mat3.c.o
+[ 64%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/mat4.c.o
+[ 65%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/plane.c.o
+[ 66%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/frustum.c.o
+[ 67%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/box.c.o
+[ 67%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/project.c.o
+[ 68%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/sphere.c.o
+[ 69%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ease.c.o
+[ 70%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/curve.c.o
+[ 71%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/bezier.c.o
+[ 72%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ray.c.o
+[ 73%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/affine2d.c.o
+[ 74%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_zo.c.o
+[ 75%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_zo.c.o
+[ 76%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_no.c.o
+[ 77%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_no.c.o
+[ 78%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_zo.c.o
+[ 79%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_zo.c.o
+[ 80%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_no.c.o
+[ 81%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_no.c.o
+[ 82%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_zo.c.o
+[ 83%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_zo.c.o
+[ 84%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_no.c.o
+[ 84%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_no.c.o
+[ 85%] Linking C shared library libcglm.so
+[ 85%] Built target cglm
+Scanning dependencies of target shengine
+[ 86%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shInput.c.o
+[ 87%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shTime.c.o
+[ 88%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shWindow.c.o
+[ 89%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shlinear-algebra/shProjection.c.o
+[ 89%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shlinear-algebra/shView.c.o
+[ 90%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shscene/shScene.c.o
+[ 91%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shmaterialhost/shMaterialHost.c.o
+[ 92%] Linking C static library ../../bin/libshengine.a
+[ 92%] Built target shengine
+Scanning dependencies of target sheditor
+[ 93%] Building C object shengine/CMakeFiles/sheditor.dir/sheditor/src/shEditor.c.o
+[ 94%] Linking C executable ../../bin/sheditor
+[ 94%] Built target sheditor
+Scanning dependencies of target docs
+[ 95%] Generating HTML documentation
+[ 95%] Built target docs
+Scanning dependencies of target json_parse
+[ 96%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/apps/CMakeFiles/json_parse.dir/json_parse.c.o
