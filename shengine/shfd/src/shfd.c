@@ -222,7 +222,7 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
             );
         }
         json_object* json_fixed_states_flags = json_object_object_get(json_fixed_states, "flags");
-        ShFixedStateFlags fixed_state_flags = 0;
+        ShVkFixedStatesFlags fixed_state_flags = 0;
         if (json_fixed_states_flags != NULL) {
             for (uint32_t i = 0; i < json_object_array_length(json_fixed_states_flags); i++) {
                 json_object* json_flag = json_object_array_get_idx(json_fixed_states_flags, i);
