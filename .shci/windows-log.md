@@ -1,7 +1,7 @@
 # shengine
 ![windows_badge](windows-status.svg)
 ## [Windows build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 103.84s`
+  `Build ran for 119.79s`
 ```bash $shci call$
 choco install -y curl mingw cmake
 Chocolatey v0.11.2
@@ -329,6 +329,7 @@ C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json
   Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/shengine/CMakeLists.txt
   shFile.c
   shfd.c
+C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\shengine\shfd\src\shfd.c(160,81): warning C4133: 'function': incompatible types - from 'ShVkPipeline *' to 'VkPushConstantRange *' [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\shfd.vcxproj]
   Generating Code...
   shfd.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\bin\Debug\shfd.lib
   Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/externals/shserial/CMakeLists.txt
