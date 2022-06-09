@@ -32,8 +32,10 @@ extern "C" {
 
 
 void shSceneInit(ShEngine* p_engine) {
+		
+	ShScene* p_scene = &p_engine->scene;
 
-	for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
+	for (uint32_t entity = 0; entity < p_scene->entity_count; entity++) {
 		ShMesh* p_mesh = shGetShMesh(&p_engine->scene, entity);
 		ShTransform* p_transform = shGetShTransform(&p_engine->scene, entity);
 
@@ -56,11 +58,14 @@ void shSceneInit(ShEngine* p_engine) {
 			}
 		}
 
+		//INIT EXTENSIONS
 		if (p_transform != NULL) {
 			p_transform->position[1] *= -1.0f;
 			shUpdateShTransform(p_transform);
+
 		}
 	}
+
 }
 
 void shUpdateShTransform(ShTransform* p_transform) {
@@ -179,12 +184,24 @@ void shSceneUpdate(ShEngine* p_engine) {
 
 					for (uint32_t entity = 0; entity < p_scene->entity_count; entity++) {
 						if (shEntityInMaterial(entity, p_material)) {
-							memcpy(&((char*)p_material->uniform_buffers)[descriptor_offset], &((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset], p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range);
+							memcpy(
+								&((char*)p_material->uniform_buffers)[descriptor_offset],
+								&((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset],
+								p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range
+							);
 						}
 					}
 
-					shPipelineWriteDescriptorBufferMemory(p_engine->core.device, descriptor_idx, &((char*)p_material->uniform_buffers)[descriptor_offset], &p_material->pipeline);
-					shPipelineBindDescriptorSet(p_engine->core.p_graphics_commands[0].cmd_buffer, descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
+					shPipelineWriteDescriptorBufferMemory(
+						p_engine->core.device, descriptor_idx, 
+						&((char*)p_material->uniform_buffers)[descriptor_offset], 
+						&p_material->pipeline
+					);
+					shPipelineBindDescriptorSet(
+						p_engine->core.p_graphics_commands[0].cmd_buffer, 
+						descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+						&p_material->pipeline
+					);
 				}
 			}
 		}
@@ -205,14 +222,32 @@ void shSceneUpdate(ShEngine* p_engine) {
 						
 						//DYNAMIC EXTENSION STRUCTURES
 						if (descriptor_offset == p_material->extensions.transform_uniform_offset && p_transform != NULL) {//TRANSFORM
-							memcpy(&((char*)p_material->uniform_buffers)[p_material->extensions.transform_uniform_offset], p_transform->model, 64);
+							memcpy(
+								&((char*)p_material->uniform_buffers)[p_material->extensions.transform_uniform_offset], 
+								p_transform->model, 
+								64
+							);
 						}
-						else {
-							memcpy(&((char*)p_material->uniform_buffers)[descriptor_offset], &((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset], p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range);
+						else {//OTHER DYNAMIC STRUCTURES WHICH ARE NOT WRITTEN AS ENGINE EXTENSIONS
+							memcpy(
+								&((char*)p_material->uniform_buffers)[descriptor_offset],
+								&((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset],
+								p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range
+							);
 						}
 
-						shPipelineWriteDynamicDescriptorBufferMemory(p_engine->core.device, descriptor_idx, &((char*)p_material->uniform_buffers)[descriptor_offset], &p_material->pipeline);
-						shPipelineBindDynamicDescriptorSet(p_engine->core.p_graphics_commands[0].cmd_buffer, descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
+						shPipelineWriteDynamicDescriptorBufferMemory(
+							p_engine->core.device, 
+							descriptor_idx, 
+							&((char*)p_material->uniform_buffers)[descriptor_offset], 
+							&p_material->pipeline
+						);
+						shPipelineBindDynamicDescriptorSet(
+							p_engine->core.p_graphics_commands[0].cmd_buffer, 
+							descriptor_idx, 
+							VK_PIPELINE_BIND_POINT_GRAPHICS, 
+							&p_material->pipeline
+						);
 					}
 				}
 

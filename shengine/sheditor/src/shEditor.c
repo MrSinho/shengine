@@ -30,7 +30,7 @@ int main() {
 	shCreateInstance(&engine.core, "shengine editor", "shengine", 1, engine.window.instance_extension_count, engine.window.pp_instance_extensions);
 	shCreateWindowSurface(&engine);
 	shSelectPhysicalDevice(&engine.core, SH_VK_CORE_GRAPHICS | SH_VK_CORE_COMPUTE);
-	shSetLogicalDevice(&engine.core, SH_VK_CORE_GRAPHICS | SH_VK_CORE_COMPUTE);
+	shSetLogicalDevice(&engine.core);
 	shGetGraphicsQueue(&engine.core);
 	shGetComputeQueue(&engine.core);
 	shInitSwapchainData(&engine.core);

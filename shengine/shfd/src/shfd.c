@@ -6,9 +6,7 @@ extern "C" {
 #include "shfd/shFile.h"
 
 #include "shecs/shCamera.h"
-#include "shecs/shTransform.h"
 #include "shecs/shIdentity.h"
-#include "shecs/shPhysics.h"
 #include "shecs/shMaterial.h"
 #include "shecs/shMesh.h"
 
@@ -22,6 +20,10 @@ extern "C" {
 
 #include <shvulkan/shVkCore.h>
 #include <shvulkan/shVkCheck.h>
+
+//EXTENSIONS
+#include "shecs/shTransform.h"
+
 
 #ifndef NDEBUG
 #include <stdio.h>
@@ -104,6 +106,7 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     if (strcmp(s_flag, "MESH_SETUP_DYNAMIC_MESH") == 0) {
         return SH_MESH_SETUP_DYNAMIC_MESH;
     }
+#if 0
     if (strcmp(s_flag, "PHYSICS_CLIENT_DYNAMICS") == 0) {
         return SH_PHYSICS_CLIENT_DYNAMICS;
     }
@@ -113,7 +116,6 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     if (strcmp(s_flag, "PHYSICS_CLIENT_ELECTROSTATICS") == 0) {
         return SH_PHYSICS_CLIENT_ELECTROSTATICS;
     }
-#if 0
     if (strcmp(s_flag, "COLLISION_SHAPE_SPHERE") == 0) {
         return SH_COLLISION_SHAPE_SPHERE;
     }
@@ -157,7 +159,7 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
 
         const uint32_t push_constant_size = (uint32_t)json_object_get_int(json_object_object_get(json_material, "push_constants_size"));
         const ShShaderStageFlags push_constant_stage = shStringFlagToInt(json_object_get_string(json_object_object_get(json_material, "push_constants_stage")));
-        shSetPushConstants(push_constant_stage, 0, push_constant_size, &pipeline);
+        shSetPushConstants(push_constant_stage, 0, push_constant_size, &pipeline.push_constant_range);
 
         json_object* json_descriptors = json_object_object_get(json_material, "uniform_buffers");
         const uint8_t descriptor_buffer_count = (uint8_t)json_object_array_length(json_descriptors);
@@ -203,6 +205,7 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
         );
         shVkAssert(vertex_code != NULL, "invalid vertex shader");
         shVkAssert(fragment_code!= NULL, "invalid fragment shader");
+
         shPipelineCreateShaderModule(p_core->device, vertex_shader_size, vertex_code, &pipeline);
         shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_VERTEX_BIT, &pipeline);
         shPipelineCreateShaderModule(p_core->device, fragment_shader_size, fragment_code, &pipeline);
@@ -476,68 +479,6 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
     }
     
     if (ply_meshes != NULL) { free(ply_meshes); }
-    free(buffer);
-}
-
-void shLoadPhysicsWorld(const char* path, ShPhysicsHost* p_host) {
-    assert(p_host != NULL);
-    char* buffer = (char*)shReadText(path, NULL);
-    if (buffer == NULL) { return; }
-
-    json_object* parser = json_tokener_parse(buffer);
-    if (parser == NULL) { return; }
-
-    json_object* json_physics_host = json_object_object_get(parser, "physics_host");
-    if (json_physics_host != NULL) {
-        json_object* json_electrostatic = json_object_object_get(json_physics_host, "electrostatic_charges");
-        for (uint32_t i = 0; i < json_object_array_length(json_electrostatic); i++) {
-            json_object* json_charge = json_object_array_get_idx(json_electrostatic, i);
-            json_object* json_position = json_object_object_get(json_charge, "position");
-            if (json_position != NULL) {
-                for (uint32_t j = 0; j < 3; j++) {
-                    json_object* json_pos = json_object_array_get_idx(json_position, j);
-                    p_host->electrostatic_world.charges[i].position[j] = json_pos != NULL ? (float)json_object_get_double(json_pos) : 0.0f;
-                }
-            }
-            json_object* json_intensity = json_object_object_get(json_charge, "intensity");
-            p_host->electrostatic_world.charges[i].intensity[0] = json_intensity != NULL ? (float)json_object_get_double(json_intensity) : 0.0f;
-            //for (uint32_t j = 0; j < 4; j++) {
-            //    json_object* json_intens = json_object_array_get_idx(json_intensity, j);
-            //    p_host->electrostaticWorld.charges[i].intensity[j] = json_intens != NULL ? (float)json_object_get_double(json_intens) : 0.0f;
-            //}
-            //
-        }
-    }
-    
-#if 0
-    json_object* json_dynamics  = json_object_object_get(parser, "dynamics_world");
-    json_object* json_speed     = json_object_object_get(parser, "speed");
-    if (json_dynamics != NULL) {
-        ShDynamicsWorld dynamics = { 0 };
-        for (uint32_t i = 0; i < (uint32_t)json_object_array_length(json_dynamics); i++) {
-            json_object* json_flag = json_object_array_get_idx(json_dynamics, i);
-            dynamics.flags |= shStringFlagToInt(json_object_get_string(json_flag));
-        }
-        (json_speed != NULL) && (dynamics.speed = (shreal)json_object_get_double(json_speed));
-        uint32_t* scene_indices = (uint32_t*)calloc(p_scene->entity_count, sizeof(uint32_t));
-        if (scene_indices != NULL) {
-            for (uint32_t entity = 0; entity < p_scene->entity_count; entity++) {
-                if (shHasShRigidBody(p_scene, entity)) {
-                    scene_indices[dynamics.rbody_count] = entity;
-                    dynamics.rbody_count++;
-                }
-            }
-            dynamics.pp_rbodies = calloc(dynamics.rbody_count, sizeof(ShRigidBody));
-            if (dynamics.pp_rbodies != NULL) {
-                for (uint32_t i = 0; i < dynamics.rbody_count; i++) {
-                    dynamics.pp_rbodies[i] = shGetShRigidBody(p_scene, scene_indices[i]);
-                }
-            }
-            free(scene_indices);
-        }
-        *p_dynamics = dynamics;
-    }
-#endif
     free(buffer);
 }
 

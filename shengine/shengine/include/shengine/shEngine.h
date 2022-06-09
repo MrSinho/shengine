@@ -8,7 +8,6 @@ extern "C" {
 #include <shvulkan/shVkCore.h>
 
 #include "shecs/shEcsImplementation.h"
-#include "shecs/shPhysics.h"
 #include "shecs/shMaterial.h"
 
 #include "shengine/shWindow.h"
@@ -35,14 +34,13 @@ typedef struct ShEngine {
 	ShMaterialHost*	    p_materials;
     ShSimulationHandle  simulation_host;
     uint32_t		    material_count;
-    ShPhysicsHost       physics_host;
 }ShEngine;
 
 static void shResetEngineState(ShEngine* p_engine) {
     shSimulationClose(p_engine);
     shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
-    shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
     shSceneRelease(p_engine);
+    shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
     shLoadScene(p_engine->scene_descriptor.path, &p_engine->p_materials, &p_engine->scene);
     shSceneInit(p_engine);
     shSimulationStart(p_engine);

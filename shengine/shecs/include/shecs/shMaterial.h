@@ -24,7 +24,7 @@ typedef struct ShMaterialClient {
 
 typedef struct ShMaterialHostExtensionStructures {
 	uint32_t transform_uniform_offset;
-	//other stuff like phyisics inputs
+	//other extensions here...
 } ShMaterialHostExtensionStructures;
 
 #define SH_UPDATE_PUSH_CONSTANT_PARAMETERS 1 << 0
