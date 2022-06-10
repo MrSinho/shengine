@@ -30,7 +30,7 @@ typedef struct ShMesh {
 	VkBuffer		index_buffer;
 	VkDeviceMemory	index_buffer_memory;
 } ShMesh;
-SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShMesh, 4)
+SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShMesh, 1)
 
 #ifdef __cplusplus
 }

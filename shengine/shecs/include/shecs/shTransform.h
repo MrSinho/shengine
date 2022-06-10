@@ -16,7 +16,7 @@ typedef struct ShTransform {
 	float left[3];
 	float up[3];
 } ShTransform;
-SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShTransform, 0)
+SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShTransform, 3)
 
 #ifdef __cplusplus
 }

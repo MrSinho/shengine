@@ -24,7 +24,7 @@ typedef struct ShCamera {
 	ShCameraSetupFlags flags;
 
 } ShCamera;
-SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShCamera, 3);
+SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShCamera, 2);
 
 #ifdef __cplusplus
 }

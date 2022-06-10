@@ -11,11 +11,15 @@ extern "C" {
 
 typedef struct ShEngine ShEngine;
 
+typedef struct ShIdentity ShIdentity;
+
 typedef struct ShMeshInfo ShMeshInfo;
+
+typedef struct ShCamera ShCamera;
 
 typedef struct ShTransform ShTransform;
 
-typedef struct ShCamera ShCamera;
+
 
 extern void shSceneInit(ShEngine* p_engine);
 

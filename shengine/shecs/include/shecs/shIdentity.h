@@ -12,7 +12,7 @@ typedef struct ShIdentity {
 	const char* tag;
 	const char* subtag;
 } ShIdentity;
-SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShIdentity, 6)
+SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShIdentity, 0)
 
 #ifdef __cplusplus
 }
