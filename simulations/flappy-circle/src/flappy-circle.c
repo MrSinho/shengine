@@ -65,7 +65,7 @@ void SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine, const ui
 		bird_input(p_engine, entity);
 		break;
 
-	default:
+	default: //for components linked to the main bird body
 		memcpy(p_transform, shGetShTransform(p_scene, BIRD_ENTITY), sizeof(ShTransform));
 	}
 

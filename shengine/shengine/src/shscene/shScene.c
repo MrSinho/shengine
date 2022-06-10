@@ -58,11 +58,10 @@ void shSceneInit(ShEngine* p_engine) {
 			}
 		}
 
-		//INIT EXTENSIONS
+		//INIT PER ENTITY EXTENSIONS
 		if (p_transform != NULL) {
 			p_transform->position[1] *= -1.0f;
 			shUpdateShTransform(p_transform);
-
 		}
 	}
 
