@@ -35,7 +35,7 @@ typedef struct ShEngine {
     ShSimulationHandle  simulation_host;
     uint32_t		    material_count;
 
-    void*               p_global_extension;
+    void*               p_engine_extension;
 }ShEngine;
 
 static void shResetEngineState(ShEngine* p_engine) {
