@@ -16,8 +16,13 @@ def main():#example call: python export_simulation.py simulation-sample SHARED;;
     src_stream = open(src_path + "/source-files.txt", "r")
     src = src_stream.read()
     src_stream.close()
-
     print(src)
+    
+    print(f"loading {src_path}/libs.txt")
+    libs_stream = open(src_path + "/libs.txt", "r")
+    libs = libs_stream.read()
+    libs_stream.close()
+    print(libs)
 
     cmake_file = f"""
 cmake_minimum_required(VERSION 3.0)
@@ -43,7 +48,7 @@ endif()
 target_include_directories(${{SH_SIMULATION_NAME}} PUBLIC 
 ${{CMAKE_CURRENT_SOURCE_DIR}}/${{SH_SIMULATION_NAME}}/include
 )
-target_link_libraries(${{SH_SIMULATION_NAME}} PUBLIC shengine)
+target_link_libraries(${{SH_SIMULATION_NAME}} PUBLIC shengine {libs})
 set_target_properties(${{SH_SIMULATION_NAME}} PROPERTIES 
 ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin  
 RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
