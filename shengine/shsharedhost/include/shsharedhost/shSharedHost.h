@@ -28,26 +28,22 @@ extern "C" {
 #include <stddef.h>
 	
 typedef void* ShSharedHandle;
-typedef void (ShEntityFunc) (void*, uint32_t);
+typedef void (ShSimulationFunc) (void*);
 
-static void shSharedSceneRun(ShEntityFunc* p_func, void* p_engine, const uint32_t entity_count) {
+static void shSharedSceneRun(ShSimulationFunc* p_func, void* p_engine, const uint32_t entity_count) {
 	assert(p_engine != NULL);
-	if (p_func != NULL) {
-		for (uint32_t i = 0; i < entity_count; i++) {
-			p_func(p_engine, i);
-		}
-	}
+	p_func(p_engine);
 }
 
 typedef struct ShSimulationHandle {
-	ShSharedHandle	shared;
-	uint8_t			run;
-	char*			s_start;
-	char*			s_update;
-	char*			s_close;
-	ShEntityFunc*	p_start;
-	ShEntityFunc*	p_update;
-	ShEntityFunc*	p_close;
+	ShSharedHandle		shared;
+	uint8_t				run;
+	char*				s_start;
+	char*				s_update;
+	char*				s_close;
+	ShSimulationFunc*	p_start;
+	ShSimulationFunc*	p_update;
+	ShSimulationFunc*	p_close;
 } ShSimulationHandle;
 
 extern void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_simulation);

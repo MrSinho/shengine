@@ -44,34 +44,41 @@ void bird_input(ShEngine* p_engine, const uint32_t bird_entity) {
 	}
 }
 
-void SH_ENGINE_EXPORT_FUNCTION flappy_circle_start(ShEngine* p_engine, const uint32_t entity) {
-	if (entity == BIRD_ENTITY) {
-		shAddBird(p_scene, entity);
+void SH_ENGINE_EXPORT_FUNCTION flappy_circle_start(ShEngine* p_engine) {
+	for (uint32_t entity = 0; entity < (p_scene)->entity_count; entity++) {
+		if (entity == BIRD_ENTITY) {
+			shAddBird(p_scene, entity);
+			break;
+		}
 	}
+	
 }
 
-void SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine, const uint32_t entity) {
-	ShTransform* p_transform = shGetShTransform(p_scene, entity);
+void SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
+	
+	for (uint32_t entity = 0; entity < (p_scene)->entity_count; entity++) {
+		ShTransform* p_transform = shGetShTransform(p_scene, entity);
 
-	switch (entity) {
-	case CAMERA_ENTITY:
-		break;
+		switch (entity) {
+		case CAMERA_ENTITY:
+			break;
 
-	case LOOP_OBJECT_ENTITY: 
-		p_transform->rotation[2] += 10.0f * delta_time;
-		break;
+		case LOOP_OBJECT_ENTITY:
+			p_transform->rotation[2] += 10.0f * delta_time;
+			break;
 
-	case BIRD_ENTITY:
-		bird_input(p_engine, entity);
-		break;
+		case BIRD_ENTITY:
+			bird_input(p_engine, entity);
+			break;
 
-	default: //for components linked to the main bird body
-		memcpy(p_transform, shGetShTransform(p_scene, BIRD_ENTITY), sizeof(ShTransform));
+		default: //for components linked to the main bird body
+			memcpy(p_transform, shGetShTransform(p_scene, BIRD_ENTITY), sizeof(ShTransform));
+		}
 	}
 
 }
 
-void SH_ENGINE_EXPORT_FUNCTION flappy_circle_close(ShEngine* p_engine, const uint32_t entity) {
+void SH_ENGINE_EXPORT_FUNCTION flappy_circle_close(ShEngine* p_engine) {
 	return;
 }
 
