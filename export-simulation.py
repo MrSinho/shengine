@@ -20,13 +20,26 @@ def main():#example call: python export_simulation.py simulation-sample SHARED;;
     
     print(f"loading {src_path}/libs.txt")
     libs_stream = open(src_path + "/libs.txt", "r")
-    libs = libs_stream.read()
+    libs_data = libs_stream.read()
     libs_stream.close()
-    print(libs)
+    print(libs_data)
+    
+    libs_arr = libs_data.split()
+    libs = []
+    libs_dir = []
+    for i in range (0, len(libs_arr), 2):
+        libs.append(libs_arr[i])
+        libs_dir.append(libs_arr[i+1])
 
-    cmake_file = f"""
-cmake_minimum_required(VERSION 3.0)
+    cmake_subdirectories = " "
+    for i in range (0, len(libs_dir), 1):
+        cmake_subdirectories += f"add_subdirectory({libs_dir[i]} [EXCLUDE_FROM_ALL])\n"
+    print(f"subdirectories:\n\t{cmake_subdirectories}\n")
+    
+    cmake_file = f"""cmake_minimum_required(VERSION 3.0)
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
+
+{cmake_subdirectories}
 
 option(SH_SIMULATION_NAME emptytarget)
 project(${{SH_SIMULATION_NAME}})
