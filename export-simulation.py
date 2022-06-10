@@ -29,7 +29,7 @@ def main():#example call: python export_simulation.py simulation-sample SHARED;;
     libs_dir = "\t"
     for i in range (0, len(libs_arr), 2):
         libs.append(libs_arr[i])
-        libs_dir += libs_arr[i+1]
+        libs_dir += f"{libs_arr[i+1]} "
 
     cmake_subdirectories = "\t"
     for i in range (0, len(libs_dir), 1):
