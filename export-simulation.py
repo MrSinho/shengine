@@ -26,12 +26,12 @@ def main():#example call: python export_simulation.py simulation-sample SHARED;;
     
     libs_arr = libs_data.split()
     libs = []
-    libs_dir = []
+    libs_dir = "\t"
     for i in range (0, len(libs_arr), 2):
         libs.append(libs_arr[i])
-        libs_dir.append(libs_arr[i+1])
+        libs_dir += libs_arr[i+1]
 
-    cmake_subdirectories = " "
+    cmake_subdirectories = "\t"
     for i in range (0, len(libs_dir), 1):
         cmake_subdirectories += f"add_subdirectory({libs_dir[i]} [EXCLUDE_FROM_ALL])\n"
     print(f"subdirectories:\n\t{cmake_subdirectories}\n")
