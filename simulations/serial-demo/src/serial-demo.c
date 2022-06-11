@@ -42,8 +42,10 @@ void SH_ENGINE_EXPORT_FUNCTION serial_start(ShEngine* p_engine) {
 
 void read_serial_data(ShEngine* p_engine, ShSerialHandle* p_serial) {
 
+	ShMaterialHost* p_material = &p_engine->p_materials[0];
+
 	float serial_buffer[2] = { 0 };
-	float* p_descriptor = (float*)&((char*)p_engine->p_materials[0].material_clients[SKYSPHERE_ENTITY].p_uniform_parameters)[80];
+	float* p_descriptor = (float*)&((char*)p_material->material_clients[SKYSPHERE_ENTITY].p_uniform_parameters)[p_material->pipeline.descriptor_buffer_infos[0].range + 16];
 
 	uint32_t bytes_read = 0;
 	if (shSerialReadBuffer(8, serial_buffer, &bytes_read, p_serial)) {
