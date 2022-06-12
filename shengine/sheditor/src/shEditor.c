@@ -90,11 +90,7 @@ int main() {
 		shFrameEnd(&engine.core, 0, image_index);
 	}
 
-	shMaterialsRelease(&engine.core, &engine.material_count, &engine.p_materials);
-	shSceneRelease(&engine);
-	shSimulationClose(&engine);
-
-	shVulkanRelease(&engine.core);
+	shEngineRelease(&engine);
 
 	return 0;
 }

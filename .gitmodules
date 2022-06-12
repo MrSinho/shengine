@@ -4,9 +4,6 @@
 [submodule "shengine/externals/cglm"]
 	path = shengine/externals/cglm
 	url = https://github.com/recp/cglm.git
-[submodule "shengine/externals/json-c"]
-	path = shengine/externals/json-c
-	url = https://github.com/json-c/json-c.git
 [submodule "shengine/externals/shserial"]
 	path = shengine/externals/shserial
 	url = https://github.com/MrSinho/shserial.git
@@ -19,3 +16,6 @@
 [submodule "shengine/externals/plyimporter"]
 	path = shengine/externals/plyimporter
 	url = https://github.com/mrsinho/plyimporter.git
+[submodule "shengine/externals/json-c"]
+	path = shengine/externals/json-c
+	url = https://github.com/json-c/json-c.git

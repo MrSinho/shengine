@@ -66,7 +66,7 @@ static void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
 	shSharedSceneRun((p_engine)->simulation_host.p_update, p_engine, (p_engine)->scene.entity_count)
 
 #define shSimulationClose(p_engine)\
-	shSharedSceneRun((p_engine)->simulation_host.p_close, p_engine, (p_engine)->scene.entity_count)
+	shSharedSceneRun((p_engine)->simulation_host.p_close, p_engine, (p_engine)->scene.entity_count)\
 
 #ifdef __cplusplus
 }

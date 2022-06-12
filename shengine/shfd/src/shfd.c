@@ -197,11 +197,11 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
         char fragment_path[256];
         shMakeAssetsPath(json_object_get_string(json_object_object_get(json_material, "vertex_shader")), vertex_path);
         shMakeAssetsPath(json_object_get_string(json_object_object_get(json_material, "fragment_shader")), fragment_path);
-        const char* vertex_code = shReadBinary(
+        char* vertex_code = (char*)shReadBinary(
             vertex_path,
             &vertex_shader_size
         );
-        const char* fragment_code = shReadBinary(
+        char* fragment_code = (char*)shReadBinary(
             fragment_path,
             &fragment_shader_size
         );
@@ -212,6 +212,9 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
         shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_VERTEX_BIT, &pipeline);
         shPipelineCreateShaderModule(p_core->device, fragment_shader_size, fragment_code, &pipeline);
         shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_FRAGMENT_BIT, &pipeline);
+
+        free(vertex_code);
+        free(fragment_code);
 
         ShVkFixedStates fixed_states = { 0 };
         json_object* json_fixed_states = json_object_object_get(json_material, "fixed_states");

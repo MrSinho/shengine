@@ -48,6 +48,14 @@ static void shResetEngineState(ShEngine* p_engine) {
     shSimulationStart(p_engine);
 }
 
+static void shEngineRelease(ShEngine* p_engine) {
+    shSimulationClose(p_engine);
+    shSharedRelease(p_engine->simulation_host.shared);
+    shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
+    shSceneRelease(p_engine);
+    shVulkanRelease(&p_engine->core);
+}
+
 //static void shReloadMaterials(ShVkCore* p_core, const ShFd mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {
 //	shMaterialsRelease(p_core, p_mat_info_count, pp_materials);
 //	shLoadMaterials(p_core, mat_info_descriptor.path, p_mat_info_count, pp_materials);
