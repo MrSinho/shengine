@@ -36,7 +36,8 @@
           "set": 0,
           "size": 64,
           "stage": "SHADER_STAGE_VERTEX",
-          "dynamic": 1
+          "dynamic": 1,
+          "max_bindings": 1
         }
       ]
     },
@@ -76,7 +77,8 @@
           "set": 0,
           "size": 64,
           "stage": "SHADER_STAGE_VERTEX",
-          "dynamic": 1
+          "dynamic": 1,
+          "max_bindings": 1
         },
         {
             "set": 1,
@@ -122,7 +124,8 @@
           "set": 0,
           "size": 64,
           "stage": "SHADER_STAGE_VERTEX",
-          "dynamic": 1
+          "dynamic": 1,
+          "max_bindings": 1
         },
         {
             "set": 1,

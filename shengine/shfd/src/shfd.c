@@ -167,11 +167,12 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
         if (json_descriptors != NULL) {
             for (uint8_t i = 0; i < descriptor_buffer_count; i++) {
                 json_object* json_descriptor_buffer = json_object_array_get_idx(json_descriptors, i);
-                const   uint32_t set    = (uint32_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "set"));
-                const   uint8_t dynamic = (uint8_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "dynamic"));
-                        uint32_t size   = (uint32_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "size"));
+                const   uint32_t set            = (uint32_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "set"));
+                const   uint8_t dynamic         = (uint8_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "dynamic"));
+                const   uint32_t max_bindings   = (uint32_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "max_bindings"));
+                        uint32_t size           = (uint32_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "size"));
                 if (dynamic) {
-                    shPipelineCreateDynamicDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), SH_MAX_UNIFORM_BUFFER_SIZE, &pipeline);
+                    shPipelineCreateDynamicDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), max_bindings, &pipeline);
                 }
                 else {
                     shPipelineCreateDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), &pipeline);

@@ -35,13 +35,15 @@
             "set": 0,
             "size": 64,
             "stage": "SHADER_STAGE_VERTEX",
-            "dynamic": 1
+            "dynamic": 1,
+            "max_bindings": 5
           },
           {
             "set": 1,
             "size": 16,
             "stage": "SHADER_STAGE_FRAGMENT",
-            "dynamic": 1
+            "dynamic": 1,
+            "max_bindings": 5
           },
           {
               "set": 2,
