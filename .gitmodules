@@ -1,21 +1,21 @@
-[submodule "externals/glfw"]
-	path = externals/glfw
+[submodule "shengine/externals/glfw"]
+	path = shengine/externals/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "externals/cglm"]
-	path = externals/cglm
+[submodule "shengine/externals/cglm"]
+	path = shengine/externals/cglm
 	url = https://github.com/recp/cglm.git
-[submodule "externals/json-c"]
-	path = externals/json-c
+[submodule "shengine/externals/json-c"]
+	path = shengine/externals/json-c
 	url = https://github.com/json-c/json-c.git
-[submodule "externals/shserial"]
-	path = externals/shserial
+[submodule "shengine/externals/shserial"]
+	path = shengine/externals/shserial
 	url = https://github.com/MrSinho/shserial.git
-[submodule "externals/shecs"]
-	path = externals/shecs
+[submodule "shengine/externals/shecs"]
+	path = shengine/externals/shecs
 	url = https://github.com/mrsinho/shecs.git
-[submodule "externals/shvulkan"]
-	path = externals/shvulkan
+[submodule "shengine/externals/shvulkan"]
+	path = shengine/externals/shvulkan
 	url = https://github.com/mrsinho/shvulkan.git
-[submodule "externals/plyimporter"]
-	path = externals/plyimporter
+[submodule "shengine/externals/plyimporter"]
+	path = shengine/externals/plyimporter
 	url = https://github.com/mrsinho/plyimporter.git
