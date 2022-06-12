@@ -13,7 +13,7 @@ layout (push_constant) uniform constants {
 	mat4 view;
 } pconst;
 
-layout (set = 0, binding = 1) uniform uniformBuffer { //binding = 1 because is dynamic
+layout (std140, set = 0, binding = 1) uniform uniformBuffer { //binding = 1 because is dynamic
     mat4 model;
 } ubo;
 

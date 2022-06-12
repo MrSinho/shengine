@@ -7,11 +7,11 @@ struct ShPointLight {
     vec4 color;
 };
 
-layout (set = 1, binding = 1) uniform uniformBuffer_1 { //binding = 1 because is dynamic
+layout (std140, set = 1, binding = 1) uniform uniformBuffer_1 { //binding = 1 because is dynamic
     vec4 base_color;
 } ubo_1;
 
-layout (set = 2, binding = 0) uniform uniformBuffer_2 { //binding = 0 because is not dynamic
+layout (std140, set = 2, binding = 0) uniform uniformBuffer_2 { //binding = 0 because is not dynamic
     ShPointLight point_lights[4];
 } ubo_2;
 
