@@ -8,7 +8,7 @@ set(CGLM_USE_C99 ON)
 set(CGLM_STATIC ON)
 
 #SUBDIRECTORIES
-add_subdirectory(../externals [EXCLUDE_FROM_ALL])
+add_subdirectory(externals)
 
 #OPTIONS
 option(SH_ENGINE_BUILD_EDITOR OFF)
@@ -56,7 +56,7 @@ add_library(shfd STATIC
     shfd/src/shfd.c
 )
 target_include_directories(shfd PUBLIC 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../externals/shecs/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/externals/shecs/include
     ${CMAKE_CURRENT_SOURCE_DIR}/shecs/include
     ${CMAKE_CURRENT_SOURCE_DIR}/shfd/include
 )
