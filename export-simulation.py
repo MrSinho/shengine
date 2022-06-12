@@ -2,12 +2,12 @@ import sys
 import os
 import pathlib
 
-def main():#example call: python export_simulation.py simulation-sample SHARED;;;; optional last arg: ../simulations
+def main():#example call: python export_simulation.py simulation-sample SHARED;;;; optional last args: ../simulations Generator-name
     
     python_src_dir = str(pathlib.Path(__file__).parent.resolve().as_posix())
 
     simulation_path = python_src_dir + "/simulations"
-    if len(sys.argv) == 4:
+    if len(sys.argv) >= 4:
         simulation_path = python_src_dir + "/" + str(sys.argv[3])
 
     src_path =  simulation_path + "/" + str(sys.argv[1])
@@ -79,7 +79,9 @@ RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
     cmd = f"cd {python_src_dir}/build && cmake .. -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH={simulation_path} -DSH_EDITOR_ASSETS_PATH={src_path}/assets/ -DSH_SIMULATION_NAME="
     cmd += str(sys.argv[1])
     cmd += " -DSH_SIMULATION_BINARY_TYPE=" #could be STATIC SHARED EXECUTABLE
-    cmd += str(sys.argv[2])
+    cmd += str(sys.argv[2]) + " "
+    if (len(sys.argv) >= 5):
+        cmd += "-G\"" + str(sys.argv[4]).replace("-", " ") + "\""
     print(f"running command {cmd}")
     os.system(cmd)
 
