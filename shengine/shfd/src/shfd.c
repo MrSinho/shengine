@@ -20,6 +20,7 @@ extern "C" {
 
 #include <shvulkan/shVkCore.h>
 #include <shvulkan/shVkCheck.h>
+#include <shvulkan/shVkDescriptorStructureMap.h>
 
 //EXTENSIONS
 #include "shecs/shTransform.h"
@@ -169,18 +170,11 @@ void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_co
                 const   uint32_t set    = (uint32_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "set"));
                 const   uint8_t dynamic = (uint8_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "dynamic"));
                         uint32_t size   = (uint32_t)json_object_get_int(json_object_object_get(json_descriptor_buffer, "size"));
-                if (size < (uint32_t)p_core->physical_device_properties.limits.minUniformBufferOffsetAlignment) {
-                     size = (uint32_t)p_core->physical_device_properties.limits.minUniformBufferOffsetAlignment;
-                }
-                else {
-                        uint32_t sz = size % (uint32_t)p_core->physical_device_properties.limits.minUniformBufferOffsetAlignment;
-                        size = size + (uint32_t)p_core->physical_device_properties.limits.minUniformBufferOffsetAlignment - sz;
-                }
                 if (dynamic) {
-                    shPipelineCreateDynamicDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, size, SH_MAX_UNIFORM_BUFFER_SIZE, &pipeline);
+                    shPipelineCreateDynamicDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), SH_MAX_UNIFORM_BUFFER_SIZE, &pipeline);
                 }
                 else {
-                    shPipelineCreateDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, size, &pipeline);
+                    shPipelineCreateDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), &pipeline);
                 }
                 shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, i, &pipeline);
                 shPipelineBindDescriptorBufferMemory(p_core->device, i, &pipeline);
