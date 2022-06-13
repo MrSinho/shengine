@@ -11,7 +11,6 @@ extern "C" {
 
 #ifdef _WIN32
 #include <windows.h>
-#include <libloaderapi.h>
 #define shLoadShared(path) LoadLibrary(path)
 #define shSharedLoadSymbol GetProcAddress
 #define shSharedRelease FreeLibrary

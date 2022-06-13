@@ -49,7 +49,7 @@ static void shClearWindow(GLFWwindow* window) {
 
 extern void shClearWindow(GLFWwindow* window);
 
-extern void shCreateWindowSurface(ShEngine* p_engine);
+extern void	shWindowCreateSurface(ShEngine* p_engine);
 
 extern void shUpdateInput(ShWindow* p_window);
 

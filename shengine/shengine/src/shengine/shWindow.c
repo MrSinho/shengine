@@ -35,7 +35,7 @@ void shWindowSetup(const char* title, const uint32_t width, const uint32_t heigh
 	p_window->pp_instance_extensions = glfwGetRequiredInstanceExtensions(&p_window->instance_extension_count);
 }
 
-void shCreateWindowSurface(ShEngine* p_engine) {
+void shWindowCreateSurface(ShEngine* p_engine) {
 	assert(p_engine != NULL);
 
 	p_engine->core.surface.width = p_engine->window.width;

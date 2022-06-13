@@ -28,7 +28,7 @@ int main() {
 	ShEngine engine = { 0 };
 	shWindowSetup("shengine editor", 720, 480, &engine.window);
 	shCreateInstance(&engine.core, "shengine editor", "shengine", 1, engine.window.instance_extension_count, engine.window.pp_instance_extensions);
-	shCreateWindowSurface(&engine);
+	shWindowCreateSurface(&engine);
 	shSelectPhysicalDevice(&engine.core, SH_VK_CORE_GRAPHICS | SH_VK_CORE_COMPUTE);
 	shSetLogicalDevice(&engine.core);
 	shGetGraphicsQueue(&engine.core);

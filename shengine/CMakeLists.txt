@@ -32,7 +32,7 @@ add_library(shengine
 target_include_directories(shengine PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/shengine/include
     ${CMAKE_CURRENT_SOURCE_DIR}/shecs/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../externals/shecs/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/externals/shecs/include
 )
 target_link_libraries(shengine PUBLIC
     glfw
@@ -90,6 +90,7 @@ shsharedhost/src/shSharedHost.c
 )
 target_include_directories(shsharedhost PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/shsharedhost/include
+${CMAKE_CURRENT_SOURCE_DIR}/externals
 )
 target_link_libraries(shsharedhost PUBLIC shfd)
 endfunction()
