@@ -3,7 +3,7 @@ add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 project(shprojects C)
 
-option(SIMULATION_PATH OFF)
+option(SIMULATION_PATH CACHE OFF)
 
 add_subdirectory(shengine)
 
