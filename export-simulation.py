@@ -41,10 +41,10 @@ add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 {cmake_subdirectories}
 
-option(SH_SIMULATION_NAME emptytarget)
+option(SH_SIMULATION_NAME CACHE emptytarget)
 project(${{SH_SIMULATION_NAME}})
 
-option(SH_SIMULATION_BINARY_TYPE "EXECUTABLE")
+option(SH_SIMULATION_BINARY_TYPE CACHE "EXECUTABLE")
 if("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "STATIC")
     add_library(${{SH_SIMULATION_NAME}} STATIC 
     {src_path}/{src}
