@@ -276,7 +276,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 						shDrawIndexed(p_engine->core.p_graphics_commands[0].cmd_buffer, p_mesh->mesh_info.index_count);
 					}
 					else if (p_mesh->mesh_info.index_count == 0 && p_mesh->mesh_info.vertex_count != 0) {
-						shDraw(p_engine->core.p_graphics_commands[0].cmd_buffer, p_mesh->mesh_info.vertex_count / p_mesh->mesh_info.vertex_stride);
+						shDraw(p_engine->core.p_graphics_commands[0].cmd_buffer, p_mesh->mesh_info.vertex_count / (p_mesh->mesh_info.vertex_stride / sizeof(float)));
 					}
 				}
 			}
