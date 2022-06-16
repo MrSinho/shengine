@@ -36,6 +36,11 @@ def main():#example call: python export_simulation.py simulation-sample SHARED;;
         cmake_subdirectories += f"add_subdirectory({libs_dir[i]} [EXCLUDE_FROM_ALL])\n"
     print(f"subdirectories:\n\t{cmake_subdirectories}\n")
     
+    src_arr = src.split()
+    src_files = "\t"
+    for i in range (0, len(src_arr), 1):
+        src_files += f"{src_path}/{src_arr[i]}\n"
+
     cmake_file = f"""cmake_minimum_required(VERSION 3.0)
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
@@ -47,15 +52,15 @@ project(${{SH_SIMULATION_NAME}})
 option(SH_SIMULATION_BINARY_TYPE CACHE "EXECUTABLE")
 if("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "STATIC")
     add_library(${{SH_SIMULATION_NAME}} STATIC 
-    {src_path}/{src}
+    {src_files}
 )
 elseif("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "SHARED")
     add_library(${{SH_SIMULATION_NAME}} SHARED 
-    {src_path}/{src}
+    {src_files}
 )
 elseif("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "EXECUTABLE")
     add_executable(${{SH_SIMULATION_NAME}}  
-    {src_path}/{src}
+    {src_files}
 )
 endif()
 target_include_directories(${{SH_SIMULATION_NAME}} PUBLIC 
