@@ -54,7 +54,7 @@ int main() {
 	shCreateScene(&engine.scene);
 	shLoadScene(engine.scene_descriptor.path, &engine.p_materials, &engine.scene);
 
-	shSceneInit(&engine);
+	shSceneInit(&engine, &engine.scene);
 
 	//ShSimulationHandle simulation = { 0 };
 	shLoadSimulation(engine.simulation_descriptor.path, &engine, &engine.simulation_host);

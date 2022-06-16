@@ -31,10 +31,8 @@ extern "C" {
 
 
 
-void shSceneInit(ShEngine* p_engine) {
+void shSceneInit(ShEngine* p_engine, ShScene* p_scene) {
 		
-	ShScene* p_scene = &p_engine->scene;
-
 	for (uint32_t entity = 0; entity < p_scene->entity_count; entity++) {
 		ShMesh* p_mesh = shGetShMesh(&p_engine->scene, entity);
 		ShTransform* p_transform = shGetShTransform(&p_engine->scene, entity);

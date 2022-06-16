@@ -44,7 +44,7 @@ static void shResetEngineState(ShEngine* p_engine) {
     shSceneRelease(p_engine);
     shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
     shLoadScene(p_engine->scene_descriptor.path, &p_engine->p_materials, &p_engine->scene);
-    shSceneInit(p_engine);
+    shSceneInit(p_engine, &p_engine->scene);
     shSimulationStart(p_engine);
 }
 

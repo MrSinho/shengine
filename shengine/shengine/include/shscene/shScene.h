@@ -21,7 +21,7 @@ typedef struct ShTransform ShTransform;
 
 
 
-extern void shSceneInit(ShEngine* p_engine);
+extern void shSceneInit(ShEngine* p_engine, ShScene* p_scene);
 
 extern void shUpdateShTransform(ShTransform* p_transform);
 
