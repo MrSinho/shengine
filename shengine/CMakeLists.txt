@@ -21,6 +21,7 @@ endif()
 
 function(build_shengine)
 add_library(shengine 
+    shengine/src/shengine/shEngine.c
     shengine/src/shengine/shInput.c
     shengine/src/shengine/shTime.c
     shengine/src/shengine/shWindow.c

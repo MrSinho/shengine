@@ -22,6 +22,8 @@ extern "C" {
 
 #include <stdint.h>
 
+
+
 typedef struct ShEngine {
     ShVkCore            core;
     ShWindow            window;
@@ -38,39 +40,31 @@ typedef struct ShEngine {
     void*               p_engine_extension;
 }ShEngine;
 
-static void shResetEngineState(ShEngine* p_engine) {
-    shSimulationClose(p_engine); 
-    shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
-    shSceneRelease(p_engine);
-    shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
-    shLoadScene(p_engine->scene_descriptor.path, &p_engine->p_materials, &p_engine->scene);
-    shSceneInit(p_engine, &p_engine->scene);
-    shSimulationStart(p_engine);
+
+
+static uint8_t shEngineWarning(int condition, const char* msg) {
+    if (!(int)(condition)) { printf("shengine warning: %s\n", msg); return 0; }
+    return 1;
 }
 
-static void shEngineRelease(ShEngine* p_engine) {
-    shSimulationClose(p_engine);
-    shSharedRelease(p_engine->simulation_host.shared);
-    shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
-    shSceneRelease(p_engine);
-    shVulkanRelease(&p_engine->core);
-}
+#define shEngineError(condition, msg)\
+	if (!(int)(condition)) { printf("shengine error: %s\n", msg); perror("aborting"); }
 
-//static void shReloadMaterials(ShVkCore* p_core, const ShFd mat_info_descriptor, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {
-//	shMaterialsRelease(p_core, p_mat_info_count, pp_materials);
-//	shLoadMaterials(p_core, mat_info_descriptor.path, p_mat_info_count, pp_materials);
-//}
-//
-//static void shReloadScene(ShEngine* p_engine, const uint32_t scene_idx, const ShFd scene_descriptor, ShMaterialHost** pp_materials) {
-//	shSceneRelease(p_engine, scene_idx);
-//	shLoadScene(scene_descriptor.path, pp_materials, &p_engine->scenes[scene_idx]);
-//	shSceneInit(p_engine, scene_idx);
-//}
-//
-//static void shReloadPhysicsWorld(const ShFd physics_descriptor, ShScene* p_scene, ShPhysicsHost* p_host) {
-//	ShPhysicsHostRelease(p_host);
-//	shLoadPhysicsWorld(physics_descriptor.path, p_host);
-//}
+
+
+extern void shEngineSafeState(ShEngine* p_engine);
+
+extern uint8_t shSetEngineState(ShEngine* p_engine);
+
+extern uint8_t shResetEngineState(ShEngine* p_engine);
+
+extern void shEngineUpdateState(ShEngine* p_engine);
+
+extern void shEngineManageState(ShEngine* p_engine, const uint8_t ready);
+
+extern void shEngineRelease(ShEngine* p_engine);
+
+
 
 #ifdef __cplusplus
 }

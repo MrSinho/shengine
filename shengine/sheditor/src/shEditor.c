@@ -21,7 +21,19 @@ extern "C" {
 
 #include <string.h>
 
+
+
 #define SH_EDITOR_THREAD_COUNT 1
+
+
+
+#define shEditorWarning(condition, msg)\
+	if (!(int)(condition)) { printf("shFd warning: %s\n", msg); }
+
+#define shEditorError(condition, msg)\
+	if (!(int)(condition)) { printf("shFd error: %s\n", msg); perror("aborting"); }
+
+
 
 int main() {
 
@@ -42,55 +54,11 @@ int main() {
 	shSetSyncObjects(&engine.core);
 
 	
-	//shInitDescriptor(&materials_descriptor);
-	//shInitDescriptor(&scene_descriptor);
-	//shInitDescriptor(&simulation_descriptor);
 	shMakeAssetsPath("/descriptors/materials.json", engine.materials_descriptor.path);
 	shMakeAssetsPath("/descriptors/scene.json", engine.scene_descriptor.path);
 	shMakeAssetsPath("/descriptors/simulation.json", engine.simulation_descriptor.path);
 
-	shLoadMaterials(&engine.core, engine.materials_descriptor.path, &engine.material_count, &engine.p_materials);
-
-	shCreateScene(&engine.scene);
-	shLoadScene(engine.scene_descriptor.path, &engine.p_materials, &engine.scene);
-
-	shSceneInit(&engine, &engine.scene);
-
-	//ShSimulationHandle simulation = { 0 };
-	shLoadSimulation(engine.simulation_descriptor.path, &engine, &engine.simulation_host);
-	shSimulationLoadSymbols(&engine.simulation_host);
-
-	shSimulationStart(&engine);
-
-	double input_dtime = 0.0;
-	double input_last_time = 0.0;
-
-	while (shIsWindowActive(engine.window.window)) {
-		shUpdateWindow(&engine);
-
-		input_dtime = engine.time.now - input_last_time;
-		if (input_dtime >= 2.0) {
-			if (shIsKeyPressed(engine.window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(engine.window, SH_KEY_R)) {
-				input_last_time = engine.time.now;
-				shSetTime(0.0, &engine.time);
-				shResetEngineState(&engine);
-				input_last_time = 0.0;
-			}
-		}
-
-		shFrameReset(&engine.core, 0);
-
-		uint32_t image_index = 0;
-		shFrameBegin(&engine.core, 0, &image_index);
-
-		shSimulationUpdate(&engine);
-
-		shSceneUpdate(&engine);
-
-		shFrameEnd(&engine.core, 0, image_index);
-	}
-
-	shEngineRelease(&engine);
+	shEngineManageState(&engine, shSetEngineState(&engine));
 
 	return 0;
 }

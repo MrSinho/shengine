@@ -5,34 +5,37 @@
 extern "C" {
 #endif//__cplusplus
 
+
+
 #ifdef _MSC_VER
-#pragma warning (disable: 4005 4996)
+#pragma warning (disable: 4005 4996 4113)
 #endif//_MSC_VER
+
+
 
 #ifdef _WIN32
 #include <windows.h>
 #define shLoadShared(path) LoadLibrary(path)
 #define shSharedLoadSymbol GetProcAddress
-#define shSharedRelease FreeLibrary
+#define shSharedFree FreeLibrary
 #else
 #include <dlfcn.h>
 #define shLoadShared(path) dlopen(path, RTLD_LAZY) 
 #define shSharedLoadSymbol dlsym
-#define shSharedRelease dlclose
+#define shSharedFree dlclose
 #endif//_WIN32
 
-#include <stdint.h>
 
-#include <assert.h>
+
+#include <stdint.h>
 #include <stddef.h>
 	
+
+
 typedef void* ShSharedHandle;
 typedef void (ShSimulationFunc) (void*);
 
-static void shSharedSceneRun(ShSimulationFunc* p_func, void* p_engine, const uint32_t entity_count) {
-	assert(p_engine != NULL);
-	p_func(p_engine);
-}
+
 
 typedef struct ShSimulationHandle {
 	ShSharedHandle		shared;
@@ -45,27 +48,34 @@ typedef struct ShSimulationHandle {
 	ShSimulationFunc*	p_close;
 } ShSimulationHandle;
 
+
+
+#define shSharedHostWarning(condition, msg)\
+	if (!(int)(condition)) { printf("shsharedhost warning: %s\n", msg); }
+
+#define shSharedHostError(condition, msg)\
+	if (!(int)(condition)) { printf("shsharedhost error: %s\n", msg); perror("aborting"); }
+
+
+extern void shSharedSceneRun(ShSimulationFunc* p_func, void* p_engine, const uint32_t entity_count);
+
 extern void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_simulation);
 
-#ifdef _MSC_VER
-#pragma warning (disable: 4113)
-#endif//_MSC_VER
-
-static void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
-	assert(p_simulation != NULL);
-	p_simulation->p_start	= shSharedLoadSymbol(p_simulation->shared, p_simulation->s_start);
-	p_simulation->p_update	= shSharedLoadSymbol(p_simulation->shared, p_simulation->s_update);
-	p_simulation->p_close	= shSharedLoadSymbol(p_simulation->shared, p_simulation->s_close);
-}
+extern void shSimulationLoadSymbols(ShSimulationHandle* p_simulation);
 
 #define shSimulationStart(p_engine)\
-	shSharedSceneRun((p_engine)->simulation_host.p_start, p_engine, (p_engine)->scene.entity_count)
+	if ((p_engine)->simulation_host.p_start != NULL) { shSharedSceneRun((p_engine)->simulation_host.p_start, p_engine, (p_engine)->scene.entity_count); }
 
 #define shSimulationUpdate(p_engine)\
-	shSharedSceneRun((p_engine)->simulation_host.p_update, p_engine, (p_engine)->scene.entity_count)
+	if ((p_engine)->simulation_host.p_update != NULL) { shSharedSceneRun((p_engine)->simulation_host.p_update, p_engine, (p_engine)->scene.entity_count); }
 
 #define shSimulationClose(p_engine)\
-	shSharedSceneRun((p_engine)->simulation_host.p_close, p_engine, (p_engine)->scene.entity_count)\
+	if ((p_engine)->simulation_host.p_close != NULL) { shSharedSceneRun((p_engine)->simulation_host.p_close, p_engine, (p_engine)->scene.entity_count); }
+
+
+
+#define shSharedRelease(p_shared)\
+	if (p_shared != NULL) { if (*p_shared != NULL) { shSharedFree(*(p_shared)); *(p_shared) = NULL; } }
 
 #ifdef __cplusplus
 }

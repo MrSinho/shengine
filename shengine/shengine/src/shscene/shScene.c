@@ -300,6 +300,12 @@ void shSceneRelease(ShEngine* p_engine) {
 			if ((size_t)p_mesh->index_buffer_memory != 0) {
 				shClearBufferMemory(p_engine->core.device, p_mesh->index_buffer, p_mesh->index_buffer_memory);
 			}
+			if (p_mesh->mesh_info.p_vertices != NULL) {
+				free(p_mesh->mesh_info.p_vertices);
+			}
+			if (p_mesh->mesh_info.p_indices != NULL) {
+				free(p_mesh->mesh_info.p_indices);
+			}
 			p_mesh = NULL;
 			shRemoveShMesh(&p_engine->scene, entity);
 		}

@@ -20,7 +20,11 @@ extern "C" {
 #include <stdio.h>
 #include <stdint.h>
 
+
+
 typedef struct stat ShFileStats;
+
+
 
 typedef struct ShFd {
 	char		path[256];
@@ -29,11 +33,16 @@ typedef struct ShFd {
 } ShFd;
 
 
+
 typedef struct ShScene ShScene;
 typedef struct ShMaterialHost ShMaterialHost;
 typedef struct ShVkCore ShVkCore;
 
+
+
 extern uint8_t shListenFd(ShFd* descriptor_handle);
+
+
 
 #define shGetFileStats(path, stats)\
 	stat(path, stats)
@@ -41,13 +50,25 @@ extern uint8_t shListenFd(ShFd* descriptor_handle);
 #define shInitDescriptor(p_descriptor_handle)\
 	shGetFileStats((p_descriptor_handle)->path, &(p_descriptor_handle)->stats0)
 
+static uint8_t shFdWarning(int condition, const char* msg) {
+	if (!(int)(condition)) { printf("shfd warning: %s\n", msg); return 0; }
+	return 1;
+}
+
+#define shFdError(condition, msg)\
+	if (!(int)(condition)) { printf("shfd error: %s\n", msg); perror("aborting"); }
+
+
+
 extern void shMakeAssetsPath(const char* src_path, char* dst_path);
 
-extern void shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_count, ShMaterialHost** pp_materials);
+extern uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_count, ShMaterialHost** pp_materials);
 
 extern void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials);
 
 extern void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene);
+
+extern uint32_t shStringFlagToInt(const char* s_flag);
 
 #ifdef __cplusplus
 }
