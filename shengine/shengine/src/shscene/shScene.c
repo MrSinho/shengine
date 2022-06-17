@@ -306,7 +306,7 @@ void shSceneRelease(ShEngine* p_engine) {
 			if (p_mesh->mesh_info.p_indices != NULL) {
 				free(p_mesh->mesh_info.p_indices);
 			}
-			p_mesh = NULL;
+			memset(p_mesh, 0, sizeof(ShMesh));
 			shRemoveShMesh(&p_engine->scene, entity);
 		}
 	}
