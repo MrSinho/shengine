@@ -47,7 +47,6 @@ void shMakeAssetsPath(const char* src_path, char* dst_path) {
     *(pp_materials) = NULL;\
     return 0
 
-
 uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_count, ShMaterialHost** pp_materials) {
     shFdError(p_material_count != NULL && pp_materials != NULL, "invalid arguments");
     
@@ -295,14 +294,18 @@ void shReadUniformParameters(json_object* json_parameters, const uint32_t entity
     }
 }
 
-void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene) {
+#define shAbortLoadingScene()\
+    return 0
+
+uint8_t shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene) {
     shFdError(p_scene != NULL && pp_materials != NULL, "invalid arguments");
 
     char* buffer = (char*)shReadText(path, NULL);
-    if (shFdWarning(buffer != NULL, "unavailable scene descriptor") == 0) { return; }
+    if (shFdWarning(buffer != NULL, "unavailable scene descriptor") == 0) { shAbortLoadingScene(); }
 
     json_object* parser = json_tokener_parse(buffer);
-    if (shFdWarning(parser != NULL, "invalid json format") == 0) { return; }
+    free(buffer);
+    if (shFdWarning(parser != NULL, "invalid json format") == 0) { shAbortLoadingScene(); }
 
     //MESHES
     uint32_t ply_mesh_count = 0;
@@ -438,38 +441,10 @@ void shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_sce
             (json_tag    != NULL) && (p_identity->tag = json_object_get_string(json_tag));
             (json_subtag != NULL) && (p_identity->subtag = json_object_get_string(json_subtag));
         }
-#if 0
-        if (json_physics_client != NULL) {
-            ShPhysicsClient* client = shAddShPhysicsClient(p_scene, entity);
-            for (uint32_t j = 0; j < json_object_array_length(json_physics_client); j++) {
-                *client |= shStringFlagToInt(json_object_get_string(json_object_array_get_idx(json_physics_client, j)));
-            }
-        }
-        if (json_rigidbody != NULL) {
-            json_object* json_mass = json_object_object_get(json_rigidbody, "mass");
-            json_object* json_shape = json_object_object_get(json_rigidbody, "shape");
-            
-            shreal mass = DEC(0.0);
-            ShCollisionShapeType shape_type = 0;
-
-            (json_mass   != NULL) && (mass = (shreal)json_object_get_double(json_mass));
-            (json_shape != NULL) && (shape_type = shStringFlagToInt(json_object_get_string(json_shape)));
-            
-            //ShRigidBody* p_rb = shAddShRigidBody(p_scene, entity);
-            //shDynamicsRigidBodyInit(mass, shape_type, p_rb);
-
-            if (shape_type == SH_COLLISION_SHAPE_SPHERE) { 
-                shreal radius = DEC(0.0);
-                json_object* json_radius = json_object_object_get(json_rigidbody, "radius");
-                (json_radius != NULL) && (radius = (shreal)json_object_get_double(json_radius));
-                //shDynamicsSetCollisionSphereRadius(radius, p_rb);
-            }
-        }
-#endif
     }
     
+    free(parser);
     if (ply_meshes != NULL) { free(ply_meshes); }
-    free(buffer);
 }
 
 uint32_t shStringFlagToInt(const char* s_flag) {
