@@ -53,250 +53,201 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
     
     
     char* buffer = (char*)shReadText(path, NULL);
-    if (buffer == NULL) { return 0; }
+    if (buffer == NULL) {
+        shAbortLoadingMaterials(pp_materials);
+    }
 
     json_object* parser = json_tokener_parse(buffer);
-    shFdWarning(parser != NULL, "invalid json format");
-    if (parser == NULL) { return 0; }
+    free(buffer);
+    if (!shFdWarning(parser != NULL, "invalid json format")) {
+        shAbortLoadingMaterials(pp_materials);
+    }
     
     json_object* json_materials = json_object_object_get(parser, "materials");
+    if (!shFdWarning(json_materials != NULL, "missing materials descriptor")) {
+        shAbortLoadingMaterials(pp_materials);
+    }
+
     uint32_t mat_count = (uint32_t)json_object_array_length(json_materials);
-    
+    ShMaterialHost* p_materials = calloc(mat_count, sizeof(ShMaterialHost));
+    if (p_materials == NULL || mat_count == 0) { shAbortLoadingMaterials(pp_materials); }
 
+    for (uint8_t build_pipeline = 0; build_pipeline < 2; build_pipeline++) {
 
+        for (uint32_t i = 0; i < mat_count; i++) {
 
-    for (uint32_t i = 0; i < mat_count; i++) {
-        json_object* json_material = json_object_array_get_idx(json_materials, i);
+//PIPELINE
+            ShVkPipeline pipeline = { 0 };//USED ONLY WHEN build_pipeline == 1
+//PIPELINE
 
-        json_object* json_vertex_shader = json_object_object_get(json_material, "vertex_shader");
-        json_object* json_fragment_shader = json_object_object_get(json_material, "fragment_shader"); 
-//+++++++++++++++++++++++++        
-        {
-            uint32_t vertex_shader_size = 0;
-            uint32_t fragment_shader_size = 0;
-            char vertex_path[256];
-            char fragment_path[256];
-            
-            if (shFdWarning(json_vertex_shader != NULL, "missing vertex shader path") == 0 || shFdWarning(json_fragment_shader != NULL, "missing fragment shader path") == 0) {
-                shAbortLoadingMaterials(pp_materials);
+            json_object* json_material = json_object_array_get_idx(json_materials, i);
+
+            json_object* json_vertex_shader = json_object_object_get(json_material, "vertex_shader");
+            json_object* json_fragment_shader = json_object_object_get(json_material, "fragment_shader");
+            //+++++++++++++++++++++++++        
+            {
+                uint32_t vertex_shader_size = 0;
+                uint32_t fragment_shader_size = 0;
+                char vertex_path[256];
+                char fragment_path[256];
+
+                if (shFdWarning(json_vertex_shader != NULL, "missing vertex shader path") == 0 || shFdWarning(json_fragment_shader != NULL, "missing fragment shader path") == 0) {
+                    shAbortLoadingMaterials(pp_materials);
+                }
+                shMakeAssetsPath(json_object_get_string(json_vertex_shader), vertex_path);
+                shMakeAssetsPath(json_object_get_string(json_fragment_shader), fragment_path);
+                char* vertex_code = (char*)shReadBinary(
+                    vertex_path,
+                    &vertex_shader_size
+                );
+                char* fragment_code = (char*)shReadBinary(
+                    fragment_path,
+                    &fragment_shader_size
+                );
+                if (shFdWarning(vertex_code != NULL, "vertex shader not found") == 0 || shFdWarning(fragment_code != NULL, "fragment shader not found") == 0) {
+                    shAbortLoadingMaterials(pp_materials);
+                }
+
+                {//BUILD PIPELINE
+                    if (build_pipeline) {
+                        shPipelineCreateShaderModule(p_core->device, vertex_shader_size, vertex_code, &pipeline);
+                        shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_VERTEX_BIT, &pipeline);
+                        shPipelineCreateShaderModule(p_core->device, fragment_shader_size, fragment_code, &pipeline);
+                        shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_FRAGMENT_BIT, &pipeline);
+                    }
+                }//BUILD PIPELINE
+
+                free(vertex_code);
+                free(fragment_code);
             }
-            shMakeAssetsPath(json_object_get_string(json_vertex_shader), vertex_path);
-            shMakeAssetsPath(json_object_get_string(json_fragment_shader), fragment_path);
-            char* vertex_code = (char*)shReadBinary(
-                vertex_path,
-                &vertex_shader_size
-            );
-            char* fragment_code = (char*)shReadBinary(
-                fragment_path,
-                &fragment_shader_size
-            );
-            if (shFdWarning(vertex_code != NULL, "vertex shader not found") == 0 || shFdWarning(fragment_code != NULL, "fragment shader not found") == 0) {
-                shAbortLoadingMaterials(pp_materials);
+            //+++++++++++++++++++++++++        
+
+
+            json_object* json_push_constant_size = json_object_object_get(json_material, "push_constants_size");
+            json_object* json_push_constants_stage = json_object_object_get(json_material, "push_constants_stage");
+            //+++++++++++++++++++++++++        
+            {
+                if (json_push_constant_size && json_push_constants_stage) {
+                    {//BUILD PIPELINE
+                        if (build_pipeline) {
+                            uint32_t push_constant_size = (uint32_t)json_object_get_int(json_push_constant_size);
+                            ShShaderStageFlags push_constant_stage = shStringFlagToInt(json_object_get_string(json_push_constants_stage));
+                            shSetPushConstants(push_constant_stage, 0, push_constant_size, &pipeline.push_constant_range);
+                        }
+                    }//BUILD PIPELINE
+                }
             }
+            //+++++++++++++++++++++++++        
 
-            free(vertex_code);
-            free(fragment_code);
-        }
-//+++++++++++++++++++++++++        
+            json_object* json_descriptors = json_object_object_get(json_material, "uniform_buffers");
+            //+++++++++++++++++++++++++
+            {
+                if (json_descriptors != NULL) {
+                    const uint8_t descriptor_buffer_count = (uint8_t)json_object_array_length(json_descriptors);
+                    for (uint8_t i = 0; i < descriptor_buffer_count; i++) {
+                        json_object* json_descriptor_buffer = json_object_array_get_idx(json_descriptors, i);
+                        json_object* json_set = json_object_object_get(json_descriptor_buffer, "set");
+                        json_object* json_dynamic = json_object_object_get(json_descriptor_buffer, "dynamic");
+                        json_object* json_max_bindings = json_object_object_get(json_descriptor_buffer, "max_bindings");
+                        json_object* json_size = json_object_object_get(json_descriptor_buffer, "size");
+                        json_object* json_stage = json_object_object_get(json_descriptor_buffer, "stage");
 
+                        if (!shFdWarning(json_set && json_dynamic && json_size && json_stage, "insufficient descriptor set info")) {
+                            shAbortLoadingMaterials(pp_materials);
+                        }  
+                        
+                        {//BUILD PIPELINE
+                            if (build_pipeline) {
+                                uint32_t set = (uint32_t)json_object_get_int(json_set);
+                                uint8_t dynamic = (uint8_t)json_object_get_int(json_dynamic);
+                                uint32_t max_bindings = (json_max_bindings == NULL) ? 1 : (uint32_t)json_object_get_int(json_max_bindings);
+                                uint32_t size = (uint32_t)json_object_get_int(json_size);
 
-        json_object* json_push_constant_size        = json_object_object_get(json_material, "push_constants_size");
-        json_object* json_push_constants_stage      = json_object_object_get(json_material, "push_constants_stage");
-//+++++++++++++++++++++++++        
-        {
-            if (json_push_constant_size && json_push_constants_stage) {
-                uint32_t push_constant_size = (uint32_t)json_object_get_int(json_push_constant_size);
-                ShShaderStageFlags push_constant_stage = shStringFlagToInt(json_object_get_string(json_push_constants_stage));
+                                if (dynamic) {
+                                    shPipelineCreateDynamicDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), max_bindings, &pipeline);
+                                }
+                                else {
+                                    shPipelineCreateDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), &pipeline);
+                                }
+                                shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, i, &pipeline);
+                                shPipelineBindDescriptorBufferMemory(p_core->device, i, &pipeline);
+                                shPipelineDescriptorSetLayout(p_core->device,
+                                    set,
+                                    dynamic ? 1 : 0,
+                                    dynamic ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC : VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                                    shStringFlagToInt(json_object_get_string(json_object_object_get(json_descriptor_buffer, "stage"))),
+                                    &pipeline
+                                );
+                                shPipelineCreateDescriptorPool(p_core->device, i, &pipeline);
+                                shPipelineAllocateDescriptorSet(p_core->device, i, &pipeline);
+                            }
+                        }//BUILD PIPELINE
+                    }//END DESCRIPTORS LOOP
+                }
             }
-        }
-//+++++++++++++++++++++++++        
+            //+++++++++++++++++++++++++        
 
-        json_object* json_descriptors = json_object_object_get(json_material, "uniform_buffers");
-//+++++++++++++++++++++++++
-        {
-            if (json_descriptors != NULL) {
-                const uint8_t descriptor_buffer_count = (uint8_t)json_object_array_length(json_descriptors);
-                for (uint8_t i = 0; i < descriptor_buffer_count; i++) {
-                    json_object* json_descriptor_buffer = json_object_array_get_idx(json_descriptors, i);
-                    json_object* json_set = json_object_object_get(json_descriptor_buffer, "set");
-                    json_object* json_dynamic = json_object_object_get(json_descriptor_buffer, "dynamic");
-                    json_object* json_max_bindings = json_object_object_get(json_descriptor_buffer, "max_bindings");
-                    json_object* json_size = json_object_object_get(json_descriptor_buffer, "size");
+//FIXED STATES
+            ShVkFixedStates fixed_states = { 0 };//USED ONLY WHEN build_pipeline == 1
+            ShVkFixedStateFlags fixed_state_flags = 0;
+//FIXED STATES
 
-                    if (!(json_set && json_dynamic && json_size)) {
-                        shFdWarning(0, "insufficient descriptor set info");
+            json_object* json_fixed_states = json_object_object_get(json_material, "fixed_states");
+            json_object* json_fixed_states_flags = json_object_object_get(json_fixed_states, "flags");
+            //+++++++++++++++++++++++++        
+            {
+                if (!shFdWarning(json_fixed_states != NULL, "invalid fixed states info")) {
+                    shAbortLoadingMaterials(pp_materials);
+                }
+                if (!shFdWarning(json_fixed_states_flags != NULL, "missing fixed states flags")) {
+                    shAbortLoadingMaterials(pp_materials);
+                }
+                json_object* json_vertex_inputs = json_object_object_get(json_fixed_states, "vertex_inputs");
+                for (uint32_t i = 0; i < (uint32_t)json_object_array_length(json_vertex_inputs); i++) {
+                    json_object* json_vertex_input = json_object_array_get_idx(json_vertex_inputs, i);
+                    json_object* json_location = json_object_object_get(json_vertex_input, "location");
+                    json_object* json_format = json_object_object_get(json_vertex_input, "format");
+                    json_object* json_offset = json_object_object_get(json_vertex_input, "offset");
+                    json_object* json_size = json_object_object_get(json_vertex_input, "size");
+                    if (!shFdWarning(json_vertex_input && json_location && json_format && json_offset && json_size, "insufficient vertex input state info")) {
                         shAbortLoadingMaterials(pp_materials);
                     }
-                }
-            }
-        }
-//+++++++++++++++++++++++++        
-        
-        json_object* json_fixed_states              = json_object_object_get(json_material, "fixed_states");
-        json_object* json_vertex_inputs             = json_object_object_get(json_fixed_states, "vertex_inputs");
-        json_object* json_fixed_states_flags        = json_object_object_get(json_fixed_states, "flags");
-//+++++++++++++++++++++++++        
-        {
-            if (shFdWarning(json_fixed_states != NULL, "invalid fixed states info") == 0) {
-                shAbortLoadingMaterials(pp_materials);
-            }
-            for (uint32_t i = 0; i < (uint32_t)json_object_array_length(json_vertex_inputs); i++) {
-                json_object* json_vertex_input = json_object_array_get_idx(json_vertex_inputs, i);
-                json_object* json_location = json_object_object_get(json_vertex_input, "location");
-                json_object* json_format = json_object_object_get(json_vertex_input, "format");
-                json_object* json_offset = json_object_object_get(json_vertex_input, "offset");
-                json_object* json_size = json_object_object_get(json_vertex_input, "size");
-                if (!(json_vertex_input && json_location && json_format && json_offset && json_size)) {
-                    shAbortLoadingMaterials(pp_materials);
-                }
-            }
-        }
-//+++++++++++++++++++++++++        
-//+++++++++++++++++++++++++        
-//+++++++++++++++++++++++++ END MATERIAL LOOP
-    }
-       
-    
+                    {//BUILD PIPELINE
+                        if (build_pipeline) {
+                            for (uint32_t i = 0; i < json_object_array_length(json_fixed_states_flags); i++) {
+                                json_object* json_flag = json_object_array_get_idx(json_fixed_states_flags, i);
+                                fixed_state_flags |= shStringFlagToInt(json_object_get_string(json_flag));
+                            }
+                            shSetVertexInputAttribute(
+                                (uint32_t)json_object_get_int(json_location),
+                                shStringFlagToInt(json_object_get_string(json_format)),
+                                (uint32_t)json_object_get_int(json_offset),
+                                (uint32_t)json_object_get_int(json_size),
+                                &fixed_states
+                            );
+                        }
+                    }//BUILD PIPELINE 
+                }//END VERTEX INPUTS LOOP
 
-
-
-
-
-
-
-
-
-
-
-    ShMaterialHost* p_materials = calloc(mat_count, sizeof(ShMaterialHost));
-    if (p_materials == NULL || mat_count == 0) { return 0; }
-
-    for (uint32_t i = 0; i < mat_count; i++) {
-        json_object* json_material = json_object_array_get_idx(json_materials, i);
-
-        ShVkPipeline pipeline = { 0 };
-
-        uint32_t vertex_shader_size = 0;
-        uint32_t fragment_shader_size = 0;
-        char vertex_path[256];
-        char fragment_path[256];
-        json_object* json_vertex_shader = json_object_object_get(json_material, "vertex_shader");
-        json_object* json_fragment_shader = json_object_object_get(json_material, "fragment_shader");
-        if (shFdWarning(json_vertex_shader != NULL, "missing vertex shader path") == 0 || shFdWarning(json_fragment_shader != NULL, "missing fragment shader path") == 0) {
-            shAbortLoadingMaterials(pp_materials);
-        }
-        shMakeAssetsPath(json_object_get_string(json_vertex_shader), vertex_path);
-        shMakeAssetsPath(json_object_get_string(json_fragment_shader), fragment_path);
-        char* vertex_code = (char*)shReadBinary(
-            vertex_path,
-            &vertex_shader_size
-        );
-        char* fragment_code = (char*)shReadBinary(
-            fragment_path,
-            &fragment_shader_size
-        );
-        if (shFdWarning(vertex_code != NULL, "invalid vertex shader") == 0 || shFdWarning(fragment_code != NULL, "invalid fragment shader") == 0) {
-            shAbortLoadingMaterials(pp_materials);
-        }
-        shPipelineCreateShaderModule(p_core->device, vertex_shader_size, vertex_code, &pipeline);
-        shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_VERTEX_BIT, &pipeline);
-        shPipelineCreateShaderModule(p_core->device, fragment_shader_size, fragment_code, &pipeline);
-        shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_FRAGMENT_BIT, &pipeline);
-
-        free(vertex_code);
-        free(fragment_code);
-
-        json_object* json_push_constant_size = json_object_object_get(json_material, "push_constants_size");
-        json_object* json_push_constants_stage = json_object_object_get(json_material, "push_constants_stage");
-
-        if (json_push_constant_size && json_push_constants_stage) {
-            uint32_t push_constant_size = (uint32_t)json_object_get_int(json_push_constant_size);
-            ShShaderStageFlags push_constant_stage = shStringFlagToInt(json_object_get_string(json_push_constants_stage));
-            shSetPushConstants(push_constant_stage, 0, push_constant_size, &pipeline.push_constant_range);
-        }
-
-        json_object* json_descriptors = json_object_object_get(json_material, "uniform_buffers");
-        if (json_descriptors != NULL) {
-            const uint8_t descriptor_buffer_count = (uint8_t)json_object_array_length(json_descriptors);
-            for (uint8_t i = 0; i < descriptor_buffer_count; i++) {
-                json_object* json_descriptor_buffer = json_object_array_get_idx(json_descriptors, i);
-
-                json_object* json_set = json_object_object_get(json_descriptor_buffer, "set");
-                json_object* json_dynamic = json_object_object_get(json_descriptor_buffer, "dynamic");
-                json_object* json_max_bindings = json_object_object_get(json_descriptor_buffer, "max_bindings");
-                json_object* json_size = json_object_object_get(json_descriptor_buffer, "size");
-
-                if (json_set && json_dynamic && json_size) {
-                    uint32_t set = (uint32_t)json_object_get_int(json_set);
-                    uint8_t dynamic = (uint8_t)json_object_get_int(json_dynamic);
-                    uint32_t max_bindings = (json_max_bindings == NULL) ? 1 : (uint32_t)json_object_get_int(json_max_bindings);
-                    uint32_t size = (uint32_t)json_object_get_int(json_size);
-                    if (dynamic) {
-                        shPipelineCreateDynamicDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), max_bindings, &pipeline);
-                    }
-                    else {
-                        shPipelineCreateDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), &pipeline);
-                    }
-                    shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, i, &pipeline);
-                    shPipelineBindDescriptorBufferMemory(p_core->device, i, &pipeline);
-                    shPipelineDescriptorSetLayout(p_core->device,
-                        set,
-                        dynamic ? 1 : 0,
-                        dynamic ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC : VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                        shStringFlagToInt(json_object_get_string(json_object_object_get(json_descriptor_buffer, "stage"))),
-                        &pipeline
+                if (build_pipeline) {
+                    shSetFixedStates(
+                        p_core->device, 
+                        p_core->surface.width, 
+                        p_core->surface.height, 
+                        fixed_state_flags, 
+                        &fixed_states
                     );
-                    shPipelineCreateDescriptorPool(p_core->device, i, &pipeline);
-                    shPipelineAllocateDescriptorSet(p_core->device, i, &pipeline);
-                }
-                else {
-                    shFdWarning(0, "insufficient descriptor set info");
-                    shAbortLoadingMaterials(pp_materials);
+                    shSetupGraphicsPipeline(p_core->device, p_core->render_pass, fixed_states, &pipeline);
+                    p_materials[i].fixed_states = fixed_states;
+                    p_materials[i].pipeline = pipeline;
                 }
             }
-        }
+        }//END MATERIALS LOOP
+        (pp_materials != NULL) && (*pp_materials = p_materials);
+        (p_material_count != NULL) && (*p_material_count = mat_count);
+    }//END PARSE CONDITIONS
 
-        ShVkFixedStates fixed_states = { 0 };
-        json_object* json_fixed_states = json_object_object_get(json_material, "fixed_states");
-        json_object* json_vertex_inputs = json_object_object_get(json_fixed_states, "vertex_inputs");
-        if (shFdWarning(json_fixed_states != NULL, "invalid fixed states info") == 0) {
-            shAbortLoadingMaterials(pp_materials);
-        }
-        for (uint32_t i = 0; i < (uint32_t)json_object_array_length(json_vertex_inputs); i++) {
-            json_object* json_vertex_input = json_object_array_get_idx(json_vertex_inputs, i);
-            json_object* json_location = json_object_object_get(json_vertex_input, "location");
-            json_object* json_format = json_object_object_get(json_vertex_input, "format");
-            json_object* json_offset = json_object_object_get(json_vertex_input, "offset");
-            json_object* json_size = json_object_object_get(json_vertex_input, "size");
-            if (json_vertex_input != NULL && json_location != NULL && json_format != NULL && json_offset != NULL && json_size != NULL) {
-                shSetVertexInputAttribute(
-                    (uint32_t)json_object_get_int(json_location),
-                    shStringFlagToInt(json_object_get_string(json_format)),
-                    (uint32_t)json_object_get_int(json_offset),
-                    (uint32_t)json_object_get_int(json_size),
-                    &fixed_states
-                );
-            }
-            else {
-                shAbortLoadingMaterials(pp_materials);
-            }
-        }
-        json_object* json_fixed_states_flags = json_object_object_get(json_fixed_states, "flags");
-        ShVkFixedStateFlags fixed_state_flags = 0;
-        if (json_fixed_states_flags != NULL) {
-            for (uint32_t i = 0; i < json_object_array_length(json_fixed_states_flags); i++) {
-                json_object* json_flag = json_object_array_get_idx(json_fixed_states_flags, i);
-                fixed_state_flags |= shStringFlagToInt(json_object_get_string(json_flag));
-            }
-        }
-        shSetFixedStates(p_core->device, p_core->surface.width, p_core->surface.height, fixed_state_flags, &fixed_states);
-        shSetupGraphicsPipeline(p_core->device, p_core->render_pass, fixed_states, &pipeline);
-        p_materials[i].fixed_states = fixed_states;
-        p_materials[i].pipeline = pipeline;
-    }
-    (pp_materials != NULL) && (*pp_materials = p_materials);
-    (p_material_count != NULL) && (*p_material_count = mat_count);
-    free(buffer);
+    free(parser);
 
     return 1;
 }
@@ -314,7 +265,7 @@ void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterial
 		}
         shPipelineRelease(p_core->device, &(*pp_materials)[i].pipeline);
     }
-    if (*pp_materials != NULL) {
+    if (*p_mat_info_count != 0 && *pp_materials != NULL) {
         free(*pp_materials); 
     }
     *p_mat_info_count = 0;
