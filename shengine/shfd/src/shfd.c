@@ -445,6 +445,8 @@ uint8_t shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_
     
     free(parser);
     if (ply_meshes != NULL) { free(ply_meshes); }
+
+    return 1;
 }
 
 uint32_t shStringFlagToInt(const char* s_flag) {

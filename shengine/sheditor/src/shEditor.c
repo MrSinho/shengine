@@ -27,14 +27,6 @@ extern "C" {
 
 
 
-#define shEditorWarning(condition, msg)\
-	if (!(int)(condition)) { printf("shFd warning: %s\n", msg); }
-
-#define shEditorError(condition, msg)\
-	if (!(int)(condition)) { printf("shFd error: %s\n", msg); perror("aborting"); }
-
-
-
 int main() {
 
 	ShEngine engine = { 0 };
