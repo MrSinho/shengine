@@ -14,7 +14,7 @@ extern "C" {
 
 
 void shEngineSafeState(ShEngine* p_engine) {
-    shEngineWarning(0, "running safe window");
+    shEngineWarning(1, "running safe window");
     double input_dtime = 0.0;
     double input_last_time = 0.0;
 
@@ -45,12 +45,14 @@ void shEngineSafeState(ShEngine* p_engine) {
 }
 
 uint8_t shSetEngineState(ShEngine* p_engine) {
-    shEngineError(p_engine != NULL, "invalid engine memory");
+    shEngineError(p_engine == NULL, "invalid engine memory");
     uint8_t mat_r = shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
     if (p_engine->p_materials == NULL || mat_r == 0) {
         return 0;
     }
-    shLoadScene(p_engine->scene_descriptor.path, &p_engine->p_materials, &p_engine->scene);
+    if (!shLoadScene(p_engine->scene_descriptor.path, &p_engine->p_materials, &p_engine->scene)) {
+        return 0;
+    }
     shSceneInit(p_engine, &p_engine->scene);
     shLoadSimulation(p_engine->simulation_descriptor.path, p_engine, &p_engine->simulation_host);
     shSimulationLoadSymbols(&p_engine->simulation_host);
@@ -61,7 +63,7 @@ uint8_t shSetEngineState(ShEngine* p_engine) {
 }
 
 uint8_t shResetEngineState(ShEngine* p_engine) {
-    shEngineError(p_engine != NULL, "invalid engine memory");
+    shEngineError(p_engine == NULL, "invalid engine memory");
     shEngineRelease(p_engine);
     return shSetEngineState(p_engine);
 }
@@ -111,7 +113,7 @@ void shEngineManageState(ShEngine* p_engine, const uint8_t ready) {
 }
 
 void shEngineRelease(ShEngine* p_engine) {
-    shEngineError(p_engine != NULL, "invalid engine memory");
+    shEngineError(p_engine == NULL, "invalid engine memory");
     if (p_engine->simulation_host.shared != NULL) {
         shSimulationClose(p_engine);
         shSharedRelease(&p_engine->simulation_host.shared);
