@@ -15,10 +15,7 @@ extern "C" {
 #include "shlinear-algebra/shView.h"
 #include "shlinear-algebra/shProjection.h"
 
-#include "shecs/shTransform.h"
-#include "shecs/shCamera.h"
-#include "shecs/shMaterial.h"
-#include "shecs/shMesh.h"
+#include "shecs/shComponents.h"
 
 #include "shscene/shScene.h"
 
@@ -292,8 +289,16 @@ void shSceneRelease(ShEngine* p_engine) {
 
 	for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
 
-		if (shHasShMesh(&p_engine->scene, entity)) {
-			ShMesh* p_mesh = shGetShMesh(&p_engine->scene, entity);
+		ShIdentity* p_identity		= shGetShIdentity(&p_engine->scene, entity);
+		ShMesh* p_mesh				= shGetShMesh(&p_engine->scene, entity);
+		ShCamera* p_camera			= shGetShCamera(&p_engine->scene, entity);
+		ShTransform* p_transform	= shGetShTransform(&p_engine->scene, entity);
+
+		if (p_identity) {
+			shRemoveShIdentity(&p_engine->scene, entity);
+		}
+
+		if (p_mesh) {
 			if ((size_t)p_mesh->vertex_buffer_memory != 0) {
 				shClearBufferMemory(p_engine->core.device, p_mesh->vertex_buffer, p_mesh->vertex_buffer_memory);
 			}
@@ -308,6 +313,14 @@ void shSceneRelease(ShEngine* p_engine) {
 			}
 			memset(p_mesh, 0, sizeof(ShMesh));
 			shRemoveShMesh(&p_engine->scene, entity);
+		}
+
+		if (p_camera) {
+			shRemoveShCamera(&p_engine->scene, entity);
+		}
+
+		if (p_transform) {
+			shRemoveShTransform(&p_engine->scene, entity);
 		}
 	}
 	shClearScene(&p_engine->scene);
