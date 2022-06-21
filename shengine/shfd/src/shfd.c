@@ -326,8 +326,26 @@ uint8_t shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_
 
     //ENTITIES
     json_object* json_entities = json_object_object_get(parser, "entities");
-    uint32_t entity_count = (uint32_t)json_object_array_length(json_entities);
-    shCreateScene(p_scene, entity_count * 3, 32);
+    json_object* json_max_entities = json_object_object_get(parser, "max_entities");
+    json_object* json_max_components = json_object_object_get(parser, "max_components");
+    
+    if (shFdWarning(json_entities == NULL, "missing entities")) {
+        shAbortLoadingScene();
+    }
+
+    uint32_t entity_count   = (uint32_t)json_object_array_length(json_entities);
+    uint32_t max_entities   = entity_count * 3;
+    uint32_t max_components = 16;
+
+    if (json_max_entities != NULL) {
+        max_entities = (uint32_t)json_object_get_int(json_max_entities);
+    }
+    
+    if (json_max_components != NULL) {
+        max_components = (uint32_t)json_object_get_int(json_max_components);
+    }
+
+    shCreateScene(p_scene, max_entities, max_components);
 
     for (uint32_t i = 0; i < entity_count; i++) {
         uint32_t entity = shCreateEntity(p_scene);

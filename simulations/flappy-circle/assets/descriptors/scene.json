@@ -7,6 +7,8 @@
         { "path": "/meshes/bird-magenta.ply"},
         { "path": "/meshes/loop.ply"}
     ],
+    "max_entities": 256,
+    "max_components": 16,
     "entities": [
         {
             "camera": {
