@@ -31,7 +31,7 @@ extern void shSceneUpdate(ShEngine* p_engine);
 
 //extern void shRenderMesh(const ShVkCore engine, const ShVkGraphicsPipeline pipeline, const uint32_t push_const_size, void* p_push_const, const uint32_t uniforms_size, void* p_uniforms, ShMesh* p_mesh);
 
-extern void shSceneRelease(ShEngine* p_engine);
+extern void shEndScene(ShEngine* p_engine);
 
 #ifdef __cplusplus
 }

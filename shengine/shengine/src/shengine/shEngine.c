@@ -119,7 +119,7 @@ void shEngineRelease(ShEngine* p_engine) {
         shSharedRelease(&p_engine->simulation_host.shared);
     }
     shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
-    shSceneRelease(p_engine);
+    shEndScene(p_engine);
 }
 
 

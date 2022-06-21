@@ -51,12 +51,12 @@ extern uint8_t shListenFd(ShFd* descriptor_handle);
 	shGetFileStats((p_descriptor_handle)->path, &(p_descriptor_handle)->stats0)
 
 static uint8_t shFdWarning(int condition, const char* msg) {
-	if ((int)(condition)) { printf("shfd warning: %s\n", msg); return 1; }
+	if ((int)(condition)) { printf("shfd warning: %s.\n", msg); return 1; }
 	return 0;
 }
 
 #define shFdError(condition, msg)\
-	if ((int)(condition)) { printf("shfd error: %s\n", msg); perror("aborting"); }
+	if ((int)(condition)) { printf("shfd error: %s.\n", msg); exit(-1); }
 
 
 

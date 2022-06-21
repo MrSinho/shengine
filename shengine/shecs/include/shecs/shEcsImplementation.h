@@ -8,7 +8,7 @@ extern "C" {
 #define SH_ECS_MAX_ENTITIES 16
 #define SH_ECS_MAX_COMPONENTS 12
 
-#include <shecs/shECS.h>
+#include <shecs/shEcs.h>
 
 #ifdef __cplusplus
 }

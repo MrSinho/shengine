@@ -63,7 +63,7 @@ void shSceneInit(ShEngine* p_engine, ShScene* p_scene) {
 }
 
 void shUpdateShTransform(ShTransform* p_transform) {
-	assert(p_transform != NULL);
+	shEngineError(p_transform == NULL, "invalid transform memory");
 
 	glm_mat4_identity(p_transform->model);
 	glm_translate(p_transform->model, p_transform->position);
@@ -82,7 +82,7 @@ void shUpdateShTransform(ShTransform* p_transform) {
 }
 
 void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_camera) {
-	assert(p_transform != NULL && p_camera != NULL);
+	shEngineError(p_transform == NULL || p_camera == NULL, "invalid transform memory");
 
 	if (p_camera->flags & SH_CAMERA_SETUP_FREE_FLIGHT) {
 		float displacement[3] = { 0.0f, 0.0f, 0.0f };
@@ -133,7 +133,8 @@ void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_
 }
 
 void shSceneUpdate(ShEngine* p_engine) {
-	assert(p_engine != NULL);
+	shEngineError(p_engine == NULL, "invalid engine memory");
+
 	ShScene* p_scene = &p_engine->scene;
 
 	ShCamera* p_camera = NULL;
@@ -283,7 +284,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 	}
 }
 
-void shSceneRelease(ShEngine* p_engine) {
+void shEndScene(ShEngine* p_engine) {
 
 	vkDeviceWaitIdle(p_engine->core.device);
 
@@ -295,7 +296,6 @@ void shSceneRelease(ShEngine* p_engine) {
 		ShTransform* p_transform	= shGetShTransform(&p_engine->scene, entity);
 
 		if (p_identity) {
-			shRemoveShIdentity(&p_engine->scene, entity);
 		}
 
 		if (p_mesh) {
@@ -312,18 +312,15 @@ void shSceneRelease(ShEngine* p_engine) {
 				free(p_mesh->mesh_info.p_indices);
 			}
 			memset(p_mesh, 0, sizeof(ShMesh));
-			shRemoveShMesh(&p_engine->scene, entity);
 		}
 
 		if (p_camera) {
-			shRemoveShCamera(&p_engine->scene, entity);
 		}
 
 		if (p_transform) {
-			shRemoveShTransform(&p_engine->scene, entity);
 		}
 	}
-	shClearScene(&p_engine->scene);
+	shSceneRelease(&p_engine->scene);
 }
 
 #ifdef __cplusplus

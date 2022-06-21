@@ -5,10 +5,7 @@ extern "C" {
 #include "shfd/shFd.h"
 #include "shfd/shFile.h"
 
-#include "shecs/shCamera.h"
-#include "shecs/shIdentity.h"
-#include "shecs/shMaterial.h"
-#include "shecs/shMesh.h"
+#include <shecs/shComponents.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -22,8 +19,6 @@ extern "C" {
 #include <shvulkan/shVkCheck.h>
 #include <shvulkan/shVkDescriptorStructureMap.h>
 
-//EXTENSIONS
-#include "shecs/shTransform.h"
 
 
 #ifndef NDEBUG
@@ -331,7 +326,10 @@ uint8_t shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_
 
     //ENTITIES
     json_object* json_entities = json_object_object_get(parser, "entities");
-    for (uint32_t i = 0; i < json_object_array_length(json_entities); i++) {
+    uint32_t entity_count = (uint32_t)json_object_array_length(json_entities);
+    shCreateScene(p_scene, entity_count * 3, 32);
+
+    for (uint32_t i = 0; i < entity_count; i++) {
         uint32_t entity = shCreateEntity(p_scene);
         json_object* json_entity = json_object_array_get_idx(json_entities, i);
 

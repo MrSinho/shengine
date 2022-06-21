@@ -43,12 +43,12 @@ typedef struct ShEngine {
 
 
 static uint8_t shEngineWarning(int condition, const char* msg) {
-    if ((int)(condition)) { printf("shengine warning: %s\n", msg); return 1; }
+    if ((int)(condition)) { printf("shengine warning: %s.\n", msg); return 1; }
     return 0;
 }
 
 #define shEngineError(condition, msg)\
-	if ((int)(condition)) { printf("shengine error: %s\n", msg); perror("aborting"); }
+	if ((int)(condition)) { printf("shengine error: %s.\n", msg); exit(-1); }
 
 
 
