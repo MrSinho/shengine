@@ -66,7 +66,7 @@ extern uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_m
 
 extern void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials);
 
-extern uint8_t shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene);
+extern uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialHost** pp_materials, ShScene* p_scene);
 
 extern uint32_t shStringFlagToInt(const char* s_flag);
 

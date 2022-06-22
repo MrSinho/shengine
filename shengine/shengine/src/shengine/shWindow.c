@@ -25,8 +25,8 @@ void shWindowSetup(const char* title, const uint32_t width, const uint32_t heigh
 	};
 	*p_window = window;
 
-	shVkError(!glfwInit(), "error initializing glfw");
-	shVkError(glfwVulkanSupported() == GLFW_FALSE, "vulkan not supported by glfw");
+	shVkError(!glfwInit(), "error initializing glfw", return);
+	shVkError(glfwVulkanSupported() == GLFW_FALSE, "vulkan not supported by glfw", return);
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 

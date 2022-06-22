@@ -292,7 +292,7 @@ void shReadUniformParameters(json_object* json_parameters, const uint32_t entity
 #define shAbortLoadingScene()\
     return 0
 
-uint8_t shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_scene) {
+uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialHost** pp_materials, ShScene* p_scene) {
     shFdError(p_scene == NULL || pp_materials == NULL, "invalid arguments");
 
     char* buffer = (char*)shReadText(path, NULL);
@@ -456,6 +456,15 @@ uint8_t shLoadScene(const char* path, ShMaterialHost** pp_materials, ShScene* p_
             (json_name   != NULL) && (p_identity->name = json_object_get_string(json_name));
             (json_tag    != NULL) && (p_identity->tag = json_object_get_string(json_tag));
             (json_subtag != NULL) && (p_identity->subtag = json_object_get_string(json_subtag));
+        }
+    }
+
+
+    //Check entities in materials
+    for (uint32_t material_idx = 0; material_idx < material_count; material_idx++) {
+        ShMaterialHost* p_material = &(*pp_materials)[material_idx];
+        if (shFdWarning(p_material->entity_count == 0, "material is linked to no entities")) {
+            shAbortLoadingScene();
         }
     }
     

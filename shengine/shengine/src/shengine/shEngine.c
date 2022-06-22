@@ -50,7 +50,7 @@ uint8_t shSetEngineState(ShEngine* p_engine) {
     if (p_engine->p_materials == NULL || mat_r == 0) {
         return 0;
     }
-    if (!shLoadScene(p_engine->scene_descriptor.path, &p_engine->p_materials, &p_engine->scene)) {
+    if (!shLoadScene(p_engine->scene_descriptor.path, p_engine->material_count, &p_engine->p_materials, &p_engine->scene)) {
         return 0;
     }
     shSceneInit(p_engine, &p_engine->scene);
