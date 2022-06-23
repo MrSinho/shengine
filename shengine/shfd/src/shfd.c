@@ -78,6 +78,12 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
 
             json_object* json_vertex_shader = json_object_object_get(json_material, "vertex_shader");
             json_object* json_fragment_shader = json_object_object_get(json_material, "fragment_shader");
+
+            {//++++++++++++++++++++++++
+                json_object* json_bind_on_loop = json_object_object_get(json_material, "bind_on_loop");
+                p_materials[i].bind_on_loop = json_bind_on_loop == NULL ? 1 : (uint8_t)json_object_get_int(json_bind_on_loop);
+            }//++++++++++++++++++++++++
+
             //+++++++++++++++++++++++++        
             {
                 uint32_t vertex_shader_size = 0;

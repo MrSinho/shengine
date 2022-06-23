@@ -158,7 +158,12 @@ void shSceneUpdate(ShEngine* p_engine) {
 	}
 
 	for (uint32_t material_idx = 0; material_idx < p_engine->material_count; material_idx++) {
+		
 		ShMaterialHost* p_material = &p_engine->p_materials[material_idx];
+
+		if (!p_material->bind_on_loop) {
+			break;
+		}
 
 		shBindPipeline(p_engine->core.p_graphics_commands[0].cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 
