@@ -523,13 +523,13 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     if (strcmp(s_flag, "FIXED_STATES_POLYGON_MODE_POINTS") == 0) {
         return SH_FIXED_STATES_POLYGON_MODE_POINTS;
     }
-    if (strcmp(s_flag, "FIXED_STATES_POLYGON_MODE_TRIANGLE_LIST") == 0) {
+    if (strcmp(s_flag, "FIXED_STATES_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST") == 0) {
         return SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     }
-    if (strcmp(s_flag, "FIXED_STATES_POLYGON_MODE_LINE_LIST") == 0) {
+    if (strcmp(s_flag, "FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST") == 0) {
         return SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST;
     }
-    if (strcmp(s_flag, "FIXED_STATES_POLYGON_MODE_POINT_LIST") == 0) {
+    if (strcmp(s_flag, "FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST") == 0) {
         return SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST;
     }
     if (strcmp(s_flag, "CAMERA_SETUP_FREE_FLIGHT") == 0) {
