@@ -17,6 +17,7 @@ extern "C" {
 
 #include <shvulkan/shVkCore.h>
 #include <shvulkan/shVkCheck.h>
+#include <shvulkan/shVkPipelineData.h>
 #include <shvulkan/shVkDescriptorStructureMap.h>
 
 
@@ -231,12 +232,12 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                 
                 {
                     json_object* json_input_rate = json_object_object_get(json_fixed_states, "vertex_input_rate");
-                    if (shFdWarning(json_vertex_inputs, "missing input rate specification")) {
+                    if (shFdWarning(json_vertex_inputs == NULL, "missing input rate specification")) {
                         shAbortLoadingMaterials(pp_materials);
                     }
                     if (build_pipeline) {//BUILD PIPELINE
-                        const char* input_rate = json_object_get_string(json_input_rate);
-                        fixed_states.vertex_binding_description
+                        VkVertexInputRate input_rate = shStringFlagToInt(json_object_get_string(json_input_rate));
+                        shFixedStatesSetVertexInputState(input_rate, &fixed_states);
                     }//BUILD PIPELINE
                 }
 
@@ -543,6 +544,12 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     }
     if (strcmp(s_flag, "FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST") == 0) {
         return SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST;
+    }
+    if (strcmp(s_flag, "VERTEX_INPUT_RATE_VERTEX") == 0) {
+        return VK_VERTEX_INPUT_RATE_VERTEX;
+    }
+    if (strcmp(s_flag, "VERTEX_INPUT_RATE_INSTANCE") == 0) {
+        return VK_VERTEX_INPUT_RATE_INSTANCE;
     }
     if (strcmp(s_flag, "CAMERA_SETUP_FREE_FLIGHT") == 0) {
         return SH_CAMERA_SETUP_FREE_FLIGHT;

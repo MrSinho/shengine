@@ -10,6 +10,7 @@
         "flags": [
           "FIXED_STATES_POLYGON_MODE_WIREFRAME"
         ],
+        "vertex_input_rate": "VERTEX_INPUT_RATE_VERTEX",
         "vertex_inputs": [
           {
             "location": 0,
