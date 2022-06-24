@@ -13,8 +13,8 @@ extern "C" {
 #define LOOP_OBJECT_ENTITY 1
 #define BIRD_ENTITY 2
 
-#define p_scene &p_engine->scene
-#define delta_time (float)p_engine->time.delta_time
+#define p_scene (&p_engine->scene)
+#define delta_time ((float)p_engine->time.delta_time)
 
 #include <stdlib.h>
 #include <assert.h>
