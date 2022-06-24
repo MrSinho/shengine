@@ -52,6 +52,7 @@
         "flags": [
           "FIXED_STATES_POLYGON_MODE_FACE"
         ],
+        "vertex_input_rate": "VERTEX_INPUT_RATE_VERTEX",
         "vertex_inputs": [
           {
             "location": 0,
@@ -99,6 +100,7 @@
         "flags": [
           "FIXED_STATES_POLYGON_MODE_FACE"
         ],
+        "vertex_input_rate": "VERTEX_INPUT_RATE_VERTEX",
         "vertex_inputs": [
           {
             "location": 0,
