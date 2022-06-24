@@ -228,6 +228,18 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                         }
                     }//BUILD PIPELINE 
                 }//END VERTEX INPUTS LOOP
+                
+                {
+                    json_object* json_input_rate = json_object_object_get(json_fixed_states, "vertex_input_rate");
+                    if (shFdWarning(json_vertex_inputs, "missing input rate specification")) {
+                        shAbortLoadingMaterials(pp_materials);
+                    }
+                    if (build_pipeline) {//BUILD PIPELINE
+                        const char* input_rate = json_object_get_string(json_input_rate);
+                        fixed_states.vertex_binding_description
+                    }//BUILD PIPELINE
+                }
+
 
                 if (build_pipeline) {
                     shSetFixedStates(
