@@ -196,7 +196,7 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
             json_object* json_fixed_states = json_object_object_get(json_material, "fixed_states");
             json_object* json_fixed_states_flags = json_object_object_get(json_fixed_states, "flags");
             //+++++++++++++++++++++++++        
-            {
+            {//FIXED STATES
                 if (shFdWarning(json_fixed_states == NULL, "invalid fixed states info")) {
                     shAbortLoadingMaterials(pp_materials);
                 }
@@ -232,7 +232,7 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                 
                 {
                     json_object* json_input_rate = json_object_object_get(json_fixed_states, "vertex_input_rate");
-                    if (shFdWarning(json_vertex_inputs == NULL, "missing input rate specification")) {
+                    if (shFdWarning(json_input_rate == NULL, "missing input rate specification")) {
                         shAbortLoadingMaterials(pp_materials);
                     }
                     if (build_pipeline) {//BUILD PIPELINE
@@ -254,7 +254,7 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                     p_materials[i].fixed_states = fixed_states;
                     p_materials[i].pipeline = pipeline;
                 }
-            }
+            }//FIXED STATES
         }//END MATERIALS LOOP
         (pp_materials != NULL) && (*pp_materials = p_materials);
         (p_material_count != NULL) && (*p_material_count = mat_count);
