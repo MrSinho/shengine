@@ -16,7 +16,7 @@ extern "C" {
 //Make serial handle as entity component
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShSerialHandle, 11);
 
-#define p_scene &p_engine->scene
+#define p_scene (&p_engine->scene)
 
 void SH_ENGINE_EXPORT_FUNCTION serial_start(ShEngine* p_engine) {
 	
