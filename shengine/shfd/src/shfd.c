@@ -482,7 +482,7 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
     //Check entities in materials
     for (uint32_t material_idx = 0; material_idx < material_count; material_idx++) {
         ShMaterialHost* p_material = &(*pp_materials)[material_idx];
-        if (shFdWarning(p_material->entity_count == 0, "material is linked to no entities")) {
+        if (shFdWarning(p_material->entity_count == 0 && p_material->bind_on_loop, "material is linked to no entities but set to be used in the engine loop")) {
             shAbortLoadingScene();
         }
     }
