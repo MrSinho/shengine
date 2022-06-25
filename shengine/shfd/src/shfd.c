@@ -238,9 +238,12 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                     if (shFdWarning(json_input_rate == NULL && json_vertex_inputs != NULL, "missing input rate specification")) {
                         shAbortLoadingMaterials(pp_materials);
                     }
-                    if (build_pipeline && json_input_rate) {//BUILD PIPELINE
-                        VkVertexInputRate input_rate = shStringFlagToInt(json_object_get_string(json_input_rate));
-                        shFixedStatesSetVertexInputState(input_rate, &fixed_states);
+                    if (build_pipeline) {//BUILD PIPELINE
+                        if (json_input_rate) {
+                            VkVertexInputRate input_rate = shStringFlagToInt(json_object_get_string(json_input_rate));
+                            shFixedStatesSetVertexInputRate(input_rate, 0, &fixed_states);
+                        }
+                        shFixedStatesSetVertexInputState(&fixed_states);
                     }//BUILD PIPELINE
                 }
 
