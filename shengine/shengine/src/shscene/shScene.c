@@ -262,7 +262,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 								p_mesh->mesh_info.p_vertices
 							);
 						}
-						shBindVertexBuffer(p_engine->core.p_graphics_commands[0].cmd_buffer, &p_mesh->vertex_buffer);
+						shBindVertexBuffer(p_engine->core.p_graphics_commands[0].cmd_buffer, 0, &p_mesh->vertex_buffer);
 					}
 					if (p_mesh->mesh_info.index_count != 0) {
 						if (p_mesh->mesh_info.flags & SH_MESH_SETUP_DYNAMIC_MESH) {
