@@ -242,8 +242,8 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                         if (json_input_rate) {
                             VkVertexInputRate input_rate = shStringFlagToInt(json_object_get_string(json_input_rate));
                             shFixedStatesSetVertexInputRate(input_rate, 0, &fixed_states);
+                            shFixedStatesSetVertexInputState(&fixed_states);
                         }
-                        shFixedStatesSetVertexInputState(&fixed_states);
                     }//BUILD PIPELINE
                 }
 
