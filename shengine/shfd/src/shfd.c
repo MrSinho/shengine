@@ -204,38 +204,41 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                     shAbortLoadingMaterials(pp_materials);
                 }
                 json_object* json_vertex_inputs = json_object_object_get(json_fixed_states, "vertex_inputs");
-                for (uint32_t i = 0; i < (uint32_t)json_object_array_length(json_vertex_inputs); i++) {
-                    json_object* json_vertex_input = json_object_array_get_idx(json_vertex_inputs, i);
-                    json_object* json_location = json_object_object_get(json_vertex_input, "location");
-                    json_object* json_format = json_object_object_get(json_vertex_input, "format");
-                    json_object* json_offset = json_object_object_get(json_vertex_input, "offset");
-                    json_object* json_size = json_object_object_get(json_vertex_input, "size");
-                    if (shFdWarning(json_vertex_input == NULL || json_location == NULL || json_format == NULL || json_offset == NULL || json_size == NULL, "insufficient vertex input state info")) {
-                        shAbortLoadingMaterials(pp_materials);
-                    }
-                    {//BUILD PIPELINE
-                        if (build_pipeline) {
-                            for (uint32_t i = 0; i < json_object_array_length(json_fixed_states_flags); i++) {
-                                json_object* json_flag = json_object_array_get_idx(json_fixed_states_flags, i);
-                                fixed_state_flags |= shStringFlagToInt(json_object_get_string(json_flag));
-                            }
-                            shSetVertexInputAttribute(
-                                (uint32_t)json_object_get_int(json_location),
-                                shStringFlagToInt(json_object_get_string(json_format)),
-                                (uint32_t)json_object_get_int(json_offset),
-                                (uint32_t)json_object_get_int(json_size),
-                                &fixed_states
-                            );
+                if (json_vertex_inputs != NULL) {
+                    for (uint32_t i = 0; i < (uint32_t)json_object_array_length(json_vertex_inputs); i++) {
+                        json_object* json_vertex_input = json_object_array_get_idx(json_vertex_inputs, i);
+                        json_object* json_location = json_object_object_get(json_vertex_input, "location");
+                        json_object* json_format = json_object_object_get(json_vertex_input, "format");
+                        json_object* json_offset = json_object_object_get(json_vertex_input, "offset");
+                        json_object* json_size = json_object_object_get(json_vertex_input, "size");
+                        if (shFdWarning(json_vertex_input == NULL || json_location == NULL || json_format == NULL || json_offset == NULL || json_size == NULL, "insufficient vertex input state info")) {
+                            shAbortLoadingMaterials(pp_materials);
                         }
-                    }//BUILD PIPELINE 
+                        {//BUILD PIPELINE
+                            if (build_pipeline) {
+                                for (uint32_t i = 0; i < json_object_array_length(json_fixed_states_flags); i++) {
+                                    json_object* json_flag = json_object_array_get_idx(json_fixed_states_flags, i);
+                                    fixed_state_flags |= shStringFlagToInt(json_object_get_string(json_flag));
+                                }
+                                shSetVertexInputAttribute(
+                                    (uint32_t)json_object_get_int(json_location),
+                                    shStringFlagToInt(json_object_get_string(json_format)),
+                                    (uint32_t)json_object_get_int(json_offset),
+                                    (uint32_t)json_object_get_int(json_size),
+                                    &fixed_states
+                                );
+                            }
+                        }//BUILD PIPELINE 
+                }
+                
                 }//END VERTEX INPUTS LOOP
                 
                 {
                     json_object* json_input_rate = json_object_object_get(json_fixed_states, "vertex_input_rate");
-                    if (shFdWarning(json_input_rate == NULL, "missing input rate specification")) {
+                    if (shFdWarning(json_input_rate == NULL && json_vertex_inputs != NULL, "missing input rate specification")) {
                         shAbortLoadingMaterials(pp_materials);
                     }
-                    if (build_pipeline) {//BUILD PIPELINE
+                    if (build_pipeline && json_input_rate) {//BUILD PIPELINE
                         VkVertexInputRate input_rate = shStringFlagToInt(json_object_get_string(json_input_rate));
                         shFixedStatesSetVertexInputState(input_rate, &fixed_states);
                     }//BUILD PIPELINE
