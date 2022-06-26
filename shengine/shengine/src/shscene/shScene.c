@@ -186,7 +186,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 						if (shEntityInMaterial(entity, p_material)) {
 							memcpy(
 								&((char*)p_material->uniform_buffers)[descriptor_offset],
-								&((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset],
+								&((char*)p_material->p_material_clients[entity].p_uniform_parameters)[descriptor_offset],
 								p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range
 							);
 						}
@@ -231,7 +231,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 						else {//OTHER DYNAMIC STRUCTURES WHICH ARE NOT WRITTEN AS ENGINE EXTENSIONS
 							memcpy(
 								&((char*)p_material->uniform_buffers)[descriptor_offset],
-								&((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset],
+								&((char*)p_material->p_material_clients[entity].p_uniform_parameters)[descriptor_offset],
 								p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range
 							);
 						}

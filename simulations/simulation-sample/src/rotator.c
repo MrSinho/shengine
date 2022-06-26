@@ -36,7 +36,7 @@ void SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
                 ShMaterialHost* p_material = &p_engine->p_materials[2];
                 //If the uniform parameter is not recognized by the engine as an official extension, you must directly change the material host uniform parameters
                 //UNIFORM PARAMETERS OFFSET = sizeof(model_matrix considering dynamic offset alignment ) + sizeof(vec4) = 80
-                float* p_red = (float*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[p_material->pipeline.descriptor_buffer_infos[0].range + 16];
+                float* p_red = (float*)&((char*)p_material->p_material_clients[entity].p_uniform_parameters)[p_material->pipeline.descriptor_buffer_infos[0].range + 16];
                 if (shIsKeyPressed(p_engine->window, SH_KEY_Z)) {
                     *p_red += 1.0f * (float)p_engine->time.delta_time;
                 }

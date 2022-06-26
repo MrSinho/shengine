@@ -29,7 +29,7 @@ uint32_t shGetUniformTotalSize(ShMaterialHost* p_material) {
 
 uint8_t shEntityInMaterial(const uint32_t entity, ShMaterialHost* p_material) {
 	for (uint32_t i = 0; i < p_material->entity_count; i++) {
-		if (entity == p_material->entities[i]) { return 1; }
+		if (entity == p_material->p_entities[i]) { return 1; }
 	}
 	return 0;
 }

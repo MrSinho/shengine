@@ -5,9 +5,6 @@
 extern "C" {
 #endif//__cplusplus
 
-#define SH_ECS_MAX_ENTITIES 16
-#define SH_ECS_MAX_COMPONENTS 12
-
 #include <shecs/shEcs.h>
 
 #ifdef __cplusplus

@@ -34,8 +34,8 @@ typedef struct ShMaterialHost {
 	ShVkFixedStates						fixed_states;
 	ShVkPipeline						pipeline;
 	uint32_t							entity_count;
-	uint32_t							entities[SH_ECS_MAX_ENTITIES];
-	ShMaterialClient					material_clients[SH_ECS_MAX_ENTITIES];
+	uint32_t*							p_entities;
+	ShMaterialClient*					p_material_clients;
 	ShMaterialHostExtensionStructures	extensions;
 	void*								push_constant[128 / sizeof(void*)];
 	uint32_t							uniform_total_size;

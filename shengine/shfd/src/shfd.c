@@ -303,6 +303,12 @@ void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterial
 	shFdError(p_mat_info_count == NULL || pp_materials == NULL, "invalid arguments");
 	for (uint32_t i = 0; i < *p_mat_info_count; i++) {
         ShMaterialHost* p_material = &(*pp_materials)[i];
+        if (p_material->p_material_clients != NULL) {
+            free(p_material->p_material_clients);
+        }
+        if (p_material->p_entities != NULL) {
+            free(p_material->p_entities);
+        }
 		for (uint32_t j = 0; j < p_material->pipeline.descriptor_count; j++) {
 			shPipelineClearDescriptorBufferMemory(p_core->device, j, &p_material->pipeline);
 		}
@@ -324,11 +330,11 @@ void shReadUniformParameters(json_object* json_parameters, const uint32_t entity
 
         if (strcmp(s_type, "float") == 0) {
             float value = (float)json_object_get_double(json_object_array_get_idx(json_parameters, j + 1));
-            memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset], &value, 4);
+            memcpy((void*)&((char*)p_material->p_material_clients[entity].p_uniform_parameters)[descriptor_offset], &value, 4);
         }
         if (strcmp(s_type, "int") == 0) {
             int value = (uint32_t)json_object_get_int(json_object_array_get_idx(json_parameters, j + 1));
-            memcpy((void*)&((char*)p_material->material_clients[entity].p_uniform_parameters)[descriptor_offset], &value, 4);
+            memcpy((void*)&((char*)p_material->p_material_clients[entity].p_uniform_parameters)[descriptor_offset], &value, 4);
         }
         if (strcmp(s_type, "transform") == 0) { //EXTENSION STRUCTURES
             p_material->extensions.transform_uniform_offset = descriptor_offset;
@@ -395,6 +401,14 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
     }
 
     shCreateScene(p_scene, max_entities, max_components);
+
+    for (uint32_t i = 0; i < material_count; i++) {
+        ShMaterialHost* p_material = &(*pp_materials)[i];
+        if (p_material != NULL) {
+            p_material->p_entities = calloc(max_entities, 4);
+            p_material->p_material_clients = calloc(max_components, sizeof(ShMaterialClient));
+        }
+    }
 
     for (uint32_t i = 0; i < entity_count; i++) {
         uint32_t entity = shCreateEntity(p_scene);
@@ -483,13 +497,13 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
                 for (uint32_t j = 0; j < p_material->pipeline.descriptor_count; j++) {
                     p_material->pipeline.write_descriptor_sets[j].pBufferInfo = &p_material->pipeline.descriptor_buffer_infos[j];
                 }
-                p_material->entities[p_material->entity_count] = entity;
+                p_material->p_entities[p_material->entity_count] = entity;
 
                 json_object* json_descriptor_parameters     = json_object_object_get(json_material, "uniform_parameters");
                 if (json_descriptor_parameters != NULL) {
                     for (uint32_t descriptor_idx = 0; descriptor_idx < json_object_array_length(json_descriptor_parameters); descriptor_idx++) {//for each descriptor
                         shReadUniformParameters(json_object_array_get_idx(json_descriptor_parameters, descriptor_idx), entity, descriptor_idx, p_material);
-                        p_material->material_clients[entity].parameters = 1;
+                        p_material->p_material_clients[entity].parameters = 1;
                     }
                 }
 
