@@ -67,15 +67,23 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
     ShMaterialHost* p_materials = calloc(mat_count, sizeof(ShMaterialHost));
     if (p_materials == NULL || mat_count == 0) { shAbortLoadingMaterials(pp_materials); }
 
-    for (uint8_t build_pipeline = 0; build_pipeline < 2; build_pipeline++) {
+    for (uint32_t i = 0; i < mat_count; i++) {
 
-        for (uint32_t i = 0; i < mat_count; i++) {
+        json_object* json_material = json_object_array_get_idx(json_materials, i);
 
-//PIPELINE
+
+        json_object* json_build_pipeline = json_object_object_get(json_material, "build_pipeline");
+        uint8_t build_pipeline = 1;
+        if (json_build_pipeline != NULL) {
+            build_pipeline = (uint8_t)json_object_get_int(json_build_pipeline);
+        }
+
+        for (uint8_t build_idx = (uint8_t)1 - build_pipeline; build_idx < 2; build_idx++) {
+
+
             ShVkPipeline pipeline = { 0 };//USED ONLY WHEN build_pipeline == 1
-//PIPELINE
 
-            json_object* json_material = json_object_array_get_idx(json_materials, i);
+
 
             json_object* json_vertex_shader = json_object_object_get(json_material, "vertex_shader");
             json_object* json_fragment_shader = json_object_object_get(json_material, "fragment_shader");
@@ -110,7 +118,7 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                 }
 
                 {//BUILD PIPELINE
-                    if (build_pipeline) {
+                    if (build_idx && build_pipeline) {
                         shPipelineCreateShaderModule(p_core->device, vertex_shader_size, vertex_code, &pipeline);
                         shPipelineCreateShaderStage(p_core->device, VK_SHADER_STAGE_VERTEX_BIT, &pipeline);
                         shPipelineCreateShaderModule(p_core->device, fragment_shader_size, fragment_code, &pipeline);
@@ -130,7 +138,7 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
             {
                 if (json_push_constant_size && json_push_constants_stage) {
                     {//BUILD PIPELINE
-                        if (build_pipeline) {
+                        if (build_idx && build_pipeline) {
                             uint32_t push_constant_size = (uint32_t)json_object_get_int(json_push_constant_size);
                             ShShaderStageFlags push_constant_stage = shStringFlagToInt(json_object_get_string(json_push_constants_stage));
                             shSetPushConstants(push_constant_stage, 0, push_constant_size, &pipeline.push_constant_range);
@@ -154,13 +162,13 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                         json_object* json_type = json_object_object_get(json_descriptor, "type");
 
                         if (shFdWarning(
-                            json_set == NULL || json_size == NULL || json_stage == NULL || json_type == NULL || json_stage == NULL, 
+                            json_set == NULL || json_size == NULL || json_stage == NULL || json_type == NULL || json_stage == NULL,
                             "insufficient descriptor set info")) {
                             shAbortLoadingMaterials(pp_materials);
-                        }  
-                        
+                        }
+
                         {//BUILD PIPELINE
-                            if (build_pipeline) {
+                            if (build_idx && build_pipeline) {
                                 uint32_t set = (uint32_t)json_object_get_int(json_set);
                                 uint32_t max_bindings = (json_max_bindings == NULL) ? 1 : (uint32_t)json_object_get_int(json_max_bindings);
                                 uint32_t size = (uint32_t)json_object_get_int(json_size);
@@ -177,20 +185,20 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                                 if (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC || type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC) {
                                     dynamic++;
                                     shPipelineCreateDynamicDescriptorBuffer(
-                                        p_core->device, 
+                                        p_core->device,
                                         (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-                                        set, 
-                                        shGetDescriptorSize(p_core, size), 
-                                        max_bindings, 
+                                        set,
+                                        shGetDescriptorSize(p_core, size),
+                                        max_bindings,
                                         &pipeline
                                     );
                                 }
                                 else {
                                     shPipelineCreateDescriptorBuffer(
-                                        p_core->device, 
-                                        (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, 
+                                        p_core->device,
+                                        (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
                                         set,
-                                        shGetDescriptorSize(p_core, size), 
+                                        shGetDescriptorSize(p_core, size),
                                         &pipeline
                                     );
                                 }
@@ -212,10 +220,10 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
             }
             //+++++++++++++++++++++++++        
 
-//FIXED STATES
+    //FIXED STATES
             ShVkFixedStates fixed_states = { 0 };//USED ONLY WHEN build_pipeline == 1
             ShVkFixedStateFlags fixed_state_flags = 0;
-//FIXED STATES
+            //FIXED STATES
 
             json_object* json_fixed_states = json_object_object_get(json_material, "fixed_states");
             json_object* json_fixed_states_flags = json_object_object_get(json_fixed_states, "flags");
@@ -239,7 +247,7 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                             shAbortLoadingMaterials(pp_materials);
                         }
                         {//BUILD PIPELINE
-                            if (build_pipeline) {
+                            if (build_idx && build_pipeline) {
                                 for (uint32_t i = 0; i < json_object_array_length(json_fixed_states_flags); i++) {
                                     json_object* json_flag = json_object_array_get_idx(json_fixed_states_flags, i);
                                     fixed_state_flags |= shStringFlagToInt(json_object_get_string(json_flag));
@@ -253,31 +261,31 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                                 );
                             }
                         }//BUILD PIPELINE 
-                }
-                
+                    }
+
                 }//END VERTEX INPUTS LOOP
-                
+
                 {
                     json_object* json_input_rate = json_object_object_get(json_fixed_states, "vertex_input_rate");
                     if (shFdWarning(json_input_rate == NULL && json_vertex_inputs != NULL, "missing input rate specification")) {
                         shAbortLoadingMaterials(pp_materials);
                     }
-                    if (build_pipeline) {//BUILD PIPELINE
+                    if (build_idx && build_pipeline) {//BUILD PIPELINE
                         if (json_input_rate) {
                             VkVertexInputRate input_rate = shStringFlagToInt(json_object_get_string(json_input_rate));
                             shFixedStatesSetVertexInputRate(input_rate, 0, &fixed_states);
                             shFixedStatesSetVertexInputState(&fixed_states);
                         }
                     }//BUILD PIPELINE
-                }
+                }//FIXED STATES
 
 
-                if (build_pipeline) {
+                if (build_idx && build_pipeline) {
                     shSetFixedStates(
-                        p_core->device, 
-                        p_core->surface.width, 
-                        p_core->surface.height, 
-                        fixed_state_flags, 
+                        p_core->device,
+                        p_core->surface.width,
+                        p_core->surface.height,
+                        fixed_state_flags,
                         &fixed_states
                     );
                     shSetupGraphicsPipeline(p_core->device, p_core->render_pass, fixed_states, &pipeline);
@@ -285,13 +293,15 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                     p_materials[i].pipeline = pipeline;
                 }
             }//FIXED STATES
-        }//END MATERIALS LOOP
+        }//END BUILD PIPELINE CHECKS
+
         (pp_materials != NULL) && (*pp_materials = p_materials);
         (p_material_count != NULL) && (*p_material_count = mat_count);
-    }//END PARSE CONDITIONS
 
+    }//END MATERIALS LOOP
+    
     free(parser);
-
+    
     return 1;
 }
 
