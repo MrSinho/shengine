@@ -140,47 +140,71 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
             }
             //+++++++++++++++++++++++++        
 
-            json_object* json_descriptors = json_object_object_get(json_material, "uniform_buffers");
+            json_object* json_descriptors = json_object_object_get(json_material, "descriptors");
             //+++++++++++++++++++++++++
             {
                 if (json_descriptors != NULL) {
                     const uint8_t descriptor_buffer_count = (uint8_t)json_object_array_length(json_descriptors);
                     for (uint8_t i = 0; i < descriptor_buffer_count; i++) {
-                        json_object* json_descriptor_buffer = json_object_array_get_idx(json_descriptors, i);
-                        json_object* json_set = json_object_object_get(json_descriptor_buffer, "set");
-                        json_object* json_dynamic = json_object_object_get(json_descriptor_buffer, "dynamic");
-                        json_object* json_max_bindings = json_object_object_get(json_descriptor_buffer, "max_bindings");
-                        json_object* json_size = json_object_object_get(json_descriptor_buffer, "size");
-                        json_object* json_stage = json_object_object_get(json_descriptor_buffer, "stage");
+                        json_object* json_descriptor = json_object_array_get_idx(json_descriptors, i);
+                        json_object* json_set = json_object_object_get(json_descriptor, "set");
+                        json_object* json_max_bindings = json_object_object_get(json_descriptor, "max_bindings");
+                        json_object* json_size = json_object_object_get(json_descriptor, "size");
+                        json_object* json_stage = json_object_object_get(json_descriptor, "stage");
+                        json_object* json_type = json_object_object_get(json_descriptor, "type");
 
-                        if (shFdWarning(json_set == NULL || json_dynamic == NULL || json_size == NULL || json_stage == NULL, "insufficient descriptor set info")) {
+                        if (shFdWarning(
+                            json_set == NULL || json_size == NULL || json_stage == NULL || json_type == NULL || json_stage == NULL, 
+                            "insufficient descriptor set info")) {
                             shAbortLoadingMaterials(pp_materials);
                         }  
                         
                         {//BUILD PIPELINE
                             if (build_pipeline) {
                                 uint32_t set = (uint32_t)json_object_get_int(json_set);
-                                uint8_t dynamic = (uint8_t)json_object_get_int(json_dynamic);
                                 uint32_t max_bindings = (json_max_bindings == NULL) ? 1 : (uint32_t)json_object_get_int(json_max_bindings);
                                 uint32_t size = (uint32_t)json_object_get_int(json_size);
+                                const char* s_type = json_object_get_string(json_type);
+                                const char* s_stage = json_object_get_string(json_stage);
 
-                                if (dynamic) {
-                                    shPipelineCreateDynamicDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), max_bindings, &pipeline);
+                                shFdError(s_type == NULL, "missing descriptor type definition");
+                                shFdError(s_stage == NULL, "missing descriptor stage definition");
+
+                                VkDescriptorType type = (VkDescriptorType)shStringFlagToInt(s_type);
+                                VkShaderStageFlags stage = (VkShaderStageFlags)shStringFlagToInt(s_stage);
+
+                                uint8_t dynamic = 0;
+                                if (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC || type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC) {
+                                    dynamic++;
+                                    shPipelineCreateDynamicDescriptorBuffer(
+                                        p_core->device, 
+                                        (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+                                        set, 
+                                        shGetDescriptorSize(p_core, size), 
+                                        max_bindings, 
+                                        &pipeline
+                                    );
                                 }
                                 else {
-                                    shPipelineCreateDescriptorBuffer(p_core->device, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, i, shGetDescriptorSize(p_core, size), &pipeline);
+                                    shPipelineCreateDescriptorBuffer(
+                                        p_core->device, 
+                                        (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, 
+                                        set,
+                                        shGetDescriptorSize(p_core, size), 
+                                        &pipeline
+                                    );
                                 }
-                                shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, i, &pipeline);
-                                shPipelineBindDescriptorBufferMemory(p_core->device, i, 0, &pipeline);
+                                shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, set, &pipeline);
+                                shPipelineBindDescriptorBufferMemory(p_core->device, set, 0, &pipeline);
                                 shPipelineDescriptorSetLayout(p_core->device,
                                     set,
-                                    dynamic ? 1 : 0,
-                                    dynamic ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC : VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                                    shStringFlagToInt(json_object_get_string(json_object_object_get(json_descriptor_buffer, "stage"))),
+                                    dynamic,
+                                    type,
+                                    stage,
                                     &pipeline
                                 );
-                                shPipelineCreateDescriptorPool(p_core->device, i, &pipeline);
-                                shPipelineAllocateDescriptorSet(p_core->device, i, &pipeline);
+                                shPipelineCreateDescriptorPool(p_core->device, set, &pipeline);
+                                shPipelineAllocateDescriptorSet(p_core->device, set, &pipeline);
                             }
                         }//BUILD PIPELINE
                     }//END DESCRIPTORS LOOP
@@ -556,6 +580,18 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     }
     if (strcmp(s_flag, "VERTEX_INPUT_RATE_INSTANCE") == 0) {
         return VK_VERTEX_INPUT_RATE_INSTANCE;
+    }
+    if (strcmp(s_flag, "UNIFORM") == 0) {
+        return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    }
+    if (strcmp(s_flag, "STORAGE") == 0) {
+        return VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    }
+    if (strcmp(s_flag, "DYNAMIC_UNIFORM") == 0) {
+        return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    }
+    if (strcmp(s_flag, "DYNAMIC_STORAGE") == 0) {
+        return VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
     }
     if (strcmp(s_flag, "CAMERA_SETUP_FREE_FLIGHT") == 0) {
         return SH_CAMERA_SETUP_FREE_FLIGHT;

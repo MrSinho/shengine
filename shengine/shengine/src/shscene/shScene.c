@@ -318,7 +318,6 @@ void shEndScene(ShEngine* p_engine) {
 			if (p_mesh->mesh_info.p_indices != NULL) {
 				free(p_mesh->mesh_info.p_indices);
 			}
-			memset(p_mesh, 0, sizeof(ShMesh));
 		}
 
 		if (p_camera) {
