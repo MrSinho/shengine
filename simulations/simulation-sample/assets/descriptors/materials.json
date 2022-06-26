@@ -7,9 +7,8 @@
       "push_constants_size": 128,
       "push_constants_stage": "SHADER_STAGE_VERTEX",
       "fixed_states": {
-        "flags": [
-          "FIXED_STATES_POLYGON_MODE_WIREFRAME"
-        ],
+        "polygon_mode": "POINT",
+        "primitive_topology": "TRIANGLE_LIST",
         "vertex_input_rate": "VERTEX_INPUT_RATE_VERTEX",
         "vertex_inputs": [
           {
@@ -49,9 +48,8 @@
       "push_constants_size": 128,
       "push_constants_stage": "SHADER_STAGE_VERTEX",
       "fixed_states": {
-        "flags": [
-          "FIXED_STATES_POLYGON_MODE_FACE"
-        ],
+        "polygon_mode": "FACE",
+        "primitive_topology": "TRIANGLE_LIST",
         "vertex_input_rate": "VERTEX_INPUT_RATE_VERTEX",
         "vertex_inputs": [
           {
@@ -97,9 +95,8 @@
       "push_constants_size": 128,
       "push_constants_stage": "SHADER_STAGE_VERTEX",
       "fixed_states": {
-        "flags": [
-          "FIXED_STATES_POLYGON_MODE_FACE"
-        ],
+        "polygon_mode": "FACE",
+        "primitive_topology": "TRIANGLE_LIST",
         "vertex_input_rate": "VERTEX_INPUT_RATE_VERTEX",
         "vertex_inputs": [
           {

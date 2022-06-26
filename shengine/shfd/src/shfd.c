@@ -222,17 +222,17 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
 
     //FIXED STATES
             ShVkFixedStates fixed_states = { 0 };//USED ONLY WHEN build_pipeline == 1
-            ShVkFixedStateFlags fixed_state_flags = 0;
             //FIXED STATES
 
             json_object* json_fixed_states = json_object_object_get(json_material, "fixed_states");
-            json_object* json_fixed_states_flags = json_object_object_get(json_fixed_states, "flags");
+            json_object* json_primitive_topology = json_object_object_get(json_fixed_states, "primitive_topology");
+            json_object* json_polygon_mode = json_object_object_get(json_fixed_states, "polygon_mode");
             //+++++++++++++++++++++++++        
             {//FIXED STATES
                 if (shFdWarning(json_fixed_states == NULL, "invalid fixed states info")) {
                     shAbortLoadingMaterials(pp_materials);
                 }
-                if (shFdWarning(json_fixed_states_flags == NULL, "missing fixed states flags")) {
+                if (shFdWarning(json_primitive_topology == NULL || json_polygon_mode == NULL, "incomplete primitive topology or polygon mode info")) {
                     shAbortLoadingMaterials(pp_materials);
                 }
                 json_object* json_vertex_inputs = json_object_object_get(json_fixed_states, "vertex_inputs");
@@ -248,10 +248,6 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                         }
                         {//BUILD PIPELINE
                             if (build_idx && build_pipeline) {
-                                for (uint32_t i = 0; i < json_object_array_length(json_fixed_states_flags); i++) {
-                                    json_object* json_flag = json_object_array_get_idx(json_fixed_states_flags, i);
-                                    fixed_state_flags |= shStringFlagToInt(json_object_get_string(json_flag));
-                                }
                                 shSetVertexInputAttribute(
                                     (uint32_t)json_object_get_int(json_location),
                                     shStringFlagToInt(json_object_get_string(json_format)),
@@ -281,11 +277,16 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
 
 
                 if (build_idx && build_pipeline) {
+                    const char* s_polygon_mode = json_object_get_string(json_polygon_mode);
+                    const char* s_primitive_topology = json_object_get_string(json_primitive_topology);
+                    VkPolygonMode polygon_mode = (VkPolygonMode)shStringFlagToInt(s_polygon_mode);
+                    VkPrimitiveTopology primitive_topology = (VkPrimitiveTopology)shStringFlagToInt(s_primitive_topology);
                     shSetFixedStates(
                         p_core->device,
                         p_core->surface.width,
                         p_core->surface.height,
-                        fixed_state_flags,
+                        primitive_topology,
+                        polygon_mode,
                         &fixed_states
                     );
                     shSetupGraphicsPipeline(p_core->device, p_core->render_pass, fixed_states, &pipeline);
@@ -581,23 +582,26 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     if (strcmp(s_flag, "VEC3_UNSIGNED_INT") == 0) {
         return SH_VEC3_UNSIGNED_INT;
     }
-    if (strcmp(s_flag, "FIXED_STATES_POLYGON_MODE_WIREFRAME") == 0) {
-        return SH_FIXED_STATES_POLYGON_MODE_WIREFRAME;
+    if (strcmp(s_flag, "WIREFRAME") == 0) {
+        return VK_POLYGON_MODE_LINE;
     }
-    if (strcmp(s_flag, "FIXED_STATES_POLYGON_MODE_FACE") == 0) {
-        return SH_FIXED_STATES_POLYGON_MODE_FACE;
+    if (strcmp(s_flag, "FACE") == 0) {
+        return VK_POLYGON_MODE_FILL;
     }
-    if (strcmp(s_flag, "FIXED_STATES_POLYGON_MODE_POINTS") == 0) {
-        return SH_FIXED_STATES_POLYGON_MODE_POINTS;
+    if (strcmp(s_flag, "POINT") == 0) {
+        return VK_POLYGON_MODE_POINT;
     }
-    if (strcmp(s_flag, "FIXED_STATES_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST") == 0) {
-        return SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    if (strcmp(s_flag, "TRIANGLE_LIST") == 0) {
+        return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     }
-    if (strcmp(s_flag, "FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST") == 0) {
-        return SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_LINE_LIST;
+    if (strcmp(s_flag, "TRIANGLE_FAN") == 0) {
+        return VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN;
     }
-    if (strcmp(s_flag, "FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST") == 0) {
-        return SH_FIXED_STATES_PRIMITIVE_TOPOLOGY_POINT_LIST;
+    if (strcmp(s_flag, "LINE_LIST") == 0) {
+        return VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+    }
+    if (strcmp(s_flag, "POINT_LIST") == 0) {
+        return VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
     }
     if (strcmp(s_flag, "VERTEX_INPUT_RATE_VERTEX") == 0) {
         return VK_VERTEX_INPUT_RATE_VERTEX;
