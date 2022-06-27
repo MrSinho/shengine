@@ -33,7 +33,7 @@ int main() {
 	shWindowSetup("shengine editor", 720, 480, &engine.window);
 	shCreateInstance(&engine.core, "shengine editor", "shengine", 1, engine.window.instance_extension_count, engine.window.pp_instance_extensions);
 	shWindowCreateSurface(&engine);
-	shSelectPhysicalDevice(&engine.core, SH_VK_CORE_GRAPHICS | SH_VK_CORE_COMPUTE);
+	shSelectPhysicalDevice(&engine.core, VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT);
 	shSetLogicalDevice(&engine.core);
 	shGetGraphicsQueue(&engine.core);
 	shGetComputeQueue(&engine.core);

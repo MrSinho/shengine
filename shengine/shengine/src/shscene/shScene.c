@@ -36,15 +36,15 @@ void shSceneInit(ShEngine* p_engine, ShScene* p_scene) {
 
 		if (p_mesh != NULL) {
 			if (p_mesh->mesh_info.vertex_count > 0 && p_mesh->mesh_info.p_vertices != NULL) {
-				shCreateVertexBuffer(p_engine->core.device, p_mesh->mesh_info.vertex_count * 4, &p_mesh->vertex_buffer);
-				shAllocateVertexBufferMemory(p_engine->core.device, p_engine->core.physical_device, p_mesh->vertex_buffer, &p_mesh->vertex_buffer_memory);
+				shCreateVertexBuffer(p_engine->core.device, p_mesh->mesh_info.vertex_count * 4, 0, &p_mesh->vertex_buffer);
+				shAllocateVertexBufferMemory(p_engine->core.device, p_engine->core.physical_device, p_mesh->vertex_buffer, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &p_mesh->vertex_buffer_memory);
 				if (p_mesh->mesh_info.flags & SH_MESH_SETUP_STATIC_MESH) {
 					shWriteVertexBufferMemory(p_engine->core.device, p_mesh->vertex_buffer_memory, 0, p_mesh->mesh_info.vertex_count * 4, p_mesh->mesh_info.p_vertices);
 				}
 				shBindVertexBufferMemory(p_engine->core.device, p_mesh->vertex_buffer, 0, p_mesh->vertex_buffer_memory);
 			}
 			if (p_mesh->mesh_info.index_count > 0 && p_mesh->mesh_info.p_indices != NULL) {
-				shCreateIndexBuffer(p_engine->core.device, p_mesh->mesh_info.index_count * 4, &p_mesh->index_buffer);
+				shCreateIndexBuffer(p_engine->core.device, p_mesh->mesh_info.index_count * 4, 0, &p_mesh->index_buffer);
 				shAllocateIndexBufferMemory(p_engine->core.device, p_engine->core.physical_device, p_mesh->index_buffer, &p_mesh->index_buffer_memory);
 				if (p_mesh->mesh_info.flags & SH_MESH_SETUP_STATIC_MESH) {
 					shWriteIndexBufferMemory(p_engine->core.device, p_mesh->index_buffer_memory, 0, p_mesh->mesh_info.index_count * 4, p_mesh->mesh_info.p_indices);

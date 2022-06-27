@@ -202,7 +202,7 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                                         &pipeline
                                     );
                                 }
-                                shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, set, &pipeline);
+                                shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, set, &pipeline);
                                 shPipelineBindDescriptorBufferMemory(p_core->device, set, 0, &pipeline);
                                 shPipelineDescriptorSetLayout(p_core->device,
                                     set,
