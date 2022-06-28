@@ -39,7 +39,7 @@ void bird_input(ShEngine* p_engine, const uint32_t bird_entity) {
 	p_bird->y_force -= GRAVITY_FORCE * (float)p_engine->time.delta_time;
 
 	if (p_transform->position[1] >= 40 || p_transform->position[1] <= -40.0) { //nice collision detection dude
-		shResetEngineState(p_engine);
+		shResetEngineState(p_engine, 0);
 	}
 }
 

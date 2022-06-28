@@ -27,7 +27,7 @@ void shEngineSafeState(ShEngine* p_engine) {
                 input_last_time = p_engine->time.now;
                 shSetTime(0.0, &p_engine->time);
                 input_last_time = 0.0;
-                shEngineManageState(p_engine, shResetEngineState(p_engine));
+                shEngineManageState(p_engine, shResetEngineState(p_engine, 1));
                 break;
             }
         }
@@ -62,9 +62,9 @@ uint8_t shSetEngineState(ShEngine* p_engine) {
     return 1;
 }
 
-uint8_t shResetEngineState(ShEngine* p_engine) {
+uint8_t shResetEngineState(ShEngine* p_engine, const uint8_t release_shared) {
     shEngineError(p_engine == NULL, "invalid engine memory");
-    shEngineRelease(p_engine);
+    shEngineRelease(p_engine, release_shared);
     return shSetEngineState(p_engine);
 }
 
@@ -81,7 +81,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
                 input_last_time = p_engine->time.now;
                 shSetTime(0.0, &p_engine->time);
                 input_last_time = 0.0;
-                shEngineManageState(p_engine, shResetEngineState(p_engine));
+                shEngineManageState(p_engine, shResetEngineState(p_engine, 1));
                 break;
             }
         }
@@ -98,7 +98,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
         shFrameEnd(&p_engine->core, 0, image_index);
     }
 
-    shEngineRelease(p_engine);
+    shEngineRelease(p_engine, 1);
     shVulkanRelease(&p_engine->core);
     exit(0);
 }
@@ -112,18 +112,20 @@ void shEngineManageState(ShEngine* p_engine, const uint8_t ready) {
     }
 }
 
-void shEngineThrowSafeState(ShEngine* p_engine, const uint8_t condition) {
+void shEngineThrowSafeState(ShEngine* p_engine, const uint8_t condition, const uint8_t release_shared) {
     if (condition) {
-        shEngineRelease(p_engine);
+        shEngineRelease(p_engine, release_shared);
         shEngineSafeState(p_engine);
     }
 }
 
-void shEngineRelease(ShEngine* p_engine) {
+void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
     shEngineError(p_engine == NULL, "invalid engine memory");
     if (p_engine->simulation_host.shared != NULL) {
         shSimulationClose(p_engine);
-        shSharedRelease(&p_engine->simulation_host.shared);
+        if (release_shared) {
+            shSharedRelease(&p_engine->simulation_host.shared);
+        }
     }
     shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
     shEndScene(p_engine);

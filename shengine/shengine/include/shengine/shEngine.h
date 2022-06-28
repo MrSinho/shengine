@@ -56,15 +56,15 @@ extern void shEngineSafeState(ShEngine* p_engine);
 
 extern uint8_t shSetEngineState(ShEngine* p_engine);
 
-extern uint8_t shResetEngineState(ShEngine* p_engine);
+extern uint8_t shResetEngineState(ShEngine* p_engine, const uint8_t release_shared);
 
 extern void shEngineUpdateState(ShEngine* p_engine);
 
 extern void shEngineManageState(ShEngine* p_engine, const uint8_t ready);
 
-extern void shEngineThrowSafeState(ShEngine* p_engine, const uint8_t condition);
+extern void shEngineThrowSafeState(ShEngine* p_engine, const uint8_t condition, const uint8_t release_shared);;
 
-extern void shEngineRelease(ShEngine* p_engine);
+extern void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared);
 
 
 
