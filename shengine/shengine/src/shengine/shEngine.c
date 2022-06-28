@@ -112,6 +112,13 @@ void shEngineManageState(ShEngine* p_engine, const uint8_t ready) {
     }
 }
 
+void shEngineThrowSafeState(ShEngine* p_engine, const uint8_t condition) {
+    if (condition) {
+        shEngineRelease(p_engine);
+        shEngineSafeState(p_engine);
+    }
+}
+
 void shEngineRelease(ShEngine* p_engine) {
     shEngineError(p_engine == NULL, "invalid engine memory");
     if (p_engine->simulation_host.shared != NULL) {
