@@ -12,6 +12,7 @@ extern "C" {
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_start(ShEngine* p_engine) {
     printf("SIMULATION IS RUNNING...\n");
+	return 1;
 }
 
 
@@ -46,11 +47,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
             }
         }
     }
-    
+
+	return 1;
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_close(ShEngine* p_engine, const uint32_t entity) {
-    return;
+    return 1;
 }
 
 #ifdef __cplusplus
