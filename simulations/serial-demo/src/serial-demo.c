@@ -35,6 +35,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION serial_start(ShEngine* p_engine) {
 		break;
 	}
 	
+	return 1;
 }
 
 #include <stdio.h>
@@ -70,6 +71,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION serial_update(ShEngine* p_engine) {
 			break;
 		}
 	}
+	
+	return 1;
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION serial_close(ShEngine* p_engine) {
@@ -84,6 +87,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION serial_close(ShEngine* p_engine) {
 			}
 		}
 	}
+
+	return 1;
 }
 
 #ifdef __cplusplus
