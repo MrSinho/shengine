@@ -19,9 +19,9 @@ extern "C" {
 
 
 
-void shSharedSceneRun(ShSimulationFunc* p_func, void* p_engine, const uint32_t entity_count) {
+uint8_t shSharedSceneRun(void* p_engine, ShSimulationFunc* p_func) {
     shSharedHostError(p_engine != NULL, "invalid arguments");
-    p_func(p_engine);
+    return p_func(p_engine);
 }
 
 void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_simulation) {
@@ -69,9 +69,9 @@ void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_si
 
 void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
     shSharedHostError(p_simulation != NULL, "invalid simulation pointer");
-    p_simulation->p_start   = shSharedLoadSymbol(p_simulation->shared, p_simulation->s_start);
-    p_simulation->p_update  = shSharedLoadSymbol(p_simulation->shared, p_simulation->s_update);
-    p_simulation->p_close   = shSharedLoadSymbol(p_simulation->shared, p_simulation->s_close);
+    p_simulation->p_start   = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_start);
+    p_simulation->p_update  = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_update);
+    p_simulation->p_close   = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_close);
     shSharedHostWarning(p_simulation->p_start != NULL, "invalid start function pointer");
     shSharedHostWarning(p_simulation->p_update != NULL, "invalid update function pointer");
     shSharedHostWarning(p_simulation->p_close != NULL, "invalid close function pointer");

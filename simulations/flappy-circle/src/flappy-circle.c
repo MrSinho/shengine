@@ -43,7 +43,7 @@ void bird_input(ShEngine* p_engine, const uint32_t bird_entity) {
 	}
 }
 
-void SH_ENGINE_EXPORT_FUNCTION flappy_circle_start(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_start(ShEngine* p_engine) {
 	ShScene* p_scene = &p_engine->scene;
 	for (uint32_t entity = 0; entity < (p_scene)->entity_count; entity++) {
 		if (entity == BIRD_ENTITY) {
@@ -51,10 +51,11 @@ void SH_ENGINE_EXPORT_FUNCTION flappy_circle_start(ShEngine* p_engine) {
 			break;
 		}
 	}
-	
+
+	return 1;
 }
 
-void SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
 	ShScene* p_scene = &p_engine->scene;
 
 	for (uint32_t entity = 0; entity < (p_scene)->entity_count; entity++) {
@@ -77,10 +78,11 @@ void SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
 		}
 	}
 
+	return 1;
 }
 
-void SH_ENGINE_EXPORT_FUNCTION flappy_circle_close(ShEngine* p_engine) {
-	return;
+uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_close(ShEngine* p_engine) {
+	return 1;
 }
 
 #ifdef __cplusplus

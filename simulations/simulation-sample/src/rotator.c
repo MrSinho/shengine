@@ -10,14 +10,14 @@ extern "C" {
 
 #include <stdio.h>
 
-void SH_ENGINE_EXPORT_FUNCTION simulation_start(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_start(ShEngine* p_engine) {
     printf("SIMULATION IS RUNNING...\n");
 }
 
 
 #include <string.h>
 
-void SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
 
     for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
         ShIdentity* p_identity = shGetShIdentity(&p_engine->scene, entity);
@@ -49,7 +49,7 @@ void SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
     
 }
 
-void SH_ENGINE_EXPORT_FUNCTION simulation_close(ShEngine* p_engine, const uint32_t entity) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_close(ShEngine* p_engine, const uint32_t entity) {
     return;
 }
 

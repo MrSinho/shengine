@@ -33,7 +33,7 @@ extern "C" {
 
 
 typedef void* ShSharedHandle;
-typedef void (ShSimulationFunc) (void*);
+typedef uint8_t (ShSimulationFunc) (void*);
 
 
 
@@ -57,22 +57,11 @@ typedef struct ShSimulationHandle {
 	if (!(int)(condition)) { printf("shsharedhost error: %s\n", msg); perror("aborting"); }
 
 
-extern void shSharedSceneRun(ShSimulationFunc* p_func, void* p_engine, const uint32_t entity_count);
+extern uint8_t shSharedSceneRun(void* p_engine, ShSimulationFunc* p_func);
 
 extern void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_simulation);
 
 extern void shSimulationLoadSymbols(ShSimulationHandle* p_simulation);
-
-#define shSimulationStart(p_engine)\
-	if ((p_engine)->simulation_host.p_start != NULL) { shSharedSceneRun((p_engine)->simulation_host.p_start, p_engine, (p_engine)->scene.entity_count); }
-
-#define shSimulationUpdate(p_engine)\
-	if ((p_engine)->simulation_host.p_update != NULL) { shSharedSceneRun((p_engine)->simulation_host.p_update, p_engine, (p_engine)->scene.entity_count); }
-
-#define shSimulationClose(p_engine)\
-	if ((p_engine)->simulation_host.p_close != NULL) { shSharedSceneRun((p_engine)->simulation_host.p_close, p_engine, (p_engine)->scene.entity_count); }
-
-
 
 #define shSharedRelease(p_shared)\
 	if (p_shared != NULL) { if (*p_shared != NULL) { shSharedFree(*(p_shared)); *(p_shared) = NULL; } }

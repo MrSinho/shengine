@@ -16,7 +16,7 @@ extern "C" {
 //Make serial handle as entity component
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(ShSerialHandle, 11);
 
-void SH_ENGINE_EXPORT_FUNCTION serial_start(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION serial_start(ShEngine* p_engine) {
 	
 	for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
 		if (entity == PICO_ENTITY) {
@@ -60,7 +60,7 @@ void read_serial_data(ShEngine* p_engine, ShSerialHandle* p_serial) {
 	}
 }
 
-void SH_ENGINE_EXPORT_FUNCTION serial_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION serial_update(ShEngine* p_engine) {
 	for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
 		ShSerialHandle* p_serial = shGetShSerialHandle(&p_engine->scene, entity);
 		if (p_serial != NULL && entity == PICO_ENTITY) {
@@ -72,7 +72,7 @@ void SH_ENGINE_EXPORT_FUNCTION serial_update(ShEngine* p_engine) {
 	}
 }
 
-void SH_ENGINE_EXPORT_FUNCTION serial_close(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION serial_close(ShEngine* p_engine) {
 	for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
 		if (entity == PICO_ENTITY) {
 			ShSerialHandle* p_serial = shGetShSerialHandle(&p_engine->scene, entity);

@@ -57,7 +57,7 @@ uint8_t shSetEngineState(ShEngine* p_engine) {
     shLoadSimulation(p_engine->simulation_descriptor.path, p_engine, &p_engine->simulation_host);
     shSimulationLoadSymbols(&p_engine->simulation_host);
     if (p_engine->simulation_host.shared != NULL) {
-        shSimulationStart(p_engine);
+        return shSharedSceneRun(p_engine, p_engine->simulation_host.p_start);
     }
     return 1;
 }
@@ -91,7 +91,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
         uint32_t image_index = 0;
         shFrameBegin(&p_engine->core, 0, &image_index);
 
-        shSimulationUpdate(p_engine);
+        shSharedSceneRun(p_engine, p_engine->simulation_host.p_update);
 
         shSceneUpdate(p_engine);
 
@@ -115,7 +115,7 @@ void shEngineManageState(ShEngine* p_engine, const uint8_t ready) {
 void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
     shEngineError(p_engine == NULL, "invalid engine memory");
     if (p_engine->simulation_host.shared != NULL) {
-        shSimulationClose(p_engine);
+        shSharedSceneRun(p_engine, p_engine->simulation_host.p_close);
         if (release_shared) {
             shSharedRelease(&p_engine->simulation_host.shared);
         }
