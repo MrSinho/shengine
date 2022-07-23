@@ -40,10 +40,10 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 
 ## To do:
  * Multithreaded rendering
- * Compute Shaders
+ * Manage Compute Shaders using descriptors
  * Double/triple buffering
  * Textures
- * Audio
+ * Audio 
 
 ---
 
