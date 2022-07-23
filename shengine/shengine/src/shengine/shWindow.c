@@ -45,7 +45,10 @@ void shWindowCreateSurface(ShEngine* p_engine) {
 void shUpdateInput(ShWindow* p_window) {
 	assert(p_window != NULL);
 	for (uint32_t i = 0; i < (uint32_t)(SH_KEY_LAST + 1); i++) {
-		p_window->input.key_actions[i] = glfwGetKey(p_window->window, i);
+		p_window->input.key_events[i] = glfwGetKey(p_window->window, i);
+	}
+	for (uint32_t i = 0; i < (uint32_t)(SH_MOUSE_BUTTON_8 + 1); i++) {
+		p_window->input.mouse_events[i] = glfwGetMouseButton(p_window->window, i);
 	}
 }
 

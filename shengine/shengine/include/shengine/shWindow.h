@@ -17,7 +17,8 @@ typedef struct ShInput {
 	double				cursor_pos_y;
 	double				d_cursor_pos_x;
 	double				d_cursor_pos_y;
-	shKeyParameters		key_actions;
+	shMouseEvents		mouse_events;
+	shKeyEvents			key_events;
 } ShInput;
 
 typedef struct ShWindow {
@@ -56,24 +57,30 @@ extern void shUpdateInput(ShWindow* p_window);
 extern void shUpdateWindow(ShEngine* p_engine);
 
 static int shIsKeyPressed(const ShWindow window, const uint32_t key) {
-	return window.input.key_actions[key] == GLFW_PRESS;
+	return window.input.key_events[key] == GLFW_PRESS;
 }
 
 static int shIsKeyReleased(const ShWindow window, const uint32_t key) {
-	return window.input.key_actions[key] == GLFW_RELEASE;
+	return window.input.key_events[key] == GLFW_RELEASE;
 }
 
 static int shIsKeyRepeated(const ShWindow window, const uint32_t key) {
-	return window.input.key_actions[key] == GLFW_REPEAT;
+	return window.input.key_events[key] == GLFW_REPEAT;
 }
 
 static int shIsMouseButtonPressed(const ShWindow window, const uint32_t button) {
-	return glfwGetMouseButton(window.window, button) == GLFW_PRESS;
+	return window.input.mouse_events[button] == GLFW_PRESS;
 }
 
 static int shIsMouseButtonReleased(const ShWindow window, const uint32_t button) {
-	return glfwGetMouseButton(window.window, button) == GLFW_RELEASE;
+	return window.input.mouse_events[button] == GLFW_RELEASE;
 }
+
+static int shIsMouseButtonRepeated(const ShWindow window, const uint32_t button) {
+	return window.input.mouse_events[button] == GLFW_REPEAT;
+}
+
+
 
 #ifdef __cplusplus
 }

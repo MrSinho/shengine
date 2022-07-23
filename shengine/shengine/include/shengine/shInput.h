@@ -142,7 +142,7 @@ extern void shGetCursorPosition(ShWindow* p_window);
 
 #define SH_KEY_LAST               SH_KEY_MENU
 
-typedef int8_t shKeyParameters[SH_KEY_LAST + 1];
+typedef int8_t shKeyEvents[SH_KEY_LAST + 1];
 
 #define SH_MOUSE_BUTTON_1         0
 #define SH_MOUSE_BUTTON_2         1
@@ -156,6 +156,8 @@ typedef int8_t shKeyParameters[SH_KEY_LAST + 1];
 #define SH_MOUSE_BUTTON_LEFT      SH_MOUSE_BUTTON_1
 #define SH_MOUSE_BUTTON_RIGHT     SH_MOUSE_BUTTON_2
 #define SH_MOUSE_BUTTON_MIDDLE    SH_MOUSE_BUTTON_3
+
+typedef int8_t shMouseEvents[SH_MOUSE_BUTTON_8 + 1];
 
 #define SH_JOYSTICK_1             0
 #define SH_JOYSTICK_2             1
