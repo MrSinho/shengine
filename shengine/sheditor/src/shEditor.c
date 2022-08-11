@@ -7,6 +7,8 @@ extern "C" {
 #include <string.h>
 #include <stdint.h>
 
+
+
 #include <shsharedhost/shSharedHost.h>
 #include <shfd/shFd.h>
 
@@ -15,11 +17,6 @@ extern "C" {
 #include <shvulkan/shVkCore.h>
 #include <shvulkan/shVkMemoryInfo.h>
 #include <shvulkan/shVkDrawLoop.h>
-
-#include <shecs/shTransform.h>
-
-
-#include <string.h>
 
 
 

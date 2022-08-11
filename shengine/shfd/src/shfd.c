@@ -488,16 +488,18 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
             }
         }
         if (json_camera != NULL) {
-            ShCamera* p_camera      = shAddShCamera(p_scene, entity);
-            json_object* json_fov   = json_object_object_get(json_camera, "fov");
-            json_object* json_nc    = json_object_object_get(json_camera, "nc");
-            json_object* json_fc    = json_object_object_get(json_camera, "fc");
-            json_object* json_speed = json_object_object_get(json_camera, "speed");
-            json_object* json_flags = json_object_object_get(json_camera, "flags");
+            ShCamera* p_camera              = shAddShCamera(p_scene, entity);
+            json_object* json_fov           = json_object_object_get(json_camera, "fov");
+            json_object* json_nc            = json_object_object_get(json_camera, "nc");
+            json_object* json_fc            = json_object_object_get(json_camera, "fc");
+            json_object* json_speed         = json_object_object_get(json_camera, "speed");
+            json_object* json_mouse_speed  = json_object_object_get(json_camera, "mouse_speed");
+            json_object* json_flags         = json_object_object_get(json_camera, "flags");
             p_camera->fov = (json_fov == NULL) ? 45.0f : (float)json_object_get_double(json_fov);
             p_camera->nc = (json_nc == NULL) ? 0.001f : (float)json_object_get_double(json_nc);
             p_camera->fc = (json_fc == NULL) ? 1000.0f : (float)json_object_get_double(json_fc);
             p_camera->speed = (json_speed == NULL) ? 15.0f : (float)json_object_get_double(json_speed);
+            p_camera->mouse_speed = (json_mouse_speed == NULL) ? 1.0f : (float)json_object_get_double(json_mouse_speed);
             p_camera->flags = json_flags != NULL ? shStringFlagToInt(json_object_get_string(json_flags)) : SH_CAMERA_SETUP_FREE_FLIGHT;
         }
         if (json_material != NULL) {
