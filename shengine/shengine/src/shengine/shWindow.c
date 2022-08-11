@@ -15,7 +15,7 @@ extern "C" {
 #include <assert.h>
 
 void shWindowSetup(const char* title, const uint32_t width, const uint32_t height, ShWindow* p_window) {
-	assert(p_window != NULL);
+	shEngineError(p_window == NULL, "invalid window memory");
 
 	ShWindow window = {
 		NULL,
@@ -28,14 +28,14 @@ void shWindowSetup(const char* title, const uint32_t width, const uint32_t heigh
 	shVkError(!glfwInit(), "error initializing glfw", return);
 	shVkError(glfwVulkanSupported() == GLFW_FALSE, "vulkan not supported by glfw", return);
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 	p_window->window = glfwCreateWindow(p_window->width, p_window->height, p_window->title, NULL, NULL);
 	p_window->pp_instance_extensions = glfwGetRequiredInstanceExtensions(&p_window->instance_extension_count);
 }
 
 void shWindowCreateSurface(ShEngine* p_engine) {
-	assert(p_engine != NULL);
+	shEngineError(p_engine == NULL, "invalid engine memory");
 
 	p_engine->core.surface.width = p_engine->window.width;
 	p_engine->core.surface.height = p_engine->window.height;
@@ -43,7 +43,8 @@ void shWindowCreateSurface(ShEngine* p_engine) {
 }
 
 void shUpdateInput(ShWindow* p_window) {
-	assert(p_window != NULL);
+	shEngineError(p_window == NULL, "invalid window memory");
+
 	for (uint32_t i = 0; i < (uint32_t)(SH_KEY_LAST + 1); i++) {
 		p_window->input.key_events[i] = glfwGetKey(p_window->window, i);
 	}
@@ -52,8 +53,13 @@ void shUpdateInput(ShWindow* p_window) {
 	}
 }
 
+void shGetWindowSize(ShWindow* p_window) {
+	shEngineError(p_window == NULL, "invalid window memory");
+	glfwGetWindowSize(p_window->window, (int*)&p_window->width, (int*)&p_window->height);
+}
+
 void shUpdateWindow(ShEngine* p_engine) {
-	assert(p_engine != NULL);
+	shEngineError(p_engine == NULL, "invalid engine memory");
 
 	shPollEvents();
 	shGetTime(&p_engine->time);

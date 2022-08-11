@@ -35,7 +35,7 @@ void shEngineSafeState(ShEngine* p_engine) {
         shFrameReset(&p_engine->core, 0);
 
         uint32_t image_index = 0;
-        shFrameBegin(&p_engine->core, 0, &image_index);
+        shFrameBegin(&p_engine->core, 0, (VkClearColorValue) { 0.0f, 0.0f, 0.0f, 1.0f }, & image_index);
 
         shFrameEnd(&p_engine->core, 0, image_index);
     }
@@ -72,7 +72,45 @@ void shEngineUpdateState(ShEngine* p_engine) {
     double input_dtime = 0.0;
     double input_last_time = 0.0;
 
-    while (shIsWindowActive(p_engine->window.window)) {
+    while (shIsWindowActive(p_engine->window.window)) {    
+        
+        uint32_t width = p_engine->window.width;
+        uint32_t height = p_engine->window.height;
+        shGetWindowSize(&p_engine->window);
+        if (width != p_engine->window.width || height != p_engine->window.height) {
+            shWaitDeviceIdle(p_engine->core.device);
+
+            shRenderPassRelease(&p_engine->core);
+            shSwapchainRelease(&p_engine->core);
+            shSurfaceRelease(&p_engine->core);
+            shDepthBufferRelease(&p_engine->core);
+
+            shWindowCreateSurface(p_engine);
+            shInitSwapchainData(&p_engine->core);
+            shInitDepthData(&p_engine->core);
+            shCreateRenderPass(&p_engine->core);
+            shSetFramebuffers(&p_engine->core);
+
+            shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
+            uint8_t mat_r = shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
+            if (p_engine->p_materials == NULL || mat_r == 0) {
+                shEngineManageState(p_engine, 0);
+                break;
+            }
+            for (uint32_t mat_idx = 0; mat_idx < p_engine->material_count; mat_idx++) {
+                ShMaterialHost* p_material = &p_engine->p_materials[mat_idx];
+                for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {
+                    p_material->pipeline.write_descriptor_sets[descriptor_idx].pBufferInfo = &p_material->pipeline.descriptor_buffer_infos[descriptor_idx];
+                }
+            }
+            shEndScene(p_engine);
+            if (!shLoadScene(p_engine->scene_descriptor.path, p_engine->material_count, &p_engine->p_materials, &p_engine->scene)) {
+                shEngineManageState(p_engine, 0);
+                break;
+            }
+            shSceneInit(p_engine, &p_engine->scene);
+        }
+
         shUpdateWindow(p_engine);
 
         input_dtime = p_engine->time.now - input_last_time;
@@ -89,7 +127,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
         shFrameReset(&p_engine->core, 0);
 
         uint32_t image_index = 0;
-        shFrameBegin(&p_engine->core, 0, &image_index);
+        shFrameBegin(&p_engine->core, 0, (VkClearColorValue) { 0.0f, 0.0f, 0.0f, 1.0f}, & image_index);
 
         shSharedSceneRun(p_engine, p_engine->simulation_host.p_update);
 

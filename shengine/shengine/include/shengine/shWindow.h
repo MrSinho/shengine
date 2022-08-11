@@ -54,7 +54,11 @@ extern void	shWindowCreateSurface(ShEngine* p_engine);
 
 extern void shUpdateInput(ShWindow* p_window);
 
+extern void shGetWindowSize(ShWindow* p_window);
+
 extern void shUpdateWindow(ShEngine* p_engine);
+
+
 
 static int shIsKeyPressed(const ShWindow window, const uint32_t key) {
 	return window.input.key_events[key] == GLFW_PRESS;
