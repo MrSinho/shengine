@@ -94,19 +94,11 @@ void shEngineUpdateState(ShEngine* p_engine) {
             shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
             uint8_t mat_r = shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
             if (p_engine->p_materials == NULL || mat_r == 0) {
-                shEngineManageState(p_engine, 0);
-                break;
-            }
-            for (uint32_t mat_idx = 0; mat_idx < p_engine->material_count; mat_idx++) {
-                ShMaterialHost* p_material = &p_engine->p_materials[mat_idx];
-                for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {
-                    p_material->pipeline.write_descriptor_sets[descriptor_idx].pBufferInfo = &p_material->pipeline.descriptor_buffer_infos[descriptor_idx];
-                }
+                return;
             }
             shEndScene(p_engine);
             if (!shLoadScene(p_engine->scene_descriptor.path, p_engine->material_count, &p_engine->p_materials, &p_engine->scene)) {
-                shEngineManageState(p_engine, 0);
-                break;
+                return;
             }
             shSceneInit(p_engine, &p_engine->scene);
         }

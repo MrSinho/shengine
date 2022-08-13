@@ -5,7 +5,6 @@ add_subdirectory(shvulkan)
 add_subdirectory(shecs)
 add_subdirectory(plyimporter)
 add_subdirectory(shserial)
-add_subdirectory(shgui)
 
 add_subdirectory(glfw)
 add_subdirectory(cglm)

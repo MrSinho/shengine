@@ -42,7 +42,6 @@ target_link_libraries(shengine PUBLIC
     shsharedhost
     shfd
     shserial
-    shgui
 )
 set_target_properties(shengine PROPERTIES 
 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
