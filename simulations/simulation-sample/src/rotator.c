@@ -9,6 +9,11 @@ extern "C" {
 #include <shecs/shTransform.h>
 
 #include <stdio.h>
+#include <string.h>
+
+
+#include <shgui/shgui.h>
+
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_start(ShEngine* p_engine) {
     printf("SIMULATION IS RUNNING...\n");
@@ -16,9 +21,16 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_start(ShEngine* p_engine) {
 }
 
 
-#include <string.h>
+void render_gui(ShEngine* p_engine) {
+    
+    shGuiWindow(p_engine->p_gui, 300.0f, 200.0f, 0.0f, 0.0f, "Rotator example", SH_GUI_MOVABLE | SH_GUI_RESIZABLE);
+
+}
+
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
+
+
 
     for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
         ShIdentity* p_identity = shGetShIdentity(&p_engine->scene, entity);

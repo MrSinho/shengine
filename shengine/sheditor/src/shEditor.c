@@ -43,29 +43,30 @@ int main() {
 	shCreateComputeCommandBuffers(&engine.core, SH_EDITOR_THREAD_COUNT);
 	shSetSyncObjects(&engine.core);
 
-	//ShGuiCore gui_core = {
-	//	engine.core.device,
-	//	engine.core.physical_device,
-	//	engine.core.graphics_queue,
-	//	engine.core.p_graphics_commands[0].cmd_buffer,
-	//	engine.core.p_graphics_commands[0].fence,
-	//	engine.core.surface.surface
-	//};
-	//ShGui* p_gui = shGuiInit(gui_core);
-	//
-	//shGuiLinkInputs(
-	//	&engine.window.width, 
-	//	&engine.window.height,
-	//	NULL,
-	//	NULL,
-	//	engine.window.input.key_events,
-	//	engine.window.input.mouse_events,
-	//	(ShGuiCursorIcons) { GLFW_CURSOR_NORMAL, GLFW_HRESIZE_CURSOR, GLFW_VRESIZE_CURSOR },
-	//	(float*)&engine.time.delta_time,
-	//	p_gui
-	//);
-	//
-	//shGuiSetDefaultValues(p_gui, SH_GUI_THEME_DARK, SH_GUI_RECORD | SH_GUI_INITIALIZE);
+	ShGuiCore gui_core = {
+		engine.core.device,
+		engine.core.physical_device,
+		engine.core.graphics_queue,
+		engine.core.p_graphics_commands[0].cmd_buffer,
+		engine.core.p_graphics_commands[0].fence,
+		engine.core.surface.surface
+	};
+	engine.p_gui = shGuiInit(gui_core);
+	
+	shGuiLinkInputs(
+		&engine.window.width, 
+		&engine.window.height,
+		NULL,
+		NULL,
+		engine.window.input.key_events,
+		engine.window.input.mouse_events,
+		(ShGuiCursorIcons) { GLFW_CURSOR_NORMAL, GLFW_HRESIZE_CURSOR, GLFW_VRESIZE_CURSOR },
+		(float*)&engine.time.delta_time,
+		engine.p_gui
+	);
+	shGuiBuildRegionPipeline(engine.p_gui, engine.core.render_pass, 256);
+	shGuiBuildTextPipeline(engine.p_gui, engine.core.render_pass, 256);
+	shGuiSetDefaultValues(engine.p_gui, SH_GUI_THEME_DARK, SH_GUI_RECORD | SH_GUI_INITIALIZE);
 
 	shMakeAssetsPath("/descriptors/materials.json", engine.materials_descriptor.path);
 	shMakeAssetsPath("/descriptors/scene.json", engine.scene_descriptor.path);

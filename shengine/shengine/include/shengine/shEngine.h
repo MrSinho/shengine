@@ -24,7 +24,7 @@ extern "C" {
 
 #include "shsharedhost/shSharedHost.h"
 
-
+#include <shgui/shgui.h>
 
 #include <stdint.h>
 
@@ -42,6 +42,8 @@ typedef struct ShEngine {
 	ShMaterialHost*	    p_materials;
     ShSimulationHandle  simulation_host;
     uint32_t		    material_count;
+
+    ShGui*              p_gui;
 
     void*               p_engine_extension;
 }ShEngine;

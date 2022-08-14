@@ -125,6 +125,9 @@ void shEngineUpdateState(ShEngine* p_engine) {
 
         shSceneUpdate(p_engine);
 
+        shGuiWriteMemory(p_engine->p_gui, 0);
+        shGuiRender(p_engine->p_gui);
+
         shFrameEnd(&p_engine->core, 0, image_index);
     }
 
