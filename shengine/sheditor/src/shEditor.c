@@ -64,8 +64,8 @@ int main() {
 		(float*)&engine.time.delta_time,
 		engine.p_gui
 	);
-	shGuiBuildRegionPipeline(engine.p_gui, engine.core.render_pass, 256);
-	shGuiBuildTextPipeline(engine.p_gui, engine.core.render_pass, 256);
+	shGuiBuildRegionPipeline(engine.p_gui, 256);
+	shGuiBuildTextPipeline(engine.p_gui, 256);
 	shGuiSetDefaultValues(engine.p_gui, SH_GUI_THEME_DARK, SH_GUI_RECORD | SH_GUI_INITIALIZE);
 
 	shMakeAssetsPath("/descriptors/materials.json", engine.materials_descriptor.path);
