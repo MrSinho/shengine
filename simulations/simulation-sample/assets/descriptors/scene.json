@@ -14,7 +14,7 @@
             "nc": 0.1,
             "fc": 150,
             "speed": 5,
-            "mouse_speed": 3,
+            "mouse_speed": 30,
             "flags":"CAMERA_SETUP_FREE_FLIGHT"
          }
       },
