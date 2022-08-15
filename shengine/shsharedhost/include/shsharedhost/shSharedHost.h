@@ -42,9 +42,11 @@ typedef struct ShSimulationHandle {
 	uint8_t				run;
 	char*				s_start;
 	char*				s_update;
+	char*				s_frame_update;
 	char*				s_close;
 	ShSimulationFunc*	p_start;
 	ShSimulationFunc*	p_update;
+	ShSimulationFunc*	p_frame_update;
 	ShSimulationFunc*	p_close;
 } ShSimulationHandle;
 

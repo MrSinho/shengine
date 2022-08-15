@@ -75,6 +75,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION serial_update(ShEngine* p_engine) {
 	return 1;
 }
 
+uint8_t SH_ENGINE_EXPORT_FUNCTION serial_frame_update(ShEngine* p_engine) {
+	return 1;
+}
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION serial_close(ShEngine* p_engine) {
 	for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
 		if (entity == PICO_ENTITY) {

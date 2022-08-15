@@ -3,5 +3,6 @@
     "name": "flappy-circle",
     "start": "flappy_circle_start",
     "update": "flappy_circle_update",
+    "frame_update": "flappy_circle_frame_update",
     "close": "flappy_circle_close"
 }

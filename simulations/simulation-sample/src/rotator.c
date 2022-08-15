@@ -75,6 +75,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
 	return 1;
 }
 
+uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_frame_update(ShEngine* p_engine) {
+    return 1;
+}
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_close(ShEngine* p_engine, const uint32_t entity) {
     return 1;
 }

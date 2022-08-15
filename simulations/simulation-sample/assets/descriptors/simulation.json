@@ -3,5 +3,6 @@
     "name": "simulation-sample",
     "start": "simulation_start",
     "update": "simulation_update",
+    "frame_update": "simulation_frame_update",
     "close": "simulation_close"
 }

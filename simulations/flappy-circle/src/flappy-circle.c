@@ -83,6 +83,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
 	return 1;
 }
 
+uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_frame_update(ShEngine* p_engine) {
+	return 1;
+}
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_close(ShEngine* p_engine) {
 	return 1;
 }

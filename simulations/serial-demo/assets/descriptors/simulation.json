@@ -3,5 +3,6 @@
     "name": "serial-demo",
     "start": "serial_start",
     "update": "serial_update",
+    "frame_update": "serial_frame_update",
     "close": "serial_close"
 }
