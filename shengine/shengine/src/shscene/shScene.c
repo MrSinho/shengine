@@ -86,33 +86,33 @@ void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_
 
 	if (p_camera->flags & SH_CAMERA_SETUP_FREE_FLIGHT) {
 		float displacement[3] = { 0.0f, 0.0f, 0.0f };
-		if (shIsKeyPressed(p_engine->window, SH_KEY_W)) {
+		if (shIsKeyDown(p_engine->window, SH_KEY_W)) {
 			memcpy(displacement, p_transform->front, 12);
 			glm_vec3_mul(displacement, (vec3){ p_camera->speed, p_camera->speed, p_camera->speed }, displacement);
 		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_A)) {
+		if (shIsKeyDown(p_engine->window, SH_KEY_A)) {
 			memcpy(displacement, p_transform->left, 12);
 			glm_vec3_mul(displacement, (vec3) { p_camera->speed, p_camera->speed, p_camera->speed }, displacement);
 		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_S)) {
+		if (shIsKeyDown(p_engine->window, SH_KEY_S)) {
 			memcpy(displacement, p_transform->front, 12);
 			glm_vec3_mul(displacement, (vec3) { -p_camera->speed, -p_camera->speed, -p_camera->speed }, displacement);
 		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_D)) {
+		if (shIsKeyDown(p_engine->window, SH_KEY_D)) {
 			memcpy(displacement, p_transform->left, 12);
 			glm_vec3_mul(displacement, (vec3) { -p_camera->speed, -p_camera->speed, -p_camera->speed }, displacement);
 		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_E)) {
+		if (shIsKeyDown(p_engine->window, SH_KEY_E)) {
 			memcpy(displacement, p_transform->up, 12);
 			glm_vec3_mul(displacement, (vec3) { -p_camera->speed, -p_camera->speed, -p_camera->speed }, displacement);
 		}
-		if (shIsKeyPressed(p_engine->window, SH_KEY_Q)) {
+		if (shIsKeyDown(p_engine->window, SH_KEY_Q)) {
 			memcpy(displacement, p_transform->up, 12);
 			glm_vec3_mul(displacement, (vec3) { p_camera->speed, p_camera->speed, p_camera->speed }, displacement);
 		}
 		glm_vec3_mul(displacement, (vec3) { (float)p_engine->time.delta_time, (float)p_engine->time.delta_time, (float)p_engine->time.delta_time }, displacement);
 		glm_vec3_add(p_transform->position, displacement, p_transform->position);
-		if (shIsMouseButtonPressed(p_engine->window, SH_MOUSE_BUTTON_RIGHT) && p_engine->p_gui->region_infos.cursor_on_regions == 0) {
+		if (shIsMouseButtonDown(p_engine->window, SH_MOUSE_BUTTON_RIGHT) && p_engine->p_gui->region_infos.cursor_on_regions == 0) {
 			glfwSetInputMode(p_engine->window.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			p_transform->rotation[0] -= p_camera->mouse_speed * (float)p_engine->window.input.d_cursor_pos_y * (float)p_engine->time.delta_time;
 			p_transform->rotation[1] -= p_camera->mouse_speed * (float)p_engine->window.input.d_cursor_pos_x * (float)p_engine->time.delta_time;
