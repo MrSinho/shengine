@@ -19,6 +19,8 @@ void shWindowSetup(const char* title, const uint32_t width, const uint32_t heigh
 
 	ShWindow window = {
 		NULL,
+		{ NULL },
+		{ GLFW_CURSOR_NORMAL, GLFW_HRESIZE_CURSOR, GLFW_VRESIZE_CURSOR },
 		width,
 		height,
 		title
@@ -32,6 +34,11 @@ void shWindowSetup(const char* title, const uint32_t width, const uint32_t heigh
 
 	p_window->window = glfwCreateWindow(p_window->width, p_window->height, p_window->title, NULL, NULL);
 	p_window->pp_instance_extensions = glfwGetRequiredInstanceExtensions(&p_window->instance_extension_count);
+
+	p_window->default_cursors[0] = glfwCreateStandardCursor(GLFW_CURSOR_NORMAL);
+	p_window->default_cursors[1] = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+	p_window->default_cursors[2] = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR);
+	p_window->default_cursors[3] = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);
 }
 
 void shWindowCreateSurface(ShEngine* p_engine) {

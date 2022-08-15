@@ -54,11 +54,41 @@ uint8_t shSetEngineState(ShEngine* p_engine) {
         return 0;
     }
     shSceneInit(p_engine, &p_engine->scene);
+    
+    ShGuiCore gui_core = {
+        p_engine->core.device,
+        p_engine->core.physical_device,
+        p_engine->core.graphics_queue,
+        p_engine->core.p_graphics_commands[0].cmd_buffer,
+        p_engine->core.p_graphics_commands[0].fence,
+        p_engine->core.surface.surface,
+        p_engine->core.render_pass
+    };
+    (p_engine->p_gui == NULL) && (p_engine->p_gui = shGuiInit(gui_core));
+
+    shGuiLinkInputs(
+        &p_engine->window.width,
+        &p_engine->window.height,
+        &p_engine->window.input.cursor_pos_x,
+        &p_engine->window.input.cursor_pos_y,
+        p_engine->window.input.key_events,
+        p_engine->window.input.mouse_events,
+        p_engine->window.default_cursor_icons,
+        &p_engine->time.delta_time,
+        p_engine->p_gui
+    );
+
+    shGuiBuildRegionPipeline(p_engine->p_gui, 256);
+    shGuiBuildTextPipeline(p_engine->p_gui, 256);
+    shGuiSetDefaultValues(p_engine->p_gui, SH_GUI_THEME_DARK, SH_GUI_RECORD | SH_GUI_INITIALIZE);
+
     shLoadSimulation(p_engine->simulation_descriptor.path, p_engine, &p_engine->simulation_host);
     shSimulationLoadSymbols(&p_engine->simulation_host);
+
     if (p_engine->simulation_host.shared != NULL) {
         return shSharedSceneRun(p_engine, p_engine->simulation_host.p_start);
     }
+
     return 1;
 }
 
@@ -101,6 +131,13 @@ void shEngineUpdateState(ShEngine* p_engine) {
                 return;
             }
             shSceneInit(p_engine, &p_engine->scene);
+
+            p_engine->p_gui->core.surface = p_engine->core.surface.surface;
+            p_engine->p_gui->core.render_pass = p_engine->core.render_pass;
+            shGuiDestroyPipelines(p_engine->p_gui);
+            shGuiBuildRegionPipeline(p_engine->p_gui, 256);
+            shGuiBuildTextPipeline(p_engine->p_gui, 256);
+            shGuiSetDefaultValues(p_engine->p_gui, SH_GUI_THEME_DARK, SH_GUI_RECORD);
         }
 
         shUpdateWindow(p_engine);
@@ -116,17 +153,36 @@ void shEngineUpdateState(ShEngine* p_engine) {
             }
         }
 
+        if (!shSharedSceneRun(p_engine, p_engine->simulation_host.p_update)) {
+            shEngineManageState(p_engine, shResetEngineState(p_engine, 1));
+        }
+        
+        if (p_engine->p_gui != NULL) {
+            shGuiWriteMemory(p_engine->p_gui, 1);
+            uint8_t active_cursor_icon_idx = 3;
+            for (uint8_t i = 0; i < sizeof(ShGuiCursorIcons) / sizeof(int32_t); i++) {
+                if (p_engine->p_gui->inputs.active_cursor_icon == p_engine->p_gui->inputs.p_cursor_icons[i]) {
+                    active_cursor_icon_idx = i;
+                    break;
+                }
+            }
+            shSetCursor(p_engine->window.window, p_engine->window.default_cursors[active_cursor_icon_idx]);
+            p_engine->p_gui->inputs.active_cursor_icon = GLFW_CROSSHAIR_CURSOR;
+
+        }
+
         shFrameReset(&p_engine->core, 0);
 
         uint32_t image_index = 0;
         shFrameBegin(&p_engine->core, 0, (VkClearColorValue) { 0.0f, 0.0f, 0.0f, 1.0f}, & image_index);
 
-        shSharedSceneRun(p_engine, p_engine->simulation_host.p_update);
 
         shSceneUpdate(p_engine);
 
-        shGuiWriteMemory(p_engine->p_gui, 0);
-        shGuiRender(p_engine->p_gui);
+        if (p_engine->p_gui != NULL) {
+            shGuiUpdateInputs(p_engine->p_gui);
+            shGuiRender(p_engine->p_gui);
+        }
 
         shFrameEnd(&p_engine->core, 0, image_index);
     }
@@ -147,6 +203,9 @@ void shEngineManageState(ShEngine* p_engine, const uint8_t ready) {
 
 void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
     shEngineError(p_engine == NULL, "invalid engine memory");
+    
+    shGuiRelease(p_engine->p_gui);
+    p_engine->p_gui = NULL;
     if (p_engine->simulation_host.shared != NULL) {
         shSharedSceneRun(p_engine, p_engine->simulation_host.p_close);
         if (release_shared) {

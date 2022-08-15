@@ -19,3 +19,6 @@
 [submodule "shengine/externals/json-c"]
 	path = shengine/externals/json-c
 	url = https://github.com/json-c/json-c.git
+[submodule "shengine/externals/shgui"]
+	path = shengine/externals/shgui
+	url = https://github.com/mrsinho/shgui.git

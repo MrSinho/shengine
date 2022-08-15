@@ -13,16 +13,18 @@ extern "C" {
 #include <shengine/shInput.h>
 
 typedef struct ShInput {
-	double				cursor_pos_x;
-	double				cursor_pos_y;
-	double				d_cursor_pos_x;
-	double				d_cursor_pos_y;
+	float				cursor_pos_x;
+	float				cursor_pos_y;
+	float				d_cursor_pos_x;
+	float				d_cursor_pos_y;
 	shMouseEvents		mouse_events;
 	shKeyEvents			key_events;
 } ShInput;
 
 typedef struct ShWindow {
 	GLFWwindow*		window;
+	GLFWcursor*		default_cursors[4];
+	int32_t			default_cursor_icons[4];
 	uint32_t		width;
 	uint32_t		height;
 	const char*		title;
@@ -36,6 +38,9 @@ typedef struct ShEngine ShEngine;
 extern void shWindowSetup(const char* title, const uint32_t width, const uint32_t height, ShWindow* p_window);
 
 extern int shIsWindowActive(GLFWwindow* window);
+
+#define shSetCursor(glfw_window, glfw_cursor)\
+	glfwSetCursor(glfw_window, glfw_cursor)
 
 #define shPollEvents glfwPollEvents
 

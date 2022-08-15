@@ -25,7 +25,7 @@ typedef struct Bird {
 } Bird;
 SH_ECS_MAKE_COMPONENT_DEFINITIONS(Bird, 10);
 
-void bird_input(ShEngine* p_engine, const uint32_t bird_entity) {
+uint8_t bird_input(ShEngine* p_engine, const uint32_t bird_entity) {
 	ShScene* p_scene = &p_engine->scene;
 	ShTransform* p_transform = shGetShTransform(p_scene, bird_entity);
 	Bird* p_bird = shGetBird(p_scene, bird_entity);
@@ -39,8 +39,10 @@ void bird_input(ShEngine* p_engine, const uint32_t bird_entity) {
 	p_bird->y_force -= GRAVITY_FORCE * (float)p_engine->time.delta_time;
 
 	if (p_transform->position[1] >= 40 || p_transform->position[1] <= -40.0) { //nice collision detection dude
-		shResetEngineState(p_engine, 0);
+		return 0;
 	}
+
+	return 1;
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_start(ShEngine* p_engine) {
@@ -70,7 +72,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
 			break;
 
 		case BIRD_ENTITY:
-			bird_input(p_engine, entity);
+			if (!bird_input(p_engine, entity)) { return 0; }
 			break;
 
 		default: //for components linked to the main bird body

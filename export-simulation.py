@@ -33,7 +33,7 @@ def main():#example call: python export_simulation.py simulation-sample SHARED;;
 
     cmake_subdirectories = "\t"
     for i in range (0, len(libs_dir), 1):
-        cmake_subdirectories += f"add_subdirectory({libs_dir[i]} [EXCLUDE_FROM_ALL])\n"
+        cmake_subdirectories += f"if (NOT TARGET {libs_dir[i]})\nadd_subdirectory({libs_dir[i]} [EXCLUDE_FROM_ALL])\nendif()\n"
     print(f"subdirectories:\n\t{cmake_subdirectories}\n")
     
     src_arr = src.split()

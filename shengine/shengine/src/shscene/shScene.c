@@ -112,7 +112,7 @@ void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_
 		}
 		glm_vec3_mul(displacement, (vec3) { (float)p_engine->time.delta_time, (float)p_engine->time.delta_time, (float)p_engine->time.delta_time }, displacement);
 		glm_vec3_add(p_transform->position, displacement, p_transform->position);
-		if (shIsMouseButtonPressed(p_engine->window, SH_MOUSE_BUTTON_RIGHT)) {
+		if (shIsMouseButtonPressed(p_engine->window, SH_MOUSE_BUTTON_RIGHT) && p_engine->p_gui->region_infos.cursor_on_regions == 0) {
 			glfwSetInputMode(p_engine->window.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			p_transform->rotation[0] -= p_camera->mouse_speed * (float)p_engine->window.input.d_cursor_pos_y * (float)p_engine->time.delta_time;
 			p_transform->rotation[1] -= p_camera->mouse_speed * (float)p_engine->window.input.d_cursor_pos_x * (float)p_engine->time.delta_time;

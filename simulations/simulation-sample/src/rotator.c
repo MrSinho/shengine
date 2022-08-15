@@ -20,17 +20,29 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_start(ShEngine* p_engine) {
 	return 1;
 }
 
-
-void render_gui(ShEngine* p_engine) {
-    
-    shGuiWindow(p_engine->p_gui, 300.0f, 200.0f, 0.0f, 0.0f, "Rotator example", SH_GUI_MOVABLE | SH_GUI_RESIZABLE);
-
-}
-
-
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
 
-
+    if (p_engine->p_gui == NULL) { return 0; }
+    shGuiWindow(
+        p_engine->p_gui,
+        250.0f,
+        100.0f,
+        0.0f,
+        0.0f,
+        "Simulation sample",
+        SH_GUI_MOVABLE | SH_GUI_RESIZABLE | SH_GUI_PIXELS
+    );
+    shGuiWindowText(
+        p_engine->p_gui,
+        SH_GUI_WINDOW_TEXT_SIZE,
+        "Hey, this is a demo",
+        SH_GUI_CENTER_WIDTH
+    );
+    shGuiWindowSeparator(p_engine->p_gui);
+    if (shGuiWindowButton(p_engine->p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Button", SH_GUI_CENTER_WIDTH)) {
+        puts("Pressed");
+        return 0;
+    }
 
     for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
         ShIdentity* p_identity = shGetShIdentity(&p_engine->scene, entity);

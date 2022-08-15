@@ -8,7 +8,9 @@ set(CGLM_USE_C99 ON)
 set(CGLM_STATIC ON)
 
 #SUBDIRECTORIES
+if (NOT TARGET externals)
 add_subdirectory(externals)
+endif()
 
 #OPTIONS
 option(SH_ENGINE_BUILD_EDITOR CACHE OFF)
