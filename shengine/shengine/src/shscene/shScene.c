@@ -72,7 +72,7 @@ void shUpdateShTransform(ShTransform* p_transform) {
 	glm_rotate_y(p_transform->model, p_transform->rotation[1], p_transform->model);
 	glm_rotate_z(p_transform->model, p_transform->rotation[2], p_transform->model);
 	
-	shEulerToVector(p_transform->euler, p_transform->front);
+	shEulerToVector(p_transform->rotation, p_transform->front);
 	
 	glm_vec3_cross((vec3) { 0.0f, 1.0f, 0.0f }, p_transform->front, p_transform->left);
 	glm_vec3_normalize(p_transform->left);
@@ -121,8 +121,8 @@ void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_
 		glm_vec3_add(p_transform->position, displacement, p_transform->position);
 		if (shIsMouseButtonDown(p_engine->window, SH_MOUSE_BUTTON_RIGHT) && p_engine->p_gui->region_infos.cursor_on_regions == 0) {
 			glfwSetInputMode(p_engine->window.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-			p_transform->rotation[0] -= p_camera->mouse_speed / 1000.0f * (float)p_engine->window.input.d_cursor_pos_y * (float)p_engine->time.delta_time;
-			p_transform->rotation[1] -= p_camera->mouse_speed / 1000.0f * (float)p_engine->window.input.d_cursor_pos_x * (float)p_engine->time.delta_time;
+			p_transform->rotation[0] -= p_camera->mouse_speed / 100.0f * (float)p_engine->window.input.d_cursor_pos_y * (float)p_engine->time.delta_time;
+			p_transform->rotation[1] -= p_camera->mouse_speed / 100.0f * (float)p_engine->window.input.d_cursor_pos_x * (float)p_engine->time.delta_time;
 			if (p_transform->rotation[0] >= SH_DEGREES_TO_RADIANS(89.99999f)) {
 				p_transform->rotation[0] = SH_DEGREES_TO_RADIANS(89.99999f);
 			}
