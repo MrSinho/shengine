@@ -53,10 +53,14 @@ void shUpdateInput(ShWindow* p_window) {
 	shEngineError(p_window == NULL, "invalid window memory");
 
 	for (uint32_t i = 0; i < (uint32_t)(SH_KEY_LAST + 1); i++) {
-		p_window->input.key_events[i] = glfwGetKey(p_window->window, i);
+		uint32_t key = glfwGetKey(p_window->window, i);
+		p_window->input.d_key_events[i] = p_window->input.key_events[i] != key ? key : 0;
+		p_window->input.key_events[i] = key;
 	}
 	for (uint32_t i = 0; i < (uint32_t)(SH_MOUSE_BUTTON_8 + 1); i++) {
-		p_window->input.mouse_events[i] = glfwGetMouseButton(p_window->window, i);
+		uint32_t click = glfwGetMouseButton(p_window->window, i);
+		p_window->input.d_mouse_events[i] = p_window->input.mouse_events[i] != click ? click : 0;
+		p_window->input.mouse_events[i] = click;
 	}
 }
 

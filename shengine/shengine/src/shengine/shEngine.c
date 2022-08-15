@@ -176,8 +176,8 @@ void shEngineUpdateState(ShEngine* p_engine) {
         uint32_t image_index = 0;
         shFrameBegin(&p_engine->core, 0, (VkClearColorValue) { 0.0f, 0.0f, 0.0f, 1.0f}, & image_index);
 
-        shEngineWarning(
-            shSharedSceneRun(p_engine, p_engine->simulation_host.p_frame_update) == 0,
+        shSharedHostWarning(
+            shSharedSceneRun(p_engine, p_engine->simulation_host.p_frame_update), 
             "simulation update frame failed"
         );
         shSceneUpdate(p_engine);

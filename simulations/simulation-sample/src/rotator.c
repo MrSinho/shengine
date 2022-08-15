@@ -39,9 +39,13 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
         SH_GUI_CENTER_WIDTH
     );
     shGuiWindowSeparator(p_engine->p_gui);
-    if (shGuiWindowButton(p_engine->p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Button", SH_GUI_CENTER_WIDTH)) {
-        puts("Pressed");
+    if (shGuiWindowButton(p_engine->p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset", SH_GUI_CENTER_WIDTH)) {
+        puts("Reset");
         return 0;
+    }
+
+    if (shIsKeyPressed(p_engine->window, SH_KEY_P)) {
+        puts("Pressed");
     }
 
     for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {

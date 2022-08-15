@@ -20,7 +20,7 @@ extern "C" {
 
 
 uint8_t shSharedSceneRun(void* p_engine, ShSimulationFunc* p_func) {
-    shSharedHostError(p_engine != NULL, "invalid arguments");
+    shSharedHostError(p_engine != NULL, "invalid engine memory");
     return p_func(p_engine);
 }
 
