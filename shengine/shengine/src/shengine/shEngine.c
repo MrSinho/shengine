@@ -80,7 +80,7 @@ uint8_t shSetEngineState(ShEngine* p_engine) {
 
     shGuiBuildRegionPipeline(p_engine->p_gui, 256);
     shGuiBuildTextPipeline(p_engine->p_gui, 256);
-    shGuiSetDefaultValues(p_engine->p_gui, SH_GUI_THEME_DARK, SH_GUI_RECORD | SH_GUI_INITIALIZE);
+    shGuiSetDefaultValues(p_engine->p_gui, SH_GUI_THEME_EXTRA_DARK, SH_GUI_RECORD | SH_GUI_INITIALIZE);
 
     shLoadSimulation(p_engine->simulation_descriptor.path, p_engine, &p_engine->simulation_host);
     shSimulationLoadSymbols(&p_engine->simulation_host);
