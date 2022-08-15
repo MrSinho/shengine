@@ -6,6 +6,7 @@ extern "C" {
 #include "shfd/shFile.h"
 
 #include <shecs/shComponents.h>
+#include "../../shengine/include/shlinear-algebra/shEuler.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -449,6 +450,13 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
                     rotation[j] = json_rot != NULL ? (float)json_object_get_double(json_rot) : 0.0f;
                 }
             }
+            json_object* json_euler = json_object_object_get(json_transform, "euler");
+            if (json_euler != NULL) {
+                for (uint32_t j = 0; j < 3; j++) {
+                    json_object* json_eu = json_object_array_get_idx(json_euler, j);
+                    rotation[j] = json_eu != NULL ? SH_DEGREES_TO_RADIANS((float)json_object_get_double(json_eu)) : 0.0f;
+                }
+            }
             json_object* json_scale = json_object_object_get(json_transform, "scale");
             float scale[3] = { 1.0f, 1.0f, 1.0f };
             if (json_scale != NULL) {
@@ -499,7 +507,7 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
             p_camera->nc = (json_nc == NULL) ? 0.001f : (float)json_object_get_double(json_nc);
             p_camera->fc = (json_fc == NULL) ? 1000.0f : (float)json_object_get_double(json_fc);
             p_camera->speed = (json_speed == NULL) ? 15.0f : (float)json_object_get_double(json_speed);
-            p_camera->mouse_speed = (json_mouse_speed == NULL) ? 1.0f : (float)json_object_get_double(json_mouse_speed);
+            p_camera->mouse_speed = (json_mouse_speed == NULL) ? 3.0f : (float)json_object_get_double(json_mouse_speed);
             p_camera->flags = json_flags != NULL ? shStringFlagToInt(json_object_get_string(json_flags)) : SH_CAMERA_SETUP_FREE_FLIGHT;
         }
         if (json_material != NULL) {

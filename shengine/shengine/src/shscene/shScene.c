@@ -68,17 +68,24 @@ void shUpdateShTransform(ShTransform* p_transform) {
 	glm_mat4_identity(p_transform->model);
 	glm_translate(p_transform->model, p_transform->position);
 	glm_scale(p_transform->model, p_transform->scale);
-	glm_rotate_x(p_transform->model, SH_DEGREES_TO_RADIANS(p_transform->rotation[0]), p_transform->model);
-	glm_rotate_y(p_transform->model, SH_DEGREES_TO_RADIANS(p_transform->rotation[1]), p_transform->model);
-	glm_rotate_z(p_transform->model, SH_DEGREES_TO_RADIANS(p_transform->rotation[2]), p_transform->model);
+	glm_rotate_x(p_transform->model, p_transform->rotation[0], p_transform->model);
+	glm_rotate_y(p_transform->model, p_transform->rotation[1], p_transform->model);
+	glm_rotate_z(p_transform->model, p_transform->rotation[2], p_transform->model);
 	
-	shEulerToVector(p_transform->rotation, p_transform->front);
+	shEulerToVector(p_transform->euler, p_transform->front);
 	
 	glm_vec3_cross((vec3) { 0.0f, 1.0f, 0.0f }, p_transform->front, p_transform->left);
 	glm_vec3_normalize(p_transform->left);
 	
 	glm_vec3_cross(p_transform->front, p_transform->left, p_transform->up);
 	glm_vec3_normalize(p_transform->up);
+
+	for (uint32_t i = 0; i < sizeof(p_transform->rotation) / sizeof(p_transform->rotation[0]); i++) {
+		p_transform->rotation[i] -= (float)((int)p_transform->rotation[i] / (int)(SH_DEGREES_TO_RADIANS(360.0f))) * SH_DEGREES_TO_RADIANS(360.0f);
+	}
+	p_transform->euler[0] = SH_RADIANS_TO_DEGREES(p_transform->rotation[0]);
+	p_transform->euler[1] = SH_RADIANS_TO_DEGREES(p_transform->rotation[1]);
+	p_transform->euler[2] = SH_RADIANS_TO_DEGREES(p_transform->rotation[2]);
 }
 
 void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_camera) {
@@ -114,8 +121,8 @@ void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_
 		glm_vec3_add(p_transform->position, displacement, p_transform->position);
 		if (shIsMouseButtonDown(p_engine->window, SH_MOUSE_BUTTON_RIGHT) && p_engine->p_gui->region_infos.cursor_on_regions == 0) {
 			glfwSetInputMode(p_engine->window.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-			p_transform->rotation[0] -= p_camera->mouse_speed * (float)p_engine->window.input.d_cursor_pos_y * (float)p_engine->time.delta_time;
-			p_transform->rotation[1] -= p_camera->mouse_speed * (float)p_engine->window.input.d_cursor_pos_x * (float)p_engine->time.delta_time;
+			p_transform->rotation[0] -= p_camera->mouse_speed / 1000.0f * (float)p_engine->window.input.d_cursor_pos_y * (float)p_engine->time.delta_time;
+			p_transform->rotation[1] -= p_camera->mouse_speed / 1000.0f * (float)p_engine->window.input.d_cursor_pos_x * (float)p_engine->time.delta_time;
 			if (p_transform->rotation[0] >= SH_DEGREES_TO_RADIANS(89.99999f)) {
 				p_transform->rotation[0] = SH_DEGREES_TO_RADIANS(89.99999f);
 			}
@@ -128,6 +135,7 @@ void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_
 		}
 	}
 	//shUpdateShTransform(p_transform);
+
 	shSetProjection(p_engine->window, p_camera->fov, p_camera->nc, p_camera->fc, p_camera->projection);
 	shSetView(p_transform->position, p_transform->front, p_transform->up, p_camera->view);
 }

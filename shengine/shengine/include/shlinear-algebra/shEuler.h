@@ -8,8 +8,7 @@ extern "C" {
 #include <math.h>
 
 #define SH_DEGREES_TO_RADIANS(angle) (angle) * 3.14159265358f / 180.0f
-
-#define SH_RADIANS_TO_DEGREES(rad) (rad) * 180.0f / 3.14159265358f
+#define SH_RADIANS_TO_DEGREES(rad)   (rad) / 3.14159265358f * 180.0f
 
 static void shEulerToVector(float* rotation, float* front) {
 	front[0] = (float)(sin(rotation[1]) * cos(rotation[0]));

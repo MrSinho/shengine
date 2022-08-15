@@ -53,11 +53,11 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
         if (p_identity != NULL) {
             if (strcmp(p_identity->name, "rotator") == 0) {
                 ShTransform* p_transform = shGetShTransform(&p_engine->scene, entity);
-                p_transform->rotation[1] += 50.0f * (float)p_engine->time.delta_time;
-                if (shIsKeyPressed(p_engine->window, SH_KEY_1)) {
+                p_transform->rotation[1] += 1.0f * (float)p_engine->time.delta_time;
+                if (shIsKeyDown(p_engine->window, SH_KEY_1)) {
                     shGetShTransform(&p_engine->scene, entity)->position[1] += 5.0f * (float)p_engine->time.delta_time;
                 }
-                if (shIsKeyPressed(p_engine->window, SH_KEY_2)) {
+                if (shIsKeyDown(p_engine->window, SH_KEY_2)) {
                     shGetShTransform(&p_engine->scene, entity)->position[1] -= 5.0f * (float)p_engine->time.delta_time;
                 }
             }
