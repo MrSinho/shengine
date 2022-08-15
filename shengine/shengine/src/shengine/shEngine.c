@@ -23,7 +23,7 @@ void shEngineSafeState(ShEngine* p_engine) {
 
         input_dtime = p_engine->time.now - input_last_time;
         if (input_dtime >= 2.0) {
-            if (shIsKeyPressed(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_R)) {
+            if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_R)) {
                 input_last_time = p_engine->time.now;
                 shSetTime(0.0, &p_engine->time);
                 input_last_time = 0.0;
@@ -144,7 +144,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
 
         input_dtime = p_engine->time.now - input_last_time;
         if (input_dtime >= 2.0) {
-            if (shIsKeyPressed(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_R)) {
+            if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_R)) {
                 input_last_time = p_engine->time.now;
                 shSetTime(0.0, &p_engine->time);
                 input_last_time = 0.0;
