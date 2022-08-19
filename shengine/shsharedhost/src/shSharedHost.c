@@ -38,13 +38,15 @@ void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_si
     json_object* json_start = json_object_object_get(parser, "start");
     json_object* json_update = json_object_object_get(parser, "update");
     json_object* json_frame_update = json_object_object_get(parser, "frame_update");
+    json_object* json_frame_resize = json_object_object_get(parser, "frame_resize");
     json_object* json_close = json_object_object_get(parser, "close");
 
     const char* shared_name         = (json_name == NULL)   ? "name"            : json_object_get_string(json_name);
     p_simulation->run               = (json_run == NULL)    ? 1                 : (uint8_t)json_object_get_int(json_run);
     p_simulation->s_start           = (json_start == NULL)  ? "start"           : (char*)json_object_get_string(json_start);
     p_simulation->s_update          = (json_update == NULL) ? "update"          : (char*)json_object_get_string(json_update);
-    p_simulation->s_frame_update    = (json_update == NULL) ? "frame_update"    : (char*)json_object_get_string(json_frame_update);
+    p_simulation->s_frame_update    = (json_frame_update == NULL) ? "frame_update"    : (char*)json_object_get_string(json_frame_update);
+    p_simulation->s_frame_resize    = (json_frame_resize == NULL) ? "frame_resize"    : (char*)json_object_get_string(json_frame_resize);
     p_simulation->s_close           = (json_close == NULL)  ? "close"           : (char*)json_object_get_string(json_close);
 
     free(buffer);
@@ -74,10 +76,12 @@ void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
     p_simulation->p_start           = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_start);
     p_simulation->p_update          = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_update);
     p_simulation->p_frame_update    = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_frame_update);
+    p_simulation->p_frame_resize    = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_frame_resize);
     p_simulation->p_close           = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_close);
     shSharedHostWarning(p_simulation->p_start           != NULL, "invalid start function pointer");
     shSharedHostWarning(p_simulation->p_update          != NULL, "invalid update function pointer");
-    shSharedHostWarning(p_simulation->p_frame_update    != NULL, "invalid update function pointer");
+    shSharedHostWarning(p_simulation->p_frame_update    != NULL, "invalid frame update function pointer");
+    shSharedHostWarning(p_simulation->p_frame_resize    != NULL, "invalid frame resize function pointer");
     shSharedHostWarning(p_simulation->p_close           != NULL, "invalid close function pointer");
 }
 

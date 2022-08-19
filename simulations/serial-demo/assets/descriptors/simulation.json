@@ -4,5 +4,6 @@
     "start": "serial_start",
     "update": "serial_update",
     "frame_update": "serial_frame_update",
+    "frame_resize": "serial_frame_resize",
     "close": "serial_close"
 }

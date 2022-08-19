@@ -4,5 +4,6 @@
     "start": "flappy_circle_start",
     "update": "flappy_circle_update",
     "frame_update": "flappy_circle_frame_update",
+    "frame_resize": "flappy_circle_frame_resize",
     "close": "flappy_circle_close"
 }

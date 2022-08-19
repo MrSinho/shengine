@@ -43,10 +43,12 @@ typedef struct ShSimulationHandle {
 	char*				s_start;
 	char*				s_update;
 	char*				s_frame_update;
+	char*				s_frame_resize;
 	char*				s_close;
 	ShSimulationFunc*	p_start;
 	ShSimulationFunc*	p_update;
 	ShSimulationFunc*	p_frame_update;
+	ShSimulationFunc*	p_frame_resize;
 	ShSimulationFunc*	p_close;
 } ShSimulationHandle;
 

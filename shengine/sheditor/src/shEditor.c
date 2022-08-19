@@ -47,7 +47,7 @@ int main() {
 	shMakeAssetsPath("/descriptors/scene.json", engine.scene_descriptor.path);
 	shMakeAssetsPath("/descriptors/simulation.json", engine.simulation_descriptor.path);
 
-	shEngineManageState(&engine, shSetEngineState(&engine));
+	shEngineManageState(&engine, shSetEngineState(&engine), 1);
 
 	return 0;
 }

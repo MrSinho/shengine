@@ -11,42 +11,51 @@ extern "C" {
 #include <stdio.h>
 #include <string.h>
 
+#include "shegui/shEgui.h"
 
-#include <shgui/shgui.h>
 
+//0 as return value: failure
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_start(ShEngine* p_engine) {
-    printf("SIMULATION IS RUNNING...\n");
-	return 1;
+    puts("SIMULATION IS RUNNING...");
+    return shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_EXTRA_DARK);
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
+    //before recording cmd buffer
+    ShGui* p_gui = p_engine->p_gui;
 
-    if (p_engine->p_gui == NULL) { return 0; }
+    if (p_gui == NULL) { return 0; }
     shGuiWindow(
-        p_engine->p_gui,
+        p_gui,
         250.0f,
-        100.0f,
+        200.0f,
         0.0f,
         0.0f,
         "Simulation sample",
         SH_GUI_MOVABLE | SH_GUI_RESIZABLE | SH_GUI_PIXELS
     );
     shGuiWindowText(
-        p_engine->p_gui,
+        p_gui,
         SH_GUI_WINDOW_TEXT_SIZE,
         "Hey, this is a demo",
         SH_GUI_CENTER_WIDTH
     );
-    shGuiWindowSeparator(p_engine->p_gui);
-    if (shGuiWindowButton(p_engine->p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset", SH_GUI_CENTER_WIDTH)) {
+    shGuiWindowSeparator(p_gui);
+    if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset", SH_GUI_CENTER_WIDTH)) {
         puts("Reset");
-        return 0;
+        shResetEngineState(p_engine, 0);
+        return 1;
     }
+    shGuiWindowSeparator(p_gui);
+    if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Quit", SH_GUI_CENTER_WIDTH)) {
+        shEngineShutdown(p_engine);
+    }
+	return 1;
+}
 
-    if (shIsKeyPressed(p_engine->window, SH_KEY_P)) {
-        puts("Pressed");
-    }
+uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_frame_update(ShEngine* p_engine) {
+    //cmd buffer is recording
 
     for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
         ShIdentity* p_identity = shGetShIdentity(&p_engine->scene, entity);
@@ -66,24 +75,25 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
                 //If the uniform parameter is not recognized by the engine as an official extension, you must directly change the material host uniform parameters
                 //UNIFORM PARAMETERS OFFSET = sizeof(model_matrix considering dynamic offset alignment ) + sizeof(vec4) = 80
                 float* p_red = (float*)&((char*)p_material->p_material_clients[entity].p_uniform_parameters)[p_material->pipeline.descriptor_buffer_infos[0].range + 16];
-                if (shIsKeyPressed(p_engine->window, SH_KEY_Z)) {
+                if (shIsKeyDown(p_engine->window, SH_KEY_Z)) {
                     *p_red += 1.0f * (float)p_engine->time.delta_time;
                 }
-                else if (shIsKeyPressed(p_engine->window, SH_KEY_X)) {
+                else if (shIsKeyDown(p_engine->window, SH_KEY_X)) {
                     *p_red -= 1.0f * (float)p_engine->time.delta_time;
                 }
             }
         }
     }
-
-	return 1;
+    return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_frame_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_frame_resize(ShEngine* p_engine) {
+    puts("Window resized");
     return 1;
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_close(ShEngine* p_engine, const uint32_t entity) {
+    puts("Shutting down sim");
     return 1;
 }
 

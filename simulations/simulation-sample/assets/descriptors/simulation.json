@@ -4,5 +4,6 @@
     "start": "simulation_start",
     "update": "simulation_update",
     "frame_update": "simulation_frame_update",
+    "frame_resize": "simulation_frame_resize",
     "close": "simulation_close"
 }

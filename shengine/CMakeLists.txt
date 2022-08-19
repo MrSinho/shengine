@@ -31,6 +31,7 @@ add_library(shengine
     shengine/src/shlinear-algebra/shView.c
     shengine/src/shscene/shScene.c
     shengine/src/shmaterialhost/shMaterialHost.c
+    shengine/src/shegui/shEgui.c
 )
 target_include_directories(shengine PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/shengine/include

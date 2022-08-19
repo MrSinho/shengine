@@ -68,10 +68,11 @@ extern uint8_t shResetEngineState(ShEngine* p_engine, const uint8_t release_shar
 
 extern void shEngineUpdateState(ShEngine* p_engine);
 
-extern void shEngineManageState(ShEngine* p_engine, const uint8_t ready);
+extern void shEngineManageState(ShEngine* p_engine, const uint8_t ready, const uint8_t release_on_failure);
 
 extern void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared);
 
+extern void shEngineShutdown(ShEngine* p_engine);
 
 
 #ifdef __cplusplus
