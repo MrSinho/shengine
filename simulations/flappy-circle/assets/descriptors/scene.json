@@ -12,7 +12,7 @@
     "entities": [
         {
             "camera": {
-                "fov":45,
+                "fov":75,
                 "nc":0.1,
                 "fc":500,
                 "speed":15,

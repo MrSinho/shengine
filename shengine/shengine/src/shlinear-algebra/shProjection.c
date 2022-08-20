@@ -4,6 +4,7 @@ extern "C" {
 
 #include "shlinear-algebra/shProjection.h"
 #include "shlinear-algebra/shCglmImplementation.h"
+#include "shlinear-algebra/shEuler.h"
 
 #include "shengine/shWindow.h"
 
@@ -14,7 +15,7 @@ extern "C" {
 void shSetProjection(const ShWindow window, float fov, float nc, float fc, float projection[4][4]) {
 	assert(projection != NULL);
 	float proj[4][4];
-	glm_perspective(fov, (float)window.width / (float)window.height, nc, fc, proj);
+	glm_perspective(SH_DEGREES_TO_RADIANS(fov), (float)window.width / (float)window.height, nc, fc, proj);
 	memcpy(projection, proj, 64);
 }
 
