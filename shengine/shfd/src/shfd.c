@@ -64,8 +64,9 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
         shAbortLoadingMaterials(pp_materials);
     }
 
-    uint32_t mat_count = (uint32_t)json_object_array_length(json_materials);
-    ShMaterialHost* p_materials = calloc(mat_count, sizeof(ShMaterialHost));
+    uint32_t mat_count              = (p_material_count  == NULL || (*p_material_count) == 0)       ? (uint32_t)json_object_array_length(json_materials)    : (*p_material_count);
+    ShMaterialHost* p_materials     = (pp_materials      == NULL || (*pp_materials) == NULL) ? calloc(mat_count, sizeof(ShMaterialHost)) : (*pp_materials);
+
     if (p_materials == NULL || mat_count == 0) { shAbortLoadingMaterials(pp_materials); }
 
     for (uint32_t i = 0; i < mat_count; i++) {
@@ -297,8 +298,8 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
             }//FIXED STATES
         }//END BUILD PIPELINE CHECKS
 
-        (pp_materials != NULL) && (*pp_materials = p_materials);
-        (p_material_count != NULL) && (*p_material_count = mat_count);
+        (pp_materials       != NULL) && (*pp_materials = p_materials);
+        (p_material_count   != NULL) && (*p_material_count = mat_count);
 
     }//END MATERIALS LOOP
     
@@ -328,6 +329,7 @@ void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterial
     }
     if (*p_mat_info_count != 0 && *pp_materials != NULL) {
         free(*pp_materials); 
+        (*pp_materials) = NULL;
     }
     *p_mat_info_count = 0;
 }

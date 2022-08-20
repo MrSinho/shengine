@@ -102,16 +102,23 @@ void shEngineUpdateState(ShEngine* p_engine) {
             shCreateRenderPass(&p_engine->core);
             shSetFramebuffers(&p_engine->core);
 
-            shMaterialsRelease(&p_engine->core, &p_engine->material_count, &p_engine->p_materials);
+            for (uint32_t material_idx = 0; material_idx < p_engine->material_count; material_idx++) {
+                ShMaterialHost* p_material = &p_engine->p_materials[material_idx];
+                for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {
+                    shPipelineClearDescriptorBufferMemory(p_engine->core.device, descriptor_idx, &p_material->pipeline);
+                }
+                shPipelineRelease(p_engine->core.device, &p_engine->p_materials[material_idx].pipeline);
+            }
             uint8_t mat_r = shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
+            for (uint32_t material_idx = 0; material_idx < p_engine->material_count; material_idx++) {
+                ShMaterialHost* p_material = &p_engine->p_materials[material_idx];
+                for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {
+                    p_material->pipeline.write_descriptor_sets[descriptor_idx].pBufferInfo = &p_material->pipeline.descriptor_buffer_infos[descriptor_idx];
+                }
+            }
             if (p_engine->p_materials == NULL || mat_r == 0) {
                 return;
             }
-            shEndScene(p_engine);
-            if (!shLoadScene(p_engine->scene_descriptor.path, p_engine->material_count, &p_engine->p_materials, &p_engine->scene)) {
-                return;
-            }
-            shSceneInit(p_engine, &p_engine->scene);
 
             if (p_engine->p_gui != NULL) {
                 p_engine->p_gui->core.surface = p_engine->core.surface.surface;

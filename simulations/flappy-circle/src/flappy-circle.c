@@ -4,6 +4,7 @@ extern "C" {
 
 #include <shengine/shEngine.h>
 #include <shengine/shExport.h>
+#include <shegui/shEgui.h>
 
 #include <shsharedhost/shSharedHost.h>
 
@@ -32,15 +33,17 @@ uint8_t bird_input(ShEngine* p_engine, const uint32_t bird_entity) {
 	
 	p_transform->position[1] += p_bird->y_force * (float)p_engine->time.delta_time;
 
-	if (shIsKeyPressed(p_engine->window, SH_KEY_SPACE)) {
+	if (shIsKeyDown(p_engine->window, SH_KEY_SPACE)) {
 		p_bird->y_force += FORCE_UNIT * (float)p_engine->time.delta_time;
 	}
 
 	p_bird->y_force -= GRAVITY_FORCE * (float)p_engine->time.delta_time;
 
 	if (p_transform->position[1] >= 40 || p_transform->position[1] <= -40.0) { //nice collision detection dude
-		return 0;
+		shResetEngineState(p_engine, 0);
 	}
+
+	shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_DARK);
 
 	return 1;
 }
@@ -68,7 +71,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
 			break;
 
 		case LOOP_OBJECT_ENTITY:
-			p_transform->rotation[2] += 10.0f * (float)p_engine->time.delta_time;
+			p_transform->rotation[2] += 0.5f * (float)p_engine->time.delta_time;
 			break;
 
 		case BIRD_ENTITY:
@@ -79,6 +82,15 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
 			memcpy(p_transform, shGetShTransform(p_scene, BIRD_ENTITY), sizeof(ShTransform));
 		}
 	}
+
+	shGuiText(
+		p_engine->p_gui,
+		SH_GUI_WINDOW_TEXT_SIZE * 3.0f,
+		0.0f,
+		-20.0f,
+		"Flappy circle",
+		SH_GUI_CENTER_WIDTH | SH_GUI_EDGE_TOP
+	);
 
 	return 1;
 }

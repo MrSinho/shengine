@@ -119,7 +119,11 @@ void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_
 		}
 		glm_vec3_mul(displacement, (vec3) { (float)p_engine->time.delta_time, (float)p_engine->time.delta_time, (float)p_engine->time.delta_time }, displacement);
 		glm_vec3_add(p_transform->position, displacement, p_transform->position);
-		if (shIsMouseButtonDown(p_engine->window, SH_MOUSE_BUTTON_RIGHT) && p_engine->p_gui->region_infos.cursor_on_regions == 0) {
+		uint8_t gui_condition = 0;
+		if (p_engine->p_gui != NULL) {
+			gui_condition = p_engine->p_gui->region_infos.cursor_on_regions;
+		}
+		if (shIsMouseButtonDown(p_engine->window, SH_MOUSE_BUTTON_RIGHT) && gui_condition == 0) {
 			glfwSetInputMode(p_engine->window.window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			p_transform->rotation[0] -= p_camera->mouse_speed / 100.0f * (float)p_engine->window.input.d_cursor_pos_y * (float)p_engine->time.delta_time;
 			p_transform->rotation[1] -= p_camera->mouse_speed / 100.0f * (float)p_engine->window.input.d_cursor_pos_x * (float)p_engine->time.delta_time;
@@ -187,6 +191,7 @@ void shSceneUpdate(ShEngine* p_engine) {
 			shPipelineUpdateDescriptorSets(p_engine->core.device, &p_material->pipeline);//UPDATE ALL UNIFORMS
 			
 			for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {//WRITE AND BIND STATIC UNIFORMS
+
 				if (p_material->pipeline.descriptor_set_layout_bindings[descriptor_idx].descriptorType != VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) {
 					uint32_t descriptor_offset = shGetUniformOffset(p_material, descriptor_idx);
 
