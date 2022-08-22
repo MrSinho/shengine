@@ -39,7 +39,9 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
     * to generate the cmake target given the external application name, run export-simulation.py
 
 ## To do:
- * Multithreaded rendering
+ * External customizable launcher
+ * External gui running in parallel with editor
+ * Multithreaded
  * Manage Compute Shaders using descriptors
  * Double/triple buffering
  * Textures
