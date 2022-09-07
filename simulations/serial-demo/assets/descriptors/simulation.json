@@ -2,6 +2,8 @@
     "run": 1,
     "name": "serial-demo",
     "start": "serial_start",
+    "thread": "serial_thread",
+    "after_thread": "serial_after_thread",
     "update": "serial_update",
     "frame_update": "serial_frame_update",
     "frame_resize": "serial_frame_resize",

@@ -17,19 +17,23 @@ extern "C" {
 
 void shEngineSafeState(ShEngine* p_engine) {
     shEngineWarning(1, "running safe window");
+
+    ShWindow* p_window = &p_engine->window;
+    ShVkCore* p_core   = &p_engine->core;
+
     uint32_t image_index = 0;
-    while (shIsWindowActive(p_engine->window.window)) {
+    while (shIsWindowActive(*p_window)) {
         shUpdateWindow(p_engine);
-        if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_R)) {
+        if (shIsKeyDown(*p_window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(*p_window, SH_KEY_R)) {
             shEngineManageState(p_engine, shResetEngineState(p_engine, 1), 0);
             break;
         }
-        shFrameReset(&p_engine->core, 0);
-        shFrameBegin(&p_engine->core, 0, (VkClearColorValue) { 0.0f, 0.0f, 0.0f, 1.0f }, &image_index);
-        shFrameEnd(&p_engine->core, 0, image_index);
+        shFrameReset(p_core, 0);
+        shFrameBegin(p_core, 0, (VkClearColorValue) { 0.0f, 0.0f, 0.0f, 1.0f }, &image_index);
+        shFrameEnd(p_core, 0, image_index);
     }
-    shVulkanRelease(&p_engine->core);
-    shClearWindow(p_engine->window.window);
+    shVulkanRelease(p_core);
+    shClearWindow(p_window);
     exit(-1);
 }
 
@@ -88,24 +92,32 @@ uint8_t shResetEngineState(ShEngine* p_engine, const uint8_t release_shared) {
 }
 
 void shEngineUpdateState(ShEngine* p_engine) {
-    while (shIsWindowActive(p_engine->window.window)) {    
+    ShVkCore* p_core                  = &p_engine->core;
+    ShWindow* p_window                = &p_engine->window;
+    ShSimulationHandle* p_shared_host = &p_engine->simulation_host;
+
+    while (shIsWindowActive(*p_window)) {
         
-        uint32_t width = p_engine->window.width;
-        uint32_t height = p_engine->window.height;
-        shGetWindowSize(&p_engine->window);
-        if (width != p_engine->window.width || height != p_engine->window.height) {
+        shGetWindowSize(p_window);
+
+        ShThreadState sim_thread_state = SH_THREAD_INVALID_STATE;
+        shGetThreadState(SH_SIMULATION_THREAD_IDX, &sim_thread_state, &p_engine->threads_handle);
+
+        if (shSurfaceResizePending(*p_window) && sim_thread_state == SH_THREAD_RETURNED) {
+            p_window->surface_resize_pending = 0;
+
             shWaitDeviceIdle(p_engine->core.device);
 
-            shRenderPassRelease(&p_engine->core);
-            shSwapchainRelease(&p_engine->core);
-            shSurfaceRelease(&p_engine->core);
-            shDepthBufferRelease(&p_engine->core);
+            shRenderPassRelease  (p_core);
+            shSwapchainRelease   (p_core);
+            shSurfaceRelease     (p_core);
+            shDepthBufferRelease (p_core);
 
             shWindowCreateSurface(p_engine);
-            shInitSwapchainData(&p_engine->core);
-            shInitDepthData(&p_engine->core);
-            shCreateRenderPass(&p_engine->core);
-            shSetFramebuffers(&p_engine->core);
+            shInitSwapchainData  (p_core);
+            shInitDepthData      (p_core);
+            shCreateRenderPass   (p_core);
+            shSetFramebuffers    (p_core);
 
             for (uint32_t material_idx = 0; material_idx < p_engine->material_count; material_idx++) {
                 ShMaterialHost* p_material = &p_engine->p_materials[material_idx];
@@ -114,7 +126,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
                 }
                 shPipelineRelease(p_engine->core.device, &p_engine->p_materials[material_idx].pipeline);
             }
-            uint8_t mat_r = shLoadMaterials(&p_engine->core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
+            uint8_t mat_r = shLoadMaterials(p_core, p_engine->materials_descriptor.path, &p_engine->material_count, &p_engine->p_materials);
             for (uint32_t material_idx = 0; material_idx < p_engine->material_count; material_idx++) {
                 ShMaterialHost* p_material = &p_engine->p_materials[material_idx];
                 for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {
@@ -135,20 +147,18 @@ void shEngineUpdateState(ShEngine* p_engine) {
             }
 
             shEngineManageState(p_engine,
-                shSharedSceneRun(p_engine, p_engine->simulation_host.p_frame_resize), 
+                shSharedSceneRun(p_engine, p_engine->simulation_host.p_frame_resize),
                 1
             );
         }
 
         shUpdateWindow(p_engine);
 
-        if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_R)) {
+        if (shIsKeyDown(*p_window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(*p_window, SH_KEY_R)) {
             shEngineManageState(p_engine, shResetEngineState(p_engine, 1), 0);
             break;
         }
 
-        ShThreadState sim_thread_state = SH_THREAD_INVALID_STATE;
-        shGetThreadState(SH_SIMULATION_THREAD_IDX, &sim_thread_state, &p_engine->threads_handle);
         if (sim_thread_state == SH_THREAD_RETURNED) {
             if (p_engine->simulation_host.after_thread_called == 0) {
                 if (!shSharedSceneRun(p_engine, p_engine->simulation_host.p_after_thread)) {
@@ -160,28 +170,25 @@ void shEngineUpdateState(ShEngine* p_engine) {
             if (!shSharedSceneRun(p_engine, p_engine->simulation_host.p_update)) {
                 shEngineManageState(p_engine, 0, 1);
             }
-        }
 
-        
-        
-        if (p_engine->p_gui != NULL) {
-            shGuiWriteMemory(p_engine->p_gui, 1);
-            uint8_t active_cursor_icon_idx = 3;
-            for (uint8_t i = 0; i < sizeof(ShGuiCursorIcons) / sizeof(int32_t); i++) {
-                if (p_engine->p_gui->inputs.active_cursor_icon == p_engine->p_gui->inputs.p_cursor_icons[i]) {
-                    active_cursor_icon_idx = i;
-                    break;
+            if (p_engine->p_gui != NULL) {
+                shGuiWriteMemory(p_engine->p_gui, 1);
+                uint8_t active_cursor_icon_idx = 3;
+                for (uint8_t i = 0; i < sizeof(ShGuiCursorIcons) / sizeof(int32_t); i++) {
+                    if (p_engine->p_gui->inputs.active_cursor_icon == p_engine->p_gui->inputs.p_cursor_icons[i]) {
+                        active_cursor_icon_idx = i;
+                        break;
+                    }
                 }
+                shSetCursor(p_window->window, p_window->default_cursors[active_cursor_icon_idx]);
+                p_engine->p_gui->inputs.active_cursor_icon = GLFW_CROSSHAIR_CURSOR;
             }
-            shSetCursor(p_engine->window.window, p_engine->window.default_cursors[active_cursor_icon_idx]);
-            p_engine->p_gui->inputs.active_cursor_icon = GLFW_CROSSHAIR_CURSOR;
-
         }
 
-        shFrameReset(&p_engine->core, 0);
+        shFrameReset(p_core, 0);
 
         uint32_t image_index = 0;
-        shFrameBegin(&p_engine->core, 0, (VkClearColorValue) { 0.0f, 0.0f, 0.0f, 1.0f}, & image_index);
+        shFrameBegin(p_core, 0, (VkClearColorValue) { 0.0f, 0.0f, 0.0f, 1.0f}, & image_index);
 
         if (sim_thread_state == SH_THREAD_RETURNED) {
             shSharedHostWarning(
@@ -197,12 +204,12 @@ void shEngineUpdateState(ShEngine* p_engine) {
             shGuiRender(p_engine->p_gui);
         }
 
-        shFrameEnd(&p_engine->core, 0, image_index);
+        shFrameEnd(p_core, 0, image_index);
     }
 
     shEngineRelease(p_engine, 1);
-    shVulkanRelease(&p_engine->core);
-    shClearWindow(p_engine->window.window);
+    shVulkanRelease(p_core);
+    shClearWindow(p_window);
     exit(0);
 }
 
@@ -251,7 +258,7 @@ void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
 void shEngineShutdown(ShEngine* p_engine) {
     shEngineRelease(p_engine, 0);
     shVulkanRelease(&p_engine->core);
-    shClearWindow(p_engine->window.window);
+    shClearWindow(&p_engine->window);
     exit(0);
 }
 

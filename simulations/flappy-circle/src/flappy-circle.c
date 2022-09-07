@@ -60,6 +60,15 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_start(ShEngine* p_engine) {
 	return 1;
 }
 
+uint64_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_thread(void* p_ext) {
+	return 1;
+}
+
+uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_after_thread(ShEngine* p_engine) {
+	return 1;
+}
+
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
 	ShScene* p_scene = &p_engine->scene;
 

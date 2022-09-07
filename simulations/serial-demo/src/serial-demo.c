@@ -81,6 +81,14 @@ void read_serial_data(ShEngine* p_engine, ShSerialHandle* p_serial) {
 	);
 }
 
+uint64_t SH_ENGINE_EXPORT_FUNCTION serial_thread(void* p_ext) {
+	return 1;
+}
+
+uint8_t SH_ENGINE_EXPORT_FUNCTION serial_after_thread(ShEngine* p_engine) {
+	return 1;
+}
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION serial_update(ShEngine* p_engine) {
 	ShSerialHandle* p_serial = NULL;
 	p_serial = shGetShSerialHandle(&p_engine->scene, PICO_ENTITY);

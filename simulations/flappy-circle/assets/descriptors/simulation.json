@@ -2,6 +2,8 @@
     "run": 1,
     "name": "flappy-circle",
     "start": "flappy_circle_start",
+    "thread": "flappy_circle_thread",
+    "after_thread": "flappy_circle_after_thread",
     "update": "flappy_circle_update",
     "frame_update": "flappy_circle_frame_update",
     "frame_resize": "flappy_circle_frame_resize",

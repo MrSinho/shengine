@@ -33,6 +33,7 @@ typedef struct ShWindow {
 	const char**	pp_instance_extensions;
 	uint32_t		instance_extension_count;
 	ShInput			input;
+	uint8_t         surface_resize_pending;
 } ShWindow;
 
 typedef struct ShEngine ShEngine;
@@ -48,14 +49,15 @@ extern int shIsWindowActive(GLFWwindow* window);
 
 #define shWaitEvents glfwWaitEvents
 
-static void shClearWindow(GLFWwindow* window) {
-	glfwDestroyWindow(window);
+static void shClearWindow(ShWindow* p_window) {
+	glfwDestroyWindow(p_window->window);
 	glfwTerminate();
 }
 
-#define shIsWindowActive !glfwWindowShouldClose
+#define shIsWindowActive(_window)\
+	(!glfwWindowShouldClose((_window).window))
 
-extern void shClearWindow(GLFWwindow* window);
+extern void shClearWindow(ShWindow* window);
 
 extern void	shWindowCreateSurface(ShEngine* p_engine);
 
@@ -65,6 +67,9 @@ extern void shGetWindowSize(ShWindow* p_window);
 
 extern void shUpdateWindow(ShEngine* p_engine);
 
+
+#define shSurfaceResizePending(_window)\
+	((_window).surface_resize_pending)
 
 static uint8_t shIsKeyPressed(const ShWindow window, const uint32_t key) {
 	return window.input.d_key_events[key] == GLFW_PRESS;

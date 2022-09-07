@@ -73,7 +73,7 @@ extern void shLoadSimulation(const char* path, ShSimulationHandle* p_simulation)
 extern void shSimulationLoadSymbols(ShSimulationHandle* p_simulation);
 
 #define shSharedRelease(p_shared)\
-	if (p_shared != NULL) { if (*p_shared != NULL) { shSharedFree(*(p_shared)); *(p_shared) = NULL; } }
+        if (p_shared != NULL) { if (*p_shared != NULL) { shSharedFree(*(p_shared)); *(p_shared) = NULL; } }
 
 #ifdef __cplusplus
 }

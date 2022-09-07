@@ -87,23 +87,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION sim_frame_update(ShEngine* p_engine) {
     return 1;
 }
 
-
-typedef struct {
-    uint32_t value;
-} MyEngineExtension;
-
-uint8_t SH_ENGINE_EXPORT_FUNCTION sim_thread(ShEngineExtensionInfo* p_extension_info) {//void* ShEngine::p_engine_extension
-    p_extension_info->p_ext = calloc(1, sizeof(MyEngineExtension));
-    MyEngineExtension* p_ext = p_extension_info->p_ext;
-    
-    assert(p_ext != NULL && "invalid engine extension");
+uint8_t SH_ENGINE_EXPORT_FUNCTION sim_thread(void* p_ext) {//void* ShEngine::p_engine_extension = NULL
     puts("Simulation thread running, but there's nothing to do...");
     
     shThreadsSleep(2000);
-
-    free(p_ext);
-    p_extension_info = NULL;
-    
     return 1;
 }
 

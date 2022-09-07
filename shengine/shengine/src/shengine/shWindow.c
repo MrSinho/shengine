@@ -66,7 +66,19 @@ void shUpdateInput(ShWindow* p_window) {
 
 void shGetWindowSize(ShWindow* p_window) {
 	shEngineError(p_window == NULL, "invalid window memory");
-	glfwGetFramebufferSize(p_window->window, (int*)&p_window->width, (int*)&p_window->height);
+
+	int width = (int)p_window->width;
+	int height = (int)p_window->height;
+
+	glfwGetFramebufferSize(p_window->window, &width, &height);
+	
+	if ((uint32_t)width != p_window->width || (uint32_t)height != p_window->height) {
+		
+		p_window->width = (uint32_t)width;
+		p_window->height = (uint32_t)height;
+
+		p_window->surface_resize_pending = 1;
+	}
 }
 
 void shUpdateWindow(ShEngine* p_engine) {
