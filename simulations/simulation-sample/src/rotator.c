@@ -87,6 +87,27 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_frame_update(ShEngine* p_engine) {
     return 1;
 }
 
+
+typedef struct {
+    uint32_t value;
+} MyEngineExtension;
+
+uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_thread(ShEngineExtensionInfo* p_extension_info) {//void* ShEngine::p_engine_extension
+    p_extension_info->p_ext = calloc(1, sizeof(MyEngineExtension));
+    MyEngineExtension* p_ext = p_extension_info->p_ext;
+    
+    assert(p_ext != NULL && "invalid engine extension");
+    puts("Simulation thread running, but there's nothing to do...");
+    
+    free(p_ext);
+    p_extension_info = NULL;
+    
+    puts("Simulation thread terminated");
+
+    return 1;
+}
+
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_frame_resize(ShEngine* p_engine) {
     puts("Window resized");
     return 1;

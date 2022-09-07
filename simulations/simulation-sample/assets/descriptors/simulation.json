@@ -2,6 +2,8 @@
     "run": 1,
     "name": "simulation-sample",
     "start": "simulation_start",
+    "load": "simulation_load",
+    "thread": "simulation_thread",
     "update": "simulation_update",
     "frame_update": "simulation_frame_update",
     "frame_resize": "simulation_frame_resize",

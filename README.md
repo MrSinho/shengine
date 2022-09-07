@@ -24,6 +24,9 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 ![coulomb](saved/pictures/flappy-circle.png)
 
 # Current features:
+ - Multithreading using [shthreads](https://github.com/mrsinho/shthreads)
+    * Main engine thread
+    * the "`load`" can safely read and write memory at `void* ShEngine::p_engine_extension` without the need of synchronization objects: the memory pointed is reserved for the simulation modules. However, using the extension memory (also) inside the default functions ("`[...]_start`", "`[...]_update`" "`[...]_close`" etc.) won't be thread safe without synchronization objects. You can easily work with those using the library named above. The engine will still have to wait the end of the thread to complete the "release operations" 
  - Entity Component System using [shecs](https://github.com/MrSinho/shecs)
  - Full glsl shader customization
  - Ply mesh loader using [plyimporter](https://github.com/MrSinho/plyimporter)

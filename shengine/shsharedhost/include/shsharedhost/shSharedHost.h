@@ -26,30 +26,32 @@ extern "C" {
 #endif//_WIN32
 
 
-
 #include <stdint.h>
 #include <stddef.h>
 	
 
 
 typedef void* ShSharedHandle;
-typedef uint8_t (ShSimulationFunc) (void*);
+typedef uint8_t(ShSimulationFunc) (void*);
+typedef uint8_t (ShSimulationThreadFunc) (uint8_t, void*);
 
 
 
 typedef struct ShSimulationHandle {
-	ShSharedHandle		shared;
-	uint8_t				run;
-	char*				s_start;
-	char*				s_update;
-	char*				s_frame_update;
-	char*				s_frame_resize;
-	char*				s_close;
-	ShSimulationFunc*	p_start;
-	ShSimulationFunc*	p_update;
-	ShSimulationFunc*	p_frame_update;
-	ShSimulationFunc*	p_frame_resize;
-	ShSimulationFunc*	p_close;
+	ShSharedHandle          shared;
+	uint8_t                 run;
+	char*                   s_start;
+	char*                   s_thread;
+	char*                   s_update;
+	char*                   s_frame_update;
+	char*                   s_frame_resize;
+	char*                   s_close;
+	ShSimulationFunc*       p_start;
+	ShSimulationFunc*       p_thread;
+	ShSimulationFunc*       p_update;
+	ShSimulationFunc*       p_frame_update;
+	ShSimulationFunc*       p_frame_resize;
+	ShSimulationThreadFunc* p_close;
 } ShSimulationHandle;
 
 
@@ -63,7 +65,7 @@ typedef struct ShSimulationHandle {
 
 extern uint8_t shSharedSceneRun(void* p_engine, ShSimulationFunc* p_func);
 
-extern void shLoadSimulation(const char* path, void* p_engine, ShSimulationHandle* p_simulation);
+extern void shLoadSimulation(const char* path, ShSimulationHandle* p_simulation);
 
 extern void shSimulationLoadSymbols(ShSimulationHandle* p_simulation);
 

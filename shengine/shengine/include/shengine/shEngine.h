@@ -8,45 +8,48 @@ extern "C" {
 
 
 #include <shvulkan/shVkCore.h>
-
-
+#include <shthreads/shthreads.h>
+#include <shgui/shgui.h>
 
 #include "shecs/shEcsImplementation.h"
 #include "shecs/shMaterial.h"
+
+#include "shscene/shScene.h"
 
 #include "shengine/shWindow.h"
 #include "shengine/shTime.h"
 #include "shengine/shInput.h"
 
-#include "shscene/shScene.h"
-
-#include <shfd/shFd.h>
-
 #include "shsharedhost/shSharedHost.h"
+#include "shfd/shFd.h"
 
-#include <shgui/shgui.h>
+typedef enum ShEngineExtensionSignal {
+    SH_ENGINE_SHUTTING_DOWN = 0,
+    SH_ENGINE_RUNNING       = 1,
+} ShEngineExtensionSignal;
 
-#include <stdint.h>
-
-
+typedef struct ShEngineExtensionInfo {
+    void*   p_ext;
+} ShEngineExtensionInfo;
 
 typedef struct ShEngine {
-    ShVkCore            core;
-    ShWindow            window;
-    ShTime              time;
-    ShFd                materials_descriptor;
-    ShFd                scene_descriptor;
-    ShFd                simulation_descriptor;
-    ShScene             scene;
-    uint32_t            scene_count;
-	ShMaterialHost*	    p_materials;
-    ShSimulationHandle  simulation_host;
-    uint32_t		    material_count;
+    ShVkCore              core;
+    ShWindow              window;
+    ShTime                time;
+    ShFd                  materials_descriptor;
+    ShFd                  scene_descriptor;
+    ShFd                  simulation_descriptor;
+    ShScene               scene;
+    uint32_t              scene_count;
+	ShMaterialHost*       p_materials;
+    ShSimulationHandle    simulation_host;
+    ShThreadsHandle       threads_handle;
+    uint32_t              material_count;
+    ShGui*                p_gui;
+    
+    ShEngineExtensionInfo extension_info;
 
-    ShGui*              p_gui;
-
-    void*               p_engine_extension;
-}ShEngine;
+} ShEngine;
 
 
 
@@ -73,6 +76,7 @@ extern void shEngineManageState(ShEngine* p_engine, const uint8_t ready, const u
 extern void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared);
 
 extern void shEngineShutdown(ShEngine* p_engine);
+
 
 
 #ifdef __cplusplus

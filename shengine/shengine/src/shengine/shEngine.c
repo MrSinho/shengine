@@ -55,13 +55,19 @@ uint8_t shSetEngineState(ShEngine* p_engine) {
     shSceneInit(p_engine, &p_engine->scene);
 
     shLoadSimulation(
-                                p_engine->simulation_descriptor.path, 
-                                p_engine, 
-                                &p_engine->simulation_host
+        p_engine->simulation_descriptor.path, 
+        &p_engine->simulation_host
     );
     shSimulationLoadSymbols(
-                                &p_engine->simulation_host
+        &p_engine->simulation_host
     );
+
+    p_engine->threads_handle = shAllocateThreads(1);
+    if (p_engine->simulation_host.p_thread != NULL) {
+        shCreateThread(0, p_engine->simulation_host.p_thread, 4096, &p_engine->threads_handle);
+        ShThreadParameters simulation_args = &p_engine->extension_info;
+        shLaunchThreads(0, 1, &simulation_args, &p_engine->threads_handle);
+    }
 
     if (p_engine->simulation_host.shared != NULL) {
         return  shEngineWarning(
@@ -205,6 +211,12 @@ void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
             shSharedSceneRun(p_engine, p_engine->simulation_host.p_close) == 0, 
             "failed closing simulation"
         );
+
+        uint64_t return_value = 0;
+        shWaitForThreads(0, 1, UINT64_MAX, &return_value, &p_engine->threads_handle);
+        shThreadsRelease(&p_engine->threads_handle);
+        shEngineWarning(return_value == 0, "simulation thread returned with an error");
+
         if (release_shared) {
             shSharedRelease(&p_engine->simulation_host.shared);
         }

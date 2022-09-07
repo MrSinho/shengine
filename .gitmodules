@@ -22,3 +22,6 @@
 [submodule "shengine/externals/shgui"]
 	path = shengine/externals/shgui
 	url = https://github.com/mrsinho/shgui.git
+[submodule "shengine/externals/shthreads"]
+	path = shengine/externals/shthreads
+	url = https://github.com/mrsinho/shthreads.git
