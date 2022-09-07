@@ -28,10 +28,6 @@ typedef enum ShEngineExtensionSignal {
     SH_ENGINE_RUNNING       = 1,
 } ShEngineExtensionSignal;
 
-typedef struct ShEngineExtensionInfo {
-    void*   p_ext;
-} ShEngineExtensionInfo;
-
 typedef struct ShEngine {
     ShVkCore              core;
     ShWindow              window;
@@ -47,7 +43,7 @@ typedef struct ShEngine {
     uint32_t              material_count;
     ShGui*                p_gui;
     
-    ShEngineExtensionInfo extension_info;
+    void*                 p_ext;
 
 } ShEngine;
 
