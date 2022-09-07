@@ -15,7 +15,7 @@ extern "C" {
 #include <assert.h>
 
 void shWindowSetup(const char* title, const uint32_t width, const uint32_t height, ShWindow* p_window) {
-	shEngineError(p_window == NULL, "invalid window memory");
+	shEngineError(p_window == NULL, "shWindowSetup: invalid window memory", exit(-1));
 
 	ShWindow window = {
 		NULL,
@@ -42,7 +42,7 @@ void shWindowSetup(const char* title, const uint32_t width, const uint32_t heigh
 }
 
 void shWindowCreateSurface(ShEngine* p_engine) {
-	shEngineError(p_engine == NULL, "invalid engine memory");
+	shEngineError(p_engine == NULL, "shWindowCreateSurface: invalid engine memory", exit(-1));
 
 	p_engine->core.surface.width = p_engine->window.width;
 	p_engine->core.surface.height = p_engine->window.height;
@@ -50,7 +50,7 @@ void shWindowCreateSurface(ShEngine* p_engine) {
 }
 
 void shUpdateInput(ShWindow* p_window) {
-	shEngineError(p_window == NULL, "invalid window memory");
+	shEngineError(p_window == NULL, "shUpdateInput: invalid window memory", exit(-1));
 
 	for (uint32_t i = 0; i < (uint32_t)(SH_KEY_LAST + 1); i++) {
 		uint32_t key = glfwGetKey(p_window->window, i);
@@ -65,7 +65,7 @@ void shUpdateInput(ShWindow* p_window) {
 }
 
 void shGetWindowSize(ShWindow* p_window) {
-	shEngineError(p_window == NULL, "invalid window memory");
+	shEngineError(p_window == NULL, "shGetWindowSize: invalid window memory", exit(-1));
 
 	int width = (int)p_window->width;
 	int height = (int)p_window->height;
@@ -82,7 +82,7 @@ void shGetWindowSize(ShWindow* p_window) {
 }
 
 void shUpdateWindow(ShEngine* p_engine) {
-	shEngineError(p_engine == NULL, "invalid engine memory");
+	shEngineError(p_engine == NULL, "shUpdateWindow: invalid engine memory", exit(-1));
 
 	shPollEvents();
 	shGetTime(&p_engine->time);

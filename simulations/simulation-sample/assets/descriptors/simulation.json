@@ -3,6 +3,7 @@
     "name": "simulation-sample",
     "start": "sim_start",
     "thread": "sim_thread",
+    "update_pending": "sim_update_pending",
     "after_thread": "sim_after_thread",
     "update": "sim_update",
     "frame_update": "sim_frame_update",

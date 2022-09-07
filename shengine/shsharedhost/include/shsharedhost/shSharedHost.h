@@ -42,6 +42,7 @@ typedef struct ShSimulationHandle {
 	uint8_t                 run;
 	char*                   s_start;
 	char*                   s_thread;
+	char*                   s_update_pending;
 	char*                   s_after_thread;
 	char*                   s_update;
 	char*                   s_frame_update;
@@ -49,6 +50,7 @@ typedef struct ShSimulationHandle {
 	char*                   s_close;
 	ShSimulationFunc*       p_start;
 	ShSimulationFunc*       p_thread;
+	ShSimulationFunc*       p_update_pending;
 	ShSimulationFunc*       p_after_thread;
 	ShSimulationFunc*       p_update;
 	ShSimulationFunc*       p_frame_update;

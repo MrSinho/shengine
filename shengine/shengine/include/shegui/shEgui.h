@@ -10,7 +10,7 @@ extern "C" {
 
 typedef enum ShGuiDefaultValues ShGuiDefaultValues;
 
-extern uint8_t shEngineGuiSetup(ShEngine* p_engine, const uint32_t max_gui_item, const ShGuiDefaultValues default_values);
+extern ShEngineStatus shEngineGuiSetup(ShEngine* p_engine, const uint32_t max_gui_item, const ShGuiDefaultValues default_values);
 
 
 

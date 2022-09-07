@@ -87,12 +87,27 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION sim_frame_update(ShEngine* p_engine) {
     return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION sim_thread(void* p_ext) {//void* ShEngine::p_engine_extension = NULL
+uint64_t SH_ENGINE_EXPORT_FUNCTION sim_thread(void* p_ext) {//void* ShEngine::p_engine_extension = NULL
     puts("Simulation thread running, but there's nothing to do...");
     
     shThreadsSleep(2000);
     return 1;
 }
+
+uint8_t SH_ENGINE_EXPORT_FUNCTION sim_update_pending(ShEngine* p_engine) {
+
+    shGuiText(
+        p_engine->p_gui,
+        SH_GUI_WINDOW_TEXT_SIZE * 2.0f,
+        0.0f,
+        0.0f,
+        "LOADING, BUT THERE'S NOTHING TO LOAD",
+        SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
+    );
+
+    return 1;
+}
+
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION sim_after_thread(ShEngine* p_engine) {
     

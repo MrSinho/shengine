@@ -11,8 +11,8 @@ extern "C" {
 
 
 
-uint8_t shEngineGuiSetup(ShEngine* p_engine, const uint32_t max_gui_items, const ShGuiDefaultValues default_values) {
-    shEngineError(p_engine == NULL, "invalid engine memory")
+ShEngineStatus shEngineGuiSetup(ShEngine* p_engine, const uint32_t max_gui_items, const ShGuiDefaultValues default_values) {
+    shEngineError(p_engine == NULL, "invalid engine memory", return SH_ENGINE_INVALID_ENGINE_MEMORY);
 
     ShGuiCore gui_core = {
         p_engine->core.device,

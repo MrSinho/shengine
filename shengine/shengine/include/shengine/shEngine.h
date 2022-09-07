@@ -23,10 +23,14 @@ extern "C" {
 #include "shsharedhost/shSharedHost.h"
 #include "shfd/shFd.h"
 
-typedef enum ShEngineExtensionSignal {
-    SH_ENGINE_SHUTTING_DOWN = 0,
-    SH_ENGINE_RUNNING       = 1,
-} ShEngineExtensionSignal;
+
+
+typedef enum ShEngineStatus {
+    SH_ENGINE_SUCCESS               =  1,
+    SH_ENGINE_INVALID_ENGINE_MEMORY =  0,
+    SH_ENGINE_SCENE_LOAD_FAILURE    = -1,
+    SH_ENGINE_SIM_START_FAILURE     = -2,
+} ShEngineStatus;
 
 typedef struct ShEngine {
     ShVkCore              core;
@@ -56,16 +60,17 @@ static uint8_t shEngineWarning(int condition, const char* msg) {
     return 0;
 }
 
-#define shEngineError(condition, msg)\
-	if ((int)(condition)) { printf("shengine error: %s.\n", msg); exit(-1); }
+#define shEngineError(condition, msg, failure_expression)\
+	if ((int)(condition)) { printf("shengine error: %s.\n", msg); failure_expression; }
 
+
+
+extern ShEngineStatus shSetEngineState(ShEngine* p_engine);
+
+extern ShEngineStatus shResetEngineState(ShEngine* p_engine, const uint8_t release_shared);
 
 
 extern void shEngineSafeState(ShEngine* p_engine);
-
-extern uint8_t shSetEngineState(ShEngine* p_engine);
-
-extern uint8_t shResetEngineState(ShEngine* p_engine, const uint8_t release_shared);
 
 extern void shEngineUpdateState(ShEngine* p_engine);
 

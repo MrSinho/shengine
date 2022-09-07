@@ -63,7 +63,7 @@ void shSceneInit(ShEngine* p_engine, ShScene* p_scene) {
 }
 
 void shUpdateShTransform(ShTransform* p_transform) {
-	shEngineError(p_transform == NULL, "invalid transform memory");
+	shEngineError(p_transform == NULL, "shUpdateShTransform: invalid transform memory", exit(-1));
 
 	glm_mat4_identity(p_transform->model);
 	glm_translate(p_transform->model, p_transform->position);
@@ -89,7 +89,7 @@ void shUpdateShTransform(ShTransform* p_transform) {
 }
 
 void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_camera) {
-	shEngineError(p_transform == NULL || p_camera == NULL, "invalid transform memory");
+	shEngineError(p_transform == NULL || p_camera == NULL, "shUpdateShCamera: invalid transform memory", exit(-1));
 
 	if (p_camera->flags & SH_CAMERA_SETUP_FREE_FLIGHT) {
 		float displacement[3] = { 0.0f, 0.0f, 0.0f };
@@ -145,7 +145,7 @@ void shUpdateShCamera(ShEngine* p_engine, ShTransform* p_transform, ShCamera* p_
 }
 
 void shSceneUpdate(ShEngine* p_engine) {
-	shEngineError(p_engine == NULL, "invalid engine memory");
+	shEngineError(p_engine == NULL, "shSceneUpdate: invalid engine memory", exit(-1));
 
 	ShScene* p_scene = &p_engine->scene;
 
