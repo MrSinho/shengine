@@ -16,12 +16,12 @@ extern "C" {
 
 //0 as return value: failure
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_start(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION sim_start(ShEngine* p_engine) {
     puts("SIMULATION IS RUNNING...");
     return shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_EXTRA_DARK);
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION sim_update(ShEngine* p_engine) {
     //before recording cmd buffer
     ShGui* p_gui = p_engine->p_gui;
 
@@ -54,7 +54,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_update(ShEngine* p_engine) {
 	return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_frame_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION sim_frame_update(ShEngine* p_engine) {
     //cmd buffer is recording
 
     for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
@@ -92,7 +92,7 @@ typedef struct {
     uint32_t value;
 } MyEngineExtension;
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_thread(ShEngineExtensionInfo* p_extension_info) {//void* ShEngine::p_engine_extension
+uint8_t SH_ENGINE_EXPORT_FUNCTION sim_thread(ShEngineExtensionInfo* p_extension_info) {//void* ShEngine::p_engine_extension
     p_extension_info->p_ext = calloc(1, sizeof(MyEngineExtension));
     MyEngineExtension* p_ext = p_extension_info->p_ext;
     
@@ -102,18 +102,23 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_thread(ShEngineExtensionInfo* p_ext
     free(p_ext);
     p_extension_info = NULL;
     
+    return 1;
+}
+
+uint8_t SH_ENGINE_EXPORT_FUNCTION sim_after_thread(ShEngine* p_engine) {
+    
     puts("Simulation thread terminated");
 
     return 1;
 }
 
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_frame_resize(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION sim_frame_resize(ShEngine* p_engine) {
     puts("Window resized");
     return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION simulation_close(ShEngine* p_engine, const uint32_t entity) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION sim_close(ShEngine* p_engine, const uint32_t entity) {
     puts("Shutting down sim");
     return 1;
 }

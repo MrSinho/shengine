@@ -1,10 +1,11 @@
 {
     "run": 1,
     "name": "simulation-sample",
-    "start": "simulation_start",
-    "thread": "simulation_thread",
-    "update": "simulation_update",
-    "frame_update": "simulation_frame_update",
-    "frame_resize": "simulation_frame_resize",
-    "close": "simulation_close"
+    "start": "sim_start",
+    "thread": "sim_thread",
+    "after_thread": "sim_after_thread",
+    "update": "sim_update",
+    "frame_update": "sim_frame_update",
+    "frame_resize": "sim_frame_resize",
+    "close": "sim_close"
 }
