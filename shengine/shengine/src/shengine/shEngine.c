@@ -74,7 +74,7 @@ uint8_t shSetEngineState(ShEngine* p_engine) {
     p_engine->threads_handle = shAllocateThreads(1);
     if (p_engine->simulation_host.p_thread != NULL) {
         shCreateThread(SH_SIMULATION_THREAD_IDX, p_engine->simulation_host.p_thread, 4096, &p_engine->threads_handle);
-        ShThreadParameters simulation_args = &p_engine->extension_info;
+        ShThreadParameters simulation_args = p_engine->p_ext;
         shLaunchThreads(SH_SIMULATION_THREAD_IDX, 1, &simulation_args, &p_engine->threads_handle);
     }
 
@@ -237,6 +237,8 @@ void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
         if (release_shared) {
             shSharedRelease(&p_engine->simulation_host.shared);
         }
+
+        p_engine->simulation_host.after_thread_called = 0;
     }
     if (p_engine->p_gui != NULL) {
         shGuiRelease(p_engine->p_gui);
