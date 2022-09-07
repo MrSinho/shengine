@@ -51,6 +51,8 @@ typedef struct ShEngine {
 
 } ShEngine;
 
+#define SH_SIMULATION_THREAD_IDX 0
+
 
 
 static uint8_t shEngineWarning(int condition, const char* msg) {

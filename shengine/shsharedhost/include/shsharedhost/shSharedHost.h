@@ -54,6 +54,7 @@ typedef struct ShSimulationHandle {
 	ShSimulationFunc*       p_frame_update;
 	ShSimulationFunc*       p_frame_resize;
 	ShSimulationThreadFunc* p_close;
+	uint8_t                 after_thread_called;
 } ShSimulationHandle;
 
 

@@ -99,6 +99,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION sim_thread(ShEngineExtensionInfo* p_extension_
     assert(p_ext != NULL && "invalid engine extension");
     puts("Simulation thread running, but there's nothing to do...");
     
+    shThreadsSleep(2000);
+
     free(p_ext);
     p_extension_info = NULL;
     

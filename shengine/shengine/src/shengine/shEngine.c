@@ -73,9 +73,9 @@ uint8_t shSetEngineState(ShEngine* p_engine) {
 
     p_engine->threads_handle = shAllocateThreads(1);
     if (p_engine->simulation_host.p_thread != NULL) {
-        shCreateThread(0, p_engine->simulation_host.p_thread, 4096, &p_engine->threads_handle);
+        shCreateThread(SH_SIMULATION_THREAD_IDX, p_engine->simulation_host.p_thread, 4096, &p_engine->threads_handle);
         ShThreadParameters simulation_args = &p_engine->extension_info;
-        shLaunchThreads(0, 1, &simulation_args, &p_engine->threads_handle);
+        shLaunchThreads(SH_SIMULATION_THREAD_IDX, 1, &simulation_args, &p_engine->threads_handle);
     }
 
     return 1;
@@ -147,9 +147,22 @@ void shEngineUpdateState(ShEngine* p_engine) {
             break;
         }
 
-        if (!shSharedSceneRun(p_engine, p_engine->simulation_host.p_update)) {
-            shEngineManageState(p_engine, 0, 1);
-        };
+        ShThreadState sim_thread_state = SH_THREAD_INVALID_STATE;
+        shGetThreadState(SH_SIMULATION_THREAD_IDX, &sim_thread_state, &p_engine->threads_handle);
+        if (sim_thread_state == SH_THREAD_RETURNED) {
+            if (p_engine->simulation_host.after_thread_called == 0) {
+                if (!shSharedSceneRun(p_engine, p_engine->simulation_host.p_after_thread)) {
+                    shEngineManageState(p_engine, 0, 1);
+                }
+                p_engine->simulation_host.after_thread_called++;
+            }
+
+            if (!shSharedSceneRun(p_engine, p_engine->simulation_host.p_update)) {
+                shEngineManageState(p_engine, 0, 1);
+            }
+        }
+
+        
         
         if (p_engine->p_gui != NULL) {
             shGuiWriteMemory(p_engine->p_gui, 1);
@@ -170,10 +183,13 @@ void shEngineUpdateState(ShEngine* p_engine) {
         uint32_t image_index = 0;
         shFrameBegin(&p_engine->core, 0, (VkClearColorValue) { 0.0f, 0.0f, 0.0f, 1.0f}, & image_index);
 
-        shSharedHostWarning(
-            shSharedSceneRun(p_engine, p_engine->simulation_host.p_frame_update), 
-            "simulation update frame failed"
-        );
+        if (sim_thread_state == SH_THREAD_RETURNED) {
+            shSharedHostWarning(
+                shSharedSceneRun(p_engine, p_engine->simulation_host.p_frame_update),
+                "simulation update frame failed"
+            );
+        }
+        
         shSceneUpdate(p_engine);
 
         if (p_engine->p_gui != NULL) {
@@ -213,7 +229,7 @@ void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
 
         if (p_engine->threads_handle.p_handles != NULL) {
             uint64_t return_value = 0;
-            shWaitForThreads(0, 1, UINT64_MAX, &return_value, &p_engine->threads_handle);
+            shWaitForThreads(SH_SIMULATION_THREAD_IDX, 1, UINT64_MAX, &return_value, &p_engine->threads_handle);
             shThreadsRelease(&p_engine->threads_handle);
             shEngineWarning(return_value == 0, "simulation thread returned with an error");
         }
