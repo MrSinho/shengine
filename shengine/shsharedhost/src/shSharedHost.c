@@ -45,7 +45,7 @@ void shLoadSimulation(const char* path, ShSimulationHandle* p_simulation) {
     const char* shared_name        = (json_name         == NULL)  ? "name"         : json_object_get_string(json_name);
     p_simulation->run              = (json_run          == NULL)  ? 1              : (uint8_t)json_object_get_int(json_run);
     p_simulation->s_start          = (json_start        == NULL)  ? "start"        : (char*)json_object_get_string(json_start);
-    p_simulation->s_thread         = (json_thread         == NULL)  ? "load"         : (char*)json_object_get_string(json_thread);
+    p_simulation->s_thread         = (json_thread       == NULL)  ? "thread"       : (char*)json_object_get_string(json_thread);
     p_simulation->s_update         = (json_update       == NULL)  ? "update"       : (char*)json_object_get_string(json_update);
     p_simulation->s_frame_update   = (json_frame_update == NULL)  ? "frame_update" : (char*)json_object_get_string(json_frame_update);
     p_simulation->s_frame_resize   = (json_frame_resize == NULL)  ? "frame_resize" : (char*)json_object_get_string(json_frame_resize);
