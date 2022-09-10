@@ -44,6 +44,7 @@ typedef struct ShEngine {
 	ShMaterialHost*       p_materials;
     ShSimulationHandle    simulation_host;
     ShThreadsHandle       threads_handle;
+    ShThreadState         sim_thread_state;
     uint32_t              material_count;
     ShGui*                p_gui;
     

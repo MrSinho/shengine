@@ -119,6 +119,11 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
             &p_engine->threads_handle
         );
 
+        shGetThreadState(
+            0,
+            &p_engine->sim_thread_state,
+            &p_engine->threads_handle
+        );
     }
 
     return SH_ENGINE_SUCCESS;
@@ -139,7 +144,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
     ShVkCore*           p_core                  = &p_engine->core;
     ShWindow*           p_window                = &p_engine->window;
     ShSimulationHandle* p_shared_host           = &p_engine->simulation_host;
-    ShThreadState       sim_thread_state        = SH_THREAD_INVALID_STATE;
+    ShThreadState*      p_sim_thread_state      = &p_engine->sim_thread_state;
 
     while (shIsWindowActive(*p_window)) {
         
@@ -147,13 +152,13 @@ void shEngineUpdateState(ShEngine* p_engine) {
 
         shGetThreadState(
             SH_SIMULATION_THREAD_IDX, 
-            &sim_thread_state, 
+            p_sim_thread_state, 
             &p_engine->threads_handle
         );
 
         if (
              shSurfaceResizePending(*p_window) && 
-             sim_thread_state == SH_THREAD_RETURNED
+             (*p_sim_thread_state) == SH_THREAD_RETURNED
             ) {
 
             p_window->surface_resize_pending = 0;
@@ -254,7 +259,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
             break;
         }
 
-        if (sim_thread_state == SH_THREAD_RETURNED) {
+        if ((*p_sim_thread_state) == SH_THREAD_RETURNED) {
             if (p_engine->simulation_host.after_thread_called == 0) {
                 if (
                     !shSharedSceneRun(
@@ -326,7 +331,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
             &image_index
         );
 
-        if (sim_thread_state == SH_THREAD_RETURNED) {
+        if ((*p_sim_thread_state) == SH_THREAD_RETURNED) {
             shSharedHostWarning(
                 shSharedSceneRun(
                     p_engine, 
