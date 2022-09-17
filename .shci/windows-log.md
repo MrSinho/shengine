@@ -6,6 +6,11 @@
 ## [windows build logs:](https://github.com/mrsinho/shci)
 
         
+
+`build ran for 7.34s`
+
+---
+
 ```bash
 choco install -y curl mingw cmake
 mingw-get install gcc mingw32-make gdb
@@ -33,12 +38,6 @@ Warnings:
  Use --force to reinstall, specify a version to install, or try upgrade.
  - mingw - mingw v11.2.0.07112021 already installed.
  Use --force to reinstall, specify a version to install, or try upgrade.
-
-Did you know the proceeds of Pro (and some proceeds from other
- licensed editions) go into bettering the community infrastructure?
- Your support ensures an active community, keeps Chocolatey tip-top,
- plus it nets you some awesome features!
- https://chocolatey.org/compare
 
 ```
 
@@ -105,53 +104,10 @@ running command cd C:/Users/sino3/Desktop/shci-test/shengine/shengine/build && c
 Microsoft (R) Build Engine version 17.2.1+52cd2da31 for .NET Framework
 Copyright (C) Microsoft Corporation. All rights reserved.
 
-  Checking Build System
-  euler.c
-  affine.c
-  io.c
-  quat.c
-  cam.c
-  vec2.c
-  ivec2.c
-  vec3.c
-  ivec3.c
-  vec4.c
-  ivec4.c
-  mat2.c
-  mat3.c
-  mat4.c
-  plane.c
-  frustum.c
-  box.c
-  project.c
-  sphere.c
-  ease.c
-  Generating Code...
-  Compiling...
-  curve.c
-  bezier.c
-  ray.c
-  affine2d.c
-  ortho_lh_no.c
-  ortho_lh_zo.c
-  ortho_rh_no.c
-  ortho_rh_zo.c
-  persp_lh_no.c
-  persp_lh_zo.c
-  persp_rh_no.c
-  persp_rh_zo.c
-  view_lh_no.c
-  view_lh_zo.c
-  view_rh_no.c
-  view_rh_zo.c
-  project_no.c
-  project_zo.c
-  Generating Code...
   cglm.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\cglm\Debug\cglm.lib
   native-export.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\native-export.lib
   export-shaders.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\shgui\Debug\export-shaders.exe
   glfw.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\glfw\src\Debug\glfw3.lib
-  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/json-c/CMakeLists.txt
   json-c.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\json-c\Debug\json-c.lib
   plyimporter.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\plyimporter.lib
   shvulkan.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shvulkan.lib
@@ -161,11 +117,9 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   shsharedhost.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\Debug\shsharedhost.lib
   shthreads.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shthreads.lib
   shengine.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shengine.lib
-  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/simulations/CMakeLists.txt
   flappy-circle.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\flappy-circle.dll
   shecs-example.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shecs-example.exe
   sheditor.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\sheditor.exe
-  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/CMakeLists.txt
 
 ```
 
