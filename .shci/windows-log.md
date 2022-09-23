@@ -1,27 +1,23 @@
+
 # shengine
-![windows_badge](windows-status.svg)
-## [Windows build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 119.79s`
-```bash $shci call$
+
+![windows-badge](windows-exit_code.svg)
+
+## [windows build logs:](https://github.com/mrsinho/shci)
+
+        
+
+Build ran for `163.14s`
+
+---
+
+```bash
 choco install -y curl mingw cmake
+mingw-get install gcc mingw32-make gdb
+```
+
+```bash
 Chocolatey v0.11.2
-Chocolatey detected you are not running from an elevated command shell
- (cmd/powershell).
-
- You may experience errors - many functions/packages
- require admin rights. Only advanced users should run choco w/out an
- elevated shell. When you open the command shell, you should ensure
- that you do so with "Run as Administrator" selected. If you are
- attempting to use Chocolatey in a non-administrator setting, you
- must select a different location other than the default install
- location. See
- https://docs.chocolatey.org/en-us/choco/setup#non-administrative-install
- for details.
-
-For the question below, you have 20 seconds to make a selection.
-
- Do you want to continue?([Y]es/[N]o): 
-Timeout or your choice of '' is not a valid selection.
 Installing the following packages:
 curl;mingw;cmake
 By installing, you accept licenses for the packages.
@@ -45,19 +41,23 @@ Warnings:
 
 ```
 
-```bash $shci call$
-mingw-get install gcc mingw32-make gdb
+---
 
+    
+```bash
+cd shengine 
+python export-simulation.py flappy-circle SHARED 
+cd build 
+cmake --build .
 ```
 
-```bash $shci call$
-cd _shengine && python export-simulation.py flappy-circle SHARED && cd build && cmake --build .
+```bash
 -- Building for: Visual Studio 17 2022
--- Selecting Windows SDK version 10.0.19041.0 to target Windows 10.0.21996.
--- The C compiler identification is MSVC 19.31.31106.2
+-- Selecting Windows SDK version 10.0.22621.0 to target Windows 10.0.21996.
+-- The C compiler identification is MSVC 19.32.31332.0
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
--- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.31.31103/bin/Hostx64/x64/cl.exe - skipped
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe - skipped
 -- Detecting C compile features
 -- Detecting C compile features - done
 -- Found Vulkan: C:/VulkanSDK/1.2.198.1/Lib/vulkan-1.lib  
@@ -170,69 +170,78 @@ cd _shengine && python export-simulation.py flappy-circle SHARED && cd build && 
 -- Performing Test HAVE_ATOMIC_BUILTINS - Failed
 -- Performing Test HAVE___THREAD
 -- Performing Test HAVE___THREAD - Failed
--- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/build/shengine/[EXCLUDE_FROM_ALL]/json-c/config.h
--- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/build/shengine/[EXCLUDE_FROM_ALL]/json-c/json_config.h
+-- Wrote C:/Users/sino3/Desktop/shci-test/shengine/shengine/build/shengine/externals/json-c/config.h
+-- Wrote C:/Users/sino3/Desktop/shci-test/shengine/shengine/build/shengine/externals/json-c/json_config.h
 -- Found Doxygen: C:/ProgramData/chocolatey/bin/doxygen.exe (found version "1.9.1") found components: doxygen missing components: dot
--- Wrote C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/build/shengine/[EXCLUDE_FROM_ALL]/json-c/doc/Doxyfile
--- The CXX compiler identification is MSVC 19.31.31106.2
+-- Wrote C:/Users/sino3/Desktop/shci-test/shengine/shengine/build/shengine/externals/json-c/doc/Doxyfile
+-- The CXX compiler identification is MSVC 19.32.31332.0
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.31.31103/bin/Hostx64/x64/cl.exe - skipped
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.32.31326/bin/Hostx64/x64/cl.exe - skipped
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/build
-loading C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/simulations/flappy-circle/source-files.txt
+-- Build files have been written to: C:/Users/sino3/Desktop/shci-test/shengine/shengine/build
+loading C:/Users/sino3/Desktop/shci-test/shengine/shengine/simulations/flappy-circle/source-files.txt
 src/flappy-circle.c
+loading C:/Users/sino3/Desktop/shci-test/shengine/shengine/simulations/flappy-circle/libs.txt
+
+subdirectories:
+		
 
 cmake_minimum_required(VERSION 3.0)
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
-option(SH_SIMULATION_NAME emptytarget)
+	
+
+option(SH_SIMULATION_NAME CACHE emptytarget)
 project(${SH_SIMULATION_NAME})
 
-option(SH_SIMULATION_BINARY_TYPE "EXECUTABLE")
+option(SH_SIMULATION_BINARY_TYPE CACHE "EXECUTABLE")
 if("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "STATIC")
     add_library(${SH_SIMULATION_NAME} STATIC 
-    C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/simulations/flappy-circle/src/flappy-circle.c
+    	C:/Users/sino3/Desktop/shci-test/shengine/shengine/simulations/flappy-circle/src/flappy-circle.c
+
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "SHARED")
     add_library(${SH_SIMULATION_NAME} SHARED 
-    C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/simulations/flappy-circle/src/flappy-circle.c
+    	C:/Users/sino3/Desktop/shci-test/shengine/shengine/simulations/flappy-circle/src/flappy-circle.c
+
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
     add_executable(${SH_SIMULATION_NAME}  
-    C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/simulations/flappy-circle/src/flappy-circle.c
+    	C:/Users/sino3/Desktop/shci-test/shengine/shengine/simulations/flappy-circle/src/flappy-circle.c
+
 )
 endif()
 target_include_directories(${SH_SIMULATION_NAME} PUBLIC 
 ${CMAKE_CURRENT_SOURCE_DIR}/${SH_SIMULATION_NAME}/include
 )
-target_link_libraries(${SH_SIMULATION_NAME} PUBLIC shengine)
+target_link_libraries(${SH_SIMULATION_NAME} PUBLIC shengine 	)
 set_target_properties(${SH_SIMULATION_NAME} PROPERTIES 
 ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin  
 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
 
-running command cd C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/build && cmake .. -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH=C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/simulations -DSH_EDITOR_ASSETS_PATH=C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/simulations/flappy-circle/assets/ -DSH_SIMULATION_NAME=flappy-circle -DSH_SIMULATION_BINARY_TYPE=SHARED
-Microsoft (R) Build Engine version 17.1.0+ae57d105c for .NET Framework
+running command cd C:/Users/sino3/Desktop/shci-test/shengine/shengine/build && cmake .. -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH=C:/Users/sino3/Desktop/shci-test/shengine/shengine/simulations -DSH_EDITOR_ASSETS_PATH=C:/Users/sino3/Desktop/shci-test/shengine/shengine/simulations/flappy-circle/assets/ -DSH_SIMULATION_NAME=flappy-circle -DSH_SIMULATION_BINARY_TYPE=SHARED 
+Microsoft (R) Build Engine version 17.2.1+52cd2da31 for .NET Framework
 Copyright (C) Microsoft Corporation. All rights reserved.
 
   Checking Build System
   Generating HTML documentation
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/externals/glfw/docs/CMakeLists.txt
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/externals/cglm/CMakeLists.txt
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/glfw/docs/CMakeLists.txt
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/cglm/CMakeLists.txt
   euler.c
   affine.c
   io.c
   quat.c
   cam.c
   vec2.c
-  vec3.c
-  vec4.c
   ivec2.c
+  vec3.c
   ivec3.c
+  vec4.c
   ivec4.c
   mat2.c
   mat3.c
@@ -249,22 +258,30 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   bezier.c
   ray.c
   affine2d.c
-  persp_lh_zo.c
-  persp_rh_zo.c
-  persp_lh_no.c
-  persp_rh_no.c
-  ortho_lh_zo.c
-  ortho_rh_zo.c
   ortho_lh_no.c
+  ortho_lh_zo.c
   ortho_rh_no.c
-  view_lh_zo.c
-  view_rh_zo.c
+  ortho_rh_zo.c
+  persp_lh_no.c
+  persp_lh_zo.c
+  persp_rh_no.c
+  persp_rh_zo.c
   view_lh_no.c
+  view_lh_zo.c
   view_rh_no.c
+  view_rh_zo.c
+  project_no.c
+  project_zo.c
   Generating Code...
-     Creating library C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/build/shengine/[EXCLUDE_FROM_ALL]/cglm/Debug/cglm.lib and object C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/build/shengine/[EXCLUDE_FROM_ALL]/cglm/Debug/cglm.exp
-  cglm.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\cglm\Debug\cglm-0.dll
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/externals/glfw/src/CMakeLists.txt
+     Creating library C:/Users/sino3/Desktop/shci-test/shengine/shengine/build/shengine/externals/cglm/Debug/cglm.lib and object C:/Users/sino3/Desktop/shci-test/shengine/shengine/build/shengine/externals/cglm/Debug/cglm.exp
+  cglm.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\cglm\Debug\cglm-0.dll
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/shgui/externals/native-export/c/CMakeLists.txt
+  native-export.c
+  native-export.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\native-export.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/shgui/CMakeLists.txt
+  export-shaders.c
+  export-shaders.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\shgui\Debug\export-shaders.exe
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/glfw/src/CMakeLists.txt
   context.c
   init.c
   input.c
@@ -289,70 +306,92 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   Compiling...
   wgl_context.c
   Generating Code...
-  glfw.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\glfw\src\Debug\glfw3.lib
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/externals/json-c/CMakeLists.txt
+  glfw.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\glfw\src\Debug\glfw3.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/json-c/CMakeLists.txt
   arraylist.c
   debug.c
   json_c_version.c
   json_object.c
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json-c\json_object.c(204,52): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\json-c.vcxproj]
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json-c\json_object.c(231,29): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\json-c.vcxproj]
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json-c\json_object.c(242,50): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\json-c.vcxproj]
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json-c\json_object.c(685,44): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\json-c.vcxproj]
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json-c\json_object.c(1139,27): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\json-c.vcxproj]
+C:\Users\sino3\Desktop\shci-test\shengine\shengine\shengine\externals\json-c\json_object.c(204,52): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\json-c\json-c.vcxproj]
+C:\Users\sino3\Desktop\shci-test\shengine\shengine\shengine\externals\json-c\json_object.c(231,29): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\json-c\json-c.vcxproj]
+C:\Users\sino3\Desktop\shci-test\shengine\shengine\shengine\externals\json-c\json_object.c(242,50): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\json-c\json-c.vcxproj]
+C:\Users\sino3\Desktop\shci-test\shengine\shengine\shengine\externals\json-c\json_object.c(682,38): warning C4267: 'function': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\json-c\json-c.vcxproj]
+C:\Users\sino3\Desktop\shci-test\shengine\shengine\shengine\externals\json-c\json_object.c(1136,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\json-c\json-c.vcxproj]
   json_object_iterator.c
   json_tokener.c
   json_util.c
+C:\Users\sino3\Desktop\shci-test\shengine\shengine\shengine\externals\json-c\json_util.c(212,47): warning C4267: 'function': conversion from 'size_t' to 'unsigned int', possible loss of data [C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\json-c\json-c.vcxproj]
   json_visit.c
   linkhash.c
   printbuf.c
   random_seed.c
   strerror_override.c
   json_pointer.c
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json-c\json_pointer.c(32,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\json-c.vcxproj]
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json-c\json_pointer.c(33,27): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\json-c.vcxproj]
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json-c\json_pointer.c(83,32): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\json-c.vcxproj]
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\json-c\json_pointer.c(46,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\json-c.vcxproj]
   Generating Code...
-  json-c.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\[EXCLUDE_FROM_ALL]\json-c\Debug\json-c.lib
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/externals/plyimporter/CMakeLists.txt
+  json-c.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\externals\json-c\Debug\json-c.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/plyimporter/CMakeLists.txt
   plyImporter.c
-  plyimporter.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\bin\Debug\plyimporter.lib
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/externals/shvulkan/CMakeLists.txt
+  plyimporter.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\plyimporter.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/shvulkan/CMakeLists.txt
   shVkCore.c
   shVkMemoryInfo.c
   shVkPipelineData.c
   shVkCheck.c
   shVkDrawLoop.c
   Generating Code...
-  shvulkan.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\bin\Debug\shvulkan.lib
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/shengine/CMakeLists.txt
+  shvulkan.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shvulkan.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/CMakeLists.txt
   shFile.c
   shfd.c
-C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\shengine\shfd\src\shfd.c(160,81): warning C4133: 'function': incompatible types - from 'ShVkPipeline *' to 'VkPushConstantRange *' [C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\shfd.vcxproj]
   Generating Code...
-  shfd.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\bin\Debug\shfd.lib
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/externals/shserial/CMakeLists.txt
+  shfd.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shfd.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/shgui/CMakeLists.txt
+  shgui.c
+  shgui.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shgui.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/shserial/CMakeLists.txt
   shSerial.c
-  shserial.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\externals\shserial\bin\Debug\shserial.lib
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/shengine/CMakeLists.txt
+  shserial.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\shengine\externals\shserial\bin\Debug\shserial.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/CMakeLists.txt
   shSharedHost.c
-  shsharedhost.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\build\shengine\Debug\shsharedhost.lib
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/shengine/CMakeLists.txt
+  shsharedhost.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\Debug\shsharedhost.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/shthreads/CMakeLists.txt
+  shthreads.c
+  shthreads.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shthreads.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/CMakeLists.txt
+  shEngine.c
   shInput.c
   shTime.c
   shWindow.c
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition [C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\shengine.vcxproj]
+C:\Users\sino3\Desktop\shci-test\shengine\shengine\shengine\externals\glfw\include\GLFW/glfw3.h(123): message : see previous definition of 'APIENTRY' [C:\Users\sino3\Desktop\shci-test\shengine\shengine\build\shengine\shengine.vcxproj]
   shProjection.c
   shView.c
   shScene.c
   shMaterialHost.c
+  shEgui.c
   Generating Code...
-  shengine.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\bin\Debug\shengine.lib
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/simulations/CMakeLists.txt
+  shengine.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shengine.lib
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/simulations/CMakeLists.txt
   flappy-circle.c
-     Creating library C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/bin/Debug/flappy-circle.lib and object C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/bin/Debug/flappy-circle.exp
-  flappy-circle.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\bin\Debug\flappy-circle.dll
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/shengine/CMakeLists.txt
+     Creating library C:/Users/sino3/Desktop/shci-test/shengine/shengine/bin/Debug/flappy-circle.lib and object C:/Users/sino3/Desktop/shci-test/shengine/shengine/bin/Debug/flappy-circle.exp
+  flappy-circle.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\flappy-circle.dll
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/externals/shecs/CMakeLists.txt
+  shecs-example.c
+  shecs-example.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\shecs-example.exe
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/shengine/CMakeLists.txt
   shEditor.c
-  sheditor.vcxproj -> C:\Users\sino3\Desktop\GitHub\ShCI-implementation\build\_shengine\bin\Debug\sheditor.exe
-  Building Custom Rule C:/Users/sino3/Desktop/GitHub/ShCI-implementation/build/_shengine/CMakeLists.txt
+  sheditor.vcxproj -> C:\Users\sino3\Desktop\shci-test\shengine\shengine\bin\Debug\sheditor.exe
+  Building Custom Rule C:/Users/sino3/Desktop/shci-test/shengine/shengine/CMakeLists.txt
+
+```
+
+---
+
+    
+
+---
+
+Build terminated with exit code 0
+
+---
+
