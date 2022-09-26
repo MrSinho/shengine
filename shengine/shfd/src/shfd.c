@@ -594,7 +594,7 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     if (strcmp(s_flag, "VEC3_UNSIGNED_INT") == 0) {
         return SH_VEC3_UNSIGNED_INT;
     }
-    if (strcmp(s_flag, "WIREFRAME") == 0) {
+    if (strcmp(s_flag, "WIREFRAME") == 0 || strcmp(s_flag, "LINE") == 0) {
         return VK_POLYGON_MODE_LINE;
     }
     if (strcmp(s_flag, "FACE") == 0) {

@@ -75,7 +75,7 @@ extern void shEngineSafeState(ShEngine* p_engine);
 
 extern void shEngineUpdateState(ShEngine* p_engine);
 
-extern void shEngineManageState(ShEngine* p_engine, const uint8_t ready, const uint8_t release_on_failure);
+extern void shEngineManageState(ShEngine* p_engine, const ShEngineStatus ready, const uint8_t release_on_failure);
 
 extern void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared);
 

@@ -367,8 +367,8 @@ void shEngineUpdateState(ShEngine* p_engine) {
     exit(0);
 }
 
-void shEngineManageState(ShEngine* p_engine, const uint8_t ready, const uint8_t release_on_failure) {
-    if (ready) {
+void shEngineManageState(ShEngine* p_engine, const ShEngineStatus ready, const uint8_t release_on_failure) {
+    if (ready == SH_ENGINE_SUCCESS) {
         shEngineUpdateState(p_engine);
     }
     else {

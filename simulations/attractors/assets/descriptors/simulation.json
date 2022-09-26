@@ -1,0 +1,12 @@
+{
+    "run": 1,
+    "name": "attractors",
+    "start": "attractors_start",
+    "thread": "attractors_thread",
+    "update_pending": "attractors_update_pending",
+    "after_thread": "attractors_after_thread",
+    "update": "attractors_update",
+    "frame_update": "attractors_frame_update",
+    "frame_resize": "attractors_frame_resize",
+    "close": "attractors_close"
+}
