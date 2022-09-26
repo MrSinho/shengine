@@ -4,8 +4,8 @@
    "entities":[
       {
          "transform": { 
-            "position": [ 5.0, 0.0, 10 ],
-            "rotation": [ 0.0, 0.0, 0.0 ]
+            "position": [ 25.0, -10.0, -20 ],
+            "rotation": [ -0.2, 4.3, 0.0 ]
          },
          "camera":{
             "fov": 75,

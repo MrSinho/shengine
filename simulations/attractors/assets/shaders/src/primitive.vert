@@ -11,7 +11,7 @@ layout (push_constant) uniform constants {
 
 void main() {
   
-  //gl_PointSize = 1.0f;
+  gl_PointSize = 1.0f;
 
   frag_position = pconst.projection * pconst.view * vec4(position, 1.0);
   gl_Position = frag_position;

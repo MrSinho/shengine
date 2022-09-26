@@ -37,13 +37,13 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_start(ShEngine* p_engine) {
 
     ShMaterialHost* p_material = &p_engine->p_materials[0];
 
-    return shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_EXTRA_DARK);
+    return shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_DARK);
 }
 
 uint64_t SH_ENGINE_EXPORT_FUNCTION attractors_thread(Attractors* p_attractors) {//void* ShEngine::p_engine_extension = NULL
     shEngineError(p_attractors == NULL, "invalid attractors memory", return 0);
 
-    p_attractors->vertex_count = (uint32_t)18E3 * 3;
+    p_attractors->vertex_count = (uint32_t)5E4 * 3;
     p_attractors->p_positions = calloc(p_attractors->vertex_count, 4);
     shEngineError(p_attractors->p_positions == NULL, "invalid attractors vertex positions memory", return 0);
 
@@ -61,21 +61,9 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION attractors_thread(Attractors* p_attractors) {
         for (uint32_t vertex_idx = 3; vertex_idx < p_attractors->vertex_count; vertex_idx += 3) {
             float* last_pos = &p_attractors->p_positions[vertex_idx - 3];
             float* pos = &p_attractors->p_positions[vertex_idx];
-            if (vertex_idx % 2 == 0) {
-                memcpy(pos, last_pos, 12);
-            }
-            else {
-
                 pos[0] = last_pos[0] + a * (last_pos[1] - last_pos[0]) * scale;
                 pos[1] = last_pos[1] + (last_pos[0] * (b - last_pos[2]) - last_pos[1]) * scale;
                 pos[2] = last_pos[2] + (last_pos[0] * last_pos[1] - c * last_pos[2]) * scale;
-
-                //float f = (float)(vertex_idx / 6) / 1500.0f;
-                //pos[0] = f;
-                //pos[1] = -f * f;
-                //pos[2] = 0.0f;
-            }
-
         }
 
         for (uint32_t vertex_idx = 0; vertex_idx < p_attractors->vertex_count; vertex_idx++) {
@@ -207,19 +195,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_update(ShEngine* p_engine) {
     shGuiWindow(
         p_gui,
         25.0f,
-        25.0f,
+        15.0f,
         -75.0f,
-        -75.0f,
+        -85.0f,
         "Attractors demo",
         SH_GUI_MOVABLE | SH_GUI_RESIZABLE | SH_GUI_RELATIVE
     );
-    shGuiWindowText(
-        p_gui,
-        SH_GUI_WINDOW_TEXT_SIZE,
-        "Hey, this is a demo!",
-        SH_GUI_CENTER_WIDTH
-    );
-    shGuiWindowSeparator(p_gui);
     if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset", SH_GUI_CENTER_WIDTH)) {
         puts("Reset");
         shResetEngineState(p_engine, 0);
@@ -230,14 +211,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_update(ShEngine* p_engine) {
         shEngineShutdown(p_engine);
     }
 
-    char s_fps[13];
-    sprintf(s_fps, "fps: %.3f", 1.0f / p_engine->time.delta_time);
     shGuiText(
         p_gui,
         SH_GUI_WINDOW_TEXT_SIZE * 2.0f,
          10.0f,
         -10.0f,
-        s_fps,
+        "Lorentz attractor",
         SH_GUI_EDGE_LEFT | SH_GUI_EDGE_TOP
     );
 
