@@ -43,7 +43,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_start(ShEngine* p_engine) {
 uint64_t SH_ENGINE_EXPORT_FUNCTION attractors_thread(Attractors* p_attractors) {//void* ShEngine::p_engine_extension = NULL
     shEngineError(p_attractors == NULL, "invalid attractors memory", return 0);
 
-    p_attractors->vertex_count = (uint32_t)9E3 * 3;
+    p_attractors->vertex_count = (uint32_t)18E3 * 3;
     p_attractors->p_positions = calloc(p_attractors->vertex_count, 4);
     shEngineError(p_attractors->p_positions == NULL, "invalid attractors vertex positions memory", return 0);
 
@@ -206,12 +206,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_update(ShEngine* p_engine) {
     if (p_gui == NULL) { return 0; }
     shGuiWindow(
         p_gui,
-        250.0f,
-        200.0f,
-        -500.0f,
-        200.0f,
+        25.0f,
+        25.0f,
+        -75.0f,
+        -75.0f,
         "Attractors demo",
-        SH_GUI_MOVABLE | SH_GUI_RESIZABLE | SH_GUI_PIXELS
+        SH_GUI_MOVABLE | SH_GUI_RESIZABLE | SH_GUI_RELATIVE
     );
     shGuiWindowText(
         p_gui,
@@ -229,6 +229,18 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_update(ShEngine* p_engine) {
     if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Quit", SH_GUI_CENTER_WIDTH)) {
         shEngineShutdown(p_engine);
     }
+
+    char s_fps[13];
+    sprintf(s_fps, "fps: %.3f", 1.0f / p_engine->time.delta_time);
+    shGuiText(
+        p_gui,
+        SH_GUI_WINDOW_TEXT_SIZE * 2.0f,
+         10.0f,
+        -10.0f,
+        s_fps,
+        SH_GUI_EDGE_LEFT | SH_GUI_EDGE_TOP
+    );
+
 	return 1;
 }
 
