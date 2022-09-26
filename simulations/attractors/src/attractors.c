@@ -190,6 +190,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_after_thread(ShEngine* p_engine) {
 
     }//COPY BUFFERS
 
+    shClearBufferMemory(
+        device,
+        p_attractors->vertex_staging_buffer,
+        p_attractors->vertex_staging_memory
+    );
+
     return 1;
 }
 
@@ -276,12 +282,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_close(ShEngine* p_engine, const uin
     shEngineError(p_attractors->p_positions == NULL, "invalid attractors vertex positions memory", return 0);
 
     VkDevice device = p_engine->core.device;
-
-    shClearBufferMemory(
-        device,
-        p_attractors->vertex_staging_buffer,
-        p_attractors->vertex_staging_memory
-    );
 
     shClearBufferMemory(
         device,
