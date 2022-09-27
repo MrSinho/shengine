@@ -1,0 +1,12 @@
+{
+    "run": 1,
+    "name": "lorentz",
+    "start": "lorentz_start",
+    "thread": "lorentz_thread",
+    "update_pending": "lorentz_update_pending",
+    "after_thread": "lorentz_after_thread",
+    "update": "lorentz_update",
+    "frame_update": "lorentz_frame_update",
+    "frame_resize": "lorentz_frame_resize",
+    "close": "lorentz_close"
+}

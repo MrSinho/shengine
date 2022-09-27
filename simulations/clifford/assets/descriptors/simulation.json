@@ -1,6 +1,6 @@
 {
     "run": 1,
-    "name": "attractors",
+    "name": "clifford",
     "start": "attractors_start",
     "thread": "attractors_thread",
     "update_pending": "attractors_update_pending",

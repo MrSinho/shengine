@@ -29,7 +29,7 @@ typedef struct Attractors {
 
 
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_start(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION lorentz_start(ShEngine* p_engine) {
     p_engine->p_ext = calloc(1, sizeof(Attractors));
 
     VkDevice device = p_engine->core.device;
@@ -40,10 +40,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_start(ShEngine* p_engine) {
     return shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_DARK);
 }
 
-uint64_t SH_ENGINE_EXPORT_FUNCTION attractors_thread(Attractors* p_attractors) {//void* ShEngine::p_engine_extension = NULL
+uint64_t SH_ENGINE_EXPORT_FUNCTION lorentz_thread(Attractors* p_attractors) {//void* ShEngine::p_engine_extension = NULL
     shEngineError(p_attractors == NULL, "invalid attractors memory", return 0);
 
-    p_attractors->vertex_count = (uint32_t)5E4 * 3;
+    p_attractors->vertex_count = (uint32_t)3E4 * 3;
     p_attractors->p_positions = calloc(p_attractors->vertex_count, 4);
     shEngineError(p_attractors->p_positions == NULL, "invalid attractors vertex positions memory", return 0);
 
@@ -61,9 +61,14 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION attractors_thread(Attractors* p_attractors) {
         for (uint32_t vertex_idx = 3; vertex_idx < p_attractors->vertex_count; vertex_idx += 3) {
             float* last_pos = &p_attractors->p_positions[vertex_idx - 3];
             float* pos = &p_attractors->p_positions[vertex_idx];
+            if (vertex_idx % 6 == 0) {
+                memcpy(pos, last_pos, 12);
+            }
+            else {
                 pos[0] = last_pos[0] + a * (last_pos[1] - last_pos[0]) * scale;
                 pos[1] = last_pos[1] + (last_pos[0] * (b - last_pos[2]) - last_pos[1]) * scale;
                 pos[2] = last_pos[2] + (last_pos[0] * last_pos[1] - c * last_pos[2]) * scale;
+            }
         }
 
         for (uint32_t vertex_idx = 0; vertex_idx < p_attractors->vertex_count; vertex_idx++) {
@@ -76,13 +81,13 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION attractors_thread(Attractors* p_attractors) {
     return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_update_pending(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION lorentz_update_pending(ShEngine* p_engine) {
 
     return 1;
 }
 
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_after_thread(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION lorentz_after_thread(ShEngine* p_engine) {
 
     VkDevice device = p_engine->core.device;
     VkPhysicalDevice physical_device = p_engine->core.physical_device;
@@ -187,7 +192,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_after_thread(ShEngine* p_engine) {
     return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION lorentz_update(ShEngine* p_engine) {
     //before recording cmd buffer
     ShGui* p_gui = p_engine->p_gui;
 
@@ -213,7 +218,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_update(ShEngine* p_engine) {
 
     shGuiText(
         p_gui,
-        SH_GUI_WINDOW_TEXT_SIZE * 2.0f,
+        SH_GUI_WINDOW_TEXT_SIZE,
          10.0f,
         -10.0f,
         "Lorentz attractor",
@@ -223,7 +228,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_update(ShEngine* p_engine) {
 	return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_frame_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION lorentz_frame_update(ShEngine* p_engine) {
 
     VkDevice device = p_engine->core.device;
     VkCommandBuffer cmd_buffer = p_engine->core.p_graphics_commands[0].cmd_buffer;
@@ -262,12 +267,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_frame_update(ShEngine* p_engine) {
 }
 
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_frame_resize(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION lorentz_frame_resize(ShEngine* p_engine) {
     
     return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION attractors_close(ShEngine* p_engine, const uint32_t entity) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION lorentz_close(ShEngine* p_engine, const uint32_t entity) {
     Attractors* p_attractors = p_engine->p_ext;
     shEngineError(p_attractors == NULL, "invalid attractors memory", return 0);
     shEngineError(p_attractors->p_positions == NULL, "invalid attractors vertex positions memory", return 0);

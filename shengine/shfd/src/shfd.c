@@ -20,7 +20,7 @@ extern "C" {
 #include <shvulkan/shVkCheck.h>
 #include <shvulkan/shVkPipelineData.h>
 #include <shvulkan/shVkDescriptorStructureMap.h>
-
+    
 
 
 #ifndef NDEBUG
