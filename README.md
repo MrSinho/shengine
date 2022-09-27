@@ -5,7 +5,7 @@
 [![linux_badge](.shci/linux-status.svg)](https://github.com/MrSinho/shengime/tree/main/.shci/linux-log.md)
 [![windows_badge](.shci/windows-status.svg)](https://github.com/MrSinho/shengine/tree/main/.shci/windows-log.md)
 
-![lorentz](saved/pictures/clifford.png)
+![clifford](saved/pictures/clifford.png)
 
 
 [Current features](#current-features)
