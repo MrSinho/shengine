@@ -1,0 +1,20 @@
+{
+   "meshes":[
+   ],
+   "entities":[
+      {
+         "transform": { 
+            "position": [ 0, 0, 2.5 ],
+            "rotation": [ 0.0 ]
+         },
+         "camera":{
+            "fov": 75,
+            "nc": 1E-20,
+            "fc": 150,
+            "speed": 5,
+            "mouse_speed": 3,
+            "flags":"CAMERA_SETUP_FREE_FLIGHT"
+         }
+      }
+   ]
+}

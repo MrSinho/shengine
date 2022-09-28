@@ -1,12 +1,12 @@
 {
     "run": 1,
     "name": "clifford",
-    "start": "attractors_start",
-    "thread": "attractors_thread",
-    "update_pending": "attractors_update_pending",
-    "after_thread": "attractors_after_thread",
-    "update": "attractors_update",
-    "frame_update": "attractors_frame_update",
-    "frame_resize": "attractors_frame_resize",
-    "close": "attractors_close"
+    "start": "clifford_start",
+    "thread": "clifford_thread",
+    "update_pending": "clifford_update_pending",
+    "after_thread": "clifford_after_thread",
+    "update": "clifford_update",
+    "frame_update": "clifford_frame_update",
+    "frame_resize": "clifford_frame_resize",
+    "close": "clifford_close"
 }

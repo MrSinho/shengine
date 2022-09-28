@@ -294,6 +294,9 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                     shSetupGraphicsPipeline(p_core->device, p_core->render_pass, fixed_states, &pipeline);
                     p_materials[i].fixed_states = fixed_states;
                     p_materials[i].pipeline = pipeline;
+                    for (uint32_t j = 0; j < p_materials[i].pipeline.descriptor_count; j++) {
+                        p_materials[i].pipeline.write_descriptor_sets[j].pBufferInfo = &p_materials[i].pipeline.descriptor_buffer_infos[j];
+                    }
                 }
             }//FIXED STATES
         }//END BUILD PIPELINE CHECKS
@@ -517,9 +520,6 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
             if (json_idx != NULL) {
                 const uint32_t idx = (uint32_t)json_object_get_int(json_idx);
                 ShMaterialHost* p_material = &(*pp_materials)[idx];
-                for (uint32_t j = 0; j < p_material->pipeline.descriptor_count; j++) {
-                    p_material->pipeline.write_descriptor_sets[j].pBufferInfo = &p_material->pipeline.descriptor_buffer_infos[j];
-                }
                 p_material->p_entities[p_material->entity_count] = entity;
 
                 json_object* json_descriptor_parameters     = json_object_object_get(json_material, "uniform_parameters");
