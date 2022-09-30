@@ -17,8 +17,12 @@ extern "C" {
 
 
 typedef struct Fractal {
-    alignas(4) float zoom;
-    alignas(8) float rotation[2];
+
+    struct {
+        float s;
+        float a;
+        float b;
+    } set_0;
 
     struct {
         uint8_t display_ui;
@@ -34,9 +38,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 }
 
 uint64_t SH_ENGINE_EXPORT_FUNCTION noise_thread(Fractal* p_fractal) {//void* ShEngine::p_engine_extension = NULL
-    p_fractal->zoom = 1.0f;
-    p_fractal->rotation[0] = 1.0f;
-    p_fractal->rotation[1] = 1.0f;
+    p_fractal->set_0.s = 1.0f;
+    p_fractal->set_0.a = 1.0f;
+    p_fractal->set_0.b = 1.0f;
     p_fractal->ui.display_ui = 1;
     return 1;
 }
@@ -66,22 +70,45 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine) {
         if (p_gui == NULL) { return 0; }
         shGuiWindow(
             p_gui,
-            25.0f,
-            15.0f,
-            -75.0f,
-            -85.0f,
+            20.0f,
+            20.0f,
+            -80.0f,
+            -80.0f,
             "Fractal demo",
             SH_GUI_MOVABLE | SH_GUI_RESIZABLE | SH_GUI_RELATIVE
         );
-        if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset", SH_GUI_CENTER_WIDTH)) {
+        char s_value[16];
+        sprintf(s_value, "s: %.3f", p_fractal->set_0.s);
+        shGuiWindowText(
+            p_gui,
+            SH_GUI_WINDOW_TEXT_SIZE,
+            s_value,
+            0
+        );
+        sprintf(s_value, "a: %.3f", p_fractal->set_0.a);
+        shGuiWindowText(
+            p_gui,
+            SH_GUI_WINDOW_TEXT_SIZE,
+            s_value,
+            0
+        );
+        sprintf(s_value, "b: %.3f", p_fractal->set_0.b);
+        shGuiWindowText(
+            p_gui,
+            SH_GUI_WINDOW_TEXT_SIZE,
+            s_value,
+            0
+        );
+        shGuiWindowSeparator(p_gui);
+        if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Reset", 0)) {
             puts("Reset");
             shResetEngineState(p_engine, 0);
             return 1;
         }
-        shGuiWindowSeparator(p_gui);
-        if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Quit", SH_GUI_CENTER_WIDTH)) {
+        if (shGuiWindowButton(p_gui, SH_GUI_WINDOW_TEXT_SIZE, "Quit", 0)) {
             shEngineShutdown(p_engine);
         }
+
 
         shGuiText(
             p_gui,
@@ -97,36 +124,38 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine) {
             p_engine->window.input.cursor_pos_x / (float)p_engine->window.width * 2.0f, 
             p_engine->window.input.cursor_pos_y / (float)p_engine->window.height * 2.0f
         );
-        shGuiText(
-            p_gui,
-            SH_GUI_WINDOW_TEXT_SIZE,
-            p_engine->window.input.cursor_pos_x,
-            -p_engine->window.input.cursor_pos_y - SH_GUI_WINDOW_TEXT_SIZE,
-            s_pixel_coords,
-            SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
-        );
+        if (!p_gui->region_infos.cursor_on_regions) {
+            shGuiText(
+                p_gui,
+                SH_GUI_WINDOW_TEXT_SIZE,
+                p_engine->window.input.cursor_pos_x,
+                -p_engine->window.input.cursor_pos_y - SH_GUI_WINDOW_TEXT_SIZE,
+                s_pixel_coords,
+                SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
+            );
+        }
     }
 
     float dtime = (float)p_engine->time.delta_time;
     if (shIsKeyDown(p_engine->window, SH_KEY_Z)) {
-        p_fractal->zoom += 1.0f * dtime;
+        p_fractal->set_0.s += 1.0f * dtime;
     }
     else if (shIsKeyDown(p_engine->window, SH_KEY_X)) {
-        p_fractal->zoom -= 1.0f * dtime;
+        p_fractal->set_0.s -= 1.0f * dtime;
     }
 
     if (shIsKeyDown(p_engine->window, SH_KEY_A)) {
-        p_fractal->rotation[0] += 1.0f * dtime;
+        p_fractal->set_0.a += 1.0f * dtime;
     }
     else if(shIsKeyDown(p_engine->window, SH_KEY_D)) {
-        p_fractal->rotation[0] -= 1.0f * dtime;
+        p_fractal->set_0.a -= 1.0f * dtime;
     }
 
     if (shIsKeyDown(p_engine->window, SH_KEY_W)) {
-        p_fractal->rotation[1] += 1.0f * dtime;
+        p_fractal->set_0.b += 1.0f * dtime;
     }
     else if (shIsKeyDown(p_engine->window, SH_KEY_S)) {
-        p_fractal->rotation[1] -= 1.0f * dtime;
+        p_fractal->set_0.b -= 1.0f * dtime;
     }
 
 	return 1;
