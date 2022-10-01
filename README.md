@@ -5,7 +5,7 @@
 [![linux_badge](.shci/linux-status.svg)](https://github.com/MrSinho/shengime/tree/main/.shci/linux-log.md)
 [![windows_badge](.shci/windows-status.svg)](https://github.com/MrSinho/shengine/tree/main/.shci/windows-log.md)
 
-![clifford](saved/pictures/clifford.png)
+![noise-3](saved/pictures/noise-3.png)
 
 
 [Current features](#current-features)
@@ -17,6 +17,7 @@
 * [flappy-circle](#flappy-circle)
 * [serial-demo](#serial-demo)
    * [Pinout for the Raspberry Pi pico and UF2 binary](#pinout-for-the-raspberry-pi-pico-and-uf2-binary)
+* [noise](#noise)
 
 ---
 
@@ -57,9 +58,6 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  * Audio 
 
 ---
-
-![lorentz](saved/pictures/lorentz.png)
-
 
 # Build from source
 
@@ -121,13 +119,87 @@ cmake --build .
 Note: because the simulation does not include multithreading, reading serial data blocks all gpu calls.
 
 ## Pinout for the Raspberry Pi Pico and UF2 binary
-It's connected to a `1.5V` solar panel (it could be a potentiometer or any analogic sensor). The negative charged cable (in red) is connected to `ADC input 0`, `GPIO 26`. The program to run on the Raspberry Pi Pico is located at [simulations/serial-demo/pico-bin/shengine_sample_raw.uf2](simulations/serial-demo/pico-bin/shengine_sample_raw.uf2).
+It's connected to a `1.5V` solar panel (it could be a potentiometer or any analogic sensor). The negative charged cable (in red) is connected to `ADC input 0`, `GPIO 26` (for pinout check [saved/pictures/serial-demo-pinout.jpg](saved/pictures/serial-demo-pinout.jpg)). The program to run on the Raspberry Pi Pico is located at [simulations/serial-demo/pico-bin/shengine_sample_raw.uf2](simulations/serial-demo/pico-bin/shengine_sample_raw.uf2).
 
 You should correct the serial port name in case the one at [simulations/serial-demo/src/serial-demo.c](simulations/serial-demo/src/serial-demo.c) doesn't match.
 
-![serial-pinout](saved/pictures/serial-demo-pinout.jpg)
+---
+
+## noise
+
+![noise-3](saved/pictures/noise-3.png)
+
+```batch
+python export-simulation.py noise SHARED
+cd build
+cmake --build . 
+```
+
+Press `H` to hide the GUI and get a full view of the shaded plane. To change the values of the parameters `A` `B` and `S`:
+
+||||
+|-------------|----------------|----------------|
+| Parameter   | Increase key   | Decrease key   |
+| `S`         |       _Z_      |       _X_      |
+| `A`         |       _A_      |       _D_      |
+| `B`         |       _W_      |       _S_      |
+
+Fragment shader algorithm:
+
+$$ c = \cos(\pi x y s) $$
+
+$$
+RGB_{raw} = \begin{bmatrix}
+
+\sin(\pi|x|\cfrac{s}{a}) + c\\
+\sin(\pi|y|\cfrac{s}{b}) + c\\
+\cos(\pi\cfrac{x}{y}s) + c\\
+
+\end{bmatrix}
+
+$$
 
 ---
+
+$ a = \cfrac{1}{2} $
+
+$ b = 1 $
+
+$ c = -2,5 $
+
+![noise-1](saved/pictures/noise-1.png)
+
+---
+
+$ a = \cfrac{1}{2} $
+
+$ b = 1 $
+
+$ c = -2,5 $
+
+![noise-2](saved/pictures/noise-2.png)
+
+---
+
+$ a = 4 $
+
+$ b = 4,5 $
+
+$ c = -1,8 $
+
+![noise-3](saved/pictures/noise-3.png)
+
+---
+
+$ a = 4 $
+
+$ b = 5 $
+
+$ c = 7 $
+
+![noise-5](saved/pictures/noise-5.png)
+
+
 
 # Binaries and output
 
