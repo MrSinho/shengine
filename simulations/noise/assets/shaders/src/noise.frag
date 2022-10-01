@@ -23,7 +23,7 @@ void main() {
             vec3(
                 sin(pi * abs(frag_position.x) * ufrac.s / ufrac.a),
                 sin(pi * abs(frag_position.y) * ufrac.s / ufrac.b),
-                cos(pi * abs(frag_position.x / frag_position.y) * ufrac.s)    
+                cos(pi * frag_position.x / frag_position.y * ufrac.s)    
             ) + 
             vec3(
                 cos(pi * frag_position.x * frag_position.y * ufrac.s)
@@ -32,3 +32,21 @@ void main() {
         1.0f
     );
 }
+
+/*
+RGB = \begin{bmatrix}
+
+\sin(\pi |x| \cfrac{s}{a})\\
+\sin(\pi |y| \cfrac{s}{b})\\
+\cos(\pi \cfrac{x}{y}s)\\
+
+\end{bmatrix}
+
++
+
+\cos(\pi xys)
+*/
+
+/*
+
+*/

@@ -38,9 +38,41 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 }
 
 uint64_t SH_ENGINE_EXPORT_FUNCTION noise_thread(Fractal* p_fractal) {//void* ShEngine::p_engine_extension = NULL
-    p_fractal->set_0.s = 1.0f;
-    p_fractal->set_0.a = 1.0f;
-    p_fractal->set_0.b = 1.0f;
+    
+    //1st
+    // 
+    //p_fractal->set_0.s = 0.5f;
+    //p_fractal->set_0.a = 1.0f;
+    //p_fractal->set_0.b =-2.5f;
+
+    //2nd
+    // 
+    p_fractal->set_0.s = 0.5f;
+    p_fractal->set_0.a = 2.0f;
+    p_fractal->set_0.b = 7.0f;
+
+    //3rd
+    //p_fractal->set_0.s = 4.0f;
+    //p_fractal->set_0.a = 4.5f;
+    //p_fractal->set_0.b =-1.8f;
+
+    //NOT SURE
+
+    //3rd hmm
+    //p_fractal->set_0.s = 4.0f;
+    //p_fractal->set_0.a =-15.f;
+    //p_fractal->set_0.b =-5.0f;
+    
+    //3rd hmmm
+    //p_fractal->set_0.s = 4.0f;
+    //p_fractal->set_0.a = 9.0f;
+    //p_fractal->set_0.b =-4.0f;
+    
+    //5th
+    //p_fractal->set_0.s = 4.0f;
+    //p_fractal->set_0.a = 5.f;
+    //p_fractal->set_0.b = 7.0f;
+
     p_fractal->ui.display_ui = 1;
     return 1;
 }
@@ -71,9 +103,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine) {
         shGuiWindow(
             p_gui,
             20.0f,
-            20.0f,
+            30.0f,
             -80.0f,
-            -80.0f,
+            -70.0f,
             "Fractal demo",
             SH_GUI_MOVABLE | SH_GUI_RESIZABLE | SH_GUI_RELATIVE
         );
