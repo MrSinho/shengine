@@ -150,13 +150,10 @@ $$ c = \cos(\pi x y s) $$
 
 $$
 RGB_{raw} = \begin{bmatrix}
-
 \sin(\pi|x|\cfrac{s}{a}) + c\\
 \sin(\pi|y|\cfrac{s}{b}) + c\\
 \cos(\pi\cfrac{x}{y}s) + c\\
-
 \end{bmatrix}
-
 $$
 
 ---
