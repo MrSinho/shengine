@@ -70,7 +70,7 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION noise_thread(Fractal* p_fractal) {//void* ShE
     
     //5th
     //p_fractal->set_0.s = 4.0f;
-    //p_fractal->set_0.a = 5.f;
+    //p_fractal->set_0.a = 5.0f;
     //p_fractal->set_0.b = 7.0f;
 
     p_fractal->ui.display_ui = 1;
