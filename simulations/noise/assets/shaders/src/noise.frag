@@ -25,7 +25,7 @@ void main() {
                 sin(pi * abs(frag_position.y) * ufrac.s / ufrac.b),
                 cos(pi * frag_position.x / frag_position.y * ufrac.s)    
             ) + 
-            vec3(
+            vec3(//c
                 cos(pi * frag_position.x * frag_position.y * ufrac.s)
             )
         ),
