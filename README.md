@@ -146,7 +146,7 @@ Press `H` to hide the GUI and get a full view of the shaded plane. To change the
 
 Fragment shader algorithm:
 
-$$ c = \cos(\pi x y s) $$
+$$c = \cos(\pi x y s)$$
 
 $$
 RGB_{raw} = \begin{bmatrix}
@@ -158,41 +158,41 @@ $$
 
 ---
 
-$ a = \cfrac{1}{2}$
+$a = \cfrac{1}{2}$
 
-$ b = 1 $
+$b = 1$
 
-$ c = -2,5 $
+$c = -2,5$
 
 ![noise-1](saved/pictures/noise-1.png)
 
 ---
 
-$ a = \cfrac{1}{2} $
+$a = \cfrac{1}{2}$
 
-$ b = 1 $
+$b = 1$
 
-$ c = -2,5 $
+$c = -2,5$
 
 ![noise-2](saved/pictures/noise-2.png)
 
 ---
 
-$ a = 4 $
+$a = 4$
 
-$ b = 4,5 $
+$b = 4,5$
 
-$ c = -1,8 $
+$c = -1,8$
 
 ![noise-3](saved/pictures/noise-3.png)
 
 ---
 
-$ a = 4 $
+$a = 4$
 
-$ b = 5 $
+$b = 5$
 
-$ c = 7 $
+$c = 7$
 
 ![noise-5](saved/pictures/noise-5.png)
 
