@@ -1,160 +1,98 @@
+
 # shengine
-![linux_badge](linux-status.svg)
-## [Linux/Unix build logs:](https://github.com/MrSinho/ShCI)
-  `Build ran for 39.23s`
-```bash $shci call$
-apt install -y wget gcc cmake make gdb
+
+![linux-badge](linux-exit_code.svg)
+
+## [linux build logs:](https://github.com/mrsinho/shci)
+
+        
+
+Build ran for `371.00s`
+
+---
+
+```bash
+sudo apt install -y gcc cmake make gdb libc6-dev
+```
+
+```bash
 Reading package lists...
 Building dependency tree...
 Reading state information...
-cmake is already the newest version (3.16.3-1ubuntu1).
-gcc is already the newest version (4:9.3.0-1ubuntu2).
-make is already the newest version (4.2.1-1.2).
-gdb is already the newest version (9.2-0ubuntu1~20.04.1).
-wget is already the newest version (1.20.3-1ubuntu2).
-0 upgraded, 0 newly installed, 0 to remove and 419 not upgraded.
+cmake is already the newest version (3.18.4-2+deb11u1).
+gcc is already the newest version (4:10.2.1-1).
+gdb is already the newest version (10.1-1.7).
+make is already the newest version (4.3-4.1).
+The following additional packages will be installed:
+  libc-dev-bin libc6 libc6-dbg
+Suggested packages:
+  glibc-doc
+Recommended packages:
+  libnss-nis libnss-nisplus
+The following packages will be upgraded:
+  libc-dev-bin libc6 libc6-dbg libc6-dev
+4 upgraded, 0 newly installed, 0 to remove and 11 not upgraded.
+Need to get 13.0 MB of archives.
+After this operation, 2,048 B disk space will be freed.
+Get:1 http://deb.debian.org/debian bullseye-updates/main amd64 libc6-dbg amd64 2.31-13+deb11u5 [7,521 kB]
+Get:2 http://deb.debian.org/debian bullseye-updates/main amd64 libc6-dev amd64 2.31-13+deb11u5 [2,359 kB]
+Get:3 http://deb.debian.org/debian bullseye-updates/main amd64 libc-dev-bin amd64 2.31-13+deb11u5 [276 kB]
+Get:4 http://deb.debian.org/debian bullseye-updates/main amd64 libc6 amd64 2.31-13+deb11u5 [2,825 kB]
+Preconfiguring packages ...
+Fetched 13.0 MB in 1s (8,753 kB/s)
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 27169 files and directories currently installed.)
+Preparing to unpack .../libc6-dbg_2.31-13+deb11u5_amd64.deb ...
+Unpacking libc6-dbg:amd64 (2.31-13+deb11u5) over (2.31-13+deb11u4) ...
+Preparing to unpack .../libc6-dev_2.31-13+deb11u5_amd64.deb ...
+Unpacking libc6-dev:amd64 (2.31-13+deb11u5) over (2.31-13+deb11u4) ...
+Preparing to unpack .../libc-dev-bin_2.31-13+deb11u5_amd64.deb ...
+Unpacking libc-dev-bin (2.31-13+deb11u5) over (2.31-13+deb11u4) ...
+Preparing to unpack .../libc6_2.31-13+deb11u5_amd64.deb ...
+Unpacking libc6:amd64 (2.31-13+deb11u5) over (2.31-13+deb11u4) ...
+Setting up libc6:amd64 (2.31-13+deb11u5) ...
+Setting up libc6-dbg:amd64 (2.31-13+deb11u5) ...
+Setting up libc-dev-bin (2.31-13+deb11u5) ...
+Setting up libc6-dev:amd64 (2.31-13+deb11u5) ...
+Processing triggers for libc-bin (2.31-13+deb11u4) ...
 
 ```
 
-```bash $shci call$
-sudo apt update -y
-sudo apt install -y libx11-dev doxygen libxrandr-dev libusb-dev
-sudo apt install -y libxinerama-dev libxcursor-dev libxi-dev
+---
 
-sudo add-apt-repository -y ppa:oibaf/graphics-drivers
-sudo apt install -y vulkan libvulkan-dev libvulkan1 mesa-vulkan-drivers vulkan-utils
-
-Hit:1 http://packages.microsoft.com/repos/code stable InRelease
-Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
-Hit:3 http://archive.canonical.com/ubuntu focal InRelease
-Hit:4 http://security.ubuntu.com/ubuntu focal-security InRelease
-Hit:5 http://archive.ubuntu.com/ubuntu focal-updates InRelease
-Hit:6 http://archive.ubuntu.com/ubuntu focal-backports InRelease
-Hit:7 https://packages.microsoft.com/repos/edge stable InRelease
-Get:8 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease [18,1 kB]
-Ign:9 http://packages.linuxmint.com uma InRelease
-Get:10 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease [23,9 kB]
-Hit:11 http://packages.linuxmint.com uma Release
-Err:8 http://ppa.launchpad.net/obsproject/obs-studio/ubuntu focal InRelease
-  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY EFC71127F425E228
-Err:10 http://ppa.launchpad.net/oibaf/graphics-drivers/ubuntu focal InRelease
-  The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 957D2708A03A4626
-Reading package lists...
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libusb-dev is already the newest version (2:0.1.12-32).
-libxrandr-dev is already the newest version (2:1.5.2-0ubuntu1).
-doxygen is already the newest version (1.8.17-0ubuntu2).
-libx11-dev is already the newest version (2:1.6.9-2ubuntu1.2).
-0 upgraded, 0 newly installed, 0 to remove and 419 not upgraded.
-Reading package lists...
-Building dependency tree...
-Reading state information...
-libxcursor-dev is already the newest version (1:1.2.0-2).
-libxi-dev is already the newest version (2:1.7.10-0ubuntu1).
-libxinerama-dev is already the newest version (2:1.1.4-2).
-0 upgraded, 0 newly installed, 0 to remove and 419 not upgraded.
-Executing: /tmp/apt-key-gpghome.kQ9RvhNoGT/gpg.1.sh --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 5ABCE68FF4633EA42E219156957D2708A03A4626
-You are about to add the following PPA:
- PLEASE READ: don't email me to report bugs, unless you are sure it's a packaging bug. Not only is email not a good tool for tracking bugs, it also excludes anybody else from tracking or working on the issue. Please read the section "Debugging and reporting problems" below.
-
-Also, please don't ask me to include non-free drivers, I won't do it.
-
-Patches and suggestions are welcomed.
-
-=============
-
-All Ubuntu architectures are supported.
-
-Supported Ubuntu versions:
-- 20.04 (focal) <- obsolete
-- 21.10 (impish) <- obsolete
-- 22.04 (jammy) <- supported
-- 22.10 (kinetic) <- supported
-
-For forum support see: http://goo.gl/qoUpWK
-
-=== Introduction ===
-This PPA provides updated free graphics drivers (from mesa). Updates packages provide:
- * all driver packages are automagically built every day, when there are upstream changes
- * Vulkan 1.3+ and OpenGL 4.6+ : http://mesamatrix.net
- * gallium-nine support. Read the specific section below
- * VDPAU and VAAPI Gallium3D accelerated video drivers (see below)
- * packages built against latest stable LLVM
- * mesa packages built with gcc LTO for smaller binary size (~10-15%) and improved performance
-
-As an added bonus I may include some updated open source games (backported from Debian or newer Ubuntu).
-
-=== Basic usage ===
-See "Adding this PPA to your system" later on, or just do:
-sudo add-apt-repository ppa:oibaf/graphics-drivers
-and update your Ubuntu with the package here.
-
-=== Using gallium-nine ===
-Gallium-nine lets you run DirectX 9 games in a faster way, avoiding the inefficient translation of D3D9 calls to OpenGL. For more info see https://wiki.ixit.cz/d3d9
-You need:
- * enable this PPA (see previous paragraph)
- * then follow the instructions to install wine from this PPA: https://launchpad.net/~commendsarnex/+archive/ubuntu/winedri3
-
-=== Using alternative drivers - Here be dragons ===
-* zink - OpenGL emulated on a Vulkan driver:
-  Set MESA_LOADER_DRIVER_OVERRIDE=zink
-* zink + lavapipe - OpenGL emulated on a software Vulkan driver:
-  Set VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json MESA_LOADER_DRIVER_OVERRIDE=zink
-* llvmpipe OpenGL software render:
-  Set MESA_LOADER_DRIVER_OVERRIDE=llvmpipe
-* Other options here: https://www.mesa3d.org/envvars.html
-
-=== Using accelerated video ===
-Supported VDPAU drivers: r300, r600, radeonsi, nouveau
-Supported VAAPI drivers: r600, radeonsi
-
-* First you need to install mesa-vdpau-drivers package:
-sudo apt-get install mesa-vdpau-drivers
-
-* Then to test the VDPAU driver with mpv use:
-$ mpv --hwdec=vdpau yourvideofile
-
-=== Upgrading to a newer Ubuntu ===
-It is *strongly* suggested to remove all packages from this PPA before updating to a newer Ubuntu release. See the section "Revert to original drivers" later on.
-Then, after the upgrade, you can add again this PPA.
-
-=== Debugging and reporting problems ===
-If you have some problem with the drivers try running the application from the command line and see if there are graphics related warnings. Also type dmesg to see if there are other related information here.
-
-If you get crashes install the relevant -dbg pacakges (libgl1-mesa-dri-dbg or libgl1-mesa-dri-experimental-dbg for 3D drivers and xserver-xorg-video-intel-dbg , xserver-xorg-video-nouveau-dbg or xserver-xorg-video-radeon-dbg for X drivers) and reproduce the crash with gdb. Example:
-$ gdb glxgears
-[...make your application crash and then get a backtrace with:]
-(gdb) bt
-
-If X.org crashes look at /var/log/Xorg.0.log (or /var/log/Xorg.0.log.old when a new X session is started after the crash).
-
-With the gathered information try searching at https://bugs.freedesktop.org/query.cgi (also try with google) if someone already reported a similar bug. If not you may want to report a new bug:
-for 3D drivers bugs: https://www.mesa3d.org/bugs.html
-for X / 2D driver bugs: https://bugs.freedesktop.org/enter_bug.cgi?product=xorg
-
-=== Revert to original drivers ===
-To revert to standard Ubuntu drivers type the following in a prompt shell:
-$ sudo apt-get install ppa-purge
-$ sudo ppa-purge ppa:oibaf/graphics-drivers
-
-=== Donations ===
-Some people asked me if I can accept donations to support this work. I don't, but if you have some spare money I would be happy if you could do a donation to a charity of your choice (for the poors, animals, whatever else you may think it might need it). Then feel free to send me a note about it!
- More info: https://launchpad.net/~oibaf/+archive/ubuntu/graphics-drivers
-Reading package lists...
-Building dependency tree...
-Reading state information...
-
+    
+```bash
+cd shengine 
+python3 export-simulation.py flappy-circle SHARED 
+cd build 
+cmake --build .
 ```
 
-```bash $shci call$
-cd _shengine && python3 export-simulation.py flappy-circle SHARED && cd build && cmake --build .
--- The C compiler identification is GNU 9.4.0
--- Check for working C compiler: /usr/bin/cc
--- Check for working C compiler: /usr/bin/cc -- works
+```bash
+-- The C compiler identification is GNU 10.2.1
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
 -- Detecting C compile features
 -- Detecting C compile features - done
 -- Found Vulkan: /usr/lib/x86_64-linux-gnu/libvulkan.so  
@@ -167,7 +105,7 @@ cd _shengine && python3 export-simulation.py flappy-circle SHARED && cd build &&
 -- Looking for pthread_create in pthread
 -- Looking for pthread_create in pthread - found
 -- Found Threads: TRUE  
--- Found Doxygen: /usr/bin/doxygen (found version "1.8.17") found components: doxygen 
+-- Found Doxygen: /usr/bin/doxygen (found version "1.9.1") found components: doxygen 
 -- Including X11 support
 -- Found X11: /usr/include   
 -- Looking for XOpenDisplay in /usr/lib/x86_64-linux-gnu/libX11.so;/usr/lib/x86_64-linux-gnu/libXext.so
@@ -297,182 +235,231 @@ cd _shengine && python3 export-simulation.py flappy-circle SHARED && cd build &&
 -- Performing Test HAVE_ATOMIC_BUILTINS - Success
 -- Performing Test HAVE___THREAD
 -- Performing Test HAVE___THREAD - Success
--- Wrote /home/oem/Desktop/shci-implementation/bin/_shengine/build/shengine/[EXCLUDE_FROM_ALL]/json-c/config.h
--- Wrote /home/oem/Desktop/shci-implementation/bin/_shengine/build/shengine/[EXCLUDE_FROM_ALL]/json-c/json_config.h
+-- Wrote /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/build/shengine/externals/json-c/config.h
+-- Wrote /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/build/shengine/externals/json-c/json_config.h
 -- Performing Test REENTRANT_WORKS
 -- Performing Test REENTRANT_WORKS - Success
 -- Performing Test BSYMBOLIC_WORKS
 -- Performing Test BSYMBOLIC_WORKS - Success
 -- Performing Test VERSION_SCRIPT_WORKS
 -- Performing Test VERSION_SCRIPT_WORKS - Success
--- Found Doxygen: /usr/bin/doxygen (found version "1.8.17") found components: doxygen missing components: dot
--- Wrote /home/oem/Desktop/shci-implementation/bin/_shengine/build/shengine/[EXCLUDE_FROM_ALL]/json-c/doc/Doxyfile
--- Wrote /home/oem/Desktop/shci-implementation/bin/_shengine/build/shengine/[EXCLUDE_FROM_ALL]/json-c/apps_config.h
--- The CXX compiler identification is GNU 9.4.0
--- Check for working CXX compiler: /usr/bin/c++
--- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Found Doxygen: /usr/bin/doxygen (found version "1.9.1") found components: doxygen missing components: dot
+-- Wrote /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/build/shengine/externals/json-c/doc/Doxyfile
+-- Wrote /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/build/shengine/externals/json-c/apps_config.h
+-- The CXX compiler identification is GNU 10.2.1
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/oem/Desktop/shci-implementation/bin/_shengine/build
-loading /home/oem/Desktop/shci-implementation/bin/_shengine/simulations/flappy-circle/source-files.txt
+-- Build files have been written to: /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/build
+loading /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/source-files.txt
 src/flappy-circle.c
+loading /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/libs.txt
+
+subdirectories:
+		
 
 cmake_minimum_required(VERSION 3.0)
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
-option(SH_SIMULATION_NAME emptytarget)
+	
+
+option(SH_SIMULATION_NAME CACHE emptytarget)
 project(${SH_SIMULATION_NAME})
 
-option(SH_SIMULATION_BINARY_TYPE "EXECUTABLE")
+option(SH_SIMULATION_BINARY_TYPE CACHE "EXECUTABLE")
 if("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "STATIC")
     add_library(${SH_SIMULATION_NAME} STATIC 
-    /home/oem/Desktop/shci-implementation/bin/_shengine/simulations/flappy-circle/src/flappy-circle.c
+    	/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/src/flappy-circle.c
+
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "SHARED")
     add_library(${SH_SIMULATION_NAME} SHARED 
-    /home/oem/Desktop/shci-implementation/bin/_shengine/simulations/flappy-circle/src/flappy-circle.c
+    	/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/src/flappy-circle.c
+
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
     add_executable(${SH_SIMULATION_NAME}  
-    /home/oem/Desktop/shci-implementation/bin/_shengine/simulations/flappy-circle/src/flappy-circle.c
+    	/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/src/flappy-circle.c
+
 )
 endif()
 target_include_directories(${SH_SIMULATION_NAME} PUBLIC 
 ${CMAKE_CURRENT_SOURCE_DIR}/${SH_SIMULATION_NAME}/include
 )
-target_link_libraries(${SH_SIMULATION_NAME} PUBLIC shengine)
+target_link_libraries(${SH_SIMULATION_NAME} PUBLIC shengine 	)
 set_target_properties(${SH_SIMULATION_NAME} PROPERTIES 
 ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin  
 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
 
-running command cd /home/oem/Desktop/shci-implementation/bin/_shengine/build && cmake .. -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH=/home/oem/Desktop/shci-implementation/bin/_shengine/simulations -DSH_EDITOR_ASSETS_PATH=/home/oem/Desktop/shci-implementation/bin/_shengine/simulations/flappy-circle/assets/ -DSH_SIMULATION_NAME=flappy-circle -DSH_SIMULATION_BINARY_TYPE=SHARED
+running command cd /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/build && cmake .. -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH=/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations -DSH_EDITOR_ASSETS_PATH=/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/assets/ -DSH_SIMULATION_NAME=flappy-circle -DSH_SIMULATION_BINARY_TYPE=SHARED 
 Scanning dependencies of target json-c
-[  1%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/arraylist.c.o
-[  2%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/debug.c.o
-[  3%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/json_c_version.c.o
-[  4%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/json_object.c.o
-[  5%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/json_object_iterator.c.o
-[  6%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/json_tokener.c.o
-[  6%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/json_util.c.o
-[  7%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/json_visit.c.o
-[  8%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/linkhash.c.o
-[  9%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/printbuf.c.o
-[ 10%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/random_seed.c.o
-[ 11%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/strerror_override.c.o
-[ 12%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/CMakeFiles/json-c.dir/json_pointer.c.o
-[ 13%] Linking C static library libjson-c.a
-[ 13%] Built target json-c
+[  1%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/arraylist.c.o
+[  2%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/debug.c.o
+[  3%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/json_c_version.c.o
+[  4%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/json_object.c.o
+[  4%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/json_object_iterator.c.o
+[  5%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/json_tokener.c.o
+[  6%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/json_util.c.o
+[  7%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/json_visit.c.o
+[  8%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/linkhash.c.o
+[  9%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/printbuf.c.o
+[  9%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/random_seed.c.o
+[ 10%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/strerror_override.c.o
+[ 11%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/json_pointer.c.o
+[ 12%] Linking C static library libjson-c.a
+[ 12%] Built target json-c
 Scanning dependencies of target shvulkan
-[ 14%] Building C object shengine/[EXCLUDE_FROM_ALL]/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkCore.c.o
-[ 15%] Building C object shengine/[EXCLUDE_FROM_ALL]/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkMemoryInfo.c.o
-[ 16%] Building C object shengine/[EXCLUDE_FROM_ALL]/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkPipelineData.c.o
-[ 17%] Building C object shengine/[EXCLUDE_FROM_ALL]/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkCheck.c.o
-[ 18%] Building C object shengine/[EXCLUDE_FROM_ALL]/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkDrawLoop.c.o
-[ 19%] Linking C static library ../../../../bin/libshvulkan.a
-[ 19%] Built target shvulkan
+[ 13%] Building C object shengine/externals/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkCore.c.o
+[ 13%] Building C object shengine/externals/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkMemoryInfo.c.o
+[ 14%] Building C object shengine/externals/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkPipelineData.c.o
+[ 15%] Building C object shengine/externals/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkCheck.c.o
+[ 16%] Building C object shengine/externals/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVkDrawLoop.c.o
+[ 17%] Linking C static library ../../../../bin/libshvulkan.a
+[ 17%] Built target shvulkan
 Scanning dependencies of target plyimporter
-[ 20%] Building C object shengine/[EXCLUDE_FROM_ALL]/plyimporter/CMakeFiles/plyimporter.dir/PlyImporter/src/plyimporter/plyImporter.c.o
-[ 21%] Linking C static library ../../../../bin/libplyimporter.a
-[ 21%] Built target plyimporter
+[ 18%] Building C object shengine/externals/plyimporter/CMakeFiles/plyimporter.dir/PlyImporter/src/plyimporter/plyImporter.c.o
+[ 19%] Linking C static library ../../../../bin/libplyimporter.a
+[ 19%] Built target plyimporter
 Scanning dependencies of target shfd
-[ 22%] Building C object shengine/CMakeFiles/shfd.dir/shfd/src/shFile.c.o
-[ 23%] Building C object shengine/CMakeFiles/shfd.dir/shfd/src/shfd.c.o
-[ 24%] Linking C static library ../../bin/libshfd.a
-[ 24%] Built target shfd
+[ 19%] Building C object shengine/CMakeFiles/shfd.dir/shfd/src/shFile.c.o
+[ 20%] Building C object shengine/CMakeFiles/shfd.dir/shfd/src/shfd.c.o
+[ 21%] Linking C static library ../../bin/libshfd.a
+[ 21%] Built target shfd
 Scanning dependencies of target shsharedhost
-[ 25%] Building C object shengine/CMakeFiles/shsharedhost.dir/shsharedhost/src/shSharedHost.c.o
-[ 26%] Linking C static library libshsharedhost.a
-[ 26%] Built target shsharedhost
+[ 22%] Building C object shengine/CMakeFiles/shsharedhost.dir/shsharedhost/src/shSharedHost.c.o
+[ 23%] Linking C static library libshsharedhost.a
+[ 23%] Built target shsharedhost
 Scanning dependencies of target shserial
-[ 27%] Building C object shengine/[EXCLUDE_FROM_ALL]/shserial/CMakeFiles/shserial.dir/ShSerial/src/shserial/shSerial.c.o
-[ 28%] Linking C static library ../../../../externals/shserial/bin/libshserial.a
-[ 28%] Built target shserial
+[ 24%] Building C object shengine/externals/shserial/CMakeFiles/shserial.dir/ShSerial/src/shserial/shSerial.c.o
+[ 24%] Linking C static library ../../../../shengine/externals/shserial/bin/libshserial.a
+[ 24%] Built target shserial
+Scanning dependencies of target shgui
+[ 25%] Building C object shengine/externals/shgui/CMakeFiles/shgui.dir/shgui/src/shgui.c.o
+[ 26%] Linking C static library ../../../../bin/libshgui.a
+[ 26%] Built target shgui
+Scanning dependencies of target shthreads
+[ 27%] Building C object shengine/externals/shthreads/CMakeFiles/shthreads.dir/shthreads/src/shthreads.c.o
+[ 28%] Linking C static library ../../../../bin/libshthreads.a
+[ 28%] Built target shthreads
 Scanning dependencies of target glfw
-[ 29%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/context.c.o
-[ 30%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/init.c.o
-[ 31%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/input.c.o
-[ 32%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/monitor.c.o
-[ 33%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/platform.c.o
-[ 34%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/vulkan.c.o
-[ 35%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/window.c.o
-[ 36%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/egl_context.c.o
-[ 37%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.o
-[ 38%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/null_init.c.o
-[ 39%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/null_monitor.c.o
-[ 40%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/null_window.c.o
-[ 41%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.o
-[ 41%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/posix_module.c.o
-[ 42%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/posix_time.c.o
-[ 43%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/posix_thread.c.o
-[ 44%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/x11_init.c.o
-[ 45%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/x11_monitor.c.o
-[ 46%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/x11_window.c.o
-[ 47%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/xkb_unicode.c.o
-[ 48%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/glx_context.c.o
-[ 49%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/linux_joystick.c.o
-[ 50%] Building C object shengine/[EXCLUDE_FROM_ALL]/glfw/src/CMakeFiles/glfw.dir/posix_poll.c.o
-[ 51%] Linking C static library libglfw3.a
-[ 51%] Built target glfw
+[ 29%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/context.c.o
+[ 30%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/init.c.o
+[ 31%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/input.c.o
+[ 32%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/monitor.c.o
+[ 32%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/platform.c.o
+[ 33%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/vulkan.c.o
+[ 34%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/window.c.o
+[ 35%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/egl_context.c.o
+[ 36%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.o
+[ 37%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/null_init.c.o
+[ 37%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/null_monitor.c.o
+[ 38%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/null_window.c.o
+[ 39%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.o
+[ 40%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/posix_module.c.o
+[ 41%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/posix_time.c.o
+[ 42%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/posix_thread.c.o
+[ 42%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/x11_init.c.o
+[ 43%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/x11_monitor.c.o
+[ 44%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/x11_window.c.o
+[ 45%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/xkb_unicode.c.o
+[ 46%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/glx_context.c.o
+[ 47%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/linux_joystick.c.o
+[ 47%] Building C object shengine/externals/glfw/src/CMakeFiles/glfw.dir/posix_poll.c.o
+[ 48%] Linking C static library libglfw3.a
+[ 48%] Built target glfw
 Scanning dependencies of target cglm
-[ 51%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/euler.c.o
-[ 52%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/affine.c.o
-[ 53%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/io.c.o
-[ 54%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/quat.c.o
-[ 55%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/cam.c.o
-[ 56%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/vec2.c.o
-[ 57%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/vec3.c.o
-[ 58%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/vec4.c.o
-[ 59%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ivec2.c.o
-[ 60%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ivec3.c.o
-[ 61%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ivec4.c.o
-[ 62%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/mat2.c.o
-[ 63%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/mat3.c.o
-[ 64%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/mat4.c.o
-[ 65%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/plane.c.o
-[ 66%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/frustum.c.o
-[ 67%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/box.c.o
-[ 67%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/project.c.o
-[ 68%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/sphere.c.o
-[ 69%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ease.c.o
-[ 70%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/curve.c.o
-[ 71%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/bezier.c.o
-[ 72%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/ray.c.o
-[ 73%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/affine2d.c.o
-[ 74%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_zo.c.o
-[ 75%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_zo.c.o
-[ 76%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_no.c.o
-[ 77%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_no.c.o
-[ 78%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_zo.c.o
-[ 79%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_zo.c.o
-[ 80%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_no.c.o
-[ 81%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_no.c.o
-[ 82%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_zo.c.o
-[ 83%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_zo.c.o
-[ 84%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_no.c.o
-[ 84%] Building C object shengine/[EXCLUDE_FROM_ALL]/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_no.c.o
-[ 85%] Linking C shared library libcglm.so
-[ 85%] Built target cglm
+[ 48%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/euler.c.o
+[ 49%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/affine.c.o
+[ 50%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/io.c.o
+[ 51%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/quat.c.o
+[ 52%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/cam.c.o
+[ 53%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/vec2.c.o
+[ 53%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/ivec2.c.o
+[ 54%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/vec3.c.o
+[ 55%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/ivec3.c.o
+[ 56%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/vec4.c.o
+[ 57%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/ivec4.c.o
+[ 58%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/mat2.c.o
+[ 58%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/mat3.c.o
+[ 59%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/mat4.c.o
+[ 60%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/plane.c.o
+[ 61%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/frustum.c.o
+[ 62%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/box.c.o
+[ 63%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/project.c.o
+[ 63%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/sphere.c.o
+[ 64%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/ease.c.o
+[ 65%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/curve.c.o
+[ 66%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/bezier.c.o
+[ 67%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/ray.c.o
+[ 68%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/affine2d.c.o
+[ 68%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_no.c.o
+[ 69%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_zo.c.o
+[ 70%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_no.c.o
+[ 71%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_zo.c.o
+[ 72%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_no.c.o
+[ 73%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_zo.c.o
+[ 73%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_no.c.o
+[ 74%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_zo.c.o
+[ 75%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_no.c.o
+[ 76%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_zo.c.o
+[ 77%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_no.c.o
+[ 78%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_zo.c.o
+[ 78%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/project_no.c.o
+[ 79%] Building C object shengine/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/project_zo.c.o
+[ 80%] Linking C shared library libcglm.so
+[ 80%] Built target cglm
 Scanning dependencies of target shengine
-[ 86%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shInput.c.o
-[ 87%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shTime.c.o
-[ 88%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shWindow.c.o
-[ 89%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shlinear-algebra/shProjection.c.o
-[ 89%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shlinear-algebra/shView.c.o
-[ 90%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shscene/shScene.c.o
-[ 91%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shmaterialhost/shMaterialHost.c.o
-[ 92%] Linking C static library ../../bin/libshengine.a
-[ 92%] Built target shengine
+[ 81%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shEngine.c.o
+[ 82%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shInput.c.o
+[ 83%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shTime.c.o
+[ 84%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shengine/shWindow.c.o
+[ 84%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shlinear-algebra/shProjection.c.o
+[ 85%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shlinear-algebra/shView.c.o
+[ 86%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shscene/shScene.c.o
+[ 87%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shmaterialhost/shMaterialHost.c.o
+[ 88%] Building C object shengine/CMakeFiles/shengine.dir/shengine/src/shegui/shEgui.c.o
+[ 89%] Linking C static library ../../bin/libshengine.a
+[ 89%] Built target shengine
 Scanning dependencies of target sheditor
-[ 93%] Building C object shengine/CMakeFiles/sheditor.dir/sheditor/src/shEditor.c.o
-[ 94%] Linking C executable ../../bin/sheditor
-[ 94%] Built target sheditor
+[ 89%] Building C object shengine/CMakeFiles/sheditor.dir/sheditor/src/shEditor.c.o
+[ 90%] Linking C executable ../../bin/sheditor
+[ 90%] Built target sheditor
+Scanning dependencies of target shecs-example
+[ 91%] Building C object shengine/externals/shecs/CMakeFiles/shecs-example.dir/shecs-example/src/shecs-example.c.o
+[ 92%] Linking C executable ../../../../bin/shecs-example
+[ 92%] Built target shecs-example
+Scanning dependencies of target native-export
+[ 92%] Building C object shengine/externals/shgui/externals/native-export/c/CMakeFiles/native-export.dir/native-export/src/native-export.c.o
+[ 93%] Linking C static library ../../../../../../../bin/libnative-export.a
+[ 93%] Built target native-export
+Scanning dependencies of target export-shaders
+[ 94%] Building C object shengine/externals/shgui/CMakeFiles/export-shaders.dir/shaders/export-shaders.c.o
+[ 95%] Linking C executable export-shaders
+[ 95%] Built target export-shaders
 Scanning dependencies of target docs
-[ 95%] Generating HTML documentation
-[ 95%] Built target docs
+[ 96%] Generating HTML documentation
+[ 96%] Built target docs
 Scanning dependencies of target json_parse
-[ 96%] Building C object shengine/[EXCLUDE_FROM_ALL]/json-c/apps/CMakeFiles/json_parse.dir/json_parse.c.o
+[ 97%] Building C object shengine/externals/json-c/apps/CMakeFiles/json_parse.dir/json_parse.c.o
+[ 98%] Linking C executable json_parse
+[ 98%] Built target json_parse
+Scanning dependencies of target flappy-circle
+[ 98%] Building C object [EXCLUDE_FROM_ALL]/CMakeFiles/flappy-circle.dir/flappy-circle/src/flappy-circle.c.o
+[100%] Linking C shared library libflappy-circle.so
+[100%] Built target flappy-circle
+
+```
+
+---
+
+    
+
+Build terminated with exit code 0
+
+---
+
