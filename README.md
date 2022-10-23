@@ -2,8 +2,8 @@
 
 [Build status](#build-status)
 
-[![linux_badge](.shci/linux-status.svg)](https://github.com/MrSinho/shengime/tree/main/.shci/linux-log.md)
-[![windows_badge](.shci/windows-status.svg)](https://github.com/MrSinho/shengine/tree/main/.shci/windows-log.md)
+[![linux_badge](.shci/linux-status.svg)](.shci/linux-log.md)
+[![windows_badge](.shci/windows-status.svg)](.shci/windows-log.md)
 
 ![noise-3](saved/pictures/noise-3.png)
 
