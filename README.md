@@ -1,4 +1,4 @@
-# SH-Engine
+# shengine
 
 [Build status](#build-status)
 
