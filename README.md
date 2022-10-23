@@ -2,8 +2,8 @@
 
 [Build status](#build-status)
 
-[![linux_badge](.shci/linux-status.svg)](.shci/linux-log.md)
-[![windows_badge](.shci/windows-status.svg)](.shci/windows-log.md)
+[![linux_badge](.shci/linux-exit_code.svg)](.shci/linux-log.md)
+[![windows_badge](.shci/windows-exit_code.svg)](.shci/windows-log.md)
 
 ![noise-3](saved/pictures/noise-3.png)
 
