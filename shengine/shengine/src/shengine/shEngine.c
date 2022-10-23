@@ -99,7 +99,10 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
         )
     }
 
-    p_engine->threads_handle = shAllocateThreads(1);
+    shAllocateThreads(
+        1, 
+        &p_engine->thread_pool
+    );
 
     if (p_engine->simulation_host.p_thread != NULL) {
 
@@ -109,20 +112,20 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
             SH_SIMULATION_THREAD_IDX, 
             p_engine->simulation_host.p_thread, 
             4096, 
-            &p_engine->threads_handle
+            &p_engine->thread_pool
         );
 
         shLaunchThreads(
-            SH_SIMULATION_THREAD_IDX, 
-            1, 
-            &simulation_args, 
-            &p_engine->threads_handle
+            SH_SIMULATION_THREAD_IDX,
+            1,
+            &simulation_args,
+            &p_engine->thread_pool
         );
 
         shGetThreadState(
             0,
             &p_engine->sim_thread_state,
-            &p_engine->threads_handle
+            &p_engine->thread_pool
         );
     }
 
@@ -153,7 +156,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
         shGetThreadState(
             SH_SIMULATION_THREAD_IDX, 
             p_sim_thread_state, 
-            &p_engine->threads_handle
+            &p_engine->thread_pool
         );
 
         if (
@@ -393,19 +396,19 @@ void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
             "failed closing simulation"
         );
 
-        if (p_engine->threads_handle.p_handles != NULL) {
+        if (p_engine->thread_pool.p_handles != NULL) {
             uint64_t return_value = 0;
 
             shWaitForThreads(
-                SH_SIMULATION_THREAD_IDX, 
-                1, 
-                UINT64_MAX, 
-                &return_value, 
-                &p_engine->threads_handle
+                SH_SIMULATION_THREAD_IDX,
+                1,
+                UINT64_MAX,
+                &return_value,
+                &p_engine->thread_pool
             );
 
-            shThreadsRelease(
-                &p_engine->threads_handle
+            shReleaseThreads(
+                &p_engine->thread_pool
             );
 
             shEngineWarning(return_value == 0, "simulation thread returned with an error");
