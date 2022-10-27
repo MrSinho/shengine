@@ -21,10 +21,10 @@
 
 ---
 
-# [Build status](https://github.com/MrSinho/Foggy-Engine/tree/main/.ShCI)
+# [Build status](./shci)
 
-[![linux_badge](.shci/linux-status.svg)](https://github.com/MrSinho/shengime/tree/main/.shci/linux-log.md)
-[![windows_badge](.shci/windows-status.svg)](https://github.com/MrSinho/shengine/tree/main/.shci/windows-log.md)
+[![linux_badge](.shci/linux-exit_code.svg)](.shci/linux-log.md)
+[![windows_badge](.shci/windows-exit_code.svg)](.shci/windows-log.md)
 
 The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
@@ -62,8 +62,8 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 # Build from source
 
 ```bash
-git clone --recursive https://github.com/MrSinho/SH-Engine
-cd SH-Engine
+git clone --recursive https://github.com/mrsinho/shengine
+cd shengine
 ``` 
 
 ## Engine targets only
