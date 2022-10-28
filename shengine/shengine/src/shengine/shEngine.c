@@ -206,8 +206,8 @@ void shEngineUpdateState(ShEngine* p_engine) {
 
             uint8_t mat_r = shLoadMaterials(
                 p_core, 
-                (const char*)p_engine->loader_ini.assets_path,
-                p_engine->materials_descriptor.path, 
+                p_engine->materials_descriptor.dir,
+                p_engine->materials_descriptor.filename, 
                 &p_engine->material_count, 
                 &p_engine->p_materials
             );
