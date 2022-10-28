@@ -254,3 +254,19 @@ $c = 7$
 # Binaries and output
 
 The built targets are in the `bin` directory.
+
+# Switch between applications in runtime
+
+Use the python script [`set-simulation.py`](set-simulation.py) or edit manually the `loader.ini` file located at the [`bin`](bin/) directory, then press `LEFT_CTRL + R` to reload the engine editor:
+
+```batch
+python set-simulation.py noise
+```
+
+Produces:
+
+```
+noise
+../simulations/noise/assets/
+```
+Where `noise` (first line) is the simulation name, and `../simulations/noise/assets/` (second line) corresponds to the relative assets path. 
