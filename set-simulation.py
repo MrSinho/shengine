@@ -23,7 +23,8 @@ def main():#python set-simulation.py noise <optional-custom-path>
     loader_stream.write(loader_ini)
     loader_stream.close()
 
-    print("Edited bin/loader.ini")
+    print("Edited bin/loader.ini:")
+    print(loader_ini)
 
     return
 
