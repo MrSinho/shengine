@@ -190,6 +190,7 @@ python set-simulation.py "noise" SHARED
 
 Press `H` to hide the GUI and get a full view of the shaded plane. To change the values of the parameters `A` `B` and `S`:
 
+||||
 |-------------|----------------|----------------|
 | Parameter   | Increase key   | Decrease key   |
 | `S`         |       _Z_      |       _X_      |
