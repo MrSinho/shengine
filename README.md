@@ -257,7 +257,7 @@ The built targets are in the `bin` directory.
 
 # Switch between applications in runtime
 
-Use the python script [`set-simulation.py`](set-simulation.py) or edit manually the `loader.ini` file located at the [`bin`](bin/) directory, then press `LEFT_CTRL + R` to reload the engine editor:
+Use the python script [`set-simulation.py`](set-simulation.py) or edit manually the `loader.ini` file located at the `bin` directory, then press `LEFT_CTRL + R` to reload the engine editor:
 
 ```batch
 python set-simulation.py noise
