@@ -34,35 +34,94 @@ extern "C" {
 #endif // _MSC_VER
 #include <json.h>
 
-void shMakeAssetsPath(const char* src_path, char* dst_path) {
-    strcpy(dst_path, SH_EDITOR_ASSETS_PATH); //CMake defined macro
-    strcat(dst_path, "/");
-    strcat(dst_path, src_path);
+
+
+uint8_t shGetIniProperties(const char* loader_ini_dir, ShLoaderIni* p_ini) {
+    shFdError(loader_ini_dir == NULL, "invalid loader.ini directory", return 0);
+    shFdError(p_ini == NULL, "invalid ini structure memory", return 0);
+
+    FILE* loader_stream = fopen(loader_ini_dir, "r");
+    shFdError(loader_stream == NULL, "missing loader.ini", return 0);
+
+    fseek(loader_stream, 0, SEEK_END);
+    uint32_t loader_size = ftell(loader_stream);
+    fseek(loader_stream, 0, SEEK_SET);
+    
+    char* p_loader = calloc(1, loader_size);
+    shFdError(p_loader == NULL, "invalid loader data", return 0);
+
+    fread(p_loader, 1, loader_size, loader_stream);
+
+    uint32_t simulation_name_size = 0;
+    uint32_t assets_path_size     = 0;
+
+    for (uint32_t i = 0; i < loader_size; i++) {
+        if (p_loader[i] == '\n') {
+            simulation_name_size = i;
+            break;
+        }
+    }
+
+    assets_path_size = loader_size - simulation_name_size - 1;//- 1 for newline
+    if (p_loader[strlen(p_loader) - 1] == '\n') {
+        assets_path_size--;
+    }
+    assets_path_size--;
+    assets_path_size--;//exclude null character
+
+    memcpy(p_ini->simulation_name, p_loader, simulation_name_size);
+    memcpy(p_ini->assets_path, &p_loader[simulation_name_size + 1], assets_path_size);
+
+    p_ini->simulation_name[simulation_name_size] = '\0';
+    p_ini->assets_path[assets_path_size] = '\0';
+
+    fclose(loader_stream);
+    free(p_loader);
+
+    return 1;
 }
+
+uint8_t shAppendAssetsPath(const char* engine_assets_path, const char* extension_dir, const char* extension_filename, ShFd* p_fd) {
+    shFdError(engine_assets_path == NULL, "invalid engine assets path",                 return 0);
+    shFdError(p_fd == NULL,               "invalid destination file descriptor memory", return 0);
+    
+    //strcpy(dst_path, SH_EDITOR_ASSETS_PATH); //CMake defined macro
+    strcpy(p_fd->dir, engine_assets_path);
+    if (extension_dir != NULL) {
+        strcat(p_fd->dir, extension_dir);
+    }
+
+    strcpy(p_fd->filename, extension_filename);
+
+    strcpy(p_fd->path, p_fd->dir);
+    if (extension_filename != NULL) {
+        strcat(p_fd->path, p_fd->filename);
+    }
+
+    return 1;
+}
+
 
 #define shAbortLoadingMaterials(pp_materials)\
     *(pp_materials) = NULL;\
     return 0
 
-uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_count, ShMaterialHost** pp_materials) {
-    shFdError(p_material_count == NULL || pp_materials == NULL, "invalid arguments");
+uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename, uint32_t* p_material_count, ShMaterialHost** pp_materials) {
+    shFdError(p_material_count == NULL || pp_materials == NULL, "invalid arguments", return 0);
     
-    
+    char path[256];
+    strcpy(path, dir);
+    strcat(path, filename);
+
     char* buffer = (char*)shReadText(path, NULL);
-    if (buffer == NULL) {
-        shAbortLoadingMaterials(pp_materials);
-    }
+    shFdError(buffer == NULL, "invalid materials path", shAbortLoadingMaterials(pp_materials));
 
     json_object* parser = json_tokener_parse(buffer);
+    shFdError(parser == NULL, "invalid json format", shAbortLoadingMaterials(pp_materials));
     free(buffer);
-    if (shFdWarning(parser == NULL, "invalid json format")) {
-        shAbortLoadingMaterials(pp_materials);
-    }
-    
+
     json_object* json_materials = json_object_object_get(parser, "materials");
-    if (shFdWarning(json_materials == NULL, "missing materials descriptor")) {
-        shAbortLoadingMaterials(pp_materials);
-    }
+    shFdError(json_materials == NULL, "missing materials descriptor", shAbortLoadingMaterials(pp_materials));
 
     uint32_t mat_count              = (p_material_count  == NULL || (*p_material_count) == 0)       ? (uint32_t)json_object_array_length(json_materials)    : (*p_material_count);
     ShMaterialHost* p_materials     = (pp_materials      == NULL || (*pp_materials) == NULL) ? calloc(mat_count, sizeof(ShMaterialHost)) : (*pp_materials);
@@ -97,27 +156,30 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
 
             //+++++++++++++++++++++++++        
             {
+                ShFd vertex_fd = { 0 };
+                ShFd fragment_fd = { 0 };
                 uint32_t vertex_shader_size = 0;
                 uint32_t fragment_shader_size = 0;
-                char vertex_path[256];
-                char fragment_path[256];
 
-                if (shFdWarning(json_vertex_shader == NULL, "missing vertex shader path") || shFdWarning(json_fragment_shader == NULL, "missing fragment shader path")) {
-                    shAbortLoadingMaterials(pp_materials);
-                }
-                shMakeAssetsPath(json_object_get_string(json_vertex_shader), vertex_path);
-                shMakeAssetsPath(json_object_get_string(json_fragment_shader), fragment_path);
+                char shaders_dir[256];
+                strcpy(shaders_dir, dir);
+                strcat(shaders_dir, "../");
+
+                shFdError(json_vertex_shader == NULL, "missing vertex shader path", shAbortLoadingMaterials(pp_materials));
+                shFdError(json_fragment_shader == NULL, "missing fragment shader path", shAbortLoadingMaterials(pp_materials));
+
+                shAppendAssetsPath(shaders_dir, NULL, json_object_get_string(json_vertex_shader), &vertex_fd);
+                shAppendAssetsPath(shaders_dir, NULL, json_object_get_string(json_fragment_shader), &fragment_fd);
                 char* vertex_code = (char*)shReadBinary(
-                    vertex_path,
+                    vertex_fd.path,
                     &vertex_shader_size
                 );
                 char* fragment_code = (char*)shReadBinary(
-                    fragment_path,
+                    fragment_fd.path,
                     &fragment_shader_size
                 );
-                if (shFdWarning(vertex_code == NULL, "vertex shader not found") || shFdWarning(fragment_code == NULL, "fragment shader not found")) {
-                    shAbortLoadingMaterials(pp_materials);
-                }
+                shFdError(vertex_code == NULL, "vertex shader not found",     shAbortLoadingMaterials(pp_materials));
+                shFdError(fragment_code == NULL, "fragment shader not found", shAbortLoadingMaterials(pp_materials));
 
                 {//BUILD PIPELINE
                     if (build_idx && build_pipeline) {
@@ -163,11 +225,10 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                         json_object* json_stage = json_object_object_get(json_descriptor, "stage");
                         json_object* json_type = json_object_object_get(json_descriptor, "type");
 
-                        if (shFdWarning(
-                            json_set == NULL || json_size == NULL || json_stage == NULL || json_type == NULL || json_stage == NULL,
-                            "insufficient descriptor set info")) {
-                            shAbortLoadingMaterials(pp_materials);
-                        }
+                        shFdError(json_set == NULL || json_size == NULL || json_stage == NULL || json_type == NULL || json_stage == NULL,
+                                    "insufficient descriptor set info",
+                                    shAbortLoadingMaterials(pp_materials)
+                        );
 
                         {//BUILD PIPELINE
                             if (build_idx && build_pipeline) {
@@ -177,8 +238,8 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                                 const char* s_type = json_object_get_string(json_type);
                                 const char* s_stage = json_object_get_string(json_stage);
 
-                                shFdError(s_type == NULL, "missing descriptor type definition");
-                                shFdError(s_stage == NULL, "missing descriptor stage definition");
+                                shFdError(s_type == NULL, "missing descriptor type definition", shAbortLoadingMaterials(pp_materials));
+                                shFdError(s_stage == NULL, "missing descriptor stage definition", shAbortLoadingMaterials(pp_materials));
 
                                 VkDescriptorType type = (VkDescriptorType)shStringFlagToInt(s_type);
                                 VkShaderStageFlags stage = (VkShaderStageFlags)shStringFlagToInt(s_stage);
@@ -231,12 +292,10 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
             json_object* json_polygon_mode = json_object_object_get(json_fixed_states, "polygon_mode");
             //+++++++++++++++++++++++++        
             {//FIXED STATES
-                if (shFdWarning(json_fixed_states == NULL, "invalid fixed states info")) {
-                    shAbortLoadingMaterials(pp_materials);
-                }
-                if (shFdWarning(json_primitive_topology == NULL || json_polygon_mode == NULL, "incomplete primitive topology or polygon mode info")) {
-                    shAbortLoadingMaterials(pp_materials);
-                }
+                shFdError(json_fixed_states       == NULL, "invalid fixed states info",     shAbortLoadingMaterials(pp_materials));
+                shFdError(json_primitive_topology == NULL, "incomplete primitive topology", shAbortLoadingMaterials(pp_materials));
+                shFdError(json_polygon_mode       == NULL, "incomplete polygon mode ",      shAbortLoadingMaterials(pp_materials));
+                
                 json_object* json_vertex_inputs = json_object_object_get(json_fixed_states, "vertex_inputs");
                 if (json_vertex_inputs != NULL) {
                     for (uint32_t i = 0; i < (uint32_t)json_object_array_length(json_vertex_inputs); i++) {
@@ -245,9 +304,11 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
                         json_object* json_format = json_object_object_get(json_vertex_input, "format");
                         json_object* json_offset = json_object_object_get(json_vertex_input, "offset");
                         json_object* json_size = json_object_object_get(json_vertex_input, "size");
-                        if (shFdWarning(json_vertex_input == NULL || json_location == NULL || json_format == NULL || json_offset == NULL || json_size == NULL, "insufficient vertex input state info")) {
-                            shAbortLoadingMaterials(pp_materials);
-                        }
+                        shFdError(json_vertex_input == NULL || json_location == NULL || json_format == NULL || json_offset == NULL || json_size == NULL, 
+                            "insufficient vertex input state info", 
+                            shAbortLoadingMaterials(pp_materials)
+                        );
+
                         {//BUILD PIPELINE
                             if (build_idx && build_pipeline) {
                                 shSetVertexInputAttribute(
@@ -265,9 +326,8 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
 
                 {
                     json_object* json_input_rate = json_object_object_get(json_fixed_states, "vertex_input_rate");
-                    if (shFdWarning(json_input_rate == NULL && json_vertex_inputs != NULL, "missing input rate specification")) {
-                        shAbortLoadingMaterials(pp_materials);
-                    }
+                    shFdError(json_input_rate == NULL && json_vertex_inputs != NULL, "missing input rate specification", shAbortLoadingMaterials(pp_materials));
+                    
                     if (build_idx && build_pipeline) {//BUILD PIPELINE
                         if (json_input_rate) {
                             VkVertexInputRate input_rate = shStringFlagToInt(json_object_get_string(json_input_rate));
@@ -316,7 +376,7 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material
 #endif//_MSC_VER
 
 void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {
-	shFdError(p_mat_info_count == NULL || pp_materials == NULL, "invalid arguments");
+	shFdError(p_mat_info_count == NULL || pp_materials == NULL, "invalid arguments", return);
 	for (uint32_t i = 0; i < *p_mat_info_count; i++) {
         ShMaterialHost* p_material = &(*pp_materials)[i];
         if (p_material->p_material_clients != NULL) {
@@ -338,7 +398,7 @@ void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterial
 }
 
 void shReadUniformParameters(json_object* json_parameters, const uint32_t entity, const uint32_t descriptor_idx, ShMaterialHost* p_material) {
-    shFdError(json_parameters == NULL || p_material == NULL, "invalid arguments");
+    shFdError(json_parameters == NULL || p_material == NULL, "invalid arguments", return);
 
     uint32_t descriptor_offset = shGetUniformOffset(p_material, descriptor_idx);
 
@@ -364,21 +424,30 @@ void shReadUniformParameters(json_object* json_parameters, const uint32_t entity
 #define shAbortLoadingScene()\
     return 0
 
-uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialHost** pp_materials, ShScene* p_scene) {
-    shFdError(p_scene == NULL || pp_materials == NULL, "invalid arguments");
+uint8_t shLoadScene(const char* dir, const char* filename, const uint32_t material_count, ShMaterialHost** pp_materials, ShScene* p_scene) {
+    shFdError(p_scene == NULL || pp_materials == NULL, "invalid arguments", return 0);
+
+    char path[256];
+    strcpy(path, dir);
+    strcat(path, filename);
 
     char* buffer = (char*)shReadText(path, NULL);
-    if (shFdWarning(buffer == NULL, "unavailable scene descriptor")) { shAbortLoadingScene(); }
+    shFdError(buffer == NULL, "unavailable scene descriptor", shAbortLoadingScene());
 
     json_object* parser = json_tokener_parse(buffer);
     free(buffer);
-    if (shFdWarning(parser == NULL, "invalid json format")) { shAbortLoadingScene(); }
-
+    shFdError(parser == NULL, "invalid json format", shAbortLoadingScene());
+    
     //MESHES
     uint32_t ply_mesh_count = 0;
     PlyFileData* ply_meshes = NULL;
     json_object* json_meshes = json_object_object_get(parser, "meshes");
     if (json_meshes) {
+
+        char meshes_dir[256];
+        strcpy(meshes_dir, dir);
+        strcat(meshes_dir, "../");
+
         uint32_t mesh_info_count = (uint32_t)json_object_array_length(json_meshes);
         for (uint32_t i = 0; i < mesh_info_count; i++) {
             json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
@@ -387,11 +456,11 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
         ply_meshes = calloc(ply_mesh_count, sizeof(PlyFileData));
         for (uint32_t i = 0; i < ply_mesh_count; i++) {
             json_object* json_mesh = json_object_array_get_idx(json_meshes, i);
-            char mesh_path[256];
+            ShFd mesh_fd = { 0 };
             json_object* json_path = json_object_object_get(json_mesh, "path");
             if (json_path != NULL) {
-                shMakeAssetsPath(json_object_get_string(json_path), mesh_path);
-                plyLoadFile(mesh_path, &ply_meshes[i], 0);
+                shAppendAssetsPath(meshes_dir, NULL, json_object_get_string(json_path), &mesh_fd);
+                plyLoadFile(mesh_fd.path, &ply_meshes[i], 0);
             }
         }
     }
@@ -401,9 +470,7 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
     json_object* json_max_entities = json_object_object_get(parser, "max_entities");
     json_object* json_max_components = json_object_object_get(parser, "max_components");
     
-    if (shFdWarning(json_entities == NULL, "missing entities")) {
-        shAbortLoadingScene();
-    }
+    shFdError(json_entities == NULL, "missing entities", shAbortLoadingScene());
 
     uint32_t entity_count   = (uint32_t)json_object_array_length(json_entities);
     uint32_t max_entities   = entity_count * 3;
@@ -549,9 +616,10 @@ uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialH
     //Check entities in materials
     for (uint32_t material_idx = 0; material_idx < material_count; material_idx++) {
         ShMaterialHost* p_material = &(*pp_materials)[material_idx];
-        if (shFdWarning(p_material->entity_count == 0 && p_material->bind_on_loop, "material is linked to no entities but set to be used in the engine loop")) {
-            shAbortLoadingScene();
-        }
+        shFdError(p_material->entity_count == 0 && p_material->bind_on_loop, 
+            "material is linked to no entities but set to be used in the engine loop", 
+            shAbortLoadingScene()
+        );
     }
     
     free(parser);
@@ -674,17 +742,7 @@ uint32_t shStringFlagToInt(const char* s_flag) {
     return 0;
 }
 
-uint8_t shListenFd(ShFd* descriptor_handle) {
-    shGetFileStats(descriptor_handle->path, &descriptor_handle->stats1);
-    if (memcmp(&descriptor_handle->stats0, &descriptor_handle->stats1, sizeof(ShFileStats)) != 0) {
-        memcpy(&descriptor_handle->stats0, &descriptor_handle->stats1, sizeof(ShFileStats));
-#ifndef NDEBUG
-        printf("Saved descriptor at %s\n", descriptor_handle->path);
-#endif
-        return 1;
-    }
-    return 0;
-}
+
 
 #ifdef __cplusplus
 }

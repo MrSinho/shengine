@@ -22,15 +22,24 @@ extern "C" {
 
 
 
-typedef struct stat ShFileStats;
+typedef struct ShLoaderIni {
+	char simulation_name[256];
+	char assets_path[256];
+} ShLoaderIni;
 
 
 
 typedef struct ShFd {
-	char		path[256];
-	ShFileStats stats0;
-	ShFileStats stats1;
+	char dir[256];
+	char filename[256];
+	char path[256];
 } ShFd;
+
+
+
+extern uint8_t shGetIniProperties(const char* loader_ini_dir, ShLoaderIni* p_ini);
+
+extern uint8_t shAppendAssetsPath(const char* engine_assets_path, const char* extension_dir, const char* extension_filename, ShFd* p_fd);
 
 
 
@@ -40,33 +49,22 @@ typedef struct ShVkCore ShVkCore;
 
 
 
-extern uint8_t shListenFd(ShFd* descriptor_handle);
-
-
-
 #define shGetFileStats(path, stats)\
 	stat(path, stats)
 
 #define shInitDescriptor(p_descriptor_handle)\
 	shGetFileStats((p_descriptor_handle)->path, &(p_descriptor_handle)->stats0)
 
-static uint8_t shFdWarning(int condition, const char* msg) {
-	if ((int)(condition)) { printf("shfd warning: %s.\n", msg); return 1; }
-	return 0;
-}
-
-#define shFdError(condition, msg)\
-	if ((int)(condition)) { printf("shfd error: %s.\n", msg); exit(-1); }
+#define shFdError(condition, msg, failure_expression)\
+	if ((int)(condition)) { printf("shfd error: %s.\n", msg); failure_expression; }
 
 
 
-extern void shMakeAssetsPath(const char* src_path, char* dst_path);
-
-extern uint8_t shLoadMaterials(ShVkCore* p_core, const char* path, uint32_t* p_material_count, ShMaterialHost** pp_materials);
+extern uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename, uint32_t* p_material_count, ShMaterialHost** pp_materials);
 
 extern void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials);
 
-extern uint8_t shLoadScene(const char* path, const uint32_t material_count, ShMaterialHost** pp_materials, ShScene* p_scene);
+extern uint8_t shLoadScene(const char* dir, const char* filename, const uint32_t material_count, ShMaterialHost** pp_materials, ShScene* p_scene);
 
 extern uint32_t shStringFlagToInt(const char* s_flag);
 

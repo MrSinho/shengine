@@ -26,26 +26,40 @@ extern "C" {
 
 
 typedef enum ShEngineStatus {
-    SH_ENGINE_SUCCESS               =  1,
-    SH_ENGINE_INVALID_ENGINE_MEMORY =  0,
-    SH_ENGINE_SCENE_LOAD_FAILURE    = -1,
-    SH_ENGINE_SIM_START_FAILURE     = -2,
+    SH_ENGINE_SUCCESS                       =  1,
+    SH_ENGINE_INVALID_ENGINE_MEMORY         =  0,
+    SH_ENGINE_SCENE_LOAD_FAILURE            = -1,
+    SH_ENGINE_SIM_START_FAILURE             = -2,
+    SH_ENGINE_INVALID_LOADER_DIRECTORY      = -3,
+    SH_ENGINE_INVALID_DST_MEMORY            = -4,
+    SH_ENGINE_INVALID_LOADER_INI_MEMORY     = -5,
+    SH_ENGINE_INVALID_ASSETS_PATH           = -6,
+    SH_ENGINE_INVALID_ASSETS_EXTENSION_PATH = -7
 } ShEngineStatus;
+
+
 
 typedef struct ShEngine {
     ShVkCore              core;
     ShWindow              window;
     ShTime                time;
+
+    ShLoaderIni           loader_ini;
+
     ShFd                  materials_descriptor;
     ShFd                  scene_descriptor;
     ShFd                  simulation_descriptor;
+
+    uint32_t              material_count;
+    ShMaterialHost*       p_materials;
+
     ShScene               scene;
     uint32_t              scene_count;
-	ShMaterialHost*       p_materials;
+	
     ShSimulationHandle    simulation_host;
     ShThreadPool          thread_pool;
     ShThreadState         sim_thread_state;
-    uint32_t              material_count;
+
     ShGui*                p_gui;
     
     void*                 p_ext;
@@ -69,6 +83,7 @@ static uint8_t shEngineWarning(int condition, const char* msg) {
 extern ShEngineStatus shSetEngineState(ShEngine* p_engine);
 
 extern ShEngineStatus shResetEngineState(ShEngine* p_engine, const uint8_t release_shared);
+
 
 
 extern void shEngineSafeState(ShEngine* p_engine);

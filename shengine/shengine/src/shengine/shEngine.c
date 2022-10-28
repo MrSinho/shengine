@@ -15,6 +15,7 @@ extern "C" {
 #endif//_MSC_VER
 
 
+
 void shEngineSafeState(ShEngine* p_engine) {
     shEngineWarning(1, "running safe window");
 
@@ -53,9 +54,16 @@ void shEngineSafeState(ShEngine* p_engine) {
 ShEngineStatus shSetEngineState(ShEngine* p_engine) {
     shEngineError(p_engine == NULL, "invalid engine memory", return SH_ENGINE_INVALID_ENGINE_MEMORY);
 
+    shGetIniProperties("loader.ini", &p_engine->loader_ini);
+
+	shAppendAssetsPath((const char*)p_engine->loader_ini.assets_path, "/descriptors/", "materials.json",  &p_engine->materials_descriptor);
+	shAppendAssetsPath((const char*)p_engine->loader_ini.assets_path, "/descriptors/", "scene.json",      &p_engine->scene_descriptor);
+	shAppendAssetsPath((const char*)p_engine->loader_ini.assets_path, "/descriptors/", "simulation.json", &p_engine->simulation_descriptor);
+
     uint8_t mat_r = shLoadMaterials(
         &p_engine->core, 
-         p_engine->materials_descriptor.path, 
+        p_engine->materials_descriptor.dir,
+        p_engine->materials_descriptor.filename, 
         &p_engine->material_count, 
         &p_engine->p_materials
     );
@@ -66,7 +74,9 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
 
     shEngineError(
         shLoadScene(
-            p_engine->scene_descriptor.path,p_engine->material_count, 
+            p_engine->scene_descriptor.dir,
+            p_engine->scene_descriptor.filename,
+            p_engine->material_count, 
             &p_engine->p_materials,
             &p_engine->scene
         ) == 0,
@@ -195,8 +205,9 @@ void shEngineUpdateState(ShEngine* p_engine) {
             }
 
             uint8_t mat_r = shLoadMaterials(
-                 p_core, 
-                 p_engine->materials_descriptor.path, 
+                p_core, 
+                (const char*)p_engine->loader_ini.assets_path,
+                p_engine->materials_descriptor.path, 
                 &p_engine->material_count, 
                 &p_engine->p_materials
             );

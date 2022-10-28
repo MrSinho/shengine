@@ -83,10 +83,23 @@ Just a random scene.
 
 ![simulation-sample](saved/pictures/simulation-sample.png)
 
+Using Windows:
 ```batch
 python export-simulation.py "simulation-sample" SHARED
-cd build 
+cd windows-builds/simulation-sample
 cmake --build .
+```
+
+Using Linux:
+```batch
+python export-simulation.py "simulation-sample" SHARED
+cd linux-builds/simulation-sample
+cmake --build .
+```
+
+Write at `bin/loader.ini`:
+```batch
+python set-simulation.py "simulation-sample" SHARED
 ```
 
 ---
@@ -97,10 +110,23 @@ A Flappy Bird clone in a circular map. Press `SPACE` to let it survive.
 
 ![flappy-circle](saved/pictures/flappy-circle.png)
 
+Using Windows:
 ```batch
 python export-simulation.py "flappy-circle" SHARED
-cd build 
+cd windows-builds/flappy-circle
 cmake --build .
+```
+
+Using Linux:
+```batch
+python export-simulation.py "flappy-circle" SHARED
+cd linux-builds/flappy-circle
+cmake --build .
+```
+
+Write at `bin/loader.ini`:
+```batch
+python set-simulation.py "flappy-circle" SHARED
 ```
 
 ---
@@ -111,11 +137,25 @@ Any variation of analog input for the Raspberry Pi Pico affects the lighting in 
 
 ![serial-demo](saved/pictures/serial-demo.png)
 
+Using Windows:
 ```batch
 python export-simulation.py "serial-demo" SHARED
-cd build 
+cd windows-builds/serial-demo
 cmake --build .
 ```
+
+Using Linux:
+```batch
+python export-simulation.py "serial-demo" SHARED
+cd linux-builds/serial-demo
+cmake --build .
+```
+
+Write at `bin/loader.ini`:
+```batch
+python set-simulation.py "serial-demo" SHARED
+```
+
 Note: because the simulation does not include multithreading, reading serial data blocks all gpu calls.
 
 ## Pinout for the Raspberry Pi Pico and UF2 binary
@@ -129,10 +169,23 @@ You should correct the serial port name in case the one at [simulations/serial-d
 
 ![noise-3](saved/pictures/noise-3.png)
 
+Using Windows:
 ```batch
-python export-simulation.py noise SHARED
-cd build
-cmake --build . 
+python export-simulation.py "noise" SHARED
+cd windows-builds/noise
+cmake --build .
+```
+
+Using Linux:
+```batch
+python export-simulation.py "noise" SHARED
+cd linux-builds/noise
+cmake --build .
+```
+
+Write at `bin/loader.ini`:
+```batch
+python set-simulation.py "noise" SHARED
 ```
 
 Press `H` to hide the GUI and get a full view of the shaded plane. To change the values of the parameters `A` `B` and `S`:
