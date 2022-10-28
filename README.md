@@ -18,7 +18,7 @@
 * [serial-demo](#serial-demo)
    * [Pinout for the Raspberry Pi pico and UF2 binary](#pinout-for-the-raspberry-pi-pico-and-uf2-binary)
 * [noise](#noise)
-
+* [Switch between applications in runtime](#switch-between-applications-in-runtime)
 ---
 
 # [Build status](./shci)
