@@ -69,8 +69,8 @@ cd shengine
 ## Engine targets only
 
 ```bash
-mkdir build
-cd build 
+mkdir engine-build-only
+cd engine-build-only
 cmake ..
 cmake --build .
 ```
