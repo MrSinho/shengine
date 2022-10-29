@@ -85,6 +85,10 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION serial_thread(void* p_ext) {
 	return 1;
 }
 
+uint8_t SH_ENGINE_EXPORT_FUNCTION serial_update_pending(ShEngine* p_engine) {
+	return 1;
+}
+
 uint8_t SH_ENGINE_EXPORT_FUNCTION serial_after_thread(ShEngine* p_engine) {
 	return 1;
 }
@@ -130,6 +134,27 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION serial_close(ShEngine* p_engine) {
 
 	return 1;
 }
+
+
+
+#ifdef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+
+#include <sheditor/shEditor.h>
+
+int main() {
+    ShEngine engine = { 0 };
+    engine.simulation_host.p_start          = &serial_start;
+    engine.simulation_host.p_thread         = &serial_thread;
+    engine.simulation_host.p_update_pending = &serial_update_pending;
+    engine.simulation_host.p_after_thread   = &serial_after_thread;
+    engine.simulation_host.p_update         = &serial_update;
+    engine.simulation_host.p_frame_update   = &serial_frame_update;
+    engine.simulation_host.p_frame_resize   = &serial_frame_resize;
+    engine.simulation_host.p_close          = &serial_close;
+    engine.window.title                     = "serial demo";
+    return shEditorMain(&engine);
+}
+#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
 
 #ifdef __cplusplus
 }

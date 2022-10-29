@@ -64,10 +64,13 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_thread(void* p_ext) {
 	return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_after_thread(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_update_pending(ShEngine* p_engine) {
 	return 1;
 }
 
+uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_after_thread(ShEngine* p_engine) {
+	return 1;
+}
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_update(ShEngine* p_engine) {
 	ShScene* p_scene = &p_engine->scene;
@@ -115,6 +118,27 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_frame_resize(ShEngine* p_engine)
 uint8_t SH_ENGINE_EXPORT_FUNCTION flappy_circle_close(ShEngine* p_engine) {
 	return 1;
 }
+
+
+
+#ifdef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+
+#include <sheditor/shEditor.h>
+
+int main() {
+    ShEngine engine = { 0 };
+    engine.simulation_host.p_start          = &flappy_circle_start;
+    engine.simulation_host.p_thread         = &flappy_circle_thread;
+    engine.simulation_host.p_update_pending = &flappy_circle_update_pending;
+    engine.simulation_host.p_after_thread   = &flappy_circle_after_thread;
+    engine.simulation_host.p_update         = &flappy_circle_update;
+    engine.simulation_host.p_frame_update   = &flappy_circle_frame_update;
+    engine.simulation_host.p_frame_resize   = &flappy_circle_frame_resize;
+    engine.simulation_host.p_close          = &flappy_circle_close;
+    engine.window.title                     = "flappy circle";
+    return shEditorMain(&engine);
+}
+#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
 
 #ifdef __cplusplus
 }

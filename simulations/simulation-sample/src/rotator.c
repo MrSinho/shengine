@@ -127,6 +127,27 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION sim_close(ShEngine* p_engine, const uint32_t e
     return 1;
 }
 
+
+
+#ifdef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+
+#include <sheditor/shEditor.h>
+
+int main() {
+    ShEngine engine = { 0 };
+    engine.simulation_host.p_start          = &sim_start;
+    engine.simulation_host.p_thread         = &sim_thread;
+    engine.simulation_host.p_update_pending = &sim_update_pending;
+    engine.simulation_host.p_after_thread   = &sim_after_thread;
+    engine.simulation_host.p_update         = &sim_update;
+    engine.simulation_host.p_frame_update   = &sim_frame_update;
+    engine.simulation_host.p_frame_resize   = &sim_frame_resize;
+    engine.simulation_host.p_close          = &sim_close;
+    engine.window.title                     = "simulation sample";
+    return shEditorMain(&engine);
+}
+#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+
 #ifdef __cplusplus
 }
 #endif//__cplusplus

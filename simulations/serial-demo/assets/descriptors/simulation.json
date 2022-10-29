@@ -3,6 +3,7 @@
     "name": "serial-demo",
     "start": "serial_start",
     "thread": "serial_thread",
+    "update_pending": "serial_update_pending",
     "after_thread": "serial_after_thread",
     "update": "serial_update",
     "frame_update": "serial_frame_update",

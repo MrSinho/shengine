@@ -215,6 +215,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_close(ShEngine* p_engine, const uint32_t
     return 1;
 }
 
+
+
 #ifdef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
 
 #include <sheditor/shEditor.h>
@@ -229,7 +231,7 @@ int main() {
     engine.simulation_host.p_frame_update   = &noise_frame_update;
     engine.simulation_host.p_frame_resize   = &noise_frame_resize;
     engine.simulation_host.p_close          = &noise_close;
-    engine.window.title                     = "noise simulation";
+    engine.window.title                     = "noise";
     return shEditorMain(&engine);
 }
 #endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE

@@ -3,6 +3,7 @@
     "name": "flappy-circle",
     "start": "flappy_circle_start",
     "thread": "flappy_circle_thread",
+    "update_pending": "flappy_circle_update_pending",
     "after_thread": "flappy_circle_after_thread",
     "update": "flappy_circle_update",
     "frame_update": "flappy_circle_frame_update",

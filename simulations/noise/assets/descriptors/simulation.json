@@ -1,6 +1,5 @@
 {
     "run": 1,
-    "assets_path": "simulations/noise",
     "name": "noise",
     "start": "noise_start",
     "thread": "noise_thread",
