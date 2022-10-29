@@ -20,33 +20,46 @@ extern "C" {
 
 #include <shgui/shgui.h>
 
+#include "sheditor/shEditor.h"
+
 
 #define SH_EDITOR_THREAD_COUNT 1
 
 
+int shEditorMain(ShEngine* p_engine) {
+	char window_title[256];
+	if (p_engine->window.title != NULL) {
+		strcpy(window_title, p_engine->window.title);
+	}
+	else {
+		strcpy(window_title, "shengine editor");
+	}
+	shWindowSetup(window_title, 1366, 768, &p_engine->window);
+	shCreateInstance(&p_engine->core, "shengine editor", "shengine", 1, p_engine->window.instance_extension_count, p_engine->window.pp_instance_extensions);
+	shWindowCreateSurface(p_engine);
+	shSelectPhysicalDevice(&p_engine->core, VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT);
+	shSetLogicalDevice(&p_engine->core);
+	shGetGraphicsQueue(&p_engine->core);
+	shGetComputeQueue(&p_engine->core);
+	shInitSwapchainData(&p_engine->core);
+	shInitDepthData(&p_engine->core);
+	shCreateRenderPass(&p_engine->core);
+	shSetFramebuffers(&p_engine->core);
+	shCreateGraphicsCommandBuffers(&p_engine->core, SH_EDITOR_THREAD_COUNT);
+	shCreateComputeCommandBuffers(&p_engine->core, SH_EDITOR_THREAD_COUNT);
+	shSetSyncObjects(&p_engine->core);
 
-int main() {
-
-	ShEngine engine = { 0 };
-	shWindowSetup("shengine editor", 1366, 768, &engine.window);
-	shCreateInstance(&engine.core, "shengine editor", "shengine", 1, engine.window.instance_extension_count, engine.window.pp_instance_extensions);
-	shWindowCreateSurface(&engine);
-	shSelectPhysicalDevice(&engine.core, VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT);
-	shSetLogicalDevice(&engine.core);
-	shGetGraphicsQueue(&engine.core);
-	shGetComputeQueue(&engine.core);
-	shInitSwapchainData(&engine.core);
-	shInitDepthData(&engine.core);
-	shCreateRenderPass(&engine.core);
-	shSetFramebuffers(&engine.core);
-	shCreateGraphicsCommandBuffers(&engine.core, SH_EDITOR_THREAD_COUNT);
-	shCreateComputeCommandBuffers(&engine.core, SH_EDITOR_THREAD_COUNT);
-	shSetSyncObjects(&engine.core);
-
-	shEngineManageState(&engine, shSetEngineState(&engine), 1);
-
+	shEngineManageState(p_engine, shSetEngineState(p_engine), 1);
 	return 0;
 }
+
+
+#ifndef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+int main() {
+	ShEngine engine = { 0 };
+	return shEditorMain(&engine);
+}
+#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
 
 #ifdef __cplusplus
 }

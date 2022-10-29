@@ -66,7 +66,6 @@ uint8_t shGetIniProperties(const char* loader_ini_dir, ShLoaderIni* p_ini) {
     if (p_loader[strlen(p_loader) - 1] == '\n') {
         assets_path_size--;
     }
-    assets_path_size--;
     assets_path_size--;//exclude null character
 
     memcpy(p_ini->simulation_name, p_loader, simulation_name_size);
@@ -94,6 +93,7 @@ uint8_t shAppendAssetsPath(const char* engine_assets_path, const char* extension
     strcpy(p_fd->filename, extension_filename);
 
     strcpy(p_fd->path, p_fd->dir);
+    strcat(p_fd->path, "/");
     if (extension_filename != NULL) {
         strcat(p_fd->path, p_fd->filename);
     }

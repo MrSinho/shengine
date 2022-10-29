@@ -269,4 +269,4 @@ Produces:
 noise
 ../simulations/noise/assets/
 ```
-Where `noise` (first line) is the simulation name, and `../simulations/noise/assets/` (second line) corresponds to the relative assets path. 
+Where the first line is used for comment purposes, while `../simulations/noise/assets/` (second line) corresponds to the relative assets path. 

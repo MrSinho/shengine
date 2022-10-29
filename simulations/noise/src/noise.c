@@ -38,40 +38,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 }
 
 uint64_t SH_ENGINE_EXPORT_FUNCTION noise_thread(Fractal* p_fractal) {//void* ShEngine::p_engine_extension = NULL
-    
-    //1st
-    // 
-    //p_fractal->set_0.s = 0.5f;
-    //p_fractal->set_0.a = 1.0f;
-    //p_fractal->set_0.b =-2.5f;
-
-    //2nd
-    // 
+    //just for demonstration purposes
     p_fractal->set_0.s = 0.5f;
     p_fractal->set_0.a = 2.0f;
     p_fractal->set_0.b = 7.0f;
-
-    //3rd
-    //p_fractal->set_0.s = 4.0f;
-    //p_fractal->set_0.a = 4.5f;
-    //p_fractal->set_0.b =-1.8f;
-
-    //NOT SURE
-
-    //3rd hmm
-    //p_fractal->set_0.s = 4.0f;
-    //p_fractal->set_0.a =-15.f;
-    //p_fractal->set_0.b =-5.0f;
-    
-    //3rd hmmm
-    //p_fractal->set_0.s = 4.0f;
-    //p_fractal->set_0.a = 9.0f;
-    //p_fractal->set_0.b =-4.0f;
-    
-    //5th
-    //p_fractal->set_0.s = 4.0f;
-    //p_fractal->set_0.a = 5.0f;
-    //p_fractal->set_0.b = 7.0f;
 
     p_fractal->ui.display_ui = 1;
     return 1;
@@ -195,9 +165,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine) {
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_frame_update(ShEngine* p_engine) {
 
-    VkDevice device = p_engine->core.device;
+    VkDevice device            = p_engine->core.device;
     VkCommandBuffer cmd_buffer = p_engine->core.p_graphics_commands[0].cmd_buffer;
-    ShVkPipeline* p_pipeline = &p_engine->p_materials[0].pipeline;
+    ShVkPipeline* p_pipeline   = &p_engine->p_materials[0].pipeline;
 
     Fractal* p_fractal = (Fractal*)p_engine->p_ext;
 
@@ -206,13 +176,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_frame_update(ShEngine* p_engine) {
     }
 
     shBindPipeline(cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_pipeline);
-
-    //{//PROJECTION AND VIEW MATRICES
-    //    ShCamera* p_camera = shGetShCamera(&p_engine->scene, 0);
-    //    shEngineError(p_camera == NULL, "invalid camera memory", return 0);
-    //
-    //    shPipelinePushConstants(cmd_buffer, p_camera->projection, p_pipeline);
-    //}//PROJECTION AND VIEW MATRICES
 
     shPipelineUpdateDescriptorSets(device, p_pipeline);
 
@@ -251,6 +214,25 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_close(ShEngine* p_engine, const uint32_t
     free(p_engine->p_ext);
     return 1;
 }
+
+#ifdef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+
+#include <sheditor/shEditor.h>
+
+int main() {
+    ShEngine engine = { 0 };
+    engine.simulation_host.p_start          = &noise_start;
+    engine.simulation_host.p_thread         = &noise_thread;
+    engine.simulation_host.p_update_pending = &noise_update_pending;
+    engine.simulation_host.p_after_thread   = &noise_after_thread;
+    engine.simulation_host.p_update         = &noise_update;
+    engine.simulation_host.p_frame_update   = &noise_frame_update;
+    engine.simulation_host.p_frame_resize   = &noise_frame_resize;
+    engine.simulation_host.p_close          = &noise_close;
+    engine.window.title                     = "noise simulation";
+    return shEditorMain(&engine);
+}
+#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
 
 #ifdef __cplusplus
 }

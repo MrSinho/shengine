@@ -33,7 +33,7 @@ extern "C" {
 
 typedef void* ShSharedHandle;
 typedef uint8_t(ShSimulationFunc) (void*);
-typedef uint8_t (ShSimulationThreadFunc) (uint8_t, void*);
+typedef uint64_t (ShSimulationThreadFunc) (void*);
 
 
 
@@ -49,13 +49,13 @@ typedef struct ShSimulationHandle {
 	char*                   s_frame_resize;
 	char*                   s_close;
 	ShSimulationFunc*       p_start;
-	ShSimulationFunc*       p_thread;
+	ShSimulationThreadFunc* p_thread;
 	ShSimulationFunc*       p_update_pending;
 	ShSimulationFunc*       p_after_thread;
 	ShSimulationFunc*       p_update;
 	ShSimulationFunc*       p_frame_update;
 	ShSimulationFunc*       p_frame_resize;
-	ShSimulationThreadFunc* p_close;
+	ShSimulationFunc*		p_close;
 	uint8_t                 after_thread_called;
 } ShSimulationHandle;
 

@@ -80,7 +80,7 @@ void shLoadSimulation(const char* path, ShSimulationHandle* p_simulation) {
 void shSimulationLoadSymbols(ShSimulationHandle* p_simulation) {
     shSharedHostError(p_simulation != NULL, "invalid simulation pointer");
     p_simulation->p_start                               = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_start);
-    p_simulation->p_thread                              = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_thread);
+    p_simulation->p_thread                              = (ShSimulationThreadFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_thread);
     p_simulation->p_update_pending                      = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_update_pending);
     p_simulation->p_after_thread                        = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_after_thread);
     p_simulation->p_update                              = (ShSimulationFunc*)shSharedLoadSymbol(p_simulation->shared, p_simulation->s_update);

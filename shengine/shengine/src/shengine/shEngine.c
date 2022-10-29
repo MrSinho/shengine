@@ -89,6 +89,7 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
         &p_engine->scene
     );
 
+#ifdef SH_SIMULATION_TARGET_TYPE_SHARED
     shLoadSimulation(
          p_engine->simulation_descriptor.path, 
         &p_engine->simulation_host
@@ -97,8 +98,10 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
     shSimulationLoadSymbols(
         &p_engine->simulation_host
     );
+#endif//SH_SIMULATION_TARGET_TYPE_SHARED
 
-    if (p_engine->simulation_host.shared != NULL) {
+
+    if (p_engine->simulation_host.p_start != NULL) {
         shEngineError(
             shSharedSceneRun(
                 p_engine, 

@@ -7,7 +7,7 @@ import platform
 def main():#example call: python export_simulation.py simulation-sample SHARED
 
     print("EXAMPLE CALL: python export_simulation.py noise SHARED")
-    print("EXAMPLE CALL: python export_simulation.py noise SHARED ../simulations")
+    print("EXAMPLE CALL: python export_simulation.py noise STATIC ../simulations")
     #CMAKE STANDARD GENERATOR NAMES BUT REPLACE " " with "-"
     print("EXAMPLE CALL: python export_simulation.py noise SHARED ../simulations MinGW-Makefiles")
 
@@ -62,24 +62,33 @@ project(${{SH_SIMULATION_NAME}})
 option(SH_SIMULATION_BINARY_TYPE CACHE "EXECUTABLE")
 if("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "STATIC")
     add_library(${{SH_SIMULATION_NAME}} STATIC 
-    {src_files}
-)
+        {src_files}
+    )
+    
 elseif("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "SHARED")
     add_library(${{SH_SIMULATION_NAME}} SHARED 
-    {src_files}
-)
+        {src_files}
+    )
+    target_compile_definitions(shengine PUBLIC SH_SIMULATION_TARGET_TYPE_SHARED=1)
 elseif("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "EXECUTABLE")
     add_executable(${{SH_SIMULATION_NAME}}  
-    {src_files}
-)
+        {src_files}
+        {python_src_dir}/shengine/sheditor/src/shEditor.c
+    )
+    target_include_directories(${{SH_SIMULATION_NAME}} PUBLIC {python_src_dir}/shengine/sheditor/include)
+    target_compile_definitions(${{SH_SIMULATION_NAME}} PUBLIC SH_SIMULATION_TARGET_TYPE_EXECUTABLE=1)
 endif()
+
 target_include_directories(${{SH_SIMULATION_NAME}} PUBLIC 
-${{CMAKE_CURRENT_SOURCE_DIR}}/${{SH_SIMULATION_NAME}}/include
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/${{SH_SIMULATION_NAME}}/include
 )
-target_link_libraries(${{SH_SIMULATION_NAME}} PUBLIC shengine {libs})
+target_link_libraries(
+    ${{SH_SIMULATION_NAME}} PUBLIC shengine {libs}
+)
 set_target_properties(${{SH_SIMULATION_NAME}} PROPERTIES 
-ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin  
-RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
+    ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin  
+    RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
+    VS_DEBUGGER_WORKING_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
 )
 """
     print(cmake_file)
