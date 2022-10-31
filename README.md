@@ -31,31 +31,32 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
 ![coulomb](saved/pictures/flappy-circle.png)
 
 # Current features:
+ - Immediate mode gui library embedded with the engine (see [shgui](https://github.com/mrsinho/shgui))
  - Multithreading using [shthreads](https://github.com/mrsinho/shthreads)
     * Main engine thread
-    * the "`load`" can safely read and write memory at `void* ShEngine::p_engine_extension` without the need of synchronization objects: the memory pointed is reserved for the simulation modules. However, using the extension memory (also) inside the default functions ("`[...]_start`", "`[...]_update`" "`[...]_close`" etc.) won't be thread safe without synchronization objects. You can easily work with those using the library named above. The engine will still have to wait the end of the thread to complete the "release operations" 
- - Entity Component System using [shecs](https://github.com/MrSinho/shecs)
- - Full glsl shader customization
- - Ply mesh loader using [plyimporter](https://github.com/MrSinho/plyimporter)
- - Depth buffer support
- - Serial communication using [shserial](https://github.com/MrSinho/shserial)
- - Scene creation and customization by setting up a scene.json file
- - Custom shader handling (more about that in the Coulomb shader and example)
-    * define shader general properties in materials.json
-    * set up shader input parameters for each entity (if required) in scene.json
-    * material extension structures support
+    * the "`load`" can safely read and write memory at `void* ShEngine::p_engine_extension` without the need of synchronization objects: the memory pointed is reserved for the simulation modules. However, using the extension memory inside the default functions ("`ShEngine::ShSharedHost::p_start`", "`ShEngine::ShSharedHost::p_update`" "`ShEngine::ShSharedHost::p_close`" etc.) won't be thread safe without synchronization objects. You can easily set up a mutex using `ShThreads` library. The engine will still have to wait the end of the thread to complete the release operations. 
+ - Entity Component System using [shecs](https://github.com/MrSinho/shecs).
+ - Ply mesh loader using [plyimporter](https://github.com/MrSinho/plyimporter).
+ - Depth buffer support.
+ - Serial communication using [shserial](https://github.com/MrSinho/shserial).
+ - Scene customization by setting up a `scene.json` file.
+    * Do do: delete material parameters, makes no sense.
+ - Glsl shader customization.
+    * define shader general properties in materials.json, the engine will automatically set up the boilerplate code.
+    * deal with vulkan objects, draw calls and material pipelines from the scriptable modules.
+    * set up shader input parameters for each entity (if required) in scene.json [--> not reccomended, i will delete that option].
+    * material extension structures support [--> also not reccomended, i would like to delete that feature too].
  - Native scripting in C:
-    * simulation.json sets up some properties for a shared library, which functions are called in runtime
-    * to generate the cmake target given the external application name, run export-simulation.py
+    * `loader.ini` is in the same directory of the main executable, and specifies the assets path.
+    * `simulation.json` sets up some properties for the specified shared library, which functions are called at the start of the main thread, in runtime, and at the end of the application.
+    * to generate the cmake target given the external application name, run the `export-simulation.py` script.
 
 ## To do:
- * Diagram build tools (2D and 3D)
- * External customizable launcher
- * External gui running in parallel with editor (or maybe improve shgui?)
- * Currently only single thread application
- * Manage Compute Shaders using descriptors
+ * External launcher
+ * Improve [shgui](https://github.com/mrsinho/shgui)
+ * Create compute shaders from descriptors
  * Textures
- * Audio 
+ * Audio
 
 ---
 
@@ -161,7 +162,7 @@ Note: because the simulation does not include multithreading, reading serial dat
 ## Pinout for the Raspberry Pi Pico and UF2 binary
 It's connected to a `1.5V` solar panel (it could be a potentiometer or any analogic sensor). The negative charged cable (in red) is connected to `ADC input 0`, `GPIO 26` (for pinout check [saved/pictures/serial-demo-pinout.jpg](saved/pictures/serial-demo-pinout.jpg)). The program to run on the Raspberry Pi Pico is located at [simulations/serial-demo/pico-bin/shengine_sample_raw.uf2](simulations/serial-demo/pico-bin/shengine_sample_raw.uf2).
 
-You should correct the serial port name in case the one at [simulations/serial-demo/src/serial-demo.c](simulations/serial-demo/src/serial-demo.c) doesn't match.
+You should correct the serial port name in case the one specified at [simulations/serial-demo/src/serial-demo.c](simulations/serial-demo/src/serial-demo.c) doesn't match.
 
 ---
 
