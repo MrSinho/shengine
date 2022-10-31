@@ -34,7 +34,7 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Immediate mode gui library embedded with the engine (see [shgui](https://github.com/mrsinho/shgui))
  - Multithreading using [shthreads](https://github.com/mrsinho/shthreads)
     * Main engine thread
-    * the "`load`" can safely read and write memory at `void* ShEngine::p_engine_extension` without the need of synchronization objects: the memory pointed is reserved for the simulation modules. However, using the extension memory inside the default functions ("`ShEngine::ShSharedHost::p_start`", "`ShEngine::ShSharedHost::p_update`" "`ShEngine::ShSharedHost::p_close`" etc.) won't be thread safe without synchronization objects. You can easily set up a mutex using `ShThreads` library. The engine will still have to wait the end of the thread to complete the release operations. 
+    * the `ShSimulationFunc* ShEngine::ShSharedHost::p_load` function can safely read and write memory at `void* ShEngine::p_engine_extension` without the need of synchronization objects: the memory pointed is reserved for the simulation modules. However, using the extension memory inside the default functions ("`ShSimulationFunc* ShEngine::ShSharedHost::p_start`", "`ShSimulationFunc* ShEngine::ShSharedHost::p_update`" "`ShSimulationFunc* ShEngine::ShSharedHost::p_close`" etc.) won't be thread safe without synchronization objects. You can easily set up a mutex using the `ShThreads` library. The engine will still have to wait the end of the thread to complete the release operations. 
  - Entity Component System using [shecs](https://github.com/MrSinho/shecs).
  - Ply mesh loader using [plyimporter](https://github.com/MrSinho/plyimporter).
  - Depth buffer support.
