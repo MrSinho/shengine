@@ -40,12 +40,11 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Depth buffer support.
  - Serial communication using [shserial](https://github.com/MrSinho/shserial).
  - Scene customization by setting up a `scene.json` file.
-    * Do do: delete material parameters, makes no sense.
  - Glsl shader customization.
     * define shader general properties in materials.json, the engine will automatically set up the boilerplate code.
     * deal with vulkan objects, draw calls and material pipelines from the scriptable modules.
-    * set up shader input parameters for each entity (if required) in scene.json [--> not reccomended, i will delete that option].
-    * material extension structures support [--> also not reccomended, i would like to delete that feature too].
+    * set up shader input parameters for each entity (if required) in scene.json
+    * material extension structures support
  - Native scripting in C:
     * `loader.ini` is in the same directory of the main executable, and specifies the assets path.
     * `simulation.json` sets up some properties for the specified shared library, which functions are called at the start of the main thread, in runtime, and at the end of the application.
@@ -86,21 +85,21 @@ Just a random scene.
 
 Using Windows:
 ```batch
-python export-simulation.py "simulation-sample" SHARED
+python export-simulation.py "simulation-sample" EXECUTABLE
 cd windows-builds/simulation-sample
 cmake --build .
 ```
 
 Using Linux:
 ```batch
-python export-simulation.py "simulation-sample" SHARED
+python export-simulation.py "simulation-sample" EXECUTABLE
 cd linux-builds/simulation-sample
 cmake --build .
 ```
 
 Write at `bin/loader.ini`:
 ```batch
-python set-simulation.py "simulation-sample" SHARED
+python set-simulation.py "simulation-sample" EXECUTABLE
 ```
 
 ---
@@ -113,21 +112,21 @@ A Flappy Bird clone in a circular map. Press `SPACE` to let it survive.
 
 Using Windows:
 ```batch
-python export-simulation.py "flappy-circle" SHARED
+python export-simulation.py "flappy-circle" EXECUTABLE
 cd windows-builds/flappy-circle
 cmake --build .
 ```
 
 Using Linux:
 ```batch
-python export-simulation.py "flappy-circle" SHARED
+python export-simulation.py "flappy-circle" EXECUTABLE
 cd linux-builds/flappy-circle
 cmake --build .
 ```
 
 Write at `bin/loader.ini`:
 ```batch
-python set-simulation.py "flappy-circle" SHARED
+python set-simulation.py "flappy-circle" EXECUTABLE
 ```
 
 ---
@@ -140,21 +139,21 @@ Any variation of analog input for the Raspberry Pi Pico affects the lighting in 
 
 Using Windows:
 ```batch
-python export-simulation.py "serial-demo" SHARED
+python export-simulation.py "serial-demo" EXECUTABLE
 cd windows-builds/serial-demo
 cmake --build .
 ```
 
 Using Linux:
 ```batch
-python export-simulation.py "serial-demo" SHARED
+python export-simulation.py "serial-demo" EXECUTABLE
 cd linux-builds/serial-demo
 cmake --build .
 ```
 
 Write at `bin/loader.ini`:
 ```batch
-python set-simulation.py "serial-demo" SHARED
+python set-simulation.py "serial-demo" EXECUTABLE
 ```
 
 Note: because the simulation does not include multithreading, reading serial data blocks all gpu calls.
@@ -172,21 +171,21 @@ You should correct the serial port name in case the one specified at [simulation
 
 Using Windows:
 ```batch
-python export-simulation.py "noise" SHARED
+python export-simulation.py "noise" EXECUTABLE
 cd windows-builds/noise
 cmake --build .
 ```
 
 Using Linux:
 ```batch
-python export-simulation.py "noise" SHARED
+python export-simulation.py "noise" EXECUTABLE
 cd linux-builds/noise
 cmake --build .
 ```
 
 Write at `bin/loader.ini`:
 ```batch
-python set-simulation.py "noise" SHARED
+python set-simulation.py "noise" EXECUTABLE
 ```
 
 Press `H` to hide the GUI and get a full view of the shaded plane. To change the values of the parameters `A` `B` and `S`:
