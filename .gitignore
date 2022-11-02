@@ -53,6 +53,7 @@ dkms.conf
 
 bin/*
 build/*
+applications/*
 windows-builds/*
 linux-builds/*
 simulations/build/*

@@ -84,7 +84,6 @@ uint8_t shAppendAssetsPath(const char* engine_assets_path, const char* extension
     shFdError(engine_assets_path == NULL, "invalid engine assets path",                 return 0);
     shFdError(p_fd == NULL,               "invalid destination file descriptor memory", return 0);
     
-    //strcpy(dst_path, SH_EDITOR_ASSETS_PATH); //CMake defined macro
     strcpy(p_fd->dir, engine_assets_path);
     if (extension_dir != NULL) {
         strcat(p_fd->dir, extension_dir);

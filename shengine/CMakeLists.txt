@@ -17,9 +17,7 @@ option(SH_ENGINE_BUILD_EDITOR CACHE OFF)
 option(SH_ENGINE_BUILD_SHARED_HOST CACHE OFF)
 option(SH_ENGINE_ASSETS_PATH CACHE OFF)
 
-if (NOT SH_EDITOR_ASSETS_PATH)
-    set(SH_EDITOR_ASSETS_PATH "../assets")
-endif()
+
 
 function(build_shengine)
 add_library(shengine 
@@ -67,7 +65,6 @@ target_include_directories(shfd PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/shfd/include
 )
 target_link_libraries(shfd PUBLIC json-c shvulkan plyimporter)
-target_compile_definitions(shfd PUBLIC SH_EDITOR_ASSETS_PATH="${SH_EDITOR_ASSETS_PATH}")
 set_target_properties(shfd PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 endfunction()
 

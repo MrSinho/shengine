@@ -101,7 +101,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION sim_update_pending(ShEngine* p_engine) {
     //    SH_GUI_WINDOW_TEXT_SIZE * 2.0f,
     //    0.0f,
     //    0.0f,
-    //    "LOADING, BUT THERE'S NOTHING TO LOAD",
+    //    "DEMONSTRATION OF A LOADING THREAD",
     //    SH_GUI_CENTER_WIDTH | SH_GUI_CENTER_HEIGHT
     //);
 

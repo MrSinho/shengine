@@ -15,15 +15,15 @@ def main():#python set-simulation.py noise <optional-custom-path>
 
     loader_ini:str = f"{simulation_name}\n"
     if (assets_path == ""):
-        loader_ini += f"../../simulations/{simulation_name}/assets/"
+        loader_ini += f"../simulations/{simulation_name}/assets/"
     else:
         loader_ini += assets_path
 
-    loader_stream = open(f"{python_src_dir}/bin/{simulation_name}/loader.ini", "w")
+    loader_stream = open(f"{python_src_dir}/bin/loader.ini", "w")
     loader_stream.write(loader_ini)
     loader_stream.close()
 
-    print("Edited bin/{simulation_name}/loader.ini:")
+    print("Edited bin/loader.ini:")
     print(loader_ini)
 
     return

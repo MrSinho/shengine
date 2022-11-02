@@ -56,8 +56,7 @@ add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 {cmake_subdirectories}
 
-option(SH_SIMULATION_NAME CACHE emptytarget)
-project(${{SH_SIMULATION_NAME}})
+project({simulation_name} C)
 
 option(SH_SIMULATION_BINARY_TYPE CACHE "EXECUTABLE")
 if("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "STATIC")
@@ -86,9 +85,9 @@ target_link_libraries(
     ${{SH_SIMULATION_NAME}} PUBLIC shengine {libs}
 )
 set_target_properties(${{SH_SIMULATION_NAME}} PROPERTIES 
-    ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin  
-    RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
-    VS_DEBUGGER_WORKING_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin
+    ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin/{simulation_name}  
+    RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin/{simulation_name}
+    VS_DEBUGGER_WORKING_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin/{simulation_name}
 )
 """
     print(cmake_file)
@@ -103,9 +102,8 @@ set_target_properties(${{SH_SIMULATION_NAME}} PROPERTIES
     os.system(cmd)
     cmd  = f"cd {python_src_dir}/{os_name}-builds/{simulation_name} && cmake ../../ "
     cmd += f"-DSH_ENGINE_BUILD_EDITOR=ON "
-    cmd += f"-DSIMULATION_PATH={simulation_path} "
-    cmd += f"-DSH_EDITOR_ASSETS_PATH={src_files_path}/assets/ "
-    cmd += f"-DSH_SIMULATION_NAME={simulation_name} "
+    cmd += f"-DSIMULATION_PATH={simulation_path} "#for other CMAKE files
+    cmd += f"-DSH_SIMULATION_NAME={simulation_name} "#to generate solution with sim name
     cmd += f"-DSH_SIMULATION_BINARY_TYPE={target_type} " #could be STATIC SHARED EXECUTABLE
 
     if (len(sys.argv) >= 5):
