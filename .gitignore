@@ -53,12 +53,16 @@ dkms.conf
 
 bin/*
 build/*
-applications/*
-windows-builds/*
-linux-builds/*
-simulations/build/*
-engine-build-only/*
+
+simulations/noise/windows/*
+simulations/simulation-sample/windows/*
+simulations/serial-demo/windows/*
+simulations/flappy-circle/windows/*
+
+simulations/noise/linux/*
+simulations/simulation-sample/linux/*
+simulations/serial-demo/linux/*
+simulations/flappy-circle/linux/*
+
 .vscode/*
 .vs/*
-simulations/CMakeLists.txt
-*.ipynb_checkpoints

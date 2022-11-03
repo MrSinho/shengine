@@ -86,14 +86,14 @@ Just a random scene.
 Using Windows:
 ```batch
 python export-simulation.py "simulation-sample" EXECUTABLE
-cd windows-builds/simulation-sample
+cd simulations/simulation-sample/windows/build
 cmake --build .
 ```
 
 Using Linux:
 ```batch
 python export-simulation.py "simulation-sample" EXECUTABLE
-cd linux-builds/simulation-sample
+cd simulations/simulation-sample/linux/build
 cmake --build .
 ```
 
@@ -113,14 +113,14 @@ A Flappy Bird clone in a circular map. Press `SPACE` to let it survive.
 Using Windows:
 ```batch
 python export-simulation.py "flappy-circle" EXECUTABLE
-cd windows-builds/flappy-circle
+cd simulations/flappy-circle/windows/build
 cmake --build .
 ```
 
 Using Linux:
 ```batch
 python export-simulation.py "flappy-circle" EXECUTABLE
-cd linux-builds/flappy-circle
+cd simulations/flappy-circle/linux/build
 cmake --build .
 ```
 
@@ -140,14 +140,14 @@ Any variation of analog input for the Raspberry Pi Pico affects the lighting in 
 Using Windows:
 ```batch
 python export-simulation.py "serial-demo" EXECUTABLE
-cd windows-builds/serial-demo
+cd simulations/serial-demo/windows/build
 cmake --build .
 ```
 
 Using Linux:
 ```batch
 python export-simulation.py "serial-demo" EXECUTABLE
-cd linux-builds/serial-demo
+cd simulations/serial-demo/linux/build
 cmake --build .
 ```
 
@@ -172,14 +172,14 @@ You should correct the serial port name in case the one specified at [simulation
 Using Windows:
 ```batch
 python export-simulation.py "noise" EXECUTABLE
-cd windows-builds/noise
+cd simulations/noise/windows/build
 cmake --build .
 ```
 
 Using Linux:
 ```batch
 python export-simulation.py "noise" EXECUTABLE
-cd linux-builds/noise
+cd simulations/noise/linux/build
 cmake --build .
 ```
 

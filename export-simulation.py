@@ -16,7 +16,7 @@ def main():#example call: python export_simulation.py simulation-sample SHARED
     target_type:str     = str(sys.argv[2])
     os_name:str         = platform.system().lower()
 
-    simulation_path:str = f"{python_src_dir}/simulations/{simulation_name}/"
+    simulation_path:str = f"{python_src_dir}/simulations/{simulation_name}"
     if len(sys.argv) >= 4:
         simulation_path = python_src_dir + "/" + str(sys.argv[3])
 
@@ -85,9 +85,9 @@ target_link_libraries(
     ${{SH_SIMULATION_NAME}} PUBLIC shengine {libs}
 )
 set_target_properties(${{SH_SIMULATION_NAME}} PROPERTIES 
-    ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin/{simulation_name}  
-    RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin/{simulation_name}
-    VS_DEBUGGER_WORKING_DIRECTORY ${{CMAKE_SOURCE_DIR}}/bin/{simulation_name}
+    ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/{os_name}/bin/ 
+    RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/{os_name}/bin/
+    VS_DEBUGGER_WORKING_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/{os_name}/bin/
 )
 """
     print(cmake_file)
@@ -97,10 +97,10 @@ set_target_properties(${{SH_SIMULATION_NAME}} PROPERTIES
     dst_stream.write(cmake_file)
     dst_stream.close()
 
-    os.system(f"mkdir {os_name}-builds")
-    cmd = f"cd {python_src_dir}/{os_name}-builds && mkdir {simulation_name}"
-    os.system(cmd)
-    cmd  = f"cd {python_src_dir}/{os_name}-builds/{simulation_name} && cmake ../../ "
+    build_path:str = f"{simulation_path}/{os_name}/build"
+    print(f"Build path: {build_path}")
+    os.system(f"mkdir \"{build_path}\"")
+    cmd  = f"cd {build_path} && cmake ../../../../ "
     cmd += f"-DSH_ENGINE_BUILD_EDITOR=ON "
     cmd += f"-DSIMULATION_PATH={simulation_path} "#for other CMAKE files
     cmd += f"-DSH_SIMULATION_NAME={simulation_name} "#to generate solution with sim name
