@@ -79,7 +79,7 @@ elseif("${{SH_SIMULATION_BINARY_TYPE}}" STREQUAL "EXECUTABLE")
 endif()
 
 target_include_directories(${{SH_SIMULATION_NAME}} PUBLIC 
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/${{SH_SIMULATION_NAME}}/include
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/include
 )
 target_link_libraries(
     ${{SH_SIMULATION_NAME}} PUBLIC shengine {libs}
