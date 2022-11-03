@@ -100,7 +100,7 @@ set_target_properties(${{SH_SIMULATION_NAME}} PROPERTIES
     build_path:str = f"{simulation_path}/{os_name}/build"
     print(f"Build path: {build_path}")
     os.system(f"mkdir \"{build_path}\"")
-    cmd  = f"cd {build_path} && cmake ../../../../ "
+    cmd  = f"cd {build_path} && cmake {python_src_dir} "
     cmd += f"-DSH_ENGINE_BUILD_EDITOR=ON "
     cmd += f"-DSIMULATION_PATH={simulation_path} "#for other CMAKE files
     cmd += f"-DSH_SIMULATION_NAME={simulation_name} "#to generate solution with sim name
