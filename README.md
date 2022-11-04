@@ -13,7 +13,7 @@
 
 [Build from source](#build-from-source)
 * [Engine targets only](#engine-targets-only)
-* [simulation-sample](#simulation-sample)
+* [application-sample](#application-sample)
 * [flappy-circle](#flappy-circle)
 * [serial-demo](#serial-demo)
    * [Pinout for the Raspberry Pi pico and UF2 binary](#pinout-for-the-raspberry-pi-pico-and-uf2-binary)
@@ -34,7 +34,7 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
  - Immediate mode gui library embedded with the engine (see [shgui](https://github.com/mrsinho/shgui))
  - Multithreading using [shthreads](https://github.com/mrsinho/shthreads)
     * Main engine thread
-    * the `ShSimulationFunc* ShEngine::ShSharedHost::p_load` function can safely read and write memory at `void* ShEngine::p_engine_extension` without the need of synchronization objects: the memory pointed is reserved for the simulation modules. However, using the extension memory inside the default functions ("`ShSimulationFunc* ShEngine::ShSharedHost::p_start`", "`ShSimulationFunc* ShEngine::ShSharedHost::p_update`" "`ShSimulationFunc* ShEngine::ShSharedHost::p_close`" etc.) won't be thread safe without synchronization objects. You can easily set up a mutex using the `ShThreads` library. The engine will still have to wait the end of the thread to complete the release operations. 
+    * the `ShSimulationFunc* ShEngine::ShSharedHost::p_load` function can safely read and write memory at `void* ShEngine::p_engine_extension` without the need of synchronization objects: the memory pointed is reserved for the application modules. However, using the extension memory inside the default functions ("`ShSimulationFunc* ShEngine::ShSharedHost::p_start`", "`ShSimulationFunc* ShEngine::ShSharedHost::p_update`" "`ShSimulationFunc* ShEngine::ShSharedHost::p_close`" etc.) won't be thread safe without synchronization objects. You can easily set up a mutex using the `ShThreads` library. The engine will still have to wait the end of the thread to complete the release operations. 
  - Entity Component System using [shecs](https://github.com/MrSinho/shecs).
  - Ply mesh loader using [plyimporter](https://github.com/MrSinho/plyimporter).
  - Depth buffer support.
@@ -47,8 +47,8 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
     * material extension structures support
  - Native scripting in C:
     * `loader.ini` is in the same directory of the main executable, and specifies the assets path.
-    * `simulation.json` sets up some properties for the specified shared library, which functions are called at the start of the main thread, in runtime, and at the end of the application.
-    * to generate the cmake target given the external application name, run the `export-simulation.py` script.
+    * `application.json` sets up some properties for the specified shared library, which functions are called at the start of the main thread, in runtime, and at the end of the application.
+    * to generate the cmake target given the external application name, run the `export-application.py` script.
 
 ## To do:
  * External launcher
@@ -77,29 +77,29 @@ cmake --build .
 
 ---
 
-## simulation-sample
+## application-sample
 
 Just a random scene.
 
-![simulation-sample](saved/pictures/simulation-sample.png)
+![application-sample](saved/pictures/application-sample.png)
 
 Using Windows:
 ```batch
-python export-simulation.py "simulation-sample" EXECUTABLE
-cd simulations/simulation-sample/windows/build
+python export-application.py "application-sample" SHARED
+cd applications/application-sample/windows/build
 cmake --build .
 ```
 
 Using Linux:
 ```batch
-python export-simulation.py "simulation-sample" EXECUTABLE
-cd simulations/simulation-sample/linux/build
+python export-application.py "application-sample" SHARED
+cd applications/application-sample/linux/build
 cmake --build .
 ```
 
 Write at `bin/loader.ini`:
 ```batch
-python set-simulation.py "simulation-sample" EXECUTABLE
+python set-editor-application.py "application-sample"
 ```
 
 ---
@@ -112,21 +112,21 @@ A Flappy Bird clone in a circular map. Press `SPACE` to let it survive.
 
 Using Windows:
 ```batch
-python export-simulation.py "flappy-circle" EXECUTABLE
-cd simulations/flappy-circle/windows/build
+python export-application.py "flappy-circle" SHARED
+cd applications/flappy-circle/windows/build
 cmake --build .
 ```
 
 Using Linux:
 ```batch
-python export-simulation.py "flappy-circle" EXECUTABLE
-cd simulations/flappy-circle/linux/build
+python export-application.py "flappy-circle" SHARED
+cd applications/flappy-circle/linux/build
 cmake --build .
 ```
 
 Write at `bin/loader.ini`:
 ```batch
-python set-simulation.py "flappy-circle" EXECUTABLE
+python set-editor-application.py "flappy-circle"
 ```
 
 ---
@@ -139,29 +139,29 @@ Any variation of analog input for the Raspberry Pi Pico affects the lighting in 
 
 Using Windows:
 ```batch
-python export-simulation.py "serial-demo" EXECUTABLE
-cd simulations/serial-demo/windows/build
+python export-application.py "serial-demo" SHARED
+cd applications/serial-demo/windows/build
 cmake --build .
 ```
 
 Using Linux:
 ```batch
-python export-simulation.py "serial-demo" EXECUTABLE
-cd simulations/serial-demo/linux/build
+python export-application.py "serial-demo" SHARED
+cd applications/serial-demo/linux/build
 cmake --build .
 ```
 
 Write at `bin/loader.ini`:
 ```batch
-python set-simulation.py "serial-demo" EXECUTABLE
+python set-editor-application.py "serial-demo"
 ```
 
-Note: because the simulation does not include multithreading, reading serial data blocks all gpu calls.
+Note: because the application does not include multithreading, reading serial data blocks all gpu calls.
 
 ## Pinout for the Raspberry Pi Pico and UF2 binary
-It's connected to a `1.5V` solar panel (it could be a potentiometer or any analogic sensor). The negative charged cable (in red) is connected to `ADC input 0`, `GPIO 26` (for pinout check [saved/pictures/serial-demo-pinout.jpg](saved/pictures/serial-demo-pinout.jpg)). The program to run on the Raspberry Pi Pico is located at [simulations/serial-demo/pico-bin/shengine_sample_raw.uf2](simulations/serial-demo/pico-bin/shengine_sample_raw.uf2).
+It's connected to a `1.5V` solar panel (it could be a potentiometer or any analogic sensor). The negative charged cable (in red) is connected to `ADC input 0`, `GPIO 26` (for pinout check [saved/pictures/serial-demo-pinout.jpg](saved/pictures/serial-demo-pinout.jpg)). The program to run on the Raspberry Pi Pico is located at [applications/serial-demo/pico-bin/shengine_sample_raw.uf2](applications/serial-demo/pico-bin/shengine_sample_raw.uf2).
 
-You should correct the serial port name in case the one specified at [simulations/serial-demo/src/serial-demo.c](simulations/serial-demo/src/serial-demo.c) doesn't match.
+You should correct the serial port name in case the one specified at [applications/serial-demo/src/serial-demo.c](applications/serial-demo/src/serial-demo.c) doesn't match.
 
 ---
 
@@ -171,21 +171,21 @@ You should correct the serial port name in case the one specified at [simulation
 
 Using Windows:
 ```batch
-python export-simulation.py "noise" EXECUTABLE
-cd simulations/noise/windows/build
+python export-application.py "noise" SHARED
+cd applications/noise/windows/build
 cmake --build .
 ```
 
 Using Linux:
 ```batch
-python export-simulation.py "noise" EXECUTABLE
-cd simulations/noise/linux/build
+python export-application.py "noise" SHARED
+cd applications/noise/linux/build
 cmake --build .
 ```
 
 Write at `bin/loader.ini`:
 ```batch
-python set-simulation.py "noise" EXECUTABLE
+python set-editor-application.py "noise"
 ```
 
 Press `H` to hide the GUI and get a full view of the shaded plane. To change the values of the parameters `A` `B` and `S`:
@@ -257,16 +257,16 @@ The built targets are in the `bin` directory.
 
 # Switch between applications in runtime
 
-Use the python script [`set-simulation.py`](set-simulation.py) or edit manually the `loader.ini` file located at the `bin` directory, then press `LEFT_CTRL + R` to reload the engine editor:
+Use the python script [`set-editor-application.py`](set-editor-application.py) or edit manually the `loader.ini` file located at the `bin` directory, then press `LEFT_CTRL + R` to reload the engine editor:
 
 ```batch
-python set-simulation.py noise
+python set-editor-application.py noise
 ```
 
 Produces:
 
 ```
 noise
-../simulations/noise/assets/
+../applications/noise/assets/
 ```
-Where the first line is used for comment purposes, while `../simulations/noise/assets/` (second line) corresponds to the relative assets path. 
+Where the first line is used for comment purposes, while `../applications/noise/assets/` (second line) corresponds to the relative assets path. 
