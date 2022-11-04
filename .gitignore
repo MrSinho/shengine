@@ -54,15 +54,15 @@ dkms.conf
 bin/*
 build/*
 
-simulations/noise/windows/*
-simulations/simulation-sample/windows/*
-simulations/serial-demo/windows/*
-simulations/flappy-circle/windows/*
+applications/noise/windows/*
+applications/sample-application/windows/*
+applications/serial-demo/windows/*
+applications/flappy-circle/windows/*
 
-simulations/noise/linux/*
-simulations/simulation-sample/linux/*
-simulations/serial-demo/linux/*
-simulations/flappy-circle/linux/*
+applications/noise/linux/*
+applications/sample-application/linux/*
+applications/serial-demo/linux/*
+applications/flappy-circle/linux/*
 
 .vscode/*
 .vs/*

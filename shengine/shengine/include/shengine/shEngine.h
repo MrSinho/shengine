@@ -48,7 +48,7 @@ typedef struct ShEngine {
 
     ShFd                  materials_descriptor;
     ShFd                  scene_descriptor;
-    ShFd                  simulation_descriptor;
+    ShFd                  application_descriptor;
 
     uint32_t              material_count;
     ShMaterialHost*       p_materials;
@@ -56,9 +56,9 @@ typedef struct ShEngine {
     ShScene               scene;
     uint32_t              scene_count;
 	
-    ShSimulationHandle    simulation_host;
+    ShApplicationHandle   application_host;
     ShThreadPool          thread_pool;
-    ShThreadState         sim_thread_state;
+    ShThreadState         app_thread_state;
 
     ShGui*                p_gui;
     

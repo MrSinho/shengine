@@ -56,9 +56,9 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
 
     shGetIniProperties("loader.ini", &p_engine->loader_ini);
 
-	shAppendAssetsPath((const char*)p_engine->loader_ini.assets_path, "/descriptors/", "materials.json",  &p_engine->materials_descriptor);
-	shAppendAssetsPath((const char*)p_engine->loader_ini.assets_path, "/descriptors/", "scene.json",      &p_engine->scene_descriptor);
-	shAppendAssetsPath((const char*)p_engine->loader_ini.assets_path, "/descriptors/", "simulation.json", &p_engine->simulation_descriptor);
+	shAppendAssetsPath((const char*)p_engine->loader_ini.assets_path, "/descriptors/", "materials.json",   &p_engine->materials_descriptor);
+	shAppendAssetsPath((const char*)p_engine->loader_ini.assets_path, "/descriptors/", "scene.json",       &p_engine->scene_descriptor);
+	shAppendAssetsPath((const char*)p_engine->loader_ini.assets_path, "/descriptors/", "application.json", &p_engine->application_descriptor);
 
     uint8_t mat_r = shLoadMaterials(
         &p_engine->core, 
@@ -90,24 +90,24 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
     );
 
 #ifdef SH_SIMULATION_TARGET_TYPE_SHARED
-    shLoadSimulation(
-         p_engine->simulation_descriptor.path, 
-        &p_engine->simulation_host
+    shLoadApplication(
+         p_engine->application_descriptor.path, 
+        &p_engine->application_host
     );
 
-    shSimulationLoadSymbols(
-        &p_engine->simulation_host
+    shApplicationLoadSymbols(
+        &p_engine->application_host
     );
 #endif//SH_SIMULATION_TARGET_TYPE_SHARED
 
 
-    if (p_engine->simulation_host.p_start != NULL) {
+    if (p_engine->application_host.p_start != NULL) {
         shEngineError(
             shSharedSceneRun(
                 p_engine, 
-                p_engine->simulation_host.p_start
+                p_engine->application_host.p_start
             ) == 0,
-            "simulation start function failed",
+            "application start function failed",
             return SH_ENGINE_SIM_START_FAILURE
         )
     }
@@ -117,13 +117,13 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
         &p_engine->thread_pool
     );
 
-    if (p_engine->simulation_host.p_thread != NULL) {
+    if (p_engine->application_host.p_thread != NULL) {
 
-        ShThreadParameters simulation_args = p_engine->p_ext;
+        ShThreadParameters application_args = p_engine->p_ext;
 
         shCreateThread(
             SH_SIMULATION_THREAD_IDX, 
-            p_engine->simulation_host.p_thread, 
+            p_engine->application_host.p_thread, 
             4096, 
             &p_engine->thread_pool
         );
@@ -131,13 +131,13 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
         shLaunchThreads(
             SH_SIMULATION_THREAD_IDX,
             1,
-            &simulation_args,
+            &application_args,
             &p_engine->thread_pool
         );
 
         shGetThreadState(
             0,
-            &p_engine->sim_thread_state,
+            &p_engine->app_thread_state,
             &p_engine->thread_pool
         );
     }
@@ -159,8 +159,8 @@ ShEngineStatus shResetEngineState(ShEngine* p_engine, const uint8_t release_shar
 void shEngineUpdateState(ShEngine* p_engine) {
     ShVkCore*           p_core                  = &p_engine->core;
     ShWindow*           p_window                = &p_engine->window;
-    ShSimulationHandle* p_shared_host           = &p_engine->simulation_host;
-    ShThreadState*      p_sim_thread_state      = &p_engine->sim_thread_state;
+    ShApplicationHandle* p_shared_host           = &p_engine->application_host;
+    ShThreadState*      p_app_thread_state      = &p_engine->app_thread_state;
 
     while (shIsWindowActive(*p_window)) {
         
@@ -168,13 +168,13 @@ void shEngineUpdateState(ShEngine* p_engine) {
 
         shGetThreadState(
             SH_SIMULATION_THREAD_IDX, 
-            p_sim_thread_state, 
+            p_app_thread_state, 
             &p_engine->thread_pool
         );
 
         if (
              shSurfaceResizePending(*p_window) && 
-             (*p_sim_thread_state) == SH_THREAD_RETURNED
+             (*p_app_thread_state) == SH_THREAD_RETURNED
             ) {
 
             p_window->surface_resize_pending = 0;
@@ -253,7 +253,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
                 p_engine,
                 shSharedSceneRun(
                     p_engine, 
-                    p_engine->simulation_host.p_frame_resize
+                    p_engine->application_host.p_frame_resize
                 ),
                 1
             );
@@ -276,12 +276,12 @@ void shEngineUpdateState(ShEngine* p_engine) {
             break;
         }
 
-        if ((*p_sim_thread_state) == SH_THREAD_RETURNED) {
-            if (p_engine->simulation_host.after_thread_called == 0) {
+        if ((*p_app_thread_state) == SH_THREAD_RETURNED) {
+            if (p_engine->application_host.after_thread_called == 0) {
                 if (
                     !shSharedSceneRun(
                         p_engine, 
-                        p_engine->simulation_host.p_after_thread
+                        p_engine->application_host.p_after_thread
                     )) {
 
                     shEngineManageState(
@@ -290,13 +290,13 @@ void shEngineUpdateState(ShEngine* p_engine) {
                         1
                     );
                 }
-                p_engine->simulation_host.after_thread_called++;
+                p_engine->application_host.after_thread_called++;
             }
 
             if (
                 !shSharedSceneRun(
                     p_engine, 
-                    p_engine->simulation_host.p_update
+                    p_engine->application_host.p_update
                 )) {
 
                 shEngineManageState(
@@ -348,13 +348,13 @@ void shEngineUpdateState(ShEngine* p_engine) {
             &image_index
         );
 
-        if ((*p_sim_thread_state) == SH_THREAD_RETURNED) {
+        if ((*p_app_thread_state) == SH_THREAD_RETURNED) {
             shSharedHostWarning(
                 shSharedSceneRun(
                     p_engine, 
-                    p_engine->simulation_host.p_frame_update
+                    p_engine->application_host.p_frame_update
                 ),
-                "simulation update frame failed"
+                "application update frame failed"
             );
         }
         
@@ -399,15 +399,15 @@ void shEngineManageState(ShEngine* p_engine, const ShEngineStatus ready, const u
 void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
     shEngineError(p_engine == NULL, "invalid engine memory", exit(-1));
 
-    if (p_engine->simulation_host.shared != NULL) {
+    if (p_engine->application_host.shared != NULL) {
 
         shEngineWarning(
 
             shSharedSceneRun(
                 p_engine, 
-                p_engine->simulation_host.p_close
+                p_engine->application_host.p_close
             ) == 0, 
-            "failed closing simulation"
+            "failed closing application"
         );
 
         if (p_engine->thread_pool.p_handles != NULL) {
@@ -425,14 +425,14 @@ void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
                 &p_engine->thread_pool
             );
 
-            shEngineWarning(return_value == 0, "simulation thread returned with an error");
+            shEngineWarning(return_value == 0, "application thread returned with an error");
         }
 
         if (release_shared) {
-            shSharedRelease(&p_engine->simulation_host.shared);
+            shSharedRelease(&p_engine->application_host.shared);
         }
 
-        p_engine->simulation_host.after_thread_called = 0;
+        p_engine->application_host.after_thread_called = 0;
     }
     if (p_engine->p_gui != NULL) {
         shGuiRelease(p_engine->p_gui);

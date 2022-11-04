@@ -267,36 +267,36 @@ add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 	
 
-option(SH_SIMULATION_NAME CACHE emptytarget)
-project(${SH_SIMULATION_NAME})
+option(SH_APPLICATION_NAME CACHE emptytarget)
+project(${SH_APPLICATION_NAME})
 
 option(SH_SIMULATION_BINARY_TYPE CACHE "EXECUTABLE")
 if("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "STATIC")
-    add_library(${SH_SIMULATION_NAME} STATIC 
+    add_library(${SH_APPLICATION_NAME} STATIC 
     	/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/src/flappy-circle.c
 
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "SHARED")
-    add_library(${SH_SIMULATION_NAME} SHARED 
+    add_library(${SH_APPLICATION_NAME} SHARED 
     	/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/src/flappy-circle.c
 
 )
 elseif("${SH_SIMULATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
-    add_executable(${SH_SIMULATION_NAME}  
+    add_executable(${SH_APPLICATION_NAME}  
     	/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/src/flappy-circle.c
 
 )
 endif()
-target_include_directories(${SH_SIMULATION_NAME} PUBLIC 
-${CMAKE_CURRENT_SOURCE_DIR}/${SH_SIMULATION_NAME}/include
+target_include_directories(${SH_APPLICATION_NAME} PUBLIC 
+${CMAKE_CURRENT_SOURCE_DIR}/${SH_APPLICATION_NAME}/include
 )
-target_link_libraries(${SH_SIMULATION_NAME} PUBLIC shengine 	)
-set_target_properties(${SH_SIMULATION_NAME} PROPERTIES 
+target_link_libraries(${SH_APPLICATION_NAME} PUBLIC shengine 	)
+set_target_properties(${SH_APPLICATION_NAME} PROPERTIES 
 ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin  
 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
 
-running command cd /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/build && cmake .. -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH=/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations -DSH_EDITOR_ASSETS_PATH=/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/assets/ -DSH_SIMULATION_NAME=flappy-circle -DSH_SIMULATION_BINARY_TYPE=SHARED 
+running command cd /mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/build && cmake .. -DSH_ENGINE_BUILD_EDITOR=ON -DSIMULATION_PATH=/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations -DSH_EDITOR_ASSETS_PATH=/mnt/c/Users/sino3/Desktop/shci-unix-test/shengine/shengine/simulations/flappy-circle/assets/ -DSH_APPLICATION_NAME=flappy-circle -DSH_SIMULATION_BINARY_TYPE=SHARED 
 Scanning dependencies of target json-c
 [  1%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/arraylist.c.o
 [  2%] Building C object shengine/externals/json-c/CMakeFiles/json-c.dir/debug.c.o

@@ -54,12 +54,12 @@ int shEditorMain(ShEngine* p_engine) {
 }
 
 
-#ifndef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+#ifndef SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 int main() {
 	ShEngine engine = { 0 };
 	return shEditorMain(&engine);
 }
-#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+#endif//SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
 #ifdef __cplusplus
 }

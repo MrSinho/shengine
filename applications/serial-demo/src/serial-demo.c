@@ -137,24 +137,24 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION serial_close(ShEngine* p_engine) {
 
 
 
-#ifdef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+#ifdef SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
 #include <sheditor/shEditor.h>
 
 int main() {
     ShEngine engine = { 0 };
-    engine.simulation_host.p_start          = &serial_start;
-    engine.simulation_host.p_thread         = &serial_thread;
-    engine.simulation_host.p_update_pending = &serial_update_pending;
-    engine.simulation_host.p_after_thread   = &serial_after_thread;
-    engine.simulation_host.p_update         = &serial_update;
-    engine.simulation_host.p_frame_update   = &serial_frame_update;
-    engine.simulation_host.p_frame_resize   = &serial_frame_resize;
-    engine.simulation_host.p_close          = &serial_close;
-    engine.window.title                     = "serial demo";
+    engine.application_host.p_start          = &serial_start;
+    engine.application_host.p_thread         = &serial_thread;
+    engine.application_host.p_update_pending = &serial_update_pending;
+    engine.application_host.p_after_thread   = &serial_after_thread;
+    engine.application_host.p_update         = &serial_update;
+    engine.application_host.p_frame_update   = &serial_frame_update;
+    engine.application_host.p_frame_resize   = &serial_frame_resize;
+    engine.application_host.p_close          = &serial_close;
+    engine.window.title                      = "serial demo";
     return shEditorMain(&engine);
 }
-#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+#endif//SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
 #ifdef __cplusplus
 }

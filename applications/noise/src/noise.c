@@ -217,24 +217,24 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_close(ShEngine* p_engine, const uint32_t
 
 
 
-#ifdef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+#ifdef SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
 #include <sheditor/shEditor.h>
 
 int main() {
     ShEngine engine = { 0 };
-    engine.simulation_host.p_start          = &noise_start;
-    engine.simulation_host.p_thread         = &noise_thread;
-    engine.simulation_host.p_update_pending = &noise_update_pending;
-    engine.simulation_host.p_after_thread   = &noise_after_thread;
-    engine.simulation_host.p_update         = &noise_update;
-    engine.simulation_host.p_frame_update   = &noise_frame_update;
-    engine.simulation_host.p_frame_resize   = &noise_frame_resize;
-    engine.simulation_host.p_close          = &noise_close;
-    engine.window.title                     = "noise";
+    engine.application_host.p_start          = &noise_start;
+    engine.application_host.p_thread         = &noise_thread;
+    engine.application_host.p_update_pending = &noise_update_pending;
+    engine.application_host.p_after_thread   = &noise_after_thread;
+    engine.application_host.p_update         = &noise_update;
+    engine.application_host.p_frame_update   = &noise_frame_update;
+    engine.application_host.p_frame_resize   = &noise_frame_resize;
+    engine.application_host.p_close          = &noise_close;
+    engine.window.title                      = "noise";
     return shEditorMain(&engine);
 }
-#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+#endif//SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
 #ifdef __cplusplus
 }

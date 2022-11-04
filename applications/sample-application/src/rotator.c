@@ -16,12 +16,12 @@ extern "C" {
 
 //0 as return value: failure
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION sim_start(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION app_start(ShEngine* p_engine) {
     puts("SIMULATION IS RUNNING...");
     return shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_EXTRA_DARK);
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION sim_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION app_update(ShEngine* p_engine) {
     //before recording cmd buffer
     ShGui* p_gui = p_engine->p_gui;
 
@@ -54,7 +54,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION sim_update(ShEngine* p_engine) {
 	return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION sim_frame_update(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION app_frame_update(ShEngine* p_engine) {
     //cmd buffer is recording
 
     for (uint32_t entity = 0; entity < p_engine->scene.entity_count; entity++) {
@@ -87,14 +87,14 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION sim_frame_update(ShEngine* p_engine) {
     return 1;
 }
 
-uint64_t SH_ENGINE_EXPORT_FUNCTION sim_thread(void* p_ext) {//void* ShEngine::p_engine_extension = NULL
+uint64_t SH_ENGINE_EXPORT_FUNCTION app_thread(void* p_ext) {//void* ShEngine::p_engine_extension = NULL
     //puts("Simulation thread running, but there's nothing to do...");
     //
     //shThreadsSleep(2000);
     return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION sim_update_pending(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION app_update_pending(ShEngine* p_engine) {
 
     //shGuiText(
     //    p_engine->p_gui,
@@ -109,7 +109,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION sim_update_pending(ShEngine* p_engine) {
 }
 
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION sim_after_thread(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION app_after_thread(ShEngine* p_engine) {
     
     puts("Simulation thread terminated");
 
@@ -117,36 +117,36 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION sim_after_thread(ShEngine* p_engine) {
 }
 
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION sim_frame_resize(ShEngine* p_engine) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION app_frame_resize(ShEngine* p_engine) {
     puts("Window resized");
     return 1;
 }
 
-uint8_t SH_ENGINE_EXPORT_FUNCTION sim_close(ShEngine* p_engine, const uint32_t entity) {
+uint8_t SH_ENGINE_EXPORT_FUNCTION app_close(ShEngine* p_engine, const uint32_t entity) {
     puts("Shutting down sim");
     return 1;
 }
 
 
 
-#ifdef SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+#ifdef SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
 #include <sheditor/shEditor.h>
 
 int main() {
     ShEngine engine = { 0 };
-    engine.simulation_host.p_start          = &sim_start;
-    engine.simulation_host.p_thread         = &sim_thread;
-    engine.simulation_host.p_update_pending = &sim_update_pending;
-    engine.simulation_host.p_after_thread   = &sim_after_thread;
-    engine.simulation_host.p_update         = &sim_update;
-    engine.simulation_host.p_frame_update   = &sim_frame_update;
-    engine.simulation_host.p_frame_resize   = &sim_frame_resize;
-    engine.simulation_host.p_close          = &sim_close;
-    engine.window.title                     = "simulation sample";
+    engine.application_host.p_start          = &app_start;
+    engine.application_host.p_thread         = &app_thread;
+    engine.application_host.p_update_pending = &app_update_pending;
+    engine.application_host.p_after_thread   = &app_after_thread;
+    engine.application_host.p_update         = &app_update;
+    engine.application_host.p_frame_update   = &app_frame_update;
+    engine.application_host.p_frame_resize   = &app_frame_resize;
+    engine.application_host.p_close          = &app_close;
+    engine.window.title                      = "sample application";
     return shEditorMain(&engine);
 }
-#endif//SH_SIMULATION_TARGET_TYPE_EXECUTABLE
+#endif//SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
 #ifdef __cplusplus
 }

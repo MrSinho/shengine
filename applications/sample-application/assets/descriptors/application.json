@@ -1,0 +1,12 @@
+{
+    "run": 1,
+    "name": "sample-application",
+    "start": "app_start",
+    "thread": "app_thread",
+    "update_pending": "app_update_pending",
+    "after_thread": "app_after_thread",
+    "update": "app_update",
+    "frame_update": "app_frame_update",
+    "frame_resize": "app_frame_resize",
+    "close": "app_close"
+}

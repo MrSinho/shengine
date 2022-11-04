@@ -32,32 +32,32 @@ extern "C" {
 
 
 typedef void* ShSharedHandle;
-typedef uint8_t(ShSimulationFunc) (void*);
-typedef uint64_t (ShSimulationThreadFunc) (void*);
+typedef uint8_t(ShApplicationFunc) (void*);
+typedef uint64_t (ShApplicationThreadFunc) (void*);
 
 
 
-typedef struct ShSimulationHandle {
-	ShSharedHandle          shared;
-	uint8_t                 run;
-	char*                   s_start;
-	char*                   s_thread;
-	char*                   s_update_pending;
-	char*                   s_after_thread;
-	char*                   s_update;
-	char*                   s_frame_update;
-	char*                   s_frame_resize;
-	char*                   s_close;
-	ShSimulationFunc*       p_start;
-	ShSimulationThreadFunc* p_thread;
-	ShSimulationFunc*       p_update_pending;
-	ShSimulationFunc*       p_after_thread;
-	ShSimulationFunc*       p_update;
-	ShSimulationFunc*       p_frame_update;
-	ShSimulationFunc*       p_frame_resize;
-	ShSimulationFunc*		p_close;
-	uint8_t                 after_thread_called;
-} ShSimulationHandle;
+typedef struct ShApplicationHandle {
+	ShSharedHandle           shared;
+	uint8_t                  run;
+	char*                    s_start;
+	char*                    s_thread;
+	char*                    s_update_pending;
+	char*                    s_after_thread;
+	char*                    s_update;
+	char*                    s_frame_update;
+	char*                    s_frame_resize;
+	char*                    s_close;
+	ShApplicationFunc*       p_start;
+	ShApplicationThreadFunc* p_thread;
+	ShApplicationFunc*       p_update_pending;
+	ShApplicationFunc*       p_after_thread;
+	ShApplicationFunc*       p_update;
+	ShApplicationFunc*       p_frame_update;
+	ShApplicationFunc*       p_frame_resize;
+	ShApplicationFunc*		 p_close;
+	uint8_t                  after_thread_called;
+} ShApplicationHandle;
 
 
 
@@ -68,11 +68,11 @@ typedef struct ShSimulationHandle {
 	if (!(int)(condition)) { printf("shsharedhost error: %s\n", msg); perror("aborting"); }
 
 
-extern uint8_t shSharedSceneRun(void* p_engine, ShSimulationFunc* p_func);
+extern uint8_t shSharedSceneRun(void* p_engine, ShApplicationFunc* p_func);
 
-extern void shLoadSimulation(const char* path, ShSimulationHandle* p_simulation);
+extern void shLoadSimulation(const char* path, ShApplicationHandle* p_application);
 
-extern void shSimulationLoadSymbols(ShSimulationHandle* p_simulation);
+extern void shSimulationLoadSymbols(ShApplicationHandle* p_application);
 
 #define shSharedRelease(p_shared)\
         if (p_shared != NULL) { if (*p_shared != NULL) { shSharedFree(*(p_shared)); *(p_shared) = NULL; } }
