@@ -70,9 +70,9 @@ typedef struct ShApplicationHandle {
 
 extern uint8_t shSharedSceneRun(void* p_engine, ShApplicationFunc* p_func);
 
-extern void shLoadSimulation(const char* path, ShApplicationHandle* p_application);
+extern void shLoadApplication(const char* path, ShApplicationHandle* p_application);
 
-extern void shSimulationLoadSymbols(ShApplicationHandle* p_application);
+extern void shApplicationLoadSymbols(ShApplicationHandle* p_application);
 
 #define shSharedRelease(p_shared)\
         if (p_shared != NULL) { if (*p_shared != NULL) { shSharedFree(*(p_shared)); *(p_shared) = NULL; } }

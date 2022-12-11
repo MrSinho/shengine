@@ -206,7 +206,10 @@ void shSceneUpdate(ShEngine* p_engine) {
 					}
 
 					shPipelineWriteDescriptorBufferMemory(
-						p_engine->core.device, descriptor_idx, 
+						p_engine->core.device, 
+						descriptor_idx, 
+						0,
+						(uint32_t)p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range,
 						&((char*)p_material->uniform_buffers)[descriptor_offset], 
 						&p_material->pipeline
 					);

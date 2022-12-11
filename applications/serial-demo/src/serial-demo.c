@@ -39,7 +39,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION serial_start(ShEngine* p_engine) {
 		}
 	}
 	
-	shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_EXTRA_DARK);
+	shEngineGuiSetup(p_engine, 64, 128, SH_GUI_THEME_EXTRA_DARK);
 
 	return 1;
 }

@@ -34,7 +34,7 @@ typedef struct Fractal {
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
     p_engine->p_ext = calloc(1, sizeof(Fractal));
     shEngineError(p_engine->p_ext == NULL, "invalid fractal properties memory", return 0);
-    return shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_DARK);
+    return shEngineGuiSetup(p_engine, 128, 1024, SH_GUI_THEME_DARK);
 }
 
 uint64_t SH_ENGINE_EXPORT_FUNCTION noise_thread(Fractal* p_fractal) {//void* ShEngine::p_engine_extension = NULL
@@ -182,6 +182,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_frame_update(ShEngine* p_engine) {
     shPipelineWriteDescriptorBufferMemory(
         device,
         0,
+        0,
+        (uint32_t)p_pipeline->descriptor_buffer_infos[0].range,
         p_fractal,
         p_pipeline
     );

@@ -37,7 +37,14 @@ uint8_t shEntityInMaterial(const uint32_t entity, ShMaterialHost* p_material) {
 void shUpdateUniformParameters(ShEngine* p_engine, const uint32_t descriptor_idx, ShMaterialHost* p_material) {
 	vkDeviceWaitIdle(p_engine->core.device);
 	uint32_t descriptor_offset = shGetUniformOffset(p_material, descriptor_idx);
-	shPipelineWriteDescriptorBufferMemory(p_engine->core.device, descriptor_idx, &((char*)p_material->uniform_buffers)[descriptor_offset], &p_material->pipeline);
+	shPipelineWriteDescriptorBufferMemory(//not reccomended
+		p_engine->core.device, 
+		descriptor_idx, 
+		0,
+		(uint32_t)p_material->pipeline.descriptor_buffer_infos[descriptor_idx].range,
+		&((char*)p_material->uniform_buffers)[descriptor_offset], 
+		&p_material->pipeline
+	);
 	shPipelineBindDescriptorSet(p_engine->core.p_graphics_commands[0].cmd_buffer, descriptor_idx, VK_PIPELINE_BIND_POINT_GRAPHICS, &p_material->pipeline);
 }
 

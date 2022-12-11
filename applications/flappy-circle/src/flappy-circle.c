@@ -43,7 +43,7 @@ uint8_t bird_input(ShEngine* p_engine, const uint32_t bird_entity) {
 		shResetEngineState(p_engine, 0);
 	}
 
-	shEngineGuiSetup(p_engine, 256, SH_GUI_THEME_DARK);
+	shEngineGuiSetup(p_engine, 12, 24, SH_GUI_THEME_DARK);
 
 	return 1;
 }

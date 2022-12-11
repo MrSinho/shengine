@@ -11,7 +11,7 @@ extern "C" {
 
 
 
-ShEngineStatus shEngineGuiSetup(ShEngine* p_engine, const uint32_t max_gui_items, const ShGuiDefaultValues default_values) {
+ShEngineStatus shEngineGuiSetup(ShEngine* p_engine, const uint32_t max_regions, const uint32_t max_chars, const ShGuiDefaultValues default_values) {
     shEngineError(p_engine == NULL, "invalid engine memory", return SH_ENGINE_INVALID_ENGINE_MEMORY);
 
     ShGuiCore gui_core = {
@@ -41,8 +41,8 @@ ShEngineStatus shEngineGuiSetup(ShEngine* p_engine, const uint32_t max_gui_items
         p_engine->p_gui
     );
 
-    shGuiBuildRegionPipeline(p_engine->p_gui, max_gui_items);
-    shGuiBuildTextPipeline(p_engine->p_gui, max_gui_items);
+    shGuiBuildRegionPipeline(p_engine->p_gui, NULL, NULL, max_regions);
+    shGuiBuildTextPipeline(p_engine->p_gui, NULL, NULL, max_chars);
     shGuiSetDefaultValues(
         p_engine->p_gui,
         default_values, SH_GUI_RECORD | SH_GUI_INITIALIZE

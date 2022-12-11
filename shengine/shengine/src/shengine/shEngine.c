@@ -89,7 +89,7 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
         &p_engine->scene
     );
 
-#ifdef SH_SIMULATION_TARGET_TYPE_SHARED
+#ifndef SH_APPLICATION_TARGET_TYPE_EXECUTABLE
     shLoadApplication(
          p_engine->application_descriptor.path, 
         &p_engine->application_host
@@ -98,7 +98,7 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
     shApplicationLoadSymbols(
         &p_engine->application_host
     );
-#endif//SH_SIMULATION_TARGET_TYPE_SHARED
+#endif//SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
 
     if (p_engine->application_host.p_start != NULL) {
@@ -234,13 +234,20 @@ void shEngineUpdateState(ShEngine* p_engine) {
                 shGuiDestroyPipelines(
                     p_engine->p_gui
                 );
+                shGuiUnload(
+                    p_engine->p_gui
+                );
                 shGuiBuildRegionPipeline(
-                    p_engine->p_gui, 
+                    p_engine->p_gui,
+                    NULL,
+                    NULL,
                     p_engine->p_gui->region_infos.max_region_items
                 );
                 shGuiBuildTextPipeline(
-                    p_engine->p_gui, 
-                    p_engine->p_gui->text_infos.max_text_items
+                    p_engine->p_gui,
+                    NULL,
+                    NULL,
+                    p_engine->p_gui->text_infos.max_char_raw_size / SH_GUI_MAX_CHAR_VERTEX_SIZE
                 );
                 shGuiSetDefaultValues(
                     p_engine->p_gui, 
@@ -435,6 +442,9 @@ void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
         p_engine->application_host.after_thread_called = 0;
     }
     if (p_engine->p_gui != NULL) {
+        shGuiDestroyPipelines(p_engine->p_gui);
+        shGuiReleaseDefaultValues(p_engine->p_gui);
+        shGuiUnload(p_engine->p_gui);
         shGuiRelease(p_engine->p_gui);
         p_engine->p_gui = NULL;
     }
