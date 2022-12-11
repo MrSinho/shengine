@@ -89,17 +89,16 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
         &p_engine->scene
     );
 
-#ifndef SH_APPLICATION_TARGET_TYPE_EXECUTABLE
-    shLoadApplication(
-         p_engine->application_descriptor.path, 
-        &p_engine->application_host
-    );
+    if (p_engine->application_host.p_start == NULL || p_engine->application_host.p_update == NULL || p_engine->application_host.p_close == NULL) {
+        shLoadApplication(
+            p_engine->application_descriptor.path,
+            &p_engine->application_host
+        );
 
-    shApplicationLoadSymbols(
-        &p_engine->application_host
-    );
-#endif//SH_APPLICATION_TARGET_TYPE_EXECUTABLE
-
+        shApplicationLoadSymbols(
+            &p_engine->application_host
+        );
+    }
 
     if (p_engine->application_host.p_start != NULL) {
         shEngineError(
