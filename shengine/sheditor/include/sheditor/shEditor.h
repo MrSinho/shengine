@@ -12,7 +12,7 @@ extern int shEditorMain(ShEngine* p_engine);
 
 
 #ifdef __cplusplus
-extern "C" {
+}
 #endif//__cplusplus
 
 #endif//SH_EDITOR_H
