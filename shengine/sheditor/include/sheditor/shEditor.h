@@ -7,7 +7,7 @@ extern "C" {
 
 
 
-extern int shEditorMain();
+extern int shEditorMain(ShEngine* p_engine);
 
 
 
