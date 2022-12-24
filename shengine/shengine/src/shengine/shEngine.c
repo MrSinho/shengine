@@ -436,41 +436,40 @@ void shEngineManageState(ShEngine* p_engine, const ShEngineStatus ready, const u
 void shEngineRelease(ShEngine* p_engine, const uint8_t release_shared) {
     shEngineError(p_engine == NULL, "invalid engine memory", exit(-1));
 
-    if (p_engine->application_host.shared != NULL) {
-
+    if (p_engine->application_host.p_close != NULL) {
         shEngineWarning(
-
             shSharedSceneRun(
-                p_engine, 
+                p_engine,
                 p_engine->application_host.p_close
-            ) == 0, 
+            ) == 0,
             "failed closing application"
         );
-
-        if (p_engine->thread_pool.p_handles != NULL) {
-            uint64_t return_value = 0;
-
-            shWaitForThreads(
-                SH_SIMULATION_THREAD_IDX,
-                1,
-                UINT64_MAX,
-                &return_value,
-                &p_engine->thread_pool
-            );
-
-            shReleaseThreads(
-                &p_engine->thread_pool
-            );
-
-            shEngineWarning(return_value == 0, "application thread returned with an error");
-        }
-
-        if (release_shared) {
-            shSharedRelease(&p_engine->application_host.shared);
-        }
-
-        p_engine->application_host.after_thread_called = 0;
     }
+
+    if (p_engine->thread_pool.p_handles != NULL) {
+        uint64_t return_value = 0;
+
+        shWaitForThreads(
+            SH_SIMULATION_THREAD_IDX,
+            1,
+            UINT64_MAX,
+            &return_value,
+            &p_engine->thread_pool
+        );
+
+        shReleaseThreads(
+            &p_engine->thread_pool
+        );
+
+        shEngineWarning(return_value == 0, "application thread returned with an error");
+    }
+    p_engine->application_host.after_thread_called = 0;
+
+
+    if (release_shared && p_engine->application_host.shared) {
+        shSharedRelease(&p_engine->application_host.shared);
+    }
+    
     if (p_engine->p_gui != NULL) {
         shGuiDestroyPipelines(p_engine->p_gui);
         shGuiReleaseDefaultValues(p_engine->p_gui);
