@@ -60,7 +60,7 @@ typedef struct ShVkCore ShVkCore;
 
 
 
-extern uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename, uint32_t* p_material_count, ShMaterialHost** pp_materials);
+extern uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename, const uint8_t allocate_descriptor_heap, uint32_t* p_material_count, ShMaterialHost** pp_materials);
 
 extern void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials);
 

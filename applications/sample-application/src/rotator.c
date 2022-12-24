@@ -18,7 +18,7 @@ extern "C" {
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION app_start(ShEngine* p_engine) {
     puts("SIMULATION IS RUNNING...");
-    return shEngineGuiSetup(p_engine, 12, 32, SH_GUI_THEME_EXTRA_DARK);
+    return shEngineGuiSetup(p_engine, 32, 1024, SH_GUI_THEME_EXTRA_DARK);
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION app_update(ShEngine* p_engine) {

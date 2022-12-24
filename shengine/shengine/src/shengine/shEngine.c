@@ -64,6 +64,7 @@ ShEngineStatus shSetEngineState(ShEngine* p_engine) {
         &p_engine->core, 
         p_engine->materials_descriptor.dir,
         p_engine->materials_descriptor.filename, 
+        1,
         &p_engine->material_count, 
         &p_engine->p_materials
     );
@@ -193,16 +194,45 @@ void shEngineUpdateState(ShEngine* p_engine) {
 
             for (uint32_t material_idx = 0; material_idx < p_engine->material_count; material_idx++) {
                 ShMaterialHost* p_material = &p_engine->p_materials[material_idx];
-                for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {
-                    shPipelineClearDescriptorBufferMemory(
-                         p_engine->core.device, 
-                         descriptor_idx, 
-                        &p_material->pipeline
-                    );
-                }
+
+                VkDescriptorBufferInfo buffer_infos[32];
+                VkBuffer descriptor_buffers[32];
+                VkDeviceMemory descriptor_buffers_memory[32];
+
+                uint32_t descriptor_count = p_material->pipeline.descriptor_count;
+                memcpy(
+                    buffer_infos, 
+                    p_material->pipeline.descriptor_buffer_infos, 
+                    descriptor_count * sizeof(VkDescriptorBufferInfo)
+                );
+                memcpy(
+                    descriptor_buffers,
+                    p_material->pipeline.descriptor_buffers,
+                    descriptor_count * sizeof(VkBuffer)
+                );
+                memcpy(
+                    descriptor_buffers_memory,
+                    p_material->pipeline.descriptor_buffers_memory,
+                    descriptor_count * sizeof(VkDeviceMemory)
+                );
                 shPipelineRelease(
                      p_engine->core.device, 
                     &p_engine->p_materials[material_idx].pipeline
+                );
+                memcpy(
+                    p_material->pipeline.descriptor_buffer_infos,
+                    buffer_infos,
+                    descriptor_count * sizeof(VkDescriptorBufferInfo)
+                );
+                memcpy(
+                    p_material->pipeline.descriptor_buffers,
+                    descriptor_buffers,
+                    descriptor_count * sizeof(VkBuffer)
+                );
+                memcpy(
+                    p_material->pipeline.descriptor_buffers_memory,
+                    descriptor_buffers_memory,
+                    descriptor_count * sizeof(VkDeviceMemory)
                 );
             }
 
@@ -210,6 +240,7 @@ void shEngineUpdateState(ShEngine* p_engine) {
                 p_core, 
                 p_engine->materials_descriptor.dir,
                 p_engine->materials_descriptor.filename, 
+                0,
                 &p_engine->material_count, 
                 &p_engine->p_materials
             );

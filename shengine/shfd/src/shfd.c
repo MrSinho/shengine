@@ -105,7 +105,7 @@ uint8_t shAppendAssetsPath(const char* engine_assets_path, const char* extension
     *(pp_materials) = NULL;\
     return 0
 
-uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename, uint32_t* p_material_count, ShMaterialHost** pp_materials) {
+uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename, const uint8_t allocate_descriptor_heap, uint32_t* p_material_count, ShMaterialHost** pp_materials) {
     shFdError(p_material_count == NULL || pp_materials == NULL, "invalid arguments", return 0);
     
     char path[256];
@@ -127,9 +127,9 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename,
 
     if (p_materials == NULL || mat_count == 0) { shAbortLoadingMaterials(pp_materials); }
 
-    for (uint32_t i = 0; i < mat_count; i++) {
+    for (uint32_t material_idx = 0; material_idx < mat_count; material_idx++) {
 
-        json_object* json_material = json_object_array_get_idx(json_materials, i);
+        json_object* json_material = json_object_array_get_idx(json_materials, material_idx);
 
 
         json_object* json_build_pipeline = json_object_object_get(json_material, "build_pipeline");
@@ -150,7 +150,7 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename,
 
             {//++++++++++++++++++++++++
                 json_object* json_bind_on_loop = json_object_object_get(json_material, "bind_on_loop");
-                p_materials[i].bind_on_loop = json_bind_on_loop == NULL ? 1 : (uint8_t)json_object_get_int(json_bind_on_loop);
+                p_materials[material_idx].bind_on_loop = json_bind_on_loop == NULL ? 1 : (uint8_t)json_object_get_int(json_bind_on_loop);
             }//++++++++++++++++++++++++
 
             //+++++++++++++++++++++++++        
@@ -242,30 +242,39 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename,
 
                                 VkDescriptorType type = (VkDescriptorType)shStringFlagToInt(s_type);
                                 VkShaderStageFlags stage = (VkShaderStageFlags)shStringFlagToInt(s_stage);
-
                                 uint8_t dynamic = 0;
-                                if (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC || type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC) {
-                                    dynamic++;
-                                    shPipelineCreateDynamicDescriptorBuffer(
-                                        p_core->device,
-                                        (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-                                        set,
-                                        shGetDescriptorSize(p_core, size),
-                                        max_bindings,
-                                        &pipeline
-                                    );
+
+                                if (allocate_descriptor_heap) {
+                                    if (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC || type == VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC) {
+                                        dynamic++;
+                                        shPipelineCreateDynamicDescriptorBuffer(
+                                            p_core->device,
+                                            (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+                                            set,
+                                            shGetDescriptorSize(p_core, size),
+                                            max_bindings,
+                                            &pipeline
+                                        );
+                                    }
+                                    else {
+                                        shPipelineCreateDescriptorBuffer(
+                                            p_core->device,
+                                            (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
+                                            set,
+                                            shGetDescriptorSize(p_core, size),
+                                            &pipeline
+                                        );
+                                    }
+                                    shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, set, &pipeline);
+                                    shPipelineBindDescriptorBufferMemory(p_core->device, set, 0, &pipeline);
                                 }
                                 else {
-                                    shPipelineCreateDescriptorBuffer(
-                                        p_core->device,
-                                        (type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-                                        set,
-                                        shGetDescriptorSize(p_core, size),
-                                        &pipeline
-                                    );
+                                    pipeline.descriptor_buffers[set] = p_materials[material_idx].pipeline.descriptor_buffers[set];
+                                    pipeline.descriptor_buffers_memory[set] = p_materials[material_idx].pipeline.descriptor_buffers_memory[set];
+                                    pipeline.descriptor_buffer_infos[set] = p_materials[material_idx].pipeline.descriptor_buffer_infos[set];
+                                    pipeline.write_descriptor_sets[set].pBufferInfo = &p_materials[material_idx].pipeline.descriptor_buffer_infos[set];
+                                    pipeline.descriptor_count++;
                                 }
-                                shPipelineAllocateDescriptorBufferMemory(p_core->device, p_core->physical_device, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, set, &pipeline);
-                                shPipelineBindDescriptorBufferMemory(p_core->device, set, 0, &pipeline);
                                 shPipelineDescriptorSetLayout(p_core->device,
                                     set,
                                     dynamic,
@@ -351,10 +360,10 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename,
                         &fixed_states
                     );
                     shSetupGraphicsPipeline(p_core->device, p_core->render_pass, fixed_states, &pipeline);
-                    p_materials[i].fixed_states = fixed_states;
-                    p_materials[i].pipeline = pipeline;
-                    for (uint32_t j = 0; j < p_materials[i].pipeline.descriptor_count; j++) {
-                        p_materials[i].pipeline.write_descriptor_sets[j].pBufferInfo = &p_materials[i].pipeline.descriptor_buffer_infos[j];
+                    p_materials[material_idx].fixed_states = fixed_states;
+                    p_materials[material_idx].pipeline = pipeline;
+                    for (uint32_t j = 0; j < p_materials[material_idx].pipeline.descriptor_count; j++) {
+                        p_materials[material_idx].pipeline.write_descriptor_sets[j].pBufferInfo = &p_materials[material_idx].pipeline.descriptor_buffer_infos[j];
                     }
                 }
             }//FIXED STATES
