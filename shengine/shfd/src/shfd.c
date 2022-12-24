@@ -385,20 +385,20 @@ uint8_t shLoadMaterials(ShVkCore* p_core, const char* dir, const char* filename,
 
 void shMaterialsRelease(ShVkCore* p_core, uint32_t* p_mat_info_count, ShMaterialHost** pp_materials) {
 	shFdError(p_mat_info_count == NULL || pp_materials == NULL, "invalid arguments", return);
-	for (uint32_t i = 0; i < *p_mat_info_count; i++) {
-        ShMaterialHost* p_material = &(*pp_materials)[i];
+	for (uint32_t material_idx = 0; material_idx < (*p_mat_info_count); material_idx++) {
+        ShMaterialHost* p_material = &(*pp_materials)[material_idx];
         if (p_material->p_material_clients != NULL) {
             free(p_material->p_material_clients);
         }
         if (p_material->p_entities != NULL) {
             free(p_material->p_entities);
         }
-		for (uint32_t j = 0; j < p_material->pipeline.descriptor_count; j++) {
-			shPipelineClearDescriptorBufferMemory(p_core->device, j, &p_material->pipeline);
+		for (uint32_t descriptor_idx = 0; descriptor_idx < p_material->pipeline.descriptor_count; descriptor_idx++) {
+			shPipelineClearDescriptorBufferMemory(p_core->device, descriptor_idx, &p_material->pipeline);
 		}
-        shPipelineRelease(p_core->device, &(*pp_materials)[i].pipeline);
+        shPipelineRelease(p_core->device, &(*pp_materials)[material_idx].pipeline);
     }
-    if (*p_mat_info_count != 0 && *pp_materials != NULL) {
+    if ((*p_mat_info_count) != 0 && (*pp_materials) != NULL) {
         free(*pp_materials); 
         (*pp_materials) = NULL;
     }
