@@ -51,8 +51,11 @@ The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubunt
     * to generate the cmake target given the external application name, run the `export-application.py` script.
 
 ## To do:
- * External launcher
+ * External launcher - add ncurses to export-application.py, which will be the definitive launchef
  * Improve [shgui](https://github.com/mrsinho/shgui)
+ * choose between shgui and ncurses 
+ * if ncurses abilitated default ui on terminal
+ * add ui properties structure
  * Create compute shaders from descriptors
  * Textures
  * Audio
