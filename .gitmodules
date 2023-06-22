@@ -1,27 +1,24 @@
-[submodule "shengine/externals/glfw"]
-	path = shengine/externals/glfw
+[submodule "collection/externals/glfw"]
+	path = collection/externals/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "shengine/externals/cglm"]
-	path = shengine/externals/cglm
+[submodule "collection/externals/cglm"]
+	path = collection/externals/cglm
 	url = https://github.com/recp/cglm.git
-[submodule "shengine/externals/shserial"]
-	path = shengine/externals/shserial
+[submodule "collection/externals/shserial"]
+	path = collection/externals/shserial
 	url = https://github.com/MrSinho/shserial.git
-[submodule "shengine/externals/shecs"]
-	path = shengine/externals/shecs
-	url = https://github.com/mrsinho/shecs.git
-[submodule "shengine/externals/shvulkan"]
-	path = shengine/externals/shvulkan
+[submodule "collection/externals/shvulkan"]
+	path = collection/externals/shvulkan
 	url = https://github.com/mrsinho/shvulkan.git
-[submodule "shengine/externals/plyimporter"]
-	path = shengine/externals/plyimporter
+[submodule "collection/externals/plyimporter"]
+	path = collection/externals/plyimporter
 	url = https://github.com/mrsinho/plyimporter.git
-[submodule "shengine/externals/json-c"]
-	path = shengine/externals/json-c
-	url = https://github.com/json-c/json-c.git
-[submodule "shengine/externals/shgui"]
-	path = shengine/externals/shgui
+[submodule "collection/externals/shgui"]
+	path = collection/externals/shgui
 	url = https://github.com/mrsinho/shgui.git
-[submodule "shengine/externals/shthreads"]
-	path = shengine/externals/shthreads
+[submodule "collection/externals/shthreads"]
+	path = collection/externals/shthreads
 	url = https://github.com/mrsinho/shthreads.git
+[submodule "collection/externals/smd"]
+	path = collection/externals/smd
+	url = https://github.com/mrsinho/smd
