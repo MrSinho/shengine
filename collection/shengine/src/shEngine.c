@@ -126,8 +126,8 @@ uint8_t shSetEngineState(
         VkBufferUsageFlags    buffer_usage_flags      = 0;                                               
         VkSharingMode         memory_sharing_mode     = 0;                                               
         VkMemoryPropertyFlags memory_property_flags   = 0;                                               
-        VkBuffer              buffer                  = p_engine->vulkan_memory_properties.buffers        [buffer_idx];
-        VkDeviceMemory        device_memory           = p_engine->vulkan_memory_properties.devices_memory [buffer_idx];
+        VkBuffer*             p_buffer                = &p_engine->vulkan_memory_properties.buffers        [buffer_idx];
+        VkDeviceMemory*       p_device_memory         = &p_engine->vulkan_memory_properties.devices_memory [buffer_idx];
 
         (index_buffer_bit  )      && (buffer_usage_flags    |= VK_BUFFER_USAGE_INDEX_BUFFER_BIT  );
         (storage_buffer_bit)      && (buffer_usage_flags    |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
@@ -143,19 +143,19 @@ uint8_t shSetEngineState(
         (host_coherent_bit )      && (memory_property_flags |= VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
                                   
         shEngineError(
-            shCreateBuffer(device, buffer_size, buffer_usage_flags, memory_sharing_mode, &buffer) == 0,
+            shCreateBuffer(device, buffer_size, buffer_usage_flags, memory_sharing_mode, p_buffer) == 0,
             "shSetEngineState: failed creating vulkan buffer",
             return 0
         );
 
         shEngineError(
-            shAllocateBufferMemory(device, physical_device, buffer, memory_property_flags, &device_memory) == 0,
+            shAllocateBufferMemory(device, physical_device, (*p_buffer), memory_property_flags, p_device_memory) == 0,
             "shSetEngineState: failed allocating vulkan buffer memory",
             return 0
         );
 
         shEngineError(
-            shBindBufferMemory(device, buffer, 0, device_memory) == 0,
+            shBindBufferMemory(device, (*p_buffer), 0, (*p_device_memory)) == 0,
             "shSetEngineState: failed binding vulkan buffer memory",
             return 0
         );
@@ -547,31 +547,39 @@ uint8_t shEngineRelease(
     shEngineError(p_engine == NULL, "shEngineRelease: invalid engine memory", return 0);
 
     if (p_engine->application_host.p_close != NULL) {
-        shEngineWarning(
-            (uint8_t)shSharedSceneRun(
-                p_engine,
-                p_engine->application_host.p_close
-            ) == 0,
-            "failed closing application"
+        shEngineError(
+            shSharedSceneRun(p_engine, p_engine->application_host.p_close) == 0,
+            "shEngineRelease: failed closing application",
+            return 0
         );
     }
 
     if (p_engine->thread_pool.p_handles != NULL) {
         uint64_t return_value = 0;
 
-        shWaitForThreads(
-            SH_APPLICATION_THREAD_IDX,
-            1,
-            UINT64_MAX,
-            &return_value,
-            &p_engine->thread_pool
+        shEngineError(
+            shWaitForThreads(
+                SH_APPLICATION_THREAD_IDX,
+                1,
+                UINT64_MAX,
+                &return_value,
+                &p_engine->thread_pool
+            ) != SH_THREADS_SUCCESS,
+            "shEngineRelease: failed waiting for threads",
+            return 0
         );
 
-        shReleaseThreads(
-            &p_engine->thread_pool
+        shEngineError(
+            shReleaseThreads(&p_engine->thread_pool) != SH_THREADS_SUCCESS,
+            "shEngineRelease: failed releasing threads",
+            return 0
         );
-
-        shEngineWarning(return_value == 0, "application thread returned with an error");
+        
+        shEngineError(
+            return_value == 0, 
+            "shEngineRelease: application thread returned with an error", 
+            return 0
+        );
     }
     p_engine->application_host.after_thread_called = 0;
 
@@ -579,15 +587,66 @@ uint8_t shEngineRelease(
     if (release_shared && p_engine->application_host.shared) {
         shSharedRelease(&p_engine->application_host.shared);
     }
-    
-    //if (p_engine->p_gui != NULL) {
-    //    shGuiDestroyPipelines(p_engine->p_gui);
-    //    shGuiReleaseDefaultValues(p_engine->p_gui);
-    //    shGuiUnload(p_engine->p_gui);
-    //    shGuiRelease(p_engine->p_gui);
-    //    p_engine->p_gui = NULL;
-    //}
 
+    if (p_engine->p_gui != NULL) {
+        shEngineError(
+            shGuiRelease(p_engine->p_gui) == 0,
+            "shEngineRelease: failed releasing shgui memory",
+            return 0
+        );
+        shEngineError(
+            shGuiReleaseMemory(p_engine->p_gui) == 0,
+            "shEngineRelease: failed releasing shgui memory",
+            return 0
+        );
+    }
+
+    for (uint32_t host_buffer_idx = 0; host_buffer_idx < p_engine->host_memory_properties.buffer_count; host_buffer_idx++) {
+        free(p_engine->host_memory_properties.p_buffers_memory[host_buffer_idx]);
+    }
+    
+    for (uint32_t vulkan_buffer_idx = 0; vulkan_buffer_idx < p_engine->vulkan_memory_properties.buffer_count; vulkan_buffer_idx++) {
+        shEngineError(
+            shClearBufferMemory(
+                p_engine->core.device,
+                p_engine->vulkan_memory_properties.buffers       [vulkan_buffer_idx],
+                p_engine->vulkan_memory_properties.devices_memory[vulkan_buffer_idx]
+            ) == 0,
+            "shEngineRelease: failed releasing vulkan buffer memory",
+            return 0
+        );
+    }
+
+    if (p_engine->scene_properties.entity_count) {
+        free(p_engine->scene_properties.p_identities         );
+        free(p_engine->scene_properties.p_cameras            );
+        free(p_engine->scene_properties.p_transforms         );
+        free(p_engine->scene_properties.p_host_memory_linkers);
+    }
+
+    free(p_engine->p_ini_smd          );
+    free(p_engine->p_application_smd  );
+    free(p_engine->p_host_memory_smd  );
+    free(p_engine->p_vulkan_memory_smd);
+    free(p_engine->p_scene_smd        );
+
+
+
+    memset(&p_engine->ini_properties,           0, sizeof(ShIniProperties));
+    memset(&p_engine->application_properties,   0, sizeof(ShApplicationProperties));
+    memset(&p_engine->host_memory_properties,   0, sizeof(ShHostMemoryProperties));
+    memset(&p_engine->vulkan_memory_properties, 0, sizeof(ShVulkanMemoryProperties));
+    memset(&p_engine->scene_properties,         0, sizeof(ShSceneProperties));
+
+
+    memset(&p_engine->application_host, 0, sizeof(ShApplicationHandle));
+    memset(&p_engine->application_host, 0, sizeof(ShThreadPool));
+    memset(&p_engine->app_thread_state, 0, sizeof(ShThreadState));
+
+    memset(&p_engine->pipeline_pool, 0, sizeof(ShVkPipelinePool));
+    memset(&p_engine->pipeline_count, 0, sizeof(uint32_t));
+
+    
     shEndScene(p_engine);
 
     return 1;
