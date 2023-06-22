@@ -1,0 +1,17 @@
+UINT32     ^^ 1    !! ShEngine::vulkan_memory_properties.buffer_count         --> 2    *
+
+
+
+UINT32    ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_size[0]                                 --> 24    *
+UINT8     ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_usage_transfer_src_bit[0]               --> 1     *
+UINT8     ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_memory_sharing_mode_exclusive[0]        --> 1     *
+UINT8     ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_memory_property_host_visible_bit[0]     --> 1     *
+UINT8     ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_memory_property_host_coherent_bit[0]    --> 1     *
+
+
+
+UINT32    ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_size[1]                                 --> 24    *
+UINT8     ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_usage_transfer_dst_bit[1]               --> 1     *
+UINT8     ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_usage_vertex_buffer_bit[1]              --> 1     *
+UINT8     ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_memory_sharing_mode_exclusive[1]        --> 1     *
+UINT8     ^^ 1    !! ShEngine::vulkan_memory_properties.buffers_memory_property_device_local_bit[1]     --> 1     *

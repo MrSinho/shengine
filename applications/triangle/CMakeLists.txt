@@ -3,24 +3,24 @@ add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 	
 
-project(noise C)
+project(triangle C)
 
 option(SH_APPLICATION_BINARY_TYPE CACHE "EXECUTABLE")
 if("${SH_APPLICATION_BINARY_TYPE}" STREQUAL "STATIC")
     add_library(${SH_APPLICATION_NAME} STATIC 
-        	D:/home/desktop/GitHub/shengine/applications/noise/src/noise.c
+        	D:/home/desktop/GitHub/shengine/applications/triangle/src/triangle.c
 
     )
     
 elseif("${SH_APPLICATION_BINARY_TYPE}" STREQUAL "SHARED")
     add_library(${SH_APPLICATION_NAME} SHARED 
-        	D:/home/desktop/GitHub/shengine/applications/noise/src/noise.c
+        	D:/home/desktop/GitHub/shengine/applications/triangle/src/triangle.c
 
     )
     target_compile_definitions(shengine PUBLIC SH_APPLICATION_TARGET_TYPE_SHARED=1)
 elseif("${SH_APPLICATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
     add_executable(${SH_APPLICATION_NAME}  
-        	D:/home/desktop/GitHub/shengine/applications/noise/src/noise.c
+        	D:/home/desktop/GitHub/shengine/applications/triangle/src/triangle.c
 
         D:/home/desktop/GitHub/shengine/collection/sheditor/src/shEditor.c
     )

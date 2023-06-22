@@ -1,0 +1,6 @@
+STR256    ^^ 1    ShEngine::ini_properties.application_name        --> noise                        *
+STR256    ^^ 1    ShEngine::ini_properties.application_smd_path    --> ../../smd/application.smd    *
+STR256    ^^ 1    ShEngine::ini_properties.scene_smd_path          --> ../../smd/scene.smd          *
+STR256    ^^ 1    ShEngine::ini_properties.pipelines_smd_path      --> ../../smd/pipelines.smd      *
+
+copy_to_windows/bin_or_linux/bin

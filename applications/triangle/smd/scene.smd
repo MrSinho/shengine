@@ -1,0 +1,32 @@
+UINT32    ^^ 1     !! ShEngine::scene_properties.entity_count    --> 2    *
+
+
+
+
+FLOAT32    ^^ 1    !! ShEngine::scene_properties.cameras[0].fov            --> 75       *
+FLOAT32    ^^ 1    !! ShEngine::scene_properties.cameras[0].nc             --> 1E-20    *
+FLOAT32    ^^ 1    !! ShEngine::scene_properties.cameras[0].fc             --> 150      *
+FLOAT32    ^^ 1    !! ShEngine::scene_properties.cameras[0].speed          --> 5        *
+FLOAT32    ^^ 1    !! ShEngine::scene_properties.cameras[0].mouse_speed    --> 3        *
+UINT8      ^^ 1    !! ShEngine::scene_properties.cameras[0].free_flight    --> 1        *
+
+
+
+
+
+STR256     ^^ 1    !! ShEngine::scene_properties.identities[1].name                   --> first         *
+STR256     ^^ 1    !! ShEngine::scene_properties.identities[1].tag                    --> none          *
+STR256     ^^ 1    !! ShEngine::scene_properties.identities[1].subtag                 --> none          *
+
+FLOAT32    ^^ 3    !! ShEngine::scene_properties.transforms[1].position               --> 0.5  0  0     *
+
+UINT32     ^^ 1    !! ShEngine::scene_properties.input_linkers[1].card_inputs_indices --> 0             *
+
+
+STR256     ^^ 1    !! ShEngine::scene_properties.identities[2].name                   --> second        *
+STR256     ^^ 1    !! ShEngine::scene_properties.identities[2].tag                    --> none          *
+STR256     ^^ 1    !! ShEngine::scene_properties.identities[2].subtag                 --> none          *
+
+FLOAT32    ^^ 3    !! ShEngine::scene_properties.transforms[2].position               --> -0.5  0  0    *
+
+UINT32     ^^ 1    !! ShEngine::scene_properties.input_linkers[2].card_inputs_indices --> 0             *

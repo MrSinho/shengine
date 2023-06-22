@@ -1,0 +1,10 @@
+UINT8     ^^ 1    !! ShEngine::application_properties.run                 --> 1                          *
+STR256    ^^ 1    !! ShEngine::application_properties.shared_path         --> triangle                   *
+STR256    ^^ 1    !! ShEngine::application_properties.s_start             --> triangle_start             *
+STR256    ^^ 1    !! ShEngine::application_properties.s_thread            --> triangle_thread            *
+STR256    ^^ 1    !! ShEngine::application_properties.s_update_pending    --> triangle_update_pending    *
+STR256    ^^ 1    !! ShEngine::application_properties.s_after_thread      --> triangle_after_thread      *
+STR256    ^^ 1    !! ShEngine::application_properties.s_update            --> triangle_update            *
+STR256    ^^ 1    !! ShEngine::application_properties.s_main_renderpass   --> triangle_frame_update      *
+STR256    ^^ 1    !! ShEngine::application_properties.s_frame_resize      --> triangle_frame_resize      *
+STR256    ^^ 1    !! ShEngine::application_properties.s_close             --> triangle_close             *

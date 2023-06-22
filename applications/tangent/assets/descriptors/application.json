@@ -1,0 +1,12 @@
+{
+    "run": 1,
+    "name": "tangent",
+    "start": "tangent_start",
+    "thread": "tangent_thread",
+    "update_pending": "tangent_update_pending",
+    "after_thread": "tangent_after_thread",
+    "update": "tangent_update",
+    "frame_update": "tangent_frame_update",
+    "frame_resize": "tangent_frame_resize",
+    "close": "tangent_close"
+}

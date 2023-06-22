@@ -9,7 +9,7 @@ project(${SH_APPLICATION_NAME} C)
 
 option(SH_APPLICATION_PATH CACHE OFF)
 
-add_subdirectory(shengine)
+add_subdirectory(collection)
 
 if (SH_APPLICATION_PATH)
 add_subdirectory(${SH_APPLICATION_PATH} [EXCLUDE_FROM_ALL])

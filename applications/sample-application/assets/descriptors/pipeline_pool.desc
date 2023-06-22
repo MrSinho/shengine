@@ -1,0 +1,139 @@
+{
+  "materials": [   
+      {
+      "COMMENT": "WIREFRAME MESH",
+      "vertex_shader": "shaders/bin/Mesh.vert.spv",
+      "fragment_shader": "shaders/bin/Mesh.frag.spv",
+      "push_constants_size": 128,
+      "push_constants_stage": "SHADER_STAGE_VERTEX",
+      "fixed_states": {
+        "polygon_mode": "POINT",
+        "primitive_topology": "TRIANGLE_LIST",
+        "vertex_input_rate": "VERTEX_INPUT_RATE_VERTEX",
+        "vertex_inputs": [
+          {
+            "location": 0,
+            "format": "VEC3_SIGNED_FLOAT",
+            "offset": 0,
+            "size": 12
+          },
+          {
+            "location": 1,
+            "format": "VEC3_SIGNED_FLOAT",
+            "offset": 12,
+            "size": 12
+          },
+          {
+            "location": 2,
+            "format": "VEC2_SIGNED_FLOAT",
+            "offset": 24,
+            "size": 8
+          }
+        ]
+      },
+      "descriptors": [ 
+        {
+          "set": 0,
+          "size": 64,
+          "stage": "SHADER_STAGE_VERTEX",
+          "type": "DYNAMIC_UNIFORM",
+          "max_bindings": 1
+        }
+      ]
+    },
+    {
+      "COMMENT": "POINT LIGHTS",
+      "vertex_shader": "shaders/bin/Coulomb.vert.spv",
+      "fragment_shader": "shaders/bin/Coulomb.frag.spv",
+      "push_constants_size": 128,
+      "push_constants_stage": "SHADER_STAGE_VERTEX",
+      "fixed_states": {
+        "polygon_mode": "FACE",
+        "primitive_topology": "TRIANGLE_LIST",
+        "vertex_input_rate": "VERTEX_INPUT_RATE_VERTEX",
+        "vertex_inputs": [
+          {
+            "location": 0,
+            "format": "VEC3_SIGNED_FLOAT",
+            "offset": 0,
+            "size": 12
+          },
+          {
+            "location": 1,
+            "format": "VEC3_SIGNED_FLOAT",
+            "offset": 12,
+            "size": 12
+          },
+          {
+            "location": 2,
+            "format": "VEC2_SIGNED_FLOAT",
+            "offset": 24,
+            "size": 8
+          }
+        ]
+      },
+      "descriptors": [ 
+        {
+          "set": 0,
+          "size": 64,
+          "stage": "SHADER_STAGE_VERTEX",
+          "type": "DYNAMIC_UNIFORM",
+          "max_bindings": 1
+        },
+        {
+            "set": 1,
+            "size": 64,
+            "stage": "SHADER_STAGE_FRAGMENT",
+            "type": "UNIFORM"
+        }
+      ]
+    },
+    {
+      "COMMENT": "SPHERE",
+      "vertex_shader": "shaders/bin/Sphere.vert.spv",
+      "fragment_shader": "shaders/bin/Sphere.frag.spv",
+      "push_constants_size": 128,
+      "push_constants_stage": "SHADER_STAGE_VERTEX",
+      "fixed_states": {
+        "polygon_mode": "FACE",
+        "primitive_topology": "TRIANGLE_LIST",
+        "vertex_input_rate": "VERTEX_INPUT_RATE_VERTEX",
+        "vertex_inputs": [
+          {
+            "location": 0,
+            "format": "VEC3_SIGNED_FLOAT",
+            "offset": 0,
+            "size": 12
+          },
+          {
+            "location": 1,
+            "format": "VEC3_SIGNED_FLOAT",
+            "offset": 12,
+            "size": 12
+          },
+          {
+            "location": 2,
+            "format": "VEC2_SIGNED_FLOAT",
+            "offset": 24,
+            "size": 8
+          }
+        ]
+      },
+      "descriptors": [ 
+        {
+          "set": 0,
+          "size": 64,
+          "stage": "SHADER_STAGE_VERTEX",
+          "type": "DYNAMIC_UNIFORM",
+          "max_bindings": 1
+        },
+        {
+            "set": 1,
+            "size": 32,
+            "stage": "SHADER_STAGE_FRAGMENT",
+            "type": "UNIFORM"
+        }
+      ]
+    }
+  ]
+}
