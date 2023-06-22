@@ -6,7 +6,7 @@
 	url = https://github.com/recp/cglm.git
 [submodule "collection/externals/shserial"]
 	path = collection/externals/shserial
-	url = https://github.com/MrSinho/shserial.git
+	url = https://github.com/mrsinho/shserial.git
 [submodule "collection/externals/shvulkan"]
 	path = collection/externals/shvulkan
 	url = https://github.com/mrsinho/shvulkan.git
