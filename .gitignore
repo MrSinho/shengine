@@ -54,12 +54,16 @@ dkms.conf
 bin/*
 build/*
 
+applications/triangle/windows/*
 applications/noise/windows/*
+applications/tangent/windows/*
 applications/sample-application/windows/*
 applications/serial-demo/windows/*
 applications/flappy-circle/windows/*
 
+applications/triangle/linux/*
 applications/noise/linux/*
+applications/tangent/linux/*
 applications/sample-application/linux/*
 applications/serial-demo/linux/*
 applications/flappy-circle/linux/*
