@@ -158,14 +158,15 @@ target_link_libraries(
     dst_stream.close()
     print("--------------------------------------------------------------------------------\n")
 
-
+    os_path:str    = f"{application.path}/{os_name}"
     build_path:str = f"{application.path}/{os_name}/build"
     print("--------------------------------------------------------------------------------")
-    print(f"Build path: {build_path}")
+    print(f"Os path: {os_path}\nBuild path: {build_path}\n")
     print("--------------------------------------------------------------------------------\n")
     
     print("--------------------------------------------------------------------------------")
     print(f"creating build directory: {build_path}")
+    os.system(f"mkdir \"{os_path}\"")
     os.system(f"mkdir \"{build_path}\"")
     cmd  = f"cd {build_path} "
     print("--------------------------------------------------------------------------------\n")
