@@ -236,15 +236,15 @@ int main() {
         return -1
     );
 
-	p_engine->application_host.p_start           = &triangle_start;
-    p_engine->application_host.p_thread          = &triangle_thread;
-    p_engine->application_host.p_update_pending  = &triangle_update_pending;
-    p_engine->application_host.p_after_thread    = &triangle_after_thread;
-    p_engine->application_host.p_update          = &triangle_update;
-    p_engine->application_host.p_main_cmd_buffer = &triangle_main_cmd_buffer;
-    p_engine->application_host.p_main_renderpass = &triangle_main_renderpass;
-    p_engine->application_host.p_frame_resize    = &triangle_frame_resize;
-    p_engine->application_host.p_close           = &triangle_close;
+	p_engine->application_host.p_start           = (ShApplicationFunc*)      &triangle_start;
+    p_engine->application_host.p_thread          = (ShApplicationThreadFunc*)&triangle_thread;
+    p_engine->application_host.p_update_pending  = (ShApplicationFunc*)      &triangle_update_pending;
+    p_engine->application_host.p_after_thread    = (ShApplicationFunc*)      &triangle_after_thread;
+    p_engine->application_host.p_update          = (ShApplicationFunc*)      &triangle_update;
+    p_engine->application_host.p_main_cmd_buffer = (ShApplicationFunc*)      &triangle_main_cmd_buffer;
+    p_engine->application_host.p_main_renderpass = (ShApplicationFunc*)      &triangle_main_renderpass;
+    p_engine->application_host.p_frame_resize    = (ShApplicationFunc*)      &triangle_frame_resize;
+    p_engine->application_host.p_close           = (ShApplicationFunc*)      &triangle_close;
     p_engine->window.title                       = "triangle";
     
     shEditorMain(p_engine);
