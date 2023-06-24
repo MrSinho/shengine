@@ -27,7 +27,7 @@ add_library(shengine
     shengine/src/shWindow.c
     shengine/src/shLinearAlgebra.c
     shengine/src/shScene.c
-    shengine/src/shengineUI.c
+    shengine/src/shEngineUI.c
 )
 target_include_directories(shengine PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/shengine/include
