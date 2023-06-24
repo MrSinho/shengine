@@ -80,7 +80,7 @@ cmake --build .
 
 ![noise-3](saved/pictures/noise-3.png)
 
-Using Windows:
+Using Windows (run as admin):
 ```batch
 python export-application.py name=noise target=EXECUTABLE path=applications/noise CLEAN-CACHE
 cd applications/noise/windows/build
@@ -89,7 +89,7 @@ cmake --build .
 
 Using Linux:
 ```batch
-python export-application.py name=noise target=EXECUTABLE path=applications/noise CLEAN-CACHE
+sudo python3.9 export-application.py name=noise target=EXECUTABLE path=applications/noise CLEAN-CACHE
 cd applications/noise/linux/build
 cmake --build .
 ```
