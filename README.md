@@ -29,6 +29,7 @@ The engine is frequently being tested on Windows 11, Linux Mint (virtual machine
 ![coulomb](saved/pictures/flappy-circle.png)
 
 # Notes:
+ - Python 3.9 is required to generate the project files
  - It's better to stick with a few and simple examples: `triangle` and `noise` 
  - Dismissed `flappy-circle`, `application-sample`, `serial-sample`
 
