@@ -32,6 +32,7 @@ uint8_t shLoadApplication(
     const char*          s_update_pending,
     const char*          s_after_thread,
     const char*          s_update,
+    const char*          s_main_cmd_buffer,
     const char*          s_main_renderpass,
     const char*          s_frame_resize,
     const char*          s_close,
@@ -43,6 +44,7 @@ uint8_t shLoadApplication(
     shSharedHostError(s_update_pending  == NULL, "shLoadApplication: invalid s_update_pending memory",  return 0);
     shSharedHostError(s_after_thread    == NULL, "shLoadApplication: invalid s_after_thread memory",    return 0);
     shSharedHostError(s_update          == NULL, "shLoadApplication: invalid s_update memory",          return 0);
+    shSharedHostError(s_main_cmd_buffer == NULL, "shLoadApplication: invalid s_main_cmd_buffer memory", return 0);
     shSharedHostError(s_main_renderpass == NULL, "shLoadApplication: invalid s_main_renderpass memory", return 0);
     shSharedHostError(s_frame_resize    == NULL, "shLoadApplication: invalid s_frame_resize memory",    return 0);
     shSharedHostError(s_close           == NULL, "shLoadApplication: invalid s_close memory",           return 0);
@@ -70,13 +72,14 @@ uint8_t shLoadApplication(
 
     p_application->shared = shLoadShared(shared_path_ext);
 
-    shSharedHostError(p_application->shared == NULL, "shLoadApplication invalid shared library", return 0);
+    shSharedHostError(p_application->shared == NULL, "shLoadApplication: invalid shared library", return 0);
 
     p_application->p_start           = (ShApplicationFunc*)       shSharedLoadSymbol(p_application->shared, s_start);
     p_application->p_thread          = (ShApplicationThreadFunc*) shSharedLoadSymbol(p_application->shared, s_thread);
     p_application->p_update_pending  = (ShApplicationFunc*)       shSharedLoadSymbol(p_application->shared, s_update_pending);
     p_application->p_after_thread    = (ShApplicationFunc*)       shSharedLoadSymbol(p_application->shared, s_after_thread);
     p_application->p_update          = (ShApplicationFunc*)       shSharedLoadSymbol(p_application->shared, s_update);
+    p_application->p_main_cmd_buffer = (ShApplicationFunc*)       shSharedLoadSymbol(p_application->shared, s_main_cmd_buffer);
     p_application->p_main_renderpass = (ShApplicationFunc*)       shSharedLoadSymbol(p_application->shared, s_main_renderpass);
     p_application->p_frame_resize    = (ShApplicationFunc*)       shSharedLoadSymbol(p_application->shared, s_frame_resize);
     p_application->p_close           = (ShApplicationFunc*)       shSharedLoadSymbol(p_application->shared, s_close);
@@ -86,6 +89,7 @@ uint8_t shLoadApplication(
     shSharedHostError(p_application->p_update_pending  == NULL, "shLoadApplication: invalid update pending function memory",  return 0);
     shSharedHostError(p_application->p_after_thread    == NULL, "shLoadApplication: invalid after thread function memory",    return 0);
     shSharedHostError(p_application->p_update          == NULL, "shLoadApplication: invalid update function memory",          return 0);
+    shSharedHostError(p_application->p_main_cmd_buffer == NULL, "shLoadApplication: invalid main cmd buffer function memory", return 0);
     shSharedHostError(p_application->p_main_renderpass == NULL, "shLoadApplication: invalid main renderpass function memory", return 0);
     shSharedHostError(p_application->p_frame_resize    == NULL, "shLoadApplication: invalid frame resize function memory",    return 0);
     shSharedHostError(p_application->p_close           == NULL, "shLoadApplication: invalid close function memory",           return 0);

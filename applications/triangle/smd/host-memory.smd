@@ -1,8 +1,8 @@
-UINT32     ^^ 1    !! ShEngine::host_memory_properties.buffer_count         --> 1                    *
+UINT32     ^^ 1    !! ShEngine::host_memory_properties.buffer_count         --> 1    *
 
 
 
-UINT32     ^^ 1    !! ShEngine::host_memory_properties.buffers_size[0]      --> 24                   *
-UINT32     ^^ 1    !! ShEngine::host_memory_properties.buffers_stride[0]    --> 8                    *
-UINT32     ^^ 1    !! ShEngine::host_memory_properties.buffers_offset[0]    --> 0                    *
-FLOAT32    ^^ 1    !! ShEngine::host_memory_properties.buffers_memory[0]    --> -1, 1, 0, 0, 1, 1    *
+UINT32     ^^ 1    !! ShEngine::host_memory_properties.buffers_size[0]      --> 24    *
+UINT32     ^^ 1    !! ShEngine::host_memory_properties.buffers_stride[0]    --> 8     *
+UINT32     ^^ 1    !! ShEngine::host_memory_properties.buffers_offset[0]    --> 0     *
+FLOAT32    ^^ 6    !! ShEngine::host_memory_properties.buffers_memory[0]    --> -0.5, 0.5, 0, -0.5, 0.5, 0.5    *

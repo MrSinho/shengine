@@ -1,7 +1,8 @@
-STR256    ^^ 1    !! ShEngine::ini_properties.application_name        --> noise                        *
-STR256    ^^ 1    !! ShEngine::ini_properties.application_smd_path    --> ../../smd/application.smd    *
-STR256    ^^ 1    !! ShEngine::ini_properties.host_memory_smd_path    --> ../../smd/host-memory.smd    *
-STR256    ^^ 1    !! ShEngine::ini_properties.vulkan_memory_smd_path  --> ../../smd/vulkan-memory.smd  *
-STR256    ^^ 1    !! ShEngine::ini_properties.scene_smd_path          --> ../../smd/scene.smd          *
+STR1024    ^^ 1    !! ShEngine::ini_properties.application_name        --> triangle                              *
+STR1024    ^^ 1    !! ShEngine::ini_properties.application_smd_path    --> ../../../triangle/smd/application.smd    *
+STR1024    ^^ 1    !! ShEngine::ini_properties.host_memory_smd_path    --> ../../../triangle/smd/host-memory.smd    *
+STR1024    ^^ 1    !! ShEngine::ini_properties.vulkan_memory_smd_path  --> ../../../triangle/smd/vulkan-memory.smd  *
+STR1024    ^^ 1    !! ShEngine::ini_properties.serial_smd_path         --> ../../../triangle/smd/serial.smd         *
+STR1024    ^^ 1    !! ShEngine::ini_properties.scene_smd_path          --> ../../../triangle/smd/scene.smd          *
 
 copy_to_windows/bin_or_linux/bin

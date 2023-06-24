@@ -10,9 +10,7 @@ extern "C" {
 
 
 extern uint8_t shEngineGuiSetup(
-	ShEngine* p_engine, 
-	uint32_t  max_regions,
-	uint32_t  max_chars 
+	ShEngine* p_engine
 );
 
 

@@ -13,53 +13,48 @@
 
 [Build from source](#build-from-source)
 * [Engine targets only](#engine-targets-only)
-* [application-sample](#application-sample)
-* [flappy-circle](#flappy-circle)
-* [serial-demo](#serial-demo)
-   * [Pinout for the Raspberry Pi pico and UF2 binary](#pinout-for-the-raspberry-pi-pico-and-uf2-binary)
 * [noise](#noise)
 * [Switch between applications in runtime](#switch-between-applications-in-runtime)
 ---
+
+DISMISSED FLAPPY CIRCLE SERIAL-DEMO APPLICATION-SAMPLE
 
 # [Build status](./shci)
 
 [![linux_badge](.shci/linux-exit_code.svg)](.shci/linux-log.md)
 [![windows_badge](.shci/windows-exit_code.svg)](.shci/windows-log.md)
 
-The engine has been tested on Windows 10, Linux Mint (virtual machine) and Ubuntu with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
+The engine is frequently being tested on Windows 11, Linux Mint (virtual machine and pc) with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
 ![coulomb](saved/pictures/flappy-circle.png)
 
+# Notes:
+ - It's better to stick with a few and simple examples: `triangle` and `noise` 
+ - Dismissed `flappy-circle`, `application-sample`, `serial-sample`
+
 # Current features:
  - Immediate mode gui library embedded with the engine (see [shgui](https://github.com/mrsinho/shgui))
+ - By default double buffering on `sheditor`
  - Multithreading using [shthreads](https://github.com/mrsinho/shthreads)
     * Main engine thread
-    * the `ShSimulationFunc* ShEngine::ShSharedHost::p_load` function can safely read and write memory at `void* ShEngine::p_engine_extension` without the need of synchronization objects: the memory pointed is reserved for the application modules. However, using the extension memory inside the default functions ("`ShSimulationFunc* ShEngine::ShSharedHost::p_start`", "`ShSimulationFunc* ShEngine::ShSharedHost::p_update`" "`ShSimulationFunc* ShEngine::ShSharedHost::p_close`" etc.) won't be thread safe without synchronization objects. You can easily set up a mutex using the `ShThreads` library. The engine will still have to wait the end of the thread to complete the release operations. 
- - Entity Component System using [shecs](https://github.com/MrSinho/shecs).
+    * Application thrad executed in parallel while the window is running
  - Ply mesh loader using [plyimporter](https://github.com/MrSinho/plyimporter).
- - Depth buffer support.
+ - Depth buffer and multisampling support by default.
  - Serial communication using [shserial](https://github.com/MrSinho/shserial).
- - Scene customization by setting up a `scene.json` file.
- - Glsl shader customization.
-    * define shader general properties in materials.json, the engine will automatically set up the boilerplate code.
-    * deal with vulkan objects, draw calls and material pipelines from the scriptable modules.
-    * set up shader input parameters for each entity (if required) in scene.json
-    * material extension structures support
- - Native scripting in C:
-    * `loader.ini` is in the same directory of the main executable, and specifies the assets path.
-    * `application.json` sets up some properties for the specified shared library, which functions are called at the start of the main thread, in runtime, and at the end of the application.
-    * to generate the cmake target given the external application name, run the `export-application.py` script.
-
+ - Native scripting in C
+ - Project generation using CMake by running the `export-application.py` program. For more info, see the examples and source code.
+- Every application aspect is described using [`.smd`](https://github.com/mrsinho/smd) files
+   * `ini.smd`
+   * `application.smd`
+   * `host-memory.smd`
+   * `vulkan-memory.smd`
+   * `serial.smd`
+   * `scene.smd`
+- Vulkan API flexibility using shvulkan and `.smd` files. Quickly allocate memory to the gpu and implement your own graphics/compute pipelines through the main 
 ## To do:
- * External launcher - add ncurses to export-application.py, which will be the definitive launchef
- * Improve [shgui](https://github.com/mrsinho/shgui)
- * choose between shgui and ncurses 
- * if ncurses abilitated default ui on terminal
- * add ui properties structure
- * Create compute shaders from descriptors
  * Textures
  * Audio
-
+ * Need to find out something new to add
 ---
 
 # Build from source
@@ -80,122 +75,30 @@ cmake --build .
 
 ---
 
-## application-sample
-
-Just a random scene.
-
-![application-sample](saved/pictures/application-sample.png)
-
-Using Windows:
-```batch
-python export-application.py "application-sample" SHARED
-cd applications/application-sample/windows/build
-cmake --build .
-```
-
-Using Linux:
-```batch
-python export-application.py "application-sample" SHARED
-cd applications/application-sample/linux/build
-cmake --build .
-```
-
-Write at `bin/loader.ini`:
-```batch
-python set-editor-application.py "application-sample"
-```
-
----
-
-## flappy-circle
-
-A Flappy Bird clone in a circular map. Press `SPACE` to let it survive.
-
-![flappy-circle](saved/pictures/flappy-circle.png)
-
-Using Windows:
-```batch
-python export-application.py "flappy-circle" SHARED
-cd applications/flappy-circle/windows/build
-cmake --build .
-```
-
-Using Linux:
-```batch
-python export-application.py "flappy-circle" SHARED
-cd applications/flappy-circle/linux/build
-cmake --build .
-```
-
-Write at `bin/loader.ini`:
-```batch
-python set-editor-application.py "flappy-circle"
-```
-
----
-
-## serial-demo
-
-Any variation of analog input for the Raspberry Pi Pico affects the lighting in the scene.
-
-![serial-demo](saved/pictures/serial-demo.png)
-
-Using Windows:
-```batch
-python export-application.py "serial-demo" SHARED
-cd applications/serial-demo/windows/build
-cmake --build .
-```
-
-Using Linux:
-```batch
-python export-application.py "serial-demo" SHARED
-cd applications/serial-demo/linux/build
-cmake --build .
-```
-
-Write at `bin/loader.ini`:
-```batch
-python set-editor-application.py "serial-demo"
-```
-
-Note: because the application does not include multithreading, reading serial data blocks all gpu calls.
-
-## Pinout for the Raspberry Pi Pico and UF2 binary
-It's connected to a `1.5V` solar panel (it could be a potentiometer or any analogic sensor). The negative charged cable (in red) is connected to `ADC input 0`, `GPIO 26` (for pinout check [saved/pictures/serial-demo-pinout.jpg](saved/pictures/serial-demo-pinout.jpg)). The program to run on the Raspberry Pi Pico is located at [applications/serial-demo/pico-bin/shengine_sample_raw.uf2](applications/serial-demo/pico-bin/shengine_sample_raw.uf2).
-
-You should correct the serial port name in case the one specified at [applications/serial-demo/src/serial-demo.c](applications/serial-demo/src/serial-demo.c) doesn't match.
-
----
-
 ## noise
 
 ![noise-3](saved/pictures/noise-3.png)
 
 Using Windows:
 ```batch
-python export-application.py "noise" SHARED
+python export-application.py name=noise target=EXECUTABLE path=applications/noise CLEAN-CACHE
 cd applications/noise/windows/build
 cmake --build .
 ```
 
 Using Linux:
 ```batch
-python export-application.py "noise" SHARED
+python export-application.py name=noise target=EXECUTABLE path=applications/noise CLEAN-CACHE
 cd applications/noise/linux/build
 cmake --build .
 ```
 
-Write at `bin/loader.ini`:
-```batch
-python set-editor-application.py "noise"
-```
+Remember to copy `applications/noise/ini.smd` to `applications/noise/os/bin/ini.smd` in order to load correctly all the `.smd` files. 
 
 Press `H` to hide the GUI and get a full view of the shaded plane. To change the values of the parameters `A` `B` and `S`:
 
-||||
+|Parameter    |Increase key    |Decrease key    |
 |-------------|----------------|----------------|
-| Parameter   | Increase key   | Decrease key   |
 | `S`         |       _Z_      |       _X_      |
 | `A`         |       _A_      |       _D_      |
 | `B`         |       _W_      |       _S_      |
@@ -252,24 +155,31 @@ $c = 7$
 
 ![noise-5](saved/pictures/noise-5.png)
 
-
+---
 
 # Binaries and output
 
-The built targets are in the `bin` directory.
+The built targets are in the `application/app-name/os/bin` directory.
+
+---
 
 # Switch between applications in runtime
 
-Use the python script [`set-editor-application.py`](set-editor-application.py) or edit manually the `loader.ini` file located at the `bin` directory, then press `LEFT_CTRL + R` to reload the engine editor:
-
-```batch
-python set-editor-application.py noise
-```
-
-Produces:
+If your application has been built as a `SHARED` library instead of an `EXECUTABLE`, you can change the application name at `ini.smd` in order to release the old shared library and load the newly specified application. For example, change:
 
 ```
-noise
-../applications/noise/assets/
+STR1024    ^^ 1    ShEngine::ini_properties.application_name        --> noise                                 *
+STR1024    ^^ 1    ShEngine::ini_properties.application_smd_path    --> ../../../noise/smd/application.smd    *
+STR1024    ^^ 1    ShEngine::ini_properties.scene_smd_path          --> ../../../noise/smd/scene.smd          *
+STR1024    ^^ 1    ShEngine::ini_properties.pipelines_smd_path      --> ../../../noise/smd/pipelines.smd      *
 ```
-Where the first line is used for comment purposes, while `../applications/noise/assets/` (second line) corresponds to the relative assets path. 
+
+to this:
+
+```
+STR1024    ^^ 1    ShEngine::ini_properties.application_name        --> triangle                                 *
+STR1024    ^^ 1    ShEngine::ini_properties.application_smd_path    --> ../../../triangle/smd/application.smd    *
+STR1024    ^^ 1    ShEngine::ini_properties.scene_smd_path          --> ../../../triangle/smd/scene.smd          *
+STR1024    ^^ 1    ShEngine::ini_properties.pipelines_smd_path      --> ../../../triangle/smd/pipelines.smd      *
+```
+

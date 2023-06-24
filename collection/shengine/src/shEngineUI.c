@@ -12,11 +12,16 @@ extern "C" {
 
 
 uint8_t shEngineGuiSetup(
-	ShEngine* p_engine,
-	uint32_t  max_regions,
-	uint32_t  max_chars
+	ShEngine* p_engine
 ) {
     shEngineError(p_engine == NULL, "shEngineGuiSetup: invalid engine memory", return 0);
+
+	p_engine->p_gui = shAllocateGui();
+	shEngineError(
+		p_engine->p_gui == NULL, 
+		"shEngineGuiSetup: invalid gui memory", 
+		return 0
+	);
 
 	ShGuiCore gui_core = {
 		p_engine->core.device,                      //device
@@ -28,8 +33,9 @@ uint8_t shEngineGuiSetup(
 		p_engine->core.sample_count,                //sample_count
 		p_engine->core.swapchain_image_count        //swapchain_image_count
 	};
+	shGuiInit(p_engine->p_gui, gui_core);
 
-	shGuiAllocateMemory(p_engine->p_gui, 2048, 1024);
+	shGuiAllocateMemory(p_engine->p_gui);
 
 	shGuiAllocatePipelineResources(p_engine->p_gui, p_engine->core.swapchain_image_count);
 

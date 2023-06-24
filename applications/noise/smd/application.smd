@@ -1,10 +1,11 @@
-UINT8     ^^ 1    ShEngine::application_properties.run                 --> 1                       *
-STR256    ^^ 1    ShEngine::application_properties.shared_path         --> application             *
-STR256    ^^ 1    ShEngine::application_properties.s_start             --> noise_start             *
-STR256    ^^ 1    ShEngine::application_properties.s_thread            --> noise_thread            *
-STR256    ^^ 1    ShEngine::application_properties.s_update_pending    --> noise_update_pending    *
-STR256    ^^ 1    ShEngine::application_properties.s_after_thread      --> noise_after_thread      *
-STR256    ^^ 1    ShEngine::application_properties.s_update            --> noise_update            *
-STR256    ^^ 1    ShEngine::application_properties.s_frame_update      --> noise_frame_update      *
-STR256    ^^ 1    ShEngine::application_properties.s_frame_resize      --> noise_frame_resize      *
-STR256    ^^ 1    ShEngine::application_properties.s_close             --> noise_close             *
+UINT8     ^^ 1    !! ShEngine::application_properties.run                 --> 1                       *
+STR256    ^^ 1    !! ShEngine::application_properties.shared_path         --> noise                   *
+STR256    ^^ 1    !! ShEngine::application_properties.s_start             --> noise_start             *
+STR256    ^^ 1    !! ShEngine::application_properties.s_thread            --> noise_thread            *
+STR256    ^^ 1    !! ShEngine::application_properties.s_update_pending    --> noise_update_pending    *
+STR256    ^^ 1    !! ShEngine::application_properties.s_after_thread      --> noise_after_thread      *
+STR256    ^^ 1    !! ShEngine::application_properties.s_update            --> noise_update            *
+STR256    ^^ 1    !! ShEngine::application_properties.s_main_cmd_buffer   --> noise_main_cmd_buffer   *
+STR256    ^^ 1    !! ShEngine::application_properties.s_main_renderpass   --> noise_main_renderpass   *
+STR256    ^^ 1    !! ShEngine::application_properties.s_frame_resize      --> noise_frame_resize      *
+STR256    ^^ 1    !! ShEngine::application_properties.s_close             --> noise_close             *

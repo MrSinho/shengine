@@ -69,6 +69,12 @@ uint8_t shGetIniProperties(
     );
 
     shEnvironmentError(
+        smdAccessVarByName(p_ini_smd, "ShEngine::ini_properties.serial_smd_path", NULL, p_ini_properties->serial_smd_path) == 0,
+        "shGetIniProperties: failed accessing ShEngine::ini_properties.serial_smd_path",
+        return 0
+    );
+
+    shEnvironmentError(
         smdAccessVarByName(p_ini_smd, "ShEngine::ini_properties.scene_smd_path", NULL, p_ini_properties->scene_smd_path) == 0,
         "shGetIniProperties: failed accessing ShEngine::ini_properties.scene_smd_path",
         return 0
@@ -143,6 +149,12 @@ uint8_t shGetApplicationProperties(
     shEnvironmentError(
         smdAccessVarByName(p_application_smd, "ShEngine::application_properties.s_update", NULL, p_application_properties->s_update) == 0,
         "shGetApplicationProperties: failed accessing ShEngine::application_properties.s_update",
+        return 0
+    );
+
+    shEnvironmentError(
+        smdAccessVarByName(p_application_smd, "ShEngine::application_properties.s_main_cmd_buffer", NULL, p_application_properties->s_main_cmd_buffer) == 0,
+        "shGetApplicationProperties: failed accessing ShEngine::application_properties.s_main_cmd_buffer",
         return 0
     );
 
@@ -255,6 +267,7 @@ uint8_t shGetHostMemoryProperties(
                 "shGetHostMemoryProperties: failed accessing ShEngine::host_memory_properties.buffers_memory[x]",
                 return 0
             );
+
         }
         
     }
@@ -311,6 +324,7 @@ uint8_t shGetVulkanMemoryProperties(
         char s_buffers_size                              [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_size[";
         char s_buffers_usage_transfer_src_bit            [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_usage_transfer_src_bit[";
         char s_buffers_usage_transfer_dst_bit            [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_usage_transfer_dst_bit[";
+        char s_buffers_usage_uniform_buffer_bit          [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_usage_uniform_buffer_bit[";
         char s_buffers_usage_storage_buffer_bit          [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_usage_storage_buffer_bit[";
         char s_buffers_usage_index_buffer_bit            [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_usage_index_buffer_bit[";
         char s_buffers_usage_vertex_buffer_bit           [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_usage_vertex_buffer_bit[";
@@ -319,10 +333,11 @@ uint8_t shGetVulkanMemoryProperties(
         char s_buffers_memory_property_device_local_bit  [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_memory_property_device_local_bit[";
         char s_buffers_memory_property_host_visible_bit  [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_memory_property_host_visible_bit[";
         char s_buffers_memory_property_host_coherent_bit [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_memory_property_host_coherent_bit[";
-
+        
         strcat(s_buffers_size,                              s_buffer_idx);
         strcat(s_buffers_usage_transfer_src_bit,            s_buffer_idx);
         strcat(s_buffers_usage_transfer_dst_bit,            s_buffer_idx);
+        strcat(s_buffers_usage_uniform_buffer_bit,          s_buffer_idx);
         strcat(s_buffers_usage_storage_buffer_bit,          s_buffer_idx);
         strcat(s_buffers_usage_index_buffer_bit,            s_buffer_idx);
         strcat(s_buffers_usage_vertex_buffer_bit,           s_buffer_idx);
@@ -335,6 +350,7 @@ uint8_t shGetVulkanMemoryProperties(
         strcat(s_buffers_size,                              "]");
         strcat(s_buffers_usage_transfer_src_bit,            "]");
         strcat(s_buffers_usage_transfer_dst_bit,            "]");
+        strcat(s_buffers_usage_uniform_buffer_bit,          "]");
         strcat(s_buffers_usage_storage_buffer_bit,          "]");
         strcat(s_buffers_usage_index_buffer_bit,            "]");
         strcat(s_buffers_usage_vertex_buffer_bit,           "]");
@@ -355,6 +371,18 @@ uint8_t shGetVulkanMemoryProperties(
         shEnvironmentError(
             smdAccessVarByName(p_vulkan_memory_smd, s_buffers_usage_transfer_src_bit, NULL, &p_vulkan_memory_properties->buffers_usage_transfer_src_bit[buffer_idx]) == 0,
             "shGetVulkanMemoryProperties: failed accessing ShEngine::vulkan_memory_properties.buffers_usage_transfer_src_bit[x]",
+            return 0
+        );
+
+        shEnvironmentError(
+            smdAccessVarByName(p_vulkan_memory_smd, s_buffers_usage_transfer_dst_bit, NULL, &p_vulkan_memory_properties->buffers_usage_transfer_dst_bit[buffer_idx]) == 0,
+            "shGetVulkanMemoryProperties: failed accessing ShEngine::vulkan_memory_properties.buffers_usage_transfer_dst_bit[x]",
+            return 0
+        );
+
+        shEnvironmentError(
+            smdAccessVarByName(p_vulkan_memory_smd, s_buffers_usage_uniform_buffer_bit, NULL, &p_vulkan_memory_properties->buffers_usage_uniform_buffer_bit[buffer_idx]) == 0,
+            "shGetVulkanMemoryProperties: failed accessing ShEngine::vulkan_memory_properties.buffers_usage_uniform_buffer_bit[x]",
             return 0
         );
 
@@ -411,6 +439,72 @@ uint8_t shGetVulkanMemoryProperties(
         );
 
     }
+
+    return 1;
+}
+
+uint8_t shGetSerialProperties(
+	const char*         serial_file_path,
+	SmdFileHandle*      p_serial_smd,
+	ShSerialProperties* p_serial_properties
+) {
+    shEnvironmentError(serial_file_path    == NULL, "shGetSerialProperties: invalid serial file path",         return 0);
+    shEnvironmentError(p_serial_properties == NULL, "shGetSerialProperties: invalid serial properties memory", return 0);
+
+    p_serial_smd = smdAllocateFileHandle();
+    shEnvironmentError(
+        p_serial_smd == NULL,
+        "shGetSerialProperties: invalid serial smd memory",
+        return 0
+    );
+
+    shEnvironmentError(
+        smdReadFile(serial_file_path, p_serial_smd) == 0,
+        "shGetSerialProperties: failed reading serial file",
+        return 0
+    );
+
+    shEnvironmentError(
+        smdParseMemory(p_serial_smd) == 0,
+        "shGetSerialProperties: failed parsing memory",
+        return 0
+    );
+
+    char s_port            [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::serial_properties.port";
+    char s_baud_rate       [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::serial_properties.baud_rate";
+    char s_read_timeout_ms [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::serial_properties.read_timeout_ms";
+    char s_read_bit        [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::serial_properties.read_bit";
+    char s_write_bit       [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::serial_properties.write_bit";
+
+    shEnvironmentError(
+        smdAccessVarByName(p_serial_smd, s_port, NULL, &p_serial_properties->port) == 0,
+        "shGetSerialProperties: failed accessing ShEngine::serial_properties.port",
+        return 0
+    );
+
+    shEnvironmentError(
+        smdAccessVarByName(p_serial_smd, s_baud_rate, NULL, &p_serial_properties->baud_rate) == 0,
+        "shGetSerialProperties: failed accessing ShEngine::serial_properties.baud_rate",
+        return 0
+    );
+
+    shEnvironmentError(
+        smdAccessVarByName(p_serial_smd, s_read_timeout_ms, NULL, &p_serial_properties->read_timeout_ms) == 0,
+        "shGetSerialProperties: failed accessing ShEngine::serial_properties.read_timeout_ms",
+        return 0
+    );
+
+    shEnvironmentError(
+        smdAccessVarByName(p_serial_smd, s_read_bit, NULL, &p_serial_properties->read_bit) == 0,
+        "shGetSerialProperties: failed accessing ShEngine::serial_properties.read_bit",
+        return 0
+    );
+
+    shEnvironmentError(
+        smdAccessVarByName(p_serial_smd, s_write_bit, NULL, &p_serial_properties->write_bit) == 0,
+        "shGetSerialProperties: failed accessing ShEngine::serial_properties.write_bit",
+        return 0
+    );
 
     return 1;
 }

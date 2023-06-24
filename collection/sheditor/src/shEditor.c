@@ -383,9 +383,9 @@ int shEditorMain(ShEngine* p_engine) {
 	shEditorSetupVulkan(p_engine);
 
 #ifdef SH_APPLICATION_TARGET_TYPE_EXECUTABLE
-	shEngineManageState(p_engine, shSetEngineState(p_engine, 0), 1);
+	shEngineManageState(p_engine, shSetEngineState(p_engine, 0), 0, 1);
 #else
-	shEngineManageState(p_engine, shSetEngineState(p_engine, 1), 1);
+	shEngineManageState(p_engine, shSetEngineState(p_engine, 1), 1, 1);
 #endif//SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
 	return 0;

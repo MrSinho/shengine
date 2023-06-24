@@ -62,7 +62,7 @@ target_include_directories(shenvironment PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/shcomponents/include
     ${CMAKE_CURRENT_SOURCE_DIR}/shcardinputs/include
 )
-target_link_libraries(shenvironment PUBLIC smd shvulkan plyimporter)
+target_link_libraries(shenvironment PUBLIC smd shvulkan)
 set_target_properties(shenvironment PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 endfunction()
 

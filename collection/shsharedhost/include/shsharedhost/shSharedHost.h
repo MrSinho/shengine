@@ -45,6 +45,7 @@ typedef struct ShApplicationHandle {
 	ShApplicationFunc*       p_update_pending;
 	ShApplicationFunc*       p_after_thread;
 	ShApplicationFunc*       p_update;
+	ShApplicationFunc*       p_main_cmd_buffer;
 	ShApplicationFunc*       p_main_renderpass;
 	ShApplicationFunc*       p_frame_resize;
 	ShApplicationFunc*		 p_close;
@@ -71,6 +72,7 @@ extern uint8_t shLoadApplication(
 	const char*          s_update_pending,
 	const char*          s_after_thread,
 	const char*          s_update,
+	const char*          s_main_cmd_buffer,
 	const char*          s_main_renderpass,
 	const char*          s_frame_resize,
 	const char*          s_close,

@@ -11,7 +11,8 @@ extern "C" {
 
 
 uint8_t shEngineSafeState(
-    ShEngine* p_engine
+    ShEngine* p_engine,
+    uint8_t   load_shared
 ) {
     shEngineWarning(1, "running safe window");
 
@@ -30,7 +31,8 @@ uint8_t shEngineSafeState(
 
             shEngineManageState(
                 p_engine, 
-                shResetEngineState(p_engine, 1), 
+                shResetEngineState(p_engine, load_shared, 1),
+                load_shared,
                 0
             );
 
@@ -57,24 +59,50 @@ uint8_t shSetEngineState(
         return 0
     );
 
+    shEngineError(p_engine->ini_properties.application_smd_path  [0] == '\0', "shSetEngineState: could not detect application smd path",   return 0);
+    shEngineError(p_engine->ini_properties.host_memory_smd_path  [0] == '\0', "shSetEngineState: could not detect host memory smd path",   return 0);
+    shEngineError(p_engine->ini_properties.vulkan_memory_smd_path[0] == '\0', "shSetEngineState: could not detect vulkan memory smd path", return 0);
+    shEngineError(p_engine->ini_properties.serial_smd_path       [0] == '\0', "shSetEngineState: could not detect serial smd path",        return 0);
+    shEngineError(p_engine->ini_properties.scene_smd_path        [0] == '\0', "shSetEngineState: could not detect scene smd path",         return 0);
+
     shEngineError(
         shGetApplicationProperties(p_engine->ini_properties.application_smd_path, p_engine->p_application_smd, &p_engine->application_properties) == 0,
         "shSetEngineState: failed getting application properties",
         return 0
     );
 
-    shEngineError(
-        shGetHostMemoryProperties(p_engine->ini_properties.host_memory_smd_path, p_engine->p_host_memory_smd, &p_engine->host_memory_properties) == 0,
-        "shSetEngineState: failed getting host memory properties",
-        return 0
-    );
+    if (p_engine->ini_properties.host_memory_smd_path[0] != '\0') {
+        shEngineError(
+            shGetHostMemoryProperties(p_engine->ini_properties.host_memory_smd_path, p_engine->p_host_memory_smd, &p_engine->host_memory_properties) == 0,
+            "shSetEngineState: failed getting host memory properties",
+            return 0
+        );
+    }
 
-    shEngineError(
-        shGetSceneProperties(p_engine->ini_properties.scene_smd_path, p_engine->p_scene_smd, &p_engine->scene_properties) == 0,
-        "shSetEngineState: failed getting scene properties",
-        return 0
-    );
+    if (p_engine->ini_properties.vulkan_memory_smd_path[0] != '\0') {
+        shEngineError(
+            shGetVulkanMemoryProperties(p_engine->ini_properties.vulkan_memory_smd_path, p_engine->p_vulkan_memory_smd, &p_engine->vulkan_memory_properties) == 0,
+            "shSetEngineState: failed loading vulkan memory",
+            return 0
+        );
+    }
+    
+    if (p_engine->ini_properties.serial_smd_path[0] != '\0') {
+        shEngineError(
+            shGetSerialProperties(p_engine->ini_properties.serial_smd_path, p_engine->p_serial_smd, &p_engine->serial_properties) == 0,
+            "shSetEngineState: failed getting serial properties",
+            return 0
+        );
+    }
 
+    if (p_engine->ini_properties.scene_smd_path[0] != '\0') {
+        shEngineError(
+            shGetSceneProperties(p_engine->ini_properties.scene_smd_path, p_engine->p_scene_smd, &p_engine->scene_properties) == 0,
+            "shSetEngineState: failed getting scene properties",
+            return 0
+        );
+    }
+    
     if (load_shared) {
         shEngineError(
             shLoadApplication(
@@ -84,6 +112,7 @@ uint8_t shSetEngineState(
                 p_engine->application_properties.s_update_pending,
                 p_engine->application_properties.s_after_thread,
                 p_engine->application_properties.s_update,
+                p_engine->application_properties.s_main_cmd_buffer,
                 p_engine->application_properties.s_main_renderpass,
                 p_engine->application_properties.s_frame_resize,
                 p_engine->application_properties.s_close,
@@ -97,16 +126,10 @@ uint8_t shSetEngineState(
     //host memory already loaded
     
     //vulkan memory
-
-    shEngineError(
-        shGetVulkanMemoryProperties(p_engine->ini_properties.vulkan_memory_smd_path, p_engine->p_vulkan_memory_smd, &p_engine->vulkan_memory_properties) == 0,
-        "shSetEngineState: failed loading vulkan memory",
-        return 0
-    );
-
     for (uint32_t buffer_idx = 0; buffer_idx < p_engine->vulkan_memory_properties.buffer_count; buffer_idx++) {
               
         uint8_t               index_buffer_bit        = p_engine->vulkan_memory_properties.buffers_usage_index_buffer_bit   [buffer_idx];
+        uint8_t               uniform_buffer_bit      = p_engine->vulkan_memory_properties.buffers_usage_uniform_buffer_bit [buffer_idx];
         uint8_t               storage_buffer_bit      = p_engine->vulkan_memory_properties.buffers_usage_storage_buffer_bit [buffer_idx];
         uint8_t               transfer_dst_bit        = p_engine->vulkan_memory_properties.buffers_usage_transfer_dst_bit   [buffer_idx];
         uint8_t               transfer_src_bit        = p_engine->vulkan_memory_properties.buffers_usage_transfer_src_bit   [buffer_idx];
@@ -127,9 +150,10 @@ uint8_t shSetEngineState(
         VkSharingMode         memory_sharing_mode     = 0;                                               
         VkMemoryPropertyFlags memory_property_flags   = 0;                                               
         VkBuffer*             p_buffer                = &p_engine->vulkan_memory_properties.buffers        [buffer_idx];
-        VkDeviceMemory*       p_device_memory         = &p_engine->vulkan_memory_properties.devices_memory [buffer_idx];
+        VkDeviceMemory*       p_device_memory         = &p_engine->vulkan_memory_properties.buffers_memory [buffer_idx];
 
         (index_buffer_bit  )      && (buffer_usage_flags    |= VK_BUFFER_USAGE_INDEX_BUFFER_BIT  );
+        (uniform_buffer_bit)      && (buffer_usage_flags    |= VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
         (storage_buffer_bit)      && (buffer_usage_flags    |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
         (transfer_dst_bit  )      && (buffer_usage_flags    |= VK_BUFFER_USAGE_TRANSFER_DST_BIT  );
         (transfer_src_bit  )      && (buffer_usage_flags    |= VK_BUFFER_USAGE_TRANSFER_SRC_BIT  );
@@ -178,10 +202,13 @@ uint8_t shSetEngineState(
         );
     }
 
-    shAllocateThreads(
-        1, 
-        &p_engine->thread_pool
-    );
+    if (p_engine->thread_pool.p_threads == NULL) {
+        shAllocateThreads(
+            1,
+            &p_engine->thread_pool
+        );
+    }
+    
 
     if (p_engine->application_host.p_thread != NULL) {
 
@@ -212,21 +239,23 @@ uint8_t shSetEngineState(
 }
 
 uint8_t shResetEngineState(
-    ShEngine* p_engine, 
-    uint8_t release_shared
+    ShEngine* p_engine,
+    uint8_t   load_shared,
+    uint8_t   release_shared_on_failure
 ) {
     shEngineError(p_engine == NULL, "shResetEngineState: invalid engine memory", return 0);
 
     shEngineRelease(
         p_engine, 
-        release_shared
+        release_shared_on_failure
     );
 
-    return shSetEngineState(p_engine, release_shared);//load_shared = release_shared
+    return shSetEngineState(p_engine, load_shared);
 }
 
 uint8_t shEngineUpdateState(
-    ShEngine* p_engine
+    ShEngine* p_engine,
+    uint8_t   load_shared
 ) {
     ShEngineVkCore*      p_core             = &p_engine->core;
     ShWindow*            p_window           = &p_engine->window;
@@ -244,6 +273,10 @@ uint8_t shEngineUpdateState(
 
 		if (_width != 0 && _height != 0 && (*p_app_thread_state) == SH_THREAD_RETURNED) {//otherwise it's minimized
 			if (_width != p_window->width || _height != p_window->height) {//window is resized
+
+                if (p_engine->p_gui != NULL) {
+                    shGuiResizeInterface(p_engine->p_gui, p_window->width, p_window->height, _width, _height);
+                }
 
 				p_window->width  = _width;
 				p_window->height = _height;
@@ -343,27 +376,28 @@ uint8_t shEngineUpdateState(
 					shCreateFramebuffer(p_core->device, p_core->renderpass, SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT, image_views, _width, _height, 1, &p_core->framebuffers[i]);
 				}
 
-                shResetSemaphores(p_core->device, 1, &p_core->current_image_acquired_semaphore);
-                shResetSemaphores(p_core->device, 1, &p_core->current_graphics_queue_finished_semaphore);
-
-                if (shSharedSceneRun(p_engine, p_engine->application_host.p_frame_resize) == 0) {
-                    shEngineManageState(p_engine, 0, 1);
+                if (p_engine->p_gui != NULL) {
+                    shGuiDestroyPipelines(p_engine->p_gui);
+                    shGuiSetSurface(p_engine->p_gui, p_engine->core.surface);
+                    shGuiSetRenderpass(p_engine->p_gui, p_engine->core.renderpass);
+                    shGuiBuildRegionPipeline(p_engine->p_gui, NULL, NULL);
+                    shGuiBuildCharPipeline(p_engine->p_gui, NULL, NULL);
                 }
+                
+                if (shSharedSceneRun(p_engine, p_engine->application_host.p_frame_resize) == 0) {
+                    shEngineManageState(p_engine, 0, load_shared, 1);
+                }
+
+                shWaitDeviceIdle(p_core->device);
 			}
 		}
-
-        shUpdateWindow(p_engine);
 
         if (
              shIsKeyDown(*p_window,    SH_KEY_LEFT_CONTROL) && 
              shIsKeyPressed(*p_window, SH_KEY_R)
             ) {
-
-            if (shResetEngineState(p_engine, 1) == 0) {
-                shEngineManageState(p_engine, 0, 0);
-            }
-
-            break;
+                shEngineManageState(p_engine, shResetEngineState(p_engine, load_shared, 1), load_shared, 1);
+                break;
         }
 
         shEngineError(
@@ -375,17 +409,17 @@ uint8_t shEngineUpdateState(
         if ((*p_app_thread_state) == SH_THREAD_RETURNED) {
             if (p_engine->application_host.after_thread_called == 0) {
                 if (shSharedSceneRun(p_engine, p_engine->application_host.p_after_thread) == 0) {
-                    shEngineManageState(p_engine, 0, 1);
+                    shEngineManageState(p_engine, 0, load_shared, 1);
                 }
                 p_engine->application_host.after_thread_called++;
             }
-            if (shSharedSceneRun(p_engine, p_engine->application_host.p_update) == 0) {
-                shEngineManageState(p_engine, 0, 1);
+            if (shSharedSceneRun(p_engine, p_engine->application_host.p_main_cmd_buffer) == 0) {
+                shEngineManageState(p_engine, 0, load_shared, 1);
             }
         }
         else {
             if (shSharedSceneRun(p_engine, p_shared_host->p_update_pending) == 0) {
-                shEngineManageState(p_engine, 0, 1);
+                shEngineManageState(p_engine, 0, load_shared, 1);
             }
         }
 		
@@ -412,12 +446,20 @@ uint8_t shEngineUpdateState(
 			&p_core->graphics_cmd_fences[p_core->swapchain_image_idx]//p_fences
 		);
 
+        if (shSharedSceneRun(p_engine, p_engine->application_host.p_update) == 0) {
+            shEngineManageState(p_engine, 0, load_shared, 1);
+        }
+
 		VkCommandBuffer cmd_buffer = p_core->graphics_cmd_buffers[p_core->swapchain_image_idx];
 
 		shBeginCommandBuffer(cmd_buffer);
 
-        if (shSharedSceneRun(p_engine, p_engine->application_host.p_update) == 0) {
-            shEngineManageState(p_engine, 0, 1);
+        if (p_engine->p_gui != NULL) {
+            shGuiWriteMemory(p_engine->p_gui, cmd_buffer, 0);
+        }
+
+        if (shSharedSceneRun(p_engine, p_engine->application_host.p_main_cmd_buffer) == 0) {
+            shEngineManageState(p_engine, 0, load_shared, 1);
         }
         
 		VkClearValue clear_values[2] = { 0 };
@@ -441,7 +483,11 @@ uint8_t shEngineUpdateState(
 		);
 
         if (shSharedSceneRun(p_engine, p_engine->application_host.p_main_renderpass) == 0) {
-            shEngineManageState(p_engine, 0, 1);
+            shEngineManageState(p_engine, 0, load_shared, 1);
+        }
+
+        if (p_engine->p_gui != NULL) {
+            shGuiRender(p_engine->p_gui, cmd_buffer, p_engine->core.swapchain_image_idx);
         }
 
 		shEndRenderpass(cmd_buffer);
@@ -482,18 +528,20 @@ uint8_t shEngineUpdateState(
 uint8_t shEngineManageState(
     ShEngine* p_engine,
     uint8_t   ready,
-    uint8_t   release_on_failure
+    uint8_t   load_shared,
+    uint8_t   release_shared_on_failure
 ) {
     shEngineError(p_engine == NULL, "shEngineManageState: invalid engine memory", return 0);
 
     if (ready) {
-        shEngineUpdateState(p_engine);
+        if (!shEngineUpdateState(p_engine, load_shared)) {
+            shEngineRelease(p_engine, release_shared_on_failure);
+            shEngineSafeState(p_engine, load_shared);
+        }
     }
     else {
-        if (release_on_failure) {
-            shEngineRelease(p_engine, 0);
-        }
-        shEngineSafeState(p_engine);
+        shEngineRelease(p_engine, 0);
+        shEngineSafeState(p_engine, load_shared);
     }
 
     return 1;
@@ -546,7 +594,7 @@ uint8_t shEngineRelease(
 ) {
     shEngineError(p_engine == NULL, "shEngineRelease: invalid engine memory", return 0);
 
-    if (p_engine->application_host.p_close != NULL) {
+    if (release_shared && p_engine->application_host.p_close != NULL) {
         shEngineError(
             shSharedSceneRun(p_engine, p_engine->application_host.p_close) == 0,
             "shEngineRelease: failed closing application",
@@ -594,11 +642,7 @@ uint8_t shEngineRelease(
             "shEngineRelease: failed releasing shgui memory",
             return 0
         );
-        shEngineError(
-            shGuiReleaseMemory(p_engine->p_gui) == 0,
-            "shEngineRelease: failed releasing shgui memory",
-            return 0
-        );
+        free(p_engine->p_gui);
     }
 
     for (uint32_t host_buffer_idx = 0; host_buffer_idx < p_engine->host_memory_properties.buffer_count; host_buffer_idx++) {
@@ -610,18 +654,11 @@ uint8_t shEngineRelease(
             shClearBufferMemory(
                 p_engine->core.device,
                 p_engine->vulkan_memory_properties.buffers       [vulkan_buffer_idx],
-                p_engine->vulkan_memory_properties.devices_memory[vulkan_buffer_idx]
+                p_engine->vulkan_memory_properties.buffers_memory[vulkan_buffer_idx]
             ) == 0,
             "shEngineRelease: failed releasing vulkan buffer memory",
             return 0
         );
-    }
-
-    if (p_engine->scene_properties.entity_count) {
-        free(p_engine->scene_properties.p_identities         );
-        free(p_engine->scene_properties.p_cameras            );
-        free(p_engine->scene_properties.p_transforms         );
-        free(p_engine->scene_properties.p_host_memory_linkers);
     }
 
     free(p_engine->p_ini_smd          );
@@ -639,11 +676,11 @@ uint8_t shEngineRelease(
     memset(&p_engine->scene_properties,         0, sizeof(ShSceneProperties));
 
 
-    memset(&p_engine->application_host, 0, sizeof(ShApplicationHandle));
-    memset(&p_engine->application_host, 0, sizeof(ShThreadPool));
+    //memset(&p_engine->application_host, 0, sizeof(ShApplicationHandle));//we need to keep the functions information
+    memset(&p_engine->thread_pool,      0, sizeof(ShThreadPool));
     memset(&p_engine->app_thread_state, 0, sizeof(ShThreadState));
 
-    memset(&p_engine->pipeline_pool, 0, sizeof(ShVkPipelinePool));
+    //user should release pipeline pool
     memset(&p_engine->pipeline_count, 0, sizeof(uint32_t));
 
     

@@ -25,16 +25,18 @@ extern "C" {
 
 
 
-#define SH_ENVIRONMENT_STR512_LENGTH 64
+#define SH_ENVIRONMENT_STR512_LENGTH  64
+#define SH_ENVIRONMENT_STR1024_LENGTH 128
 
 
 
 typedef struct ShIniProperties {
-	char application_name       [SH_ENVIRONMENT_STR512_LENGTH];
-	char application_smd_path   [SH_ENVIRONMENT_STR512_LENGTH];
-	char host_memory_smd_path   [SH_ENVIRONMENT_STR512_LENGTH];
-	char vulkan_memory_smd_path [SH_ENVIRONMENT_STR512_LENGTH];
-	char scene_smd_path         [SH_ENVIRONMENT_STR512_LENGTH];
+	char application_name       [SH_ENVIRONMENT_STR1024_LENGTH];
+	char application_smd_path   [SH_ENVIRONMENT_STR1024_LENGTH];
+	char host_memory_smd_path   [SH_ENVIRONMENT_STR1024_LENGTH];
+	char vulkan_memory_smd_path [SH_ENVIRONMENT_STR1024_LENGTH];
+	char serial_smd_path        [SH_ENVIRONMENT_STR1024_LENGTH];
+	char scene_smd_path         [SH_ENVIRONMENT_STR1024_LENGTH];
 } ShIniProperties;
 
 
@@ -47,6 +49,7 @@ typedef struct ShApplicationProperties {
 	char                     s_update_pending  [SH_ENVIRONMENT_STR512_LENGTH];
 	char                     s_after_thread    [SH_ENVIRONMENT_STR512_LENGTH];
 	char                     s_update          [SH_ENVIRONMENT_STR512_LENGTH];
+	char                     s_main_cmd_buffer [SH_ENVIRONMENT_STR512_LENGTH];
 	char                     s_main_renderpass [SH_ENVIRONMENT_STR512_LENGTH];
 	char                     s_frame_resize    [SH_ENVIRONMENT_STR512_LENGTH];
 	char                     s_close           [SH_ENVIRONMENT_STR512_LENGTH];
@@ -75,6 +78,7 @@ typedef struct ShVulkanMemoryProperties {
 	uint32_t              buffers_size                              [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
 	uint8_t               buffers_usage_transfer_src_bit            [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
 	uint8_t               buffers_usage_transfer_dst_bit            [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
+	uint8_t               buffers_usage_uniform_buffer_bit          [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
 	uint8_t               buffers_usage_storage_buffer_bit          [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
 	uint8_t               buffers_usage_index_buffer_bit            [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
 	uint8_t               buffers_usage_vertex_buffer_bit           [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
@@ -87,9 +91,18 @@ typedef struct ShVulkanMemoryProperties {
 	uint8_t               buffers_memory_property_host_coherent_bit [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
 
 	VkBuffer              buffers                                   [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
-	VkDeviceMemory        devices_memory                            [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
-
+	VkDeviceMemory        buffers_memory                            [SH_ENVIRONMENT_MAX_VULKAN_BUFFER_COUNT];
 } ShVulkanMemoryProperties;
+
+
+
+typedef struct ShSerialProperties {
+	char     port[SH_ENVIRONMENT_STR1024_LENGTH];
+	uint32_t baud_rate;
+	uint32_t read_timeout_ms;
+	uint8_t  read_bit;
+	uint8_t  write_bit;
+} ShSerialProperties;
 
 
 
@@ -130,6 +143,12 @@ extern uint8_t shGetVulkanMemoryProperties(
 	const char*               vulkan_memory_file_path,
 	SmdFileHandle*            p_vulkan_memory_smd,
 	ShVulkanMemoryProperties* p_vulkan_memory_properties
+);
+
+extern uint8_t shGetSerialProperties(
+	const char*         serial_file_path,
+	SmdFileHandle*      p_serial_smd,
+	ShSerialProperties* p_serial_properties
 );
 
 extern uint8_t shGetSceneProperties(

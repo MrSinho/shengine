@@ -1,1 +1,1 @@
-UINT32    ^^ 1    ShEngine::scene_properties.entity_count    --> 0     *
+UINT32    ^^ 1     !! ShEngine::scene_properties.entity_count    --> 0    *
