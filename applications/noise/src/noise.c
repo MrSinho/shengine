@@ -296,18 +296,25 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_close(ShEngine* p_engine) {
 #include <sheditor/shEditor.h>
 
 int main() {
-    ShEngine engine = { 0 };
-    engine.application_host.p_start           = &noise_start;
-    engine.application_host.p_thread          = &noise_thread;
-    engine.application_host.p_update_pending  = &noise_update_pending;
-    engine.application_host.p_after_thread    = &noise_after_thread;
-    engine.application_host.p_update          = &noise_update;
-    engine.application_host.p_main_cmd_buffer = &noise_main_cmd_buffer;
-    engine.application_host.p_main_renderpass = &noise_main_renderpass;
-    engine.application_host.p_frame_resize    = &noise_frame_resize;
-    engine.application_host.p_close           = &noise_close;
-    engine.window.title                       = "NoiseApp";
-    return shEditorMain(&engine);
+    ShEngine* p_engine = shAllocateEngine();
+    shEngineError(
+        p_engine == NULL,
+        "main: invalid engine memory",
+        return -1
+    );
+
+    p_engine->application_host.p_start           = (ShApplicationFunc*)      &noise_start;
+    p_engine->application_host.p_thread          = (ShApplicationThreadFunc*)&noise_thread;
+    p_engine->application_host.p_update_pending  = (ShApplicationFunc*)      &noise_update_pending;
+    p_engine->application_host.p_after_thread    = (ShApplicationFunc*)      &noise_after_thread;
+    p_engine->application_host.p_update          = (ShApplicationFunc*)      &noise_update;
+    p_engine->application_host.p_main_cmd_buffer = (ShApplicationFunc*)      &noise_main_cmd_buffer;
+    p_engine->application_host.p_main_renderpass = (ShApplicationFunc*)      &noise_main_renderpass;
+    p_engine->application_host.p_frame_resize    = (ShApplicationFunc*)      &noise_frame_resize;
+    p_engine->application_host.p_close           = (ShApplicationFunc*)      &noise_close;
+    p_engine->window.title                       = "NoiseApp";
+
+    return shEditorMain(p_engine);
 }
 #endif//SH_APPLICATION_TARGET_TYPE_EXECUTABLE
 
