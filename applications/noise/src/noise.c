@@ -312,7 +312,7 @@ int main() {
     p_engine->application_host.p_main_renderpass = (ShApplicationFunc*)      &noise_main_renderpass;
     p_engine->application_host.p_frame_resize    = (ShApplicationFunc*)      &noise_frame_resize;
     p_engine->application_host.p_close           = (ShApplicationFunc*)      &noise_close;
-    p_engine->window.title                       = "NoiseApp";
+    p_engine->window.title                       = "noise";
 
     return shEditorMain(p_engine);
 }
