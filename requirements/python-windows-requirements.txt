@@ -1,2 +1,1 @@
 pathlib
-windows-curses
