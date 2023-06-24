@@ -223,7 +223,7 @@ uint8_t shGetHostMemoryProperties(
     for (uint32_t buffer_idx = 0; buffer_idx < p_host_memory_properties->buffer_count; buffer_idx++) {
 
         char s_buffer_idx[32] = { 0 };
-        itoa(buffer_idx, s_buffer_idx, 10);
+        snprintf(s_buffer_idx, 32, "%i", buffer_idx);
 
         char s_buffers_size   [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::host_memory_properties.buffers_size[";  
         char s_buffers_stride [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::host_memory_properties.buffers_stride[";
@@ -319,7 +319,7 @@ uint8_t shGetVulkanMemoryProperties(
     for (uint32_t buffer_idx = 0; buffer_idx < p_vulkan_memory_properties->buffer_count; buffer_idx++) {
 
         char s_buffer_idx[32] = { 0 };
-        itoa(buffer_idx, s_buffer_idx, 10);
+        snprintf(s_buffer_idx, 32, "%i", buffer_idx);
 
         char s_buffers_size                              [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_size[";
         char s_buffers_usage_transfer_src_bit            [SMD_VAR_NAME_MAX_SIZE] = "ShEngine::vulkan_memory_properties.buffers_usage_transfer_src_bit[";
@@ -580,7 +580,7 @@ uint8_t shGetSceneProperties(
     for (uint32_t entity = 0; entity < p_scene_properties->entity_count; entity++) {
 
         char s_entity[32] = { 0 };
-        itoa(entity, s_entity, 10);
+        snprintf(s_entity, 32, "%i", entity);
 
         //
         //IDENTITY
