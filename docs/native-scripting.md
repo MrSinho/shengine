@@ -73,7 +73,7 @@ int main() {
         return -1
     );
 
-	p_engine->application_host.p_start           = (ShApplicationFunc*)      &triangle_start;
+    p_engine->application_host.p_start           = (ShApplicationFunc*)      &triangle_start;
     p_engine->application_host.p_thread          = (ShApplicationThreadFunc*)&triangle_thread;
     p_engine->application_host.p_update_pending  = (ShApplicationFunc*)      &triangle_update_pending;
     p_engine->application_host.p_after_thread    = (ShApplicationFunc*)      &triangle_after_thread;
