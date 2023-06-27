@@ -50,8 +50,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 
     NoiseApp* p_noise = (NoiseApp*)p_engine->p_ext;
 
-    p_noise->parameters.s = 0.5f;
-    p_noise->parameters.a = 2.0f;
+    p_noise->parameters.s = 4.0f;
+    p_noise->parameters.a = 5.0f;
     p_noise->parameters.b = 7.0f;
     p_noise->display_ui   = 1;
 
