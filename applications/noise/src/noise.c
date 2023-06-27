@@ -9,7 +9,6 @@ extern "C" {
 #include <math.h>
 #include <stdio.h>
 #include <memory.h>
-#include <Windows.h>
 
 #define CANVAS_VERTEX_COUNT 6
 
