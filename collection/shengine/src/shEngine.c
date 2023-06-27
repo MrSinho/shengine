@@ -274,125 +274,126 @@ uint8_t shEngineUpdateState(
 		int _height = 0;
 		glfwGetWindowSize(p_window->window, &_width, &_height);
 
-		if (_width != 0 && _height != 0 && (*p_app_thread_state) == SH_THREAD_RETURNED) {//otherwise it's minimized
-			if (_width != p_window->width || _height != p_window->height) {//window is resized
+		if (    (_width != 0 && _height != 0)                              && //otherwise it's minimized
+                (_width != p_window->width || _height != p_window->height) && //window is resized
+                ((*p_app_thread_state) == SH_THREAD_RETURNED)                 //to prevent segfaults
+            ) {
 
-                if (p_engine->p_gui != NULL) {
-                    shGuiResizeInterface(p_engine->p_gui, p_window->width, p_window->height, _width, _height);
-                }
-
-				p_window->width  = _width;
-				p_window->height = _height;
-
-				shWaitDeviceIdle(p_core->device);
-
-				shDestroyRenderpass(p_core->device, p_core->renderpass);
-				shDestroyFramebuffers(p_core->device, p_core->swapchain_image_count, p_core->framebuffers);
-				shDestroyImageViews(p_core->device, p_core->swapchain_image_count, p_core->swapchain_image_views);
-				shDestroySwapchain(p_core->device, p_core->swapchain);
-				shDestroySurface(p_core->instance, p_core->surface);
-
-				shClearImageMemory(p_core->device, p_core->depth_image, p_core->depth_image_memory);
-				shClearImageMemory(p_core->device, p_core->input_color_image, p_core->input_color_image_memory);
-				shDestroyImageViews(p_core->device, 1, &p_core->depth_image_view);
-				shDestroyImageViews(p_core->device, 1, &p_core->input_color_image_view);
-
-				glfwCreateWindowSurface(p_core->instance, p_window->window, VK_NULL_HANDLE, &p_core->surface);
-				uint8_t graphics_supported = 0;
-				shGetPhysicalDeviceSurfaceSupport(p_core->physical_device, p_core->graphics_queue_family_index, p_core->surface, &graphics_supported);//always true
-				shGetPhysicalDeviceSurfaceCapabilities(p_core->physical_device, p_core->surface, &p_core->surface_capabilities);
-				shCreateSwapchain(
-					p_core->device, p_core->physical_device, p_core->surface,
-					p_core->swapchain_image_format, 
-					&p_core->swapchain_image_format,
-					SH_ENGINE_SWAPCHAIN_IMAGE_COUNT,
-					p_core->swapchain_image_sharing_mode,
-					0, 
-					&p_core->swapchain_image_count,
-					&p_core->swapchain
-				);
-				shGetSwapchainImages(p_core->device, p_core->swapchain, &p_core->swapchain_image_count, p_core->swapchain_images);
-				for (uint32_t i = 0; i < p_core->swapchain_image_count; i++) {
-					shCreateImageView(
-						p_core->device, p_core->swapchain_images[i], 
-						VK_IMAGE_VIEW_TYPE_2D, VK_IMAGE_ASPECT_COLOR_BIT, 
-						1, p_core->swapchain_image_format, 
-						&p_core->swapchain_image_views[i]
-					);
-				}
-
-				shCreateImage(
-					p_core->device, VK_IMAGE_TYPE_2D,
-					p_window->width, p_window->height, 1,
-					VK_FORMAT_D32_SFLOAT, 
-					1, p_core->sample_count,
-					VK_IMAGE_TILING_OPTIMAL,
-					VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-					VK_SHARING_MODE_EXCLUSIVE, &p_core->depth_image
-				);
-				shAllocateImageMemory(
-					p_core->device, p_core->physical_device, p_core->depth_image,
-					VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-					&p_core->depth_image_memory
-				);
-				shBindImageMemory(
-					p_core->device,p_core-> depth_image, 0, p_core->depth_image_memory
-				);
-				shCreateImageView(
-					p_core->device, p_core->depth_image, VK_IMAGE_VIEW_TYPE_2D,
-					VK_IMAGE_ASPECT_DEPTH_BIT, 1,
-					VK_FORMAT_D32_SFLOAT, &p_core->depth_image_view
-				);
-
-				shCreateImage(
-					p_core->device, VK_IMAGE_TYPE_2D,
-					p_window->width, p_window->height, 1,
-					p_core->swapchain_image_format, 
-					1, p_core->sample_count,
-					VK_IMAGE_TILING_OPTIMAL,
-					VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-					VK_SHARING_MODE_EXCLUSIVE,
-					&p_core->input_color_image
-				);
-				shAllocateImageMemory(
-					p_core->device, p_core->physical_device, p_core->input_color_image,
-					VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-					&p_core->input_color_image_memory
-				);
-				shBindImageMemory(
-					p_core->device, p_core->input_color_image, 0, p_core->input_color_image_memory
-				);
-				shCreateImageView(
-					p_core->device, p_core->input_color_image, VK_IMAGE_VIEW_TYPE_2D,
-					VK_IMAGE_ASPECT_COLOR_BIT, 1, p_core->swapchain_image_format,
-					&p_core->input_color_image_view
-				);
-
-                VkAttachmentDescription attachment_descriptions[SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT] = {
-                	p_engine->core.input_color_attachment, p_engine->core.depth_attachment, p_engine->core.resolve_attachment
-                };
-				shCreateRenderpass(p_core->device, SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT, attachment_descriptions, 1, &p_core->subpass, &p_core->renderpass);
-				for (uint32_t i = 0; i < p_core->swapchain_image_count; i++) {
-					VkImageView image_views[SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT] = { 
-						p_core->input_color_image_view, p_core->depth_image_view, p_core->swapchain_image_views[i]
-					};
-					shCreateFramebuffer(p_core->device, p_core->renderpass, SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT, image_views, _width, _height, 1, &p_core->framebuffers[i]);
-				}
-
-                if (p_engine->p_gui != NULL) {
-                    shGuiDestroyPipelines(p_engine->p_gui);
-                    shGuiSetSurface(p_engine->p_gui, p_engine->core.surface);
-                    shGuiSetRenderpass(p_engine->p_gui, p_engine->core.renderpass);
-                    shGuiBuildRegionPipeline(p_engine->p_gui, NULL, NULL);
-                    shGuiBuildCharPipeline(p_engine->p_gui, NULL, NULL);
-                }
-                
-                if (shSharedSceneRun(p_engine, p_engine->application_host.p_frame_resize) == 0) {
-                    shEngineManageState(p_engine, 0, load_shared, 1);
-                }
-
-                shWaitDeviceIdle(p_core->device);
-			}
+            if (p_engine->p_gui != NULL) {
+                shGuiResizeInterface(p_engine->p_gui, p_window->width, p_window->height, _width, _height);
+            }
+            
+            p_window->width  = _width;
+            p_window->height = _height;
+            
+            shWaitDeviceIdle(p_core->device);
+            
+            shDestroyRenderpass(p_core->device, p_core->renderpass);
+            shDestroyFramebuffers(p_core->device, p_core->swapchain_image_count, p_core->framebuffers);
+            shDestroyImageViews(p_core->device, p_core->swapchain_image_count, p_core->swapchain_image_views);
+            shDestroySwapchain(p_core->device, p_core->swapchain);
+            shDestroySurface(p_core->instance, p_core->surface);
+            
+            shClearImageMemory(p_core->device, p_core->depth_image, p_core->depth_image_memory);
+            shClearImageMemory(p_core->device, p_core->input_color_image, p_core->input_color_image_memory);
+            shDestroyImageViews(p_core->device, 1, &p_core->depth_image_view);
+            shDestroyImageViews(p_core->device, 1, &p_core->input_color_image_view);
+            
+            glfwCreateWindowSurface(p_core->instance, p_window->window, VK_NULL_HANDLE, &p_core->surface);
+            uint8_t graphics_supported = 0;
+            shGetPhysicalDeviceSurfaceSupport(p_core->physical_device, p_core->graphics_queue_family_index, p_core->surface, &graphics_supported);//always true
+            shGetPhysicalDeviceSurfaceCapabilities(p_core->physical_device, p_core->surface, &p_core->surface_capabilities);
+            shCreateSwapchain(
+            	p_core->device, p_core->physical_device, p_core->surface,
+            	p_core->swapchain_image_format, 
+            	&p_core->swapchain_image_format,
+            	SH_ENGINE_SWAPCHAIN_IMAGE_COUNT,
+            	p_core->swapchain_image_sharing_mode,
+            	0, 
+            	&p_core->swapchain_image_count,
+            	&p_core->swapchain
+            );
+            shGetSwapchainImages(p_core->device, p_core->swapchain, &p_core->swapchain_image_count, p_core->swapchain_images);
+            for (uint32_t i = 0; i < p_core->swapchain_image_count; i++) {
+            	shCreateImageView(
+            		p_core->device, p_core->swapchain_images[i], 
+            		VK_IMAGE_VIEW_TYPE_2D, VK_IMAGE_ASPECT_COLOR_BIT, 
+            		1, p_core->swapchain_image_format, 
+            		&p_core->swapchain_image_views[i]
+            	);
+            }
+            
+            shCreateImage(
+            	p_core->device, VK_IMAGE_TYPE_2D,
+            	p_window->width, p_window->height, 1,
+            	VK_FORMAT_D32_SFLOAT, 
+            	1, p_core->sample_count,
+            	VK_IMAGE_TILING_OPTIMAL,
+            	VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+            	VK_SHARING_MODE_EXCLUSIVE, &p_core->depth_image
+            );
+            shAllocateImageMemory(
+            	p_core->device, p_core->physical_device, p_core->depth_image,
+            	VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            	&p_core->depth_image_memory
+            );
+            shBindImageMemory(
+            	p_core->device,p_core-> depth_image, 0, p_core->depth_image_memory
+            );
+            shCreateImageView(
+            	p_core->device, p_core->depth_image, VK_IMAGE_VIEW_TYPE_2D,
+            	VK_IMAGE_ASPECT_DEPTH_BIT, 1,
+            	VK_FORMAT_D32_SFLOAT, &p_core->depth_image_view
+            );
+            
+            shCreateImage(
+            	p_core->device, VK_IMAGE_TYPE_2D,
+            	p_window->width, p_window->height, 1,
+            	p_core->swapchain_image_format, 
+            	1, p_core->sample_count,
+            	VK_IMAGE_TILING_OPTIMAL,
+            	VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+            	VK_SHARING_MODE_EXCLUSIVE,
+            	&p_core->input_color_image
+            );
+            shAllocateImageMemory(
+            	p_core->device, p_core->physical_device, p_core->input_color_image,
+            	VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            	&p_core->input_color_image_memory
+            );
+            shBindImageMemory(
+            	p_core->device, p_core->input_color_image, 0, p_core->input_color_image_memory
+            );
+            shCreateImageView(
+            	p_core->device, p_core->input_color_image, VK_IMAGE_VIEW_TYPE_2D,
+            	VK_IMAGE_ASPECT_COLOR_BIT, 1, p_core->swapchain_image_format,
+            	&p_core->input_color_image_view
+            );
+            
+            VkAttachmentDescription attachment_descriptions[SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT] = {
+            	p_engine->core.input_color_attachment, p_engine->core.depth_attachment, p_engine->core.resolve_attachment
+            };
+            shCreateRenderpass(p_core->device, SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT, attachment_descriptions, 1, &p_core->subpass, &p_core->renderpass);
+            for (uint32_t i = 0; i < p_core->swapchain_image_count; i++) {
+            	VkImageView image_views[SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT] = { 
+            		p_core->input_color_image_view, p_core->depth_image_view, p_core->swapchain_image_views[i]
+            	};
+            	shCreateFramebuffer(p_core->device, p_core->renderpass, SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT, image_views, _width, _height, 1, &p_core->framebuffers[i]);
+            }
+            
+            if (p_engine->p_gui != NULL) {
+                shGuiDestroyPipelines(p_engine->p_gui);
+                shGuiSetSurface(p_engine->p_gui, p_engine->core.surface);
+                shGuiSetRenderpass(p_engine->p_gui, p_engine->core.renderpass);
+                shGuiBuildRegionPipeline(p_engine->p_gui, NULL, NULL);
+                shGuiBuildCharPipeline(p_engine->p_gui, NULL, NULL);
+            }
+            
+            if (shSharedSceneRun(p_engine, p_engine->application_host.p_frame_resize) == 0) {
+                shEngineManageState(p_engine, 0, load_shared, 1);
+            }
+            
+            shWaitDeviceIdle(p_core->device);
 		}
 
         if (
@@ -425,99 +426,101 @@ uint8_t shEngineUpdateState(
                 shEngineManageState(p_engine, 0, load_shared, 1);
             }
         }
-		
-		shAcquireSwapchainImage(
-			p_core->device,//device
-			p_core->swapchain,//swapchain
-			UINT64_MAX,//timeout_ns
-			p_core->current_image_acquired_semaphore,//acquired_signal_semaphore
-			VK_NULL_HANDLE,//acquired_signal_fence
-			&p_core->swapchain_image_idx//p_swapchain_image_index
-		);
-
-		shWaitForFences(
-			p_core->device,//device
-			1,//fence_count
-			&p_core->graphics_cmd_fences[p_core->swapchain_image_idx],//p_fences
-			1,//wait_for_all
-			UINT64_MAX//timeout_ns
-		);
-
-		shResetFences(
-			p_core->device,//device
-			1,//fence_count
-			&p_core->graphics_cmd_fences[p_core->swapchain_image_idx]//p_fences
-		);
 
         if (shSharedSceneRun(p_engine, p_engine->application_host.p_update) == 0) {
             shEngineManageState(p_engine, 0, load_shared, 1);
         }
+		
+        if (_width != 0 && _height != 0) {
+            shAcquireSwapchainImage(
+                p_core->device,//device
+                p_core->swapchain,//swapchain
+                UINT64_MAX,//timeout_ns
+                p_core->current_image_acquired_semaphore,//acquired_signal_semaphore
+                VK_NULL_HANDLE,//acquired_signal_fence
+                &p_core->swapchain_image_idx//p_swapchain_image_index
+            );
 
-		VkCommandBuffer cmd_buffer = p_core->graphics_cmd_buffers[p_core->swapchain_image_idx];
+            shWaitForFences(
+                p_core->device,//device
+                1,//fence_count
+                &p_core->graphics_cmd_fences[p_core->swapchain_image_idx],//p_fences
+                1,//wait_for_all
+                UINT64_MAX//timeout_ns
+            );
 
-		shBeginCommandBuffer(cmd_buffer);
+            shResetFences(
+                p_core->device,//device
+                1,//fence_count
+                &p_core->graphics_cmd_fences[p_core->swapchain_image_idx]//p_fences
+            );
 
-        if (p_engine->p_gui != NULL) {
-            shGuiWriteMemory(p_engine->p_gui, cmd_buffer, 0);
+            VkCommandBuffer cmd_buffer = p_core->graphics_cmd_buffers[p_core->swapchain_image_idx];
+
+            shBeginCommandBuffer(cmd_buffer);
+
+            if (p_engine->p_gui != NULL) {
+                shGuiWriteMemory(p_engine->p_gui, cmd_buffer, 0);
+            }
+
+            if (shSharedSceneRun(p_engine, p_engine->application_host.p_main_cmd_buffer) == 0) {
+                shEngineManageState(p_engine, 0, load_shared, 1);
+            }
+
+            VkClearValue clear_values[2] = { 0 };
+            float* p_colors = clear_values[0].color.float32;
+            p_colors[0] = 0.1f;
+            p_colors[1] = 0.1f;
+            p_colors[2] = 0.1f;
+
+            clear_values[1].depthStencil.depth = 1.0f;
+
+            shBeginRenderpass(
+                cmd_buffer,//graphics_cmd_buffer
+                p_core->renderpass,//renderpass
+                0,//render_offset_x
+                0,//render_offset_y
+                p_core->surface_capabilities.currentExtent.width,//render_size_x
+                p_core->surface_capabilities.currentExtent.height,//render_size_y
+                2,//only attachments with VK_ATTACHMENT_LOAD_OP_CLEAR
+                clear_values,//p_clear_values
+                p_core->framebuffers[p_core->swapchain_image_idx]//framebuffer
+            );
+
+            if (shSharedSceneRun(p_engine, p_engine->application_host.p_main_renderpass) == 0) {
+                shEngineManageState(p_engine, 0, load_shared, 1);
+            }
+
+            if (p_engine->p_gui != NULL) {
+                shGuiRender(p_engine->p_gui, cmd_buffer, p_engine->core.swapchain_image_idx);
+            }
+
+            shEndRenderpass(cmd_buffer);
+
+            shEndCommandBuffer(cmd_buffer);
+
+            shQueueSubmit(
+                1,//cmd_buffer_count
+                &cmd_buffer,//p_cmd_buffers
+                p_core->graphics_queue,//queue
+                p_core->graphics_cmd_fences[p_core->swapchain_image_idx],//fence
+                1,//semaphores_to_wait_for_count
+                &p_core->current_image_acquired_semaphore,//p_semaphores_to_wait_for
+                VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT,//wait_stage
+                1,//signal_semaphore_count
+                &p_core->current_graphics_queue_finished_semaphore//p_signal_semaphores
+            );
+
+            shQueuePresentSwapchainImage(
+                p_core->present_queue,//present_queue
+                1,//semaphores_to_wait_for_count
+                &p_core->current_graphics_queue_finished_semaphore,//p_semaphores_to_wait_for
+                p_core->swapchain,//swapchain
+                p_core->swapchain_image_idx//swapchain_image_idx
+            );
+
+            p_core->swapchain_image_idx = (p_core->swapchain_image_idx + 1) % p_core->swapchain_image_count;
         }
-
-        if (shSharedSceneRun(p_engine, p_engine->application_host.p_main_cmd_buffer) == 0) {
-            shEngineManageState(p_engine, 0, load_shared, 1);
-        }
-        
-		VkClearValue clear_values[2] = { 0 };
-		float* p_colors = clear_values[0].color.float32;
-		p_colors[0] = 0.1f;
-		p_colors[1] = 0.1f;
-		p_colors[2] = 0.1f;
-
-		clear_values[1].depthStencil.depth = 1.0f;
-
-		shBeginRenderpass(
-			cmd_buffer,//graphics_cmd_buffer
-			p_core->renderpass,//renderpass
-			0,//render_offset_x
-			0,//render_offset_y
-			p_core->surface_capabilities.currentExtent.width,//render_size_x
-			p_core->surface_capabilities.currentExtent.height,//render_size_y
-			2,//only attachments with VK_ATTACHMENT_LOAD_OP_CLEAR
-			clear_values,//p_clear_values
-			p_core->framebuffers[p_core->swapchain_image_idx]//framebuffer
-		);
-
-        if (shSharedSceneRun(p_engine, p_engine->application_host.p_main_renderpass) == 0) {
-            shEngineManageState(p_engine, 0, load_shared, 1);
-        }
-
-        if (p_engine->p_gui != NULL) {
-            shGuiRender(p_engine->p_gui, cmd_buffer, p_engine->core.swapchain_image_idx);
-        }
-
-		shEndRenderpass(cmd_buffer);
-
-		shEndCommandBuffer(cmd_buffer);
-
-		shQueueSubmit(
-			1,//cmd_buffer_count
-			&cmd_buffer,//p_cmd_buffers
-			p_core->graphics_queue,//queue
-			p_core->graphics_cmd_fences[p_core->swapchain_image_idx],//fence
-			1,//semaphores_to_wait_for_count
-			&p_core->current_image_acquired_semaphore,//p_semaphores_to_wait_for
-			VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT,//wait_stage
-			1,//signal_semaphore_count
-			&p_core->current_graphics_queue_finished_semaphore//p_signal_semaphores
-		);
-
-		shQueuePresentSwapchainImage(
-			p_core->present_queue,//present_queue
-			1,//semaphores_to_wait_for_count
-			&p_core->current_graphics_queue_finished_semaphore,//p_semaphores_to_wait_for
-			p_core->swapchain,//swapchain
-			p_core->swapchain_image_idx//swapchain_image_idx
-		);
-
-		p_core->swapchain_image_idx = (p_core->swapchain_image_idx + 1) % p_core->swapchain_image_count;
 	}
 
     shEngineRelease      (p_engine, 1);
