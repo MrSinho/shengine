@@ -1,5 +1,10 @@
 # shengine
 
+[![linux_badge](.shci/linux-exit_code.svg)](.shci/linux-log.md)
+[![windows_badge](.shci/windows-exit_code.svg)](.shci/windows-log.md)
+
+A vulkan based engine made for personal projects. It's not a plug-and-play 3d engine, but a series of libraries and programs build to speed the creation of vulkan based applications and applications in general. The engine is on active development.
+
 ![coulomb](docs/media/noise-5.png)
 
 ---
@@ -15,7 +20,7 @@ The engine is frequently being tested on Windows 11, Linux Mint (virtual machine
 
 ---
 
-# Notes:
+# Notes
  - Python 3.9 is required to generate the project files
  - It's better for me to stick with a few and simple examples: `triangle` and `noise` 
  - Dismissed `flappy-circle`, `application-sample`, `serial-sample`
@@ -33,7 +38,7 @@ The engine is frequently being tested on Windows 11, Linux Mint (virtual machine
 
 ---
 
-# Features:
+# Features
  - By default double buffering.
  - Depth buffer and multisampling support by default.
  - Native scripting in C (see [`docs/native-scripting`](./docs/native-scripting.md)).
