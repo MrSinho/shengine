@@ -9,8 +9,7 @@ extern "C" {
 #include <math.h>
 #include <stdio.h>
 #include <memory.h>
-
-
+#include <Windows.h>
 
 #define CANVAS_VERTEX_COUNT 6
 
@@ -99,11 +98,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 	);
 	shApplicationError(shader_code == NULL, "noise_start: invalid shader code memory", return 0);
 
-	shApplicationError(
-		shPipelineCreateShaderModule(device, shader_size, shader_code, p_pipeline) == 0,
-		"noise_start: failed allocating shader module",
-		return 0
-	);
+    shPipelineCreateShaderModule(device, shader_size, shader_code, p_pipeline);
 	shPipelineCreateShaderStage(VK_SHADER_STAGE_VERTEX_BIT, p_pipeline);
 	free(shader_code);
 	
@@ -114,11 +109,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 	);
 	shApplicationError(shader_code == NULL, "invalid shader code memory", return 0);
 
-	shApplicationError(
-		shPipelineCreateShaderModule(device, shader_size, shader_code, p_pipeline) == 0,
-		"noise_start: failed allocating shader module",
-		return 0
-	);
+    shPipelineCreateShaderModule(device, shader_size, shader_code, p_pipeline);
 	shPipelineCreateShaderStage(VK_SHADER_STAGE_FRAGMENT_BIT, p_pipeline);
 	free(shader_code);
 
@@ -192,7 +183,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
 
          if (shIsKeyDown(p_engine->window, SH_KEY_X)) { p_noise->parameters.b += 1.0f * dtime; }
     else if (shIsKeyDown(p_engine->window, SH_KEY_Z)) { p_noise->parameters.b -= 1.0f * dtime; }
-
 
     shWriteMemory  (device, staging_memory, 0, NOISE_PARAMETERS_SIZE, p_noise);
     shWaitForFences(device, 1, &p_noise->copy_fence, 1, UINT64_MAX);
