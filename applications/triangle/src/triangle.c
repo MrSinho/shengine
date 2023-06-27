@@ -53,11 +53,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(
 	);
 	shApplicationError(shader_code == NULL, "triangle_start: invalid shader code memory", return 0);
 
-	shApplicationError(
-		shPipelineCreateShaderModule(device, shader_size, shader_code, p_pipeline) == 0,
-		"triangle_start: failed allocating shader module",
-		return 0
-	);
+	shPipelineCreateShaderModule(device, shader_size, shader_code, p_pipeline);
 	shPipelineCreateShaderStage(VK_SHADER_STAGE_VERTEX_BIT, p_pipeline);
 	free(shader_code);
 	
@@ -66,17 +62,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(
 		"rb",
 		&shader_size
 	);
-	shApplicationError(shader_code == NULL, "invalid shader code memory", return 0);
-
-	shApplicationError(
-		shPipelineCreateShaderModule(device, shader_size, shader_code, p_pipeline) == 0,
-		"triangle_start: failed allocating shader module",
-		return 0
-	);
+	shPipelineCreateShaderModule(device, shader_size, shader_code, p_pipeline);
 	shPipelineCreateShaderStage(VK_SHADER_STAGE_FRAGMENT_BIT, p_pipeline);
 	free(shader_code);
-
-
 
 	shApplicationError(
 		shPipelineCreateLayout(device, 0, 0, p_engine->p_pipeline_pool, p_pipeline) == 0,
