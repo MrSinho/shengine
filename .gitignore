@@ -68,5 +68,9 @@ applications/sample-application/linux/*
 applications/serial-demo/linux/*
 applications/flappy-circle/linux/*
 
+applications/triangle/CMakeLists.txt
+applications/noise/CMakeLists.txt
+
+
 .vscode/*
 .vs/*
