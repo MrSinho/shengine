@@ -1,4 +1,4 @@
-## Noise application example
+# Noise application example
 
 ![noise-3](media/noise-3.png)
 
