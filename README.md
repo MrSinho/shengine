@@ -33,6 +33,7 @@ The engine is frequently being tested on Windows 11, Linux Mint (virtual machine
 # Documentation
  * [`Project guide`](./docs/project-guide.md)
  * [`Native scripting`](./docs/native-scripting.md)
+ * [`Noise example`](./docs/noise-example.md)
 
 ---
 
