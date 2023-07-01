@@ -15,8 +15,6 @@ extern "C" {
 #include <shengine/shEngine.h>
 #include <shenvironment/shEnvironment.h>
 
-#include <shgui/shgui.h>
-
 #include "sheditor/shEditor.h"
 
 

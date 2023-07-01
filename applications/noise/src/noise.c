@@ -152,7 +152,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
     shApplicationError(p_engine->p_ext == NULL, "noise_start: invalid engine extension memory", return 0);
     shApplicationError(p_engine->p_pipeline_pool == NULL, "noise_main_renderpass: invalid pipeline pool memory", return 0);
 
-    ShGui*            p_gui                 = p_engine->p_gui;
     NoiseApp*         p_noise               = (NoiseApp*)p_engine->p_ext;
     float             dtime                 = (float)p_engine->time.delta_time;
 

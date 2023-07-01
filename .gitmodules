@@ -13,9 +13,6 @@
 [submodule "collection/externals/plyimporter"]
 	path = collection/externals/plyimporter
 	url = https://github.com/mrsinho/plyimporter.git
-[submodule "collection/externals/shgui"]
-	path = collection/externals/shgui
-	url = https://github.com/mrsinho/shgui.git
 [submodule "collection/externals/shthreads"]
 	path = collection/externals/shthreads
 	url = https://github.com/mrsinho/shthreads.git

@@ -18,7 +18,6 @@ extern "C" {
 #include "shenvironment/shFileUtilities.h"
 
 #include <shthreads/shthreads.h>
-#include <shgui/shgui.h>
 #include <smd/smd.h>
 
 
@@ -103,7 +102,7 @@ typedef struct ShEngine {
 						     
     ShWindow                 window;
     ShTime                   time;
-    ShGui*                   p_gui;
+    //ShGui*                   p_gui;
                              
     SmdFileHandle*           p_ini_smd;
 	SmdFileHandle*           p_application_smd;

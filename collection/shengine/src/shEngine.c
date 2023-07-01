@@ -260,12 +260,12 @@ uint8_t shEngineUpdateState(
     ShEngine* p_engine,
     uint8_t   load_shared
 ) {
-    ShEngineVkCore*      p_core             = &p_engine->core;
-    ShWindow*            p_window           = &p_engine->window;
-    ShApplicationHandle* p_shared_host      = &p_engine->application_host;
-    ShThreadState*       p_app_thread_state = &p_engine->app_thread_state;
+    ShEngineVkCore*      p_core               = &p_engine->core;
+    ShWindow*            p_window             = &p_engine->window;
+    ShApplicationHandle* p_shared_host        = &p_engine->application_host;
+    ShThreadState*       p_app_thread_state   = &p_engine->app_thread_state;
 
-
+    uint8_t              swapchain_suboptimal = 0;
 
     while (shIsWindowActive(*p_window)) {
         shUpdateWindow(p_engine);
@@ -274,14 +274,18 @@ uint8_t shEngineUpdateState(
 		int _height = 0;
 		glfwGetWindowSize(p_window->window, &_width, &_height);
 
-		if (    (_width != 0 && _height != 0)                              && //otherwise it's minimized
-                (_width != p_window->width || _height != p_window->height) && //window is resized
-                ((*p_app_thread_state) == SH_THREAD_RETURNED)                 //to prevent segfaults
-            ) {
-
-            if (p_engine->p_gui != NULL) {
-                shGuiResizeInterface(p_engine->p_gui, p_window->width, p_window->height, _width, _height);
+		if ( _width != 0 && _height != 0 && //otherwise it's minimized
+            (_width != p_window->width || _height != p_window->height)) {
+            
+            uint64_t return_value = 0;
+            shWaitForThreads(SH_APPLICATION_THREAD_IDX, 1, UINT64_MAX, &return_value, &p_engine->thread_pool);
+            if (!return_value) {
+                shEngineManageState(p_engine, 0, load_shared, 1);
             }
+
+            //if (p_engine->p_gui != NULL) {
+            //    shGuiResizeInterface(p_engine->p_gui, p_window->width, p_window->height, _width, _height);
+            //}
             
             p_window->width  = _width;
             p_window->height = _height;
@@ -381,13 +385,13 @@ uint8_t shEngineUpdateState(
             	shCreateFramebuffer(p_core->device, p_core->renderpass, SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT, image_views, _width, _height, 1, &p_core->framebuffers[i]);
             }
             
-            if (p_engine->p_gui != NULL) {
-                shGuiDestroyPipelines(p_engine->p_gui);
-                shGuiSetSurface(p_engine->p_gui, p_engine->core.surface);
-                shGuiSetRenderpass(p_engine->p_gui, p_engine->core.renderpass);
-                shGuiBuildRegionPipeline(p_engine->p_gui, NULL, NULL);
-                shGuiBuildCharPipeline(p_engine->p_gui, NULL, NULL);
-            }
+            //if (p_engine->p_gui != NULL) {
+            //    shGuiDestroyPipelines(p_engine->p_gui);
+            //    shGuiSetSurface(p_engine->p_gui, p_engine->core.surface);
+            //    shGuiSetRenderpass(p_engine->p_gui, p_engine->core.renderpass);
+            //    shGuiBuildRegionPipeline(p_engine->p_gui, NULL, NULL);
+            //    shGuiBuildCharPipeline(p_engine->p_gui, NULL, NULL);
+            //}
             
             if (shSharedSceneRun(p_engine, p_engine->application_host.p_frame_resize) == 0) {
                 shEngineManageState(p_engine, 0, load_shared, 1);
@@ -438,7 +442,8 @@ uint8_t shEngineUpdateState(
                 UINT64_MAX,//timeout_ns
                 p_core->current_image_acquired_semaphore,//acquired_signal_semaphore
                 VK_NULL_HANDLE,//acquired_signal_fence
-                &p_core->swapchain_image_idx//p_swapchain_image_index
+                &p_core->swapchain_image_idx,//p_swapchain_image_index
+                &swapchain_suboptimal
             );
 
             shWaitForFences(
@@ -459,9 +464,9 @@ uint8_t shEngineUpdateState(
 
             shBeginCommandBuffer(cmd_buffer);
 
-            if (p_engine->p_gui != NULL) {
-                shGuiWriteMemory(p_engine->p_gui, cmd_buffer, 0);
-            }
+            //if (p_engine->p_gui != NULL) {
+            //    shGuiWriteMemory(p_engine->p_gui, cmd_buffer, 0);
+            //}
 
             if (shSharedSceneRun(p_engine, p_engine->application_host.p_main_cmd_buffer) == 0) {
                 shEngineManageState(p_engine, 0, load_shared, 1);
@@ -491,9 +496,9 @@ uint8_t shEngineUpdateState(
                 shEngineManageState(p_engine, 0, load_shared, 1);
             }
 
-            if (p_engine->p_gui != NULL) {
-                shGuiRender(p_engine->p_gui, cmd_buffer, p_engine->core.swapchain_image_idx);
-            }
+            //if (p_engine->p_gui != NULL) {
+            //    shGuiRender(p_engine->p_gui, cmd_buffer, p_engine->core.swapchain_image_idx);
+            //}
 
             shEndRenderpass(cmd_buffer);
 
@@ -642,14 +647,14 @@ uint8_t shEngineRelease(
         shSharedRelease(&p_engine->application_host.shared);
     }
 
-    if (p_engine->p_gui != NULL) {
-        shEngineError(
-            shGuiRelease(p_engine->p_gui) == 0,
-            "shEngineRelease: failed releasing shgui memory",
-            return 0
-        );
-        free(p_engine->p_gui);
-    }
+    //if (p_engine->p_gui != NULL) {
+    //    shEngineError(
+    //        shGuiRelease(p_engine->p_gui) == 0,
+    //        "shEngineRelease: failed releasing shgui memory",
+    //        return 0
+    //    );
+    //    free(p_engine->p_gui);
+    //}
 
     for (uint32_t host_buffer_idx = 0; host_buffer_idx < p_engine->host_memory_properties.buffer_count; host_buffer_idx++) {
         free(p_engine->host_memory_properties.p_buffers_memory[host_buffer_idx]);
