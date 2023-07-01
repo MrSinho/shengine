@@ -376,7 +376,7 @@ int shEditorMain(ShEngine* p_engine) {
 	else {
 		strcpy(window_title, "shengine editor");
 	}
-	shWindowSetup(window_title, 1366, 768, &p_engine->window);
+	shWindowSetup(window_title, &p_engine->window);
 
 	shEditorSetupVulkan(p_engine);
 

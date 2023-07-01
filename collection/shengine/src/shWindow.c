@@ -14,8 +14,6 @@ extern "C" {
 
 uint8_t shWindowSetup(
 	const char* title,
-	uint32_t    width,
-	uint32_t    height,
 	ShWindow*   p_window
 ) {
 	shEngineError(p_window == NULL, "shWindowSetup: invalid window memory", return 0);
@@ -24,8 +22,8 @@ uint8_t shWindowSetup(
 		NULL,
 		{ NULL },
 		{ GLFW_CURSOR_NORMAL, GLFW_HRESIZE_CURSOR, GLFW_VRESIZE_CURSOR },
-		width,
-		height,
+		0,
+		0,
 		title
 	};
 	*p_window = window;
@@ -35,10 +33,20 @@ uint8_t shWindowSetup(
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE,  GLFW_TRUE);
 
+	GLFWmonitor* monitor    = (GLFWmonitor*)glfwGetPrimaryMonitor();
+	GLFWvidmode* video_mode = (GLFWvidmode*)glfwGetVideoMode(monitor); 	
+
+	p_window->width  = (uint32_t)((float)video_mode->width  / 1.5f);
+	p_window->height = (uint32_t)((float)video_mode->height / 1.5f);
+
 	p_window->window = glfwCreateWindow(p_window->width, p_window->height, p_window->title, NULL, NULL);
 	p_window->pp_instance_extensions = glfwGetRequiredInstanceExtensions(&p_window->instance_extension_count);
 
-	glfwSetWindowSizeLimits(p_window->window, 400, 300, GLFW_DONT_CARE, GLFW_DONT_CARE);
+#ifdef _WIN32
+	glfwSetWindowSizeLimits(p_window->window, 400, 400, GLFW_DONT_CARE, GLFW_DONT_CARE);
+#else
+	glfwSetWindowSizeLimits(p_window->window, width, height, width, height);//X11 is so problematic
+#endif//_WIN32
 
 	p_window->default_cursors[0] = glfwCreateStandardCursor(GLFW_CURSOR_NORMAL);
 	p_window->default_cursors[1] = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
