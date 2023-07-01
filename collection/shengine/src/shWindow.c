@@ -45,7 +45,7 @@ uint8_t shWindowSetup(
 #ifdef _WIN32
 	glfwSetWindowSizeLimits(p_window->window, 400, 400, GLFW_DONT_CARE, GLFW_DONT_CARE);
 #else
-	glfwSetWindowSizeLimits(p_window->window, width, height, width, height);//X11 is so problematic
+	glfwSetWindowSizeLimits(p_window->window, p_window->width, p_window->height, p_window->width, p_window->height);//X11 is so problematic
 #endif//_WIN32
 
 	p_window->default_cursors[0] = glfwCreateStandardCursor(GLFW_CURSOR_NORMAL);
