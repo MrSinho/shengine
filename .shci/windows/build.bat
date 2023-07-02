@@ -1,4 +1,4 @@
->> .shci/windows/build-output.txt (
+> .shci/windows/build-output.txt (
     cd shengine/
     python export-application.py name=triangle target=EXECUTABLE path=applications/triangle
     python export-application.py name=noise target=EXECUTABLE path=applications/noise
