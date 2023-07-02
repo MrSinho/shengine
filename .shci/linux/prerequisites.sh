@@ -1,6 +1,7 @@
 function PREREQUISITES {
     sudo apt -y update
     sudo apt install -y libvulkan-dev libvulkan1
+    sudo apt install -y libx11-dev libwayland-dev
     sudo apt install -y python3.9 python3-pip
     sudo apt install -y gcc cmake make libc6-dev
     cd requirements
