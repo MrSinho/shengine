@@ -7,7 +7,7 @@
 
         
 
-Build ran for `0.17s`
+Build ran for `0.19s`
 
 ---
 
@@ -25,7 +25,7 @@ mingw-get install gcc mingw32-make gdb
 
     
 ```bash
-cd shengine
+cd shengine/shengine
 python export-application.py name=triangle target=EXECUTABLE path=applications/triangle
 python export-application.py name=noise target=EXECUTABLE path=applications/noise
 cd applications/triangle/windows/build
