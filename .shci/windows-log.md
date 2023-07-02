@@ -7,43 +7,12 @@
 
         
 
-Build ran for `0.19s`
+Build ran for `0.25s`
 
 ---
 
-```bash
-choco install -y curl mingw cmake
-mingw-get install gcc mingw32-make gdb
 
-```
-
-```bash
-
-```
-
----
-
-    
-```bash
-cd shengine/shengine
-python export-application.py name=triangle target=EXECUTABLE path=applications/triangle
-python export-application.py name=noise target=EXECUTABLE path=applications/noise
-cd applications/triangle/windows/build
-cmake --build .
-cd ../../../noise/windows/build
-cmake --build .
-
-```
-
-```bash
-
-```
-
----
-
-    
-
-Build terminated with exit code 1
+Build terminated with exit code 0
 
 ---
 
