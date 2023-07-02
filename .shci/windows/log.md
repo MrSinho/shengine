@@ -1,13 +1,13 @@
 
 # shengine
 
-![windows-badge](windows-exit_code.svg)
+![windows-badge](exit_code.svg)
 
 ## [windows build logs:](https://github.com/mrsinho/shci)
 
 
 
-Build ran for `9.75s`
+Build ran for `9.73s`
 
 ---
 
@@ -67,7 +67,7 @@ Warnings:
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
 -- Configuring done (0.2s)
--- Generating done (1.0s)
+-- Generating done (1.1s)
 -- Build files have been written to: D:/home/desktop/shci-tests/shci-test/shengine/applications/triangle/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
