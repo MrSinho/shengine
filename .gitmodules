@@ -19,3 +19,6 @@
 [submodule "collection/externals/smd"]
 	path = collection/externals/smd
 	url = https://github.com/mrsinho/smd
+[submodule ".shci/shci"]
+	path = .shci/shci
+	url = https://github.com/mrsinho/shci
