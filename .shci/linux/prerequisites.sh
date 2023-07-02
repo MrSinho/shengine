@@ -1,1 +1,2 @@
-sudo apt -y update > .shci/linux/prerequisites-output.txt 2>&1
+prerequisites_output=.shci/linux/prerequisites-output.txt
+sudo dir > $prerequisites_output 2>&1
