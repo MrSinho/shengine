@@ -1,4 +1,4 @@
-PREREQUISITES() 
+prerequisites() 
 {
     sudo apt -y update
     sudo apt install -y python3.9 python3-pip
@@ -7,4 +7,4 @@ PREREQUISITES()
     sudo bash debian-requirements.sh
 }
 
-PREREQUISITES
+prerequisites
