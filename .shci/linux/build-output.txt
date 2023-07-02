@@ -1,11 +1,21 @@
--- The C compiler identification is GNU 10.2.1
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
+-- Found Vulkan: /usr/lib/x86_64-linux-gnu/libvulkan.so  
+-- shvulkan message: found Vulkan
+-- shvulkan message: Vulkan_INCLUDE_DIR: /usr/include
+-- shvulkan message: Vulkan_LIBRARY:     /usr/lib/x86_64-linux-gnu/libvulkan.so
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - found
+-- Found Threads: TRUE  
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Including X11 support
 -- Configuring incomplete, errors occurred!
 See also "/mnt/d/home/desktop/GitHub/shengine/applications/triangle/linux/build/CMakeFiles/CMakeOutput.log".
+See also "/mnt/d/home/desktop/GitHub/shengine/applications/triangle/linux/build/CMakeFiles/CMakeError.log".
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
 EXAMPLE CALL: python export-application.py name=noise target=STATIC path=applications/noise
@@ -112,14 +122,24 @@ running command:
 	cd /mnt/d/home/desktop/GitHub/shengine/applications/triangle/linux/build && cmake /mnt/d/home/desktop/GitHub/shengine -DSH_ENGINE_BUILD_EDITOR=ON -DSH_APPLICATION_PATH=/mnt/d/home/desktop/GitHub/shengine/applications/triangle -DSH_APPLICATION_NAME=triangle -DSH_APPLICATION_BINARY_TYPE=EXECUTABLE 
 --------------------------------------------------------------------------------
 
--- The C compiler identification is GNU 10.2.1
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
+-- Found Vulkan: /usr/lib/x86_64-linux-gnu/libvulkan.so  
+-- shvulkan message: found Vulkan
+-- shvulkan message: Vulkan_INCLUDE_DIR: /usr/include
+-- shvulkan message: Vulkan_LIBRARY:     /usr/lib/x86_64-linux-gnu/libvulkan.so
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - found
+-- Found Threads: TRUE  
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Including X11 support
 -- Configuring incomplete, errors occurred!
 See also "/mnt/d/home/desktop/GitHub/shengine/applications/noise/linux/build/CMakeFiles/CMakeOutput.log".
+See also "/mnt/d/home/desktop/GitHub/shengine/applications/noise/linux/build/CMakeFiles/CMakeError.log".
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
 EXAMPLE CALL: python export-application.py name=noise target=STATIC path=applications/noise
