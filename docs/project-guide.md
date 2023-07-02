@@ -1,5 +1,10 @@
 # Generate projects
 
+*_Check the linux and windows build logs:_*
+
+[![linux_badge](../.shci/linux/exit_code.svg)](../.shci/linux/log.md)
+[![windows_badge](../.shci/windows/exit_code.svg)](../.shci/windows/log.md)
+
 Be sure to have installed `Python 3.9` or later in order to run the python script without errors. The script generates a CMake file relative to your application and a bash/shell command running CMake. For example, in case you need to generate a Makefiles or a Visual Studio solution for the application located at `application/triangle`, do:
 
 ```bash

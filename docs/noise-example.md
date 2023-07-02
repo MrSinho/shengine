@@ -1,5 +1,10 @@
 # Noise application example
 
+*_Check the linux and windows build logs:_*
+
+[![linux_badge](../.shci/linux/exit_code.svg)](../.shci/linux/log.md)
+[![windows_badge](../.shci/windows/exit_code.svg)](../.shci/windows/log.md)
+
 ![noise-3](media/noise-3.png)
 
 Using Windows (run as admin):
