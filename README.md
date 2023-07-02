@@ -11,8 +11,8 @@ A cross-platform Vulkan engine made for personal projects written completely in 
 
 # [Build status](./shci)
 
-[![linux_badge](.shci/linux-exit_code.svg)](.shci/linux-log.md)
-[![windows_badge](.shci/windows-exit_code.svg)](.shci/windows-log.md)
+[![linux_badge](.shci/linux/exit_code.svg)](.shci/linux/log.md)
+[![windows_badge](.shci/windows/exit_code.svg)](.shci/windows/log.md)
 
 The engine is frequently being tested on Windows 11, Linux Mint (virtual machine and pc) with different compilers (`MSVC`, `gcc`), and hardware configurations (`RX580 4GB GDDR5`, `Radeon V Carrizo 500MB`).
 
