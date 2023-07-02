@@ -2,7 +2,7 @@ owner=mrsinho
 access_token=None
 repo_name=shengine
 recursive=True
-repo_dir=shengine
+repo_dir=../../
 push=True
 
 prerequisites=prerequisites.bat
