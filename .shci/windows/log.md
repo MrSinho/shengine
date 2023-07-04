@@ -10,15 +10,12 @@ system        : Windows
 version       : 10.0.22621
 platform      : Windows-10-10.0.22621-SP0
 processor     : AMD64 Family 23 Model 17 Stepping 0, AuthenticAMD
-min frequency : 0.0 Mhz
-max frequency : 3500.0 Mhz
+min frequency : 0.0 MHz
+max frequency : 3500.0 MHz
 cores         : 4
 ```
 
-
-
-build ran for `34.60s`
-build terminated with exit code `0`
+build ran for `36.33 s` and terminated with exit code `0`
 
 ---
 
@@ -93,7 +90,7 @@ Warnings:
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
 -- Configuring done (0.2s)
--- Generating done (1.4s)
+-- Generating done (1.1s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/triangle/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -208,7 +205,7 @@ running command:
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
 -- Configuring done (0.2s)
--- Generating done (1.4s)
+-- Generating done (1.6s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/noise/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -349,8 +346,7 @@ MSBuild version 17.6.3+07e294721 for .NET Framework
 
 ---
     
-
-build terminated with exit code `0`
+build ran for `36.33 s` and terminated with exit code `0`
 
 ---
 
