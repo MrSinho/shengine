@@ -5,9 +5,19 @@
 
 ## [windows build logs:](https://github.com/mrsinho/shci)
 
+```
+system        : Windows
+version       : 10.0.22621
+platform      : Windows-10-10.0.22621-SP0
+processor     : AMD64 Family 23 Model 17 Stepping 0, AuthenticAMD
+min frequency : 0.0 Mhz
+max frequency : 3500.0 Mhz
+cores         : 4
+```
 
 
-Build ran for `66.02s`
+
+Build ran for `34.13s`
 
 ---
 
@@ -20,6 +30,23 @@ Build ran for `66.02s`
 
 ```bash
 Chocolatey v2.0.0
+Chocolatey detected you are not running from an elevated command shell
+ (cmd/powershell).
+
+ You may experience errors - many functions/packages
+ require admin rights. Only advanced users should run choco w/out an
+ elevated shell. When you open the command shell, you should ensure
+ that you do so with "Run as Administrator" selected. If you are
+ attempting to use Chocolatey in a non-administrator setting, you
+ must select a different location other than the default install
+ location. See
+ https://docs.chocolatey.org/en-us/choco/setup#non-administrative-install
+ for details.
+
+For the question below, you have 20 seconds to make a selection.
+
+ Do you want to continue?([Y]es/[N]o): 
+Timeout or your choice of '' is not a valid selection.
 Installing the following packages:
 curl;mingw;cmake
 By installing, you accept licenses for the packages.
@@ -59,29 +86,14 @@ Warnings:
 ```
 
 ```bash
--- Building for: Visual Studio 17 2022
 -- Selecting Windows SDK version 10.0.22000.0 to target Windows 10.0.22621.
--- The C compiler identification is MSVC 19.36.32532.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: D:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.36.32532/bin/Hostx64/x64/cl.exe - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Found Vulkan: D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib (found version "1.3.250") found components: glslc glslangValidator 
 -- shvulkan message: found Vulkan
 -- shvulkan message: Vulkan_INCLUDE_DIR: D:/lib/VulkanSDK/1.3.250.0/Include
 -- shvulkan message: Vulkan_LIBRARY:     D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib
--- Performing Test CMAKE_HAVE_LIBC_PTHREAD
--- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
--- Looking for pthread_create in pthreads
--- Looking for pthread_create in pthreads - not found
--- Looking for pthread_create in pthread
--- Looking for pthread_create in pthread - not found
--- Found Threads: TRUE  
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
--- Configuring done (7.1s)
--- Generating done (0.9s)
+-- Configuring done (0.2s)
+-- Generating done (1.3s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/triangle/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -189,29 +201,14 @@ running command:
 	cd D:/home/desktop/GitHub/shengine/applications/triangle/windows/build && cmake D:/home/desktop/GitHub/shengine -DSH_ENGINE_BUILD_EDITOR=ON -DSH_APPLICATION_PATH=D:/home/desktop/GitHub/shengine/applications/triangle -DSH_APPLICATION_NAME=triangle -DSH_APPLICATION_BINARY_TYPE=EXECUTABLE 
 --------------------------------------------------------------------------------
 
--- Building for: Visual Studio 17 2022
 -- Selecting Windows SDK version 10.0.22000.0 to target Windows 10.0.22621.
--- The C compiler identification is MSVC 19.36.32532.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: D:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.36.32532/bin/Hostx64/x64/cl.exe - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Found Vulkan: D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib (found version "1.3.250") found components: glslc glslangValidator 
 -- shvulkan message: found Vulkan
 -- shvulkan message: Vulkan_INCLUDE_DIR: D:/lib/VulkanSDK/1.3.250.0/Include
 -- shvulkan message: Vulkan_LIBRARY:     D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib
--- Performing Test CMAKE_HAVE_LIBC_PTHREAD
--- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
--- Looking for pthread_create in pthreads
--- Looking for pthread_create in pthreads - not found
--- Looking for pthread_create in pthread
--- Looking for pthread_create in pthread - not found
--- Found Threads: TRUE  
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
--- Configuring done (6.2s)
--- Generating done (0.9s)
+-- Configuring done (0.2s)
+-- Generating done (1.3s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/noise/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -321,50 +318,7 @@ running command:
 
 MSBuild version 17.6.3+07e294721 for .NET Framework
 
-  Checking Build System
-  euler.c
-  affine.c
-  io.c
-  quat.c
-  cam.c
-  vec2.c
-  ivec2.c
-  vec3.c
-  ivec3.c
-  vec4.c
-  ivec4.c
-  mat2.c
-  mat3.c
-  mat4.c
-  plane.c
-  frustum.c
-  box.c
-  project.c
-  sphere.c
-  ease.c
-  Generazione del codice in corso...
-  Compilazione in corso...
-  curve.c
-  bezier.c
-  ray.c
-  affine2d.c
-  ortho_lh_no.c
-  ortho_lh_zo.c
-  ortho_rh_no.c
-  ortho_rh_zo.c
-  persp_lh_no.c
-  persp_lh_zo.c
-  persp_rh_no.c
-  persp_rh_zo.c
-  view_lh_no.c
-  view_lh_zo.c
-  view_rh_no.c
-  view_rh_zo.c
-  project_no.c
-  project_zo.c
-  Generazione del codice in corso...
-     Creazione della libreria D:/home/desktop/GitHub/shengine/applications/triangle/windows/build/collection/externals/cglm/Debug/cglm.lib e dell'oggetto D:/home/desktop/GitHub/shengine/applications/triangle/windows/build/collection/externals/cglm/Debug/cglm.exp
-  cglm.vcxproj -> D:\home\desktop\GitHub\shengine\applications\triangle\windows\build\collection\externals\cglm\Debug\cglm-0.dll
+  cglm.vcxproj -> D:\home\desktop\GitHub\shengine\applications\triangle\windows\build\collection\externals\cglm\Debug\cglm.lib
   glfw.vcxproj -> D:\home\desktop\GitHub\shengine\applications\triangle\windows\build\collection\externals\glfw\src\Debug\glfw3.lib
   plyimporter.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\plyimporter.lib
   shvulkan.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shvulkan.lib
@@ -373,84 +327,23 @@ MSBuild version 17.6.3+07e294721 for .NET Framework
   shserial.vcxproj -> D:\home\desktop\GitHub\shengine\collection\externals\shserial\bin\Debug\shserial.lib
   shsharedhost.vcxproj -> D:\home\desktop\GitHub\shengine\applications\triangle\windows\build\collection\Debug\shsharedhost.lib
   shthreads.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shthreads.lib
-  shLinearAlgebra.c
-  shScene.c
-  shWindow.c
-  Generazione del codice in corso...
   shengine.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shengine.lib
   sheditor.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\sheditor.exe
   triangle.vcxproj -> D:\home\desktop\GitHub\shengine\applications\triangle\windows\bin\Debug\triangle.exe
 MSBuild version 17.6.3+07e294721 for .NET Framework
 
-  euler.c
-  affine.c
-  io.c
-  quat.c
-  cam.c
-  vec2.c
-  ivec2.c
-  vec3.c
-  ivec3.c
-  vec4.c
-  ivec4.c
-  mat2.c
-  mat3.c
-  mat4.c
-  plane.c
-  frustum.c
-  box.c
-  project.c
-  sphere.c
-  ease.c
-  Generazione del codice in corso...
-  Compilazione in corso...
-  curve.c
-  bezier.c
-  ray.c
-  affine2d.c
-  ortho_lh_no.c
-  ortho_lh_zo.c
-  ortho_rh_no.c
-  ortho_rh_zo.c
-  persp_lh_no.c
-  persp_lh_zo.c
-  persp_rh_no.c
-  persp_rh_zo.c
-  view_lh_no.c
-  view_lh_zo.c
-  view_rh_no.c
-  view_rh_zo.c
-  project_no.c
-  project_zo.c
-  Generazione del codice in corso...
-     Creazione della libreria D:/home/desktop/GitHub/shengine/applications/noise/windows/build/collection/externals/cglm/Debug/cglm.lib e dell'oggetto D:/home/desktop/GitHub/shengine/applications/noise/windows/build/collection/externals/cglm/Debug/cglm.exp
-  cglm.vcxproj -> D:\home\desktop\GitHub\shengine\applications\noise\windows\build\collection\externals\cglm\Debug\cglm-0.dll
+  cglm.vcxproj -> D:\home\desktop\GitHub\shengine\applications\noise\windows\build\collection\externals\cglm\Debug\cglm.lib
   glfw.vcxproj -> D:\home\desktop\GitHub\shengine\applications\noise\windows\build\collection\externals\glfw\src\Debug\glfw3.lib
-  shVulkan.c
   shvulkan.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shvulkan.lib
   smd.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\smd.lib
-  shEnvironment.c
   shenvironment.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shenvironment.lib
   shserial.vcxproj -> D:\home\desktop\GitHub\shengine\collection\externals\shserial\bin\Debug\shserial.lib
   shsharedhost.vcxproj -> D:\home\desktop\GitHub\shengine\applications\noise\windows\build\collection\Debug\shsharedhost.lib
   shthreads.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shthreads.lib
-  shEngine.c
-  shInput.c
-  shLinearAlgebra.c
-  shScene.c
-  shTime.c
-  shWindow.c
-  Generazione del codice in corso...
   shengine.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shengine.lib
-  noise.c
-  shEditor.c
-  Generazione del codice in corso...
   noise.vcxproj -> D:\home\desktop\GitHub\shengine\applications\noise\windows\bin\Debug\noise.exe
   plyimporter.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\plyimporter.lib
-  shEditor.c
-  LINK : D:\home\desktop\GitHub\shengine\bin\Debug\sheditor.exe non trovato o non compilato dall'ultimo collegamento incrementale; verr… eseguito il collegamento completo
   sheditor.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\sheditor.exe
-  Building Custom Rule D:/home/desktop/GitHub/shengine/CMakeLists.txt
 
 ```
 
