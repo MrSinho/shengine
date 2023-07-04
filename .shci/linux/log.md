@@ -17,7 +17,8 @@ cores         : 4
 
 
 
-Build ran for `64.55s`
+build ran for `85.85s`
+build terminated with exit code `0`
 
 ---
 
@@ -36,9 +37,9 @@ PREREQUISITES > .shci/linux/prerequisites-output.txt
 ```
 
 ```bash
-Hit:1 http://ftp.debian.org/debian bullseye-backports InRelease
-Hit:2 http://security.debian.org/debian-security bullseye-security InRelease
-Hit:3 http://deb.debian.org/debian bullseye InRelease
+Hit:1 http://security.debian.org/debian-security bullseye-security InRelease
+Hit:2 http://deb.debian.org/debian bullseye InRelease
+Hit:3 http://ftp.debian.org/debian bullseye-backports InRelease
 Hit:4 http://deb.debian.org/debian bullseye-updates InRelease
 Reading package lists...
 Building dependency tree...
@@ -81,7 +82,6 @@ make is already the newest version (4.3-4.1).
 ```
 
 ---
-
     
 ```bash
 function BUILD {
@@ -354,10 +354,9 @@ running command:
 ```
 
 ---
-
     
 
-Build terminated with exit code 0
+build terminated with exit code `0`
 
 ---
 
