@@ -15,7 +15,7 @@ max frequency : 3500.0 MHz
 cores         : 4
 ```
 
-build ran for `36.33 s` and terminated with exit code `0`
+build ran for `32.97 s` and terminated with exit code `0`
 
 ---
 
@@ -90,7 +90,7 @@ Warnings:
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
 -- Configuring done (0.2s)
--- Generating done (1.1s)
+-- Generating done (1.3s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/triangle/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -205,7 +205,7 @@ running command:
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
 -- Configuring done (0.2s)
--- Generating done (1.6s)
+-- Generating done (1.0s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/noise/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -346,7 +346,7 @@ MSBuild version 17.6.3+07e294721 for .NET Framework
 
 ---
     
-build ran for `36.33 s` and terminated with exit code `0`
+build ran for `32.97 s` and terminated with exit code `0`
 
 ---
 
