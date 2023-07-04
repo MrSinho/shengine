@@ -233,52 +233,10 @@ running command:
 [ 12%] Built target shserial
 [ 14%] Built target shthreads
 [ 41%] Built target glfw
-Scanning dependencies of target cglm
-[ 42%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/euler.c.o
-[ 43%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/affine.c.o
-[ 44%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/io.c.o
-[ 45%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/quat.c.o
-[ 46%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/cam.c.o
-[ 47%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/vec2.c.o
-[ 48%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ivec2.c.o
-[ 50%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/vec3.c.o
-[ 51%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ivec3.c.o
-[ 52%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/vec4.c.o
-[ 53%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ivec4.c.o
-[ 54%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/mat2.c.o
-[ 55%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/mat3.c.o
-[ 56%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/mat4.c.o
-[ 57%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/plane.c.o
-[ 58%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/frustum.c.o
-[ 60%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/box.c.o
-[ 61%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/project.c.o
-[ 62%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/sphere.c.o
-[ 63%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ease.c.o
-[ 64%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/curve.c.o
-[ 65%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/bezier.c.o
-[ 66%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ray.c.o
-[ 67%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/affine2d.c.o
-[ 68%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_no.c.o
-[ 70%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_zo.c.o
-[ 71%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_no.c.o
-[ 72%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_zo.c.o
-[ 73%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_no.c.o
-[ 74%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_zo.c.o
-[ 75%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_no.c.o
-[ 76%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_zo.c.o
-[ 77%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_no.c.o
-[ 78%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_zo.c.o
-[ 80%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_no.c.o
-[ 81%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_zo.c.o
-[ 82%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/project_no.c.o
-[ 83%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/project_zo.c.o
-[ 84%] Linking C static library libcglm.a
 [ 84%] Built target cglm
 [ 92%] Built target shengine
-[ 93%] Linking C executable ../../../../../bin/sheditor
 [ 94%] Built target sheditor
 [ 96%] Built target plyimporter
-[ 97%] Linking C executable ../../bin/triangle
 [100%] Built target triangle
 [  2%] Built target smd
 [  4%] Built target shvulkan
@@ -287,50 +245,8 @@ Scanning dependencies of target cglm
 [ 12%] Built target shserial
 [ 14%] Built target shthreads
 [ 41%] Built target glfw
-Scanning dependencies of target cglm
-[ 42%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/euler.c.o
-[ 43%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/affine.c.o
-[ 44%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/io.c.o
-[ 45%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/quat.c.o
-[ 46%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/cam.c.o
-[ 47%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/vec2.c.o
-[ 48%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ivec2.c.o
-[ 50%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/vec3.c.o
-[ 51%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ivec3.c.o
-[ 52%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/vec4.c.o
-[ 53%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ivec4.c.o
-[ 54%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/mat2.c.o
-[ 55%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/mat3.c.o
-[ 56%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/mat4.c.o
-[ 57%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/plane.c.o
-[ 58%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/frustum.c.o
-[ 60%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/box.c.o
-[ 61%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/project.c.o
-[ 62%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/sphere.c.o
-[ 63%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ease.c.o
-[ 64%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/curve.c.o
-[ 65%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/bezier.c.o
-[ 66%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/ray.c.o
-[ 67%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/affine2d.c.o
-[ 68%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_no.c.o
-[ 70%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_lh_zo.c.o
-[ 71%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_no.c.o
-[ 72%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/ortho_rh_zo.c.o
-[ 73%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_no.c.o
-[ 74%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_lh_zo.c.o
-[ 75%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_no.c.o
-[ 76%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/persp_rh_zo.c.o
-[ 77%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_no.c.o
-[ 78%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_lh_zo.c.o
-[ 80%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_no.c.o
-[ 81%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/view_rh_zo.c.o
-[ 82%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/project_no.c.o
-[ 83%] Building C object collection/externals/cglm/CMakeFiles/cglm.dir/src/clipspace/project_zo.c.o
-[ 84%] Linking C static library libcglm.a
 [ 84%] Built target cglm
 [ 92%] Built target shengine
-[ 93%] Linking C executable ../../../../../bin/sheditor
 [ 94%] Built target sheditor
 [ 96%] Built target plyimporter
-[ 97%] Linking C executable ../../bin/noise
 [100%] Built target noise
