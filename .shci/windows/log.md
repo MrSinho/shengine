@@ -15,9 +15,7 @@ max frequency : 3500.0 Mhz
 cores         : 4
 ```
 
-
-
-Build ran for `34.13s`
+Build ran for `33.39s`
 
 ---
 
@@ -92,7 +90,7 @@ Warnings:
 -- shvulkan message: Vulkan_LIBRARY:     D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
--- Configuring done (0.2s)
+-- Configuring done (0.3s)
 -- Generating done (1.3s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/triangle/windows/build
 --------------------------------------------------------------------------------
@@ -207,7 +205,7 @@ running command:
 -- shvulkan message: Vulkan_LIBRARY:     D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
--- Configuring done (0.2s)
+-- Configuring done (0.3s)
 -- Generating done (1.3s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/noise/windows/build
 --------------------------------------------------------------------------------
