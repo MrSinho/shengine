@@ -15,7 +15,10 @@ max frequency : 3500.0 Mhz
 cores         : 4
 ```
 
-Build ran for `33.39s`
+
+
+build ran for `34.60s`
+build terminated with exit code `0`
 
 ---
 
@@ -69,7 +72,6 @@ Warnings:
 ```
 
 ---
-
     
 ```bash
 > .shci/windows/build-output.txt (
@@ -90,8 +92,8 @@ Warnings:
 -- shvulkan message: Vulkan_LIBRARY:     D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
--- Configuring done (0.3s)
--- Generating done (1.3s)
+-- Configuring done (0.2s)
+-- Generating done (1.4s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/triangle/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -205,8 +207,8 @@ running command:
 -- shvulkan message: Vulkan_LIBRARY:     D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
--- Configuring done (0.3s)
--- Generating done (1.3s)
+-- Configuring done (0.2s)
+-- Generating done (1.4s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/noise/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -346,10 +348,9 @@ MSBuild version 17.6.3+07e294721 for .NET Framework
 ```
 
 ---
-
     
 
-Build terminated with exit code 0
+build terminated with exit code `0`
 
 ---
 

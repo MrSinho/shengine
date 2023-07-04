@@ -5,7 +5,7 @@
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
 -- Configuring done (0.2s)
--- Generating done (1.3s)
+-- Generating done (1.4s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/triangle/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -120,7 +120,7 @@ running command:
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
 -- Configuring done (0.2s)
--- Generating done (1.3s)
+-- Generating done (1.4s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/noise/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
