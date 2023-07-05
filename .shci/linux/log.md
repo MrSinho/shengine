@@ -10,15 +10,12 @@ system        : Linux
 version       : #1 SMP Fri Jan 27 02:56:13 UTC 2023
 platform      : Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.31
 processor     : 
-min frequency : 0.0 Mhz
-max frequency : 0.0 Mhz
+min frequency : 0.0 MHz
+max frequency : 0.0 MHz
 cores         : 4
 ```
 
-
-
-build ran for `85.85s`
-build terminated with exit code `0`
+build ran for `248.61 s` and terminated with exit code `0`
 
 ---
 
@@ -37,10 +34,11 @@ PREREQUISITES > .shci/linux/prerequisites-output.txt
 ```
 
 ```bash
-Hit:1 http://security.debian.org/debian-security bullseye-security InRelease
-Hit:2 http://deb.debian.org/debian bullseye InRelease
-Hit:3 http://ftp.debian.org/debian bullseye-backports InRelease
-Hit:4 http://deb.debian.org/debian bullseye-updates InRelease
+Hit:1 http://deb.debian.org/debian bullseye InRelease
+Hit:2 http://security.debian.org/debian-security bullseye-security InRelease
+Get:3 http://deb.debian.org/debian bullseye-updates InRelease [44.1 kB]
+Get:4 http://ftp.debian.org/debian bullseye-backports InRelease [49.0 kB]
+Fetched 93.0 kB in 2s (59.5 kB/s)
 Reading package lists...
 Building dependency tree...
 Reading state information...
@@ -326,37 +324,76 @@ running command:
 	cd /mnt/d/home/desktop/GitHub/shengine/applications/noise/linux/build && cmake /mnt/d/home/desktop/GitHub/shengine -DSH_ENGINE_BUILD_EDITOR=ON -DSH_APPLICATION_PATH=/mnt/d/home/desktop/GitHub/shengine/applications/noise -DSH_APPLICATION_NAME=noise -DSH_APPLICATION_BINARY_TYPE=EXECUTABLE 
 --------------------------------------------------------------------------------
 
+Scanning dependencies of target smd
+[  1%] Building C object collection/externals/smd/CMakeFiles/smd.dir/smd/src/smd.c.o
+[  2%] Linking C static library ../../../../../../../bin/libsmd.a
 [  2%] Built target smd
 [  4%] Built target shvulkan
+Scanning dependencies of target shenvironment
+[  5%] Building C object collection/CMakeFiles/shenvironment.dir/shenvironment/src/shEnvironment.c.o
+[  6%] Linking C static library ../../../../../bin/libshenvironment.a
 [  7%] Built target shenvironment
 [ 10%] Built target shsharedhost
 [ 12%] Built target shserial
 [ 14%] Built target shthreads
 [ 41%] Built target glfw
 [ 84%] Built target cglm
+Scanning dependencies of target shengine
+[ 85%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shEngine.c.o
+[ 86%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shTime.c.o
+[ 87%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shWindow.c.o
+[ 88%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shLinearAlgebra.c.o
+[ 90%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shScene.c.o
+[ 91%] Linking C static library ../../../../../bin/libshengine.a
 [ 92%] Built target shengine
+Scanning dependencies of target sheditor
+[ 93%] Building C object collection/CMakeFiles/sheditor.dir/sheditor/src/shEditor.c.o
+[ 94%] Linking C executable ../../../../../bin/sheditor
 [ 94%] Built target sheditor
 [ 96%] Built target plyimporter
+Scanning dependencies of target triangle
+[ 97%] Building C object [EXCLUDE_FROM_ALL]/CMakeFiles/triangle.dir/src/triangle.c.o
+[ 98%] Building C object [EXCLUDE_FROM_ALL]/CMakeFiles/triangle.dir/__/__/collection/sheditor/src/shEditor.c.o
+[100%] Linking C executable ../../bin/triangle
 [100%] Built target triangle
+Scanning dependencies of target smd
+[  1%] Building C object collection/externals/smd/CMakeFiles/smd.dir/smd/src/smd.c.o
+[  2%] Linking C static library ../../../../../../../bin/libsmd.a
 [  2%] Built target smd
 [  4%] Built target shvulkan
+Scanning dependencies of target shenvironment
+[  5%] Building C object collection/CMakeFiles/shenvironment.dir/shenvironment/src/shEnvironment.c.o
+[  6%] Linking C static library ../../../../../bin/libshenvironment.a
 [  7%] Built target shenvironment
 [ 10%] Built target shsharedhost
 [ 12%] Built target shserial
 [ 14%] Built target shthreads
 [ 41%] Built target glfw
 [ 84%] Built target cglm
+Scanning dependencies of target shengine
+[ 85%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shEngine.c.o
+[ 86%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shTime.c.o
+[ 87%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shWindow.c.o
+[ 88%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shLinearAlgebra.c.o
+[ 90%] Building C object collection/CMakeFiles/shengine.dir/shengine/src/shScene.c.o
+[ 91%] Linking C static library ../../../../../bin/libshengine.a
 [ 92%] Built target shengine
+Scanning dependencies of target sheditor
+[ 93%] Building C object collection/CMakeFiles/sheditor.dir/sheditor/src/shEditor.c.o
+[ 94%] Linking C executable ../../../../../bin/sheditor
 [ 94%] Built target sheditor
 [ 96%] Built target plyimporter
+Scanning dependencies of target noise
+[ 97%] Building C object [EXCLUDE_FROM_ALL]/CMakeFiles/noise.dir/src/noise.c.o
+[ 98%] Building C object [EXCLUDE_FROM_ALL]/CMakeFiles/noise.dir/__/__/collection/sheditor/src/shEditor.c.o
+[100%] Linking C executable ../../bin/noise
 [100%] Built target noise
 
 ```
 
 ---
     
-
-build terminated with exit code `0`
+build ran for `248.61 s` and terminated with exit code `0`
 
 ---
 
