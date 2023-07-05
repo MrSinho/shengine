@@ -15,7 +15,7 @@ max frequency : 3500.0 MHz
 cores         : 4
 ```
 
-build ran for `32.97 s` and terminated with exit code `0`
+build ran for `66.88 s` and terminated with exit code `0`
 
 ---
 
@@ -89,8 +89,8 @@ Warnings:
 -- shvulkan message: Vulkan_LIBRARY:     D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
--- Configuring done (0.2s)
--- Generating done (1.3s)
+-- Configuring done (0.6s)
+-- Generating done (2.4s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/triangle/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -204,8 +204,8 @@ running command:
 -- shvulkan message: Vulkan_LIBRARY:     D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
 -- Including Win32 support
--- Configuring done (0.2s)
--- Generating done (1.0s)
+-- Configuring done (0.3s)
+-- Generating done (1.8s)
 -- Build files have been written to: D:/home/desktop/GitHub/shengine/applications/noise/windows/build
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
@@ -319,13 +319,27 @@ MSBuild version 17.6.3+07e294721 for .NET Framework
   glfw.vcxproj -> D:\home\desktop\GitHub\shengine\applications\triangle\windows\build\collection\externals\glfw\src\Debug\glfw3.lib
   plyimporter.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\plyimporter.lib
   shvulkan.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shvulkan.lib
+  smd.c
   smd.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\smd.lib
+  shEnvironment.c
   shenvironment.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shenvironment.lib
   shserial.vcxproj -> D:\home\desktop\GitHub\shengine\collection\externals\shserial\bin\Debug\shserial.lib
   shsharedhost.vcxproj -> D:\home\desktop\GitHub\shengine\applications\triangle\windows\build\collection\Debug\shsharedhost.lib
   shthreads.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shthreads.lib
+  shEngine.c
+  shLinearAlgebra.c
+  shScene.c
+  shTime.c
+  shWindow.c
+  Generazione del codice in corso...
   shengine.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shengine.lib
+  shEditor.c
+  LINK : D:\home\desktop\GitHub\shengine\bin\Debug\sheditor.exe non trovato o non compilato dall'ultimo collegamento incrementale; verr… eseguito il collegamento completo
   sheditor.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\sheditor.exe
+  triangle.c
+  shEditor.c
+  Generazione del codice in corso...
+     Creazione della libreria D:/home/desktop/GitHub/shengine/applications/triangle/windows/bin/Debug/triangle.lib e dell'oggetto D:/home/desktop/GitHub/shengine/applications/triangle/windows/bin/Debug/triangle.exp
   triangle.vcxproj -> D:\home\desktop\GitHub\shengine\applications\triangle\windows\bin\Debug\triangle.exe
 MSBuild version 17.6.3+07e294721 for .NET Framework
 
@@ -340,13 +354,14 @@ MSBuild version 17.6.3+07e294721 for .NET Framework
   shengine.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\shengine.lib
   noise.vcxproj -> D:\home\desktop\GitHub\shengine\applications\noise\windows\bin\Debug\noise.exe
   plyimporter.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\plyimporter.lib
+  LINK : D:\home\desktop\GitHub\shengine\bin\Debug\sheditor.exe non trovato o non compilato dall'ultimo collegamento incrementale; verr… eseguito il collegamento completo
   sheditor.vcxproj -> D:\home\desktop\GitHub\shengine\bin\Debug\sheditor.exe
 
 ```
 
 ---
     
-build ran for `32.97 s` and terminated with exit code `0`
+build ran for `66.88 s` and terminated with exit code `0`
 
 ---
 
