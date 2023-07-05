@@ -110,8 +110,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(
 
 	shDestroyFences(device, 1, &copy_fence);
 
-
-
     return 1;
 }
 

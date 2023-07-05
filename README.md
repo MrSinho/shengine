@@ -41,13 +41,13 @@ The engine is frequently being tested on Windows 11, Linux Mint (virtual machine
 
 # Features
  - By default double buffering.
- - Depth buffer and multisampling support by default.
+ - Depth buffer and MSAA support by default.
  - Native scripting in C (see [`docs/native-scripting`](./docs/native-scripting.md)).
  - Multithreading using [`shthreads`](https://github.com/mrsinho/shthreads) (see [`docs/native-scripting`](./docs/native-scripting.md)).
  - Serial communication with [`shserial`](https://github.com/mrsinho/shserial).
  - Ply mesh loader using [`plyimporter`](https://github.com/mrsinho/plyimporter).
  - CMake project generation by running the `export-application.py` program (see [`docs/project-guide`](./docs/project-guide.md#generate-projects)).
-- Usage of [`.smd`](https://github.com/mrsinho/smd) files (see [`docs/project-guide`](./docs/project-guide.md#smd-files))
+- Serialization and parsing of [`.smd`](https://github.com/mrsinho/smd) files (see [`docs/project-guide`](./docs/project-guide.md#smd-files))
 - Vulkan API implementation using [`shvulkan`](https://github.com/mrsinho/shvulkan). The responsibility of the developer stands on creating a pipeline building system and GPU calls. Command buffer synchronization for swapchain images and presentation is automatically handled by the engine.
 
 ---

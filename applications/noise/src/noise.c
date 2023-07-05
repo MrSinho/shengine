@@ -33,7 +33,8 @@ typedef struct NoiseParameters {
 typedef struct NoiseApp {
     NoiseParameters parameters;
     VkFence         copy_fence;
-    uint8_t         display_ui;
+    SmdFileHandle   import;
+    SmdExportHandle export;
 } NoiseApp;
 
 
@@ -50,11 +51,13 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 
     NoiseApp* p_noise = (NoiseApp*)p_engine->p_ext;
 
-    p_noise->parameters.s = 4.0f;
-    p_noise->parameters.a = 5.0f;
-    p_noise->parameters.b = 7.0f;
-    p_noise->display_ui   = 1;
-
+    smdReadFile("../../smd/noise-parameters.smd", &p_noise->import);
+    smdParseMemory(&p_noise->import);
+    smdAccessVarByName(&p_noise->import, "s", NULL, &p_noise->parameters.s);
+    smdAccessVarByName(&p_noise->import, "a", NULL, &p_noise->parameters.a);
+    smdAccessVarByName(&p_noise->import, "b", NULL, &p_noise->parameters.b);
+    smdFileHandleRelease(&p_noise->import);
+    
 
     p_engine->p_pipeline_pool = shAllocatePipelinePool();
     shApplicationError(p_engine->p_pipeline_pool == NULL, "invalid pipeline pool memory", return 0);
@@ -167,10 +170,22 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
     VkCommandBuffer   cmd_buffer            = p_engine->core.graphics_cmd_buffers[swapchain_image_idx];
 	VkQueue           queue                 = p_engine->core.graphics_queue;
 
-    if (shIsKeyPressed(p_engine->window, SH_KEY_H)) { p_noise->display_ui = !p_noise->display_ui; }
+    shOnTick(p_engine->time, 2.0, 0,//write to interface file
+        smdWriteLine(&p_noise->export, 1, "info", SMD_VAR_TYPE_STR1024, "@github.com/mrsinho");
+        smdWriteLine(&p_noise->export, 1, "s", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
+        smdWriteLine(&p_noise->export, 1, "a", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
+        smdWriteLine(&p_noise->export, 1, "b", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);
+        smdWriteFile(&p_noise->export, "../../smd/noise-interface.smd");
+        smdExportHandleRelease(&p_noise->export);//this does not free the memory
+    )
 
-    if (p_noise->display_ui) {
-       //roba
+    if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_E)) {//copy interface data
+        smdWriteLine(&p_noise->export, 1, "info", SMD_VAR_TYPE_STR1024, "@github.com/mrsinho");
+        smdWriteLine(&p_noise->export, 1, "s", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
+        smdWriteLine(&p_noise->export, 1, "a", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
+        smdWriteLine(&p_noise->export, 1, "b", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);
+        smdWriteFile(&p_noise->export, "../../smd/noise-parameters.smd");
+        smdExportHandleRelease(&p_noise->export);//this does not free the memory
     }
 
          if (shIsKeyDown(p_engine->window, SH_KEY_W)) { p_noise->parameters.s += 1.0f * dtime; }
