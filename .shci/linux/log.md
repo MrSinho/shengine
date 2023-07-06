@@ -15,7 +15,7 @@ max frequency : 0.0 MHz
 cores         : 4
 ```
 
-build ran for `248.61 s` and terminated with exit code `0`
+build ran for `246.64 s` and terminated with exit code `0`
 
 ---
 
@@ -34,11 +34,10 @@ PREREQUISITES > .shci/linux/prerequisites-output.txt
 ```
 
 ```bash
-Hit:1 http://deb.debian.org/debian bullseye InRelease
-Hit:2 http://security.debian.org/debian-security bullseye-security InRelease
-Get:3 http://deb.debian.org/debian bullseye-updates InRelease [44.1 kB]
-Get:4 http://ftp.debian.org/debian bullseye-backports InRelease [49.0 kB]
-Fetched 93.0 kB in 2s (59.5 kB/s)
+Hit:1 http://ftp.debian.org/debian bullseye-backports InRelease
+Hit:2 http://deb.debian.org/debian bullseye InRelease
+Hit:3 http://deb.debian.org/debian bullseye-updates InRelease
+Hit:4 http://security.debian.org/debian-security bullseye-security InRelease
 Reading package lists...
 Building dependency tree...
 Reading state information...
@@ -324,10 +323,10 @@ running command:
 	cd /mnt/d/home/desktop/GitHub/shengine/applications/noise/linux/build && cmake /mnt/d/home/desktop/GitHub/shengine -DSH_ENGINE_BUILD_EDITOR=ON -DSH_APPLICATION_PATH=/mnt/d/home/desktop/GitHub/shengine/applications/noise -DSH_APPLICATION_NAME=noise -DSH_APPLICATION_BINARY_TYPE=EXECUTABLE 
 --------------------------------------------------------------------------------
 
-Scanning dependencies of target smd
-[  1%] Building C object collection/externals/smd/CMakeFiles/smd.dir/smd/src/smd.c.o
-[  2%] Linking C static library ../../../../../../../bin/libsmd.a
 [  2%] Built target smd
+Scanning dependencies of target shvulkan
+[  3%] Building C object collection/externals/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVulkan.c.o
+[  4%] Linking C static library ../../../../../../../bin/libshvulkan.a
 [  4%] Built target shvulkan
 Scanning dependencies of target shenvironment
 [  5%] Building C object collection/CMakeFiles/shenvironment.dir/shenvironment/src/shEnvironment.c.o
@@ -356,10 +355,10 @@ Scanning dependencies of target triangle
 [ 98%] Building C object [EXCLUDE_FROM_ALL]/CMakeFiles/triangle.dir/__/__/collection/sheditor/src/shEditor.c.o
 [100%] Linking C executable ../../bin/triangle
 [100%] Built target triangle
-Scanning dependencies of target smd
-[  1%] Building C object collection/externals/smd/CMakeFiles/smd.dir/smd/src/smd.c.o
-[  2%] Linking C static library ../../../../../../../bin/libsmd.a
 [  2%] Built target smd
+Scanning dependencies of target shvulkan
+[  3%] Building C object collection/externals/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVulkan.c.o
+[  4%] Linking C static library ../../../../../../../bin/libshvulkan.a
 [  4%] Built target shvulkan
 Scanning dependencies of target shenvironment
 [  5%] Building C object collection/CMakeFiles/shenvironment.dir/shenvironment/src/shEnvironment.c.o
@@ -393,7 +392,7 @@ Scanning dependencies of target noise
 
 ---
     
-build ran for `248.61 s` and terminated with exit code `0`
+build ran for `246.64 s` and terminated with exit code `0`
 
 ---
 

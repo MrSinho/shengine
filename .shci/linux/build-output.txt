@@ -226,10 +226,10 @@ running command:
 	cd /mnt/d/home/desktop/GitHub/shengine/applications/noise/linux/build && cmake /mnt/d/home/desktop/GitHub/shengine -DSH_ENGINE_BUILD_EDITOR=ON -DSH_APPLICATION_PATH=/mnt/d/home/desktop/GitHub/shengine/applications/noise -DSH_APPLICATION_NAME=noise -DSH_APPLICATION_BINARY_TYPE=EXECUTABLE 
 --------------------------------------------------------------------------------
 
-Scanning dependencies of target smd
-[  1%] Building C object collection/externals/smd/CMakeFiles/smd.dir/smd/src/smd.c.o
-[  2%] Linking C static library ../../../../../../../bin/libsmd.a
 [  2%] Built target smd
+Scanning dependencies of target shvulkan
+[  3%] Building C object collection/externals/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVulkan.c.o
+[  4%] Linking C static library ../../../../../../../bin/libshvulkan.a
 [  4%] Built target shvulkan
 Scanning dependencies of target shenvironment
 [  5%] Building C object collection/CMakeFiles/shenvironment.dir/shenvironment/src/shEnvironment.c.o
@@ -258,10 +258,10 @@ Scanning dependencies of target triangle
 [ 98%] Building C object [EXCLUDE_FROM_ALL]/CMakeFiles/triangle.dir/__/__/collection/sheditor/src/shEditor.c.o
 [100%] Linking C executable ../../bin/triangle
 [100%] Built target triangle
-Scanning dependencies of target smd
-[  1%] Building C object collection/externals/smd/CMakeFiles/smd.dir/smd/src/smd.c.o
-[  2%] Linking C static library ../../../../../../../bin/libsmd.a
 [  2%] Built target smd
+Scanning dependencies of target shvulkan
+[  3%] Building C object collection/externals/shvulkan/CMakeFiles/shvulkan.dir/shvulkan/src/shvulkan/shVulkan.c.o
+[  4%] Linking C static library ../../../../../../../bin/libshvulkan.a
 [  4%] Built target shvulkan
 Scanning dependencies of target shenvironment
 [  5%] Building C object collection/CMakeFiles/shenvironment.dir/shenvironment/src/shEnvironment.c.o
