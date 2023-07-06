@@ -44,7 +44,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_cmd_buffer(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_renderpass(ShEngine* p_engine) {
-    // This function is called once per frame inside the main engine renderpass (you can setup your own of course using the Vullkan or the shvulkan library).
+    // This function is called once per frame inside the main engine renderpass (you can setup your own of course using direcly the Vulkan API or the shvulkan library).
     return 1;
 }
 

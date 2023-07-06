@@ -33,7 +33,8 @@ typedef struct NoiseParameters {
 typedef struct NoiseApp {
     NoiseParameters parameters;
     VkFence         copy_fence;
-    SmdFileHandle   import;
+    SmdFileHandle   recovery;
+    SmdFileHandle   saved;
     SmdExportHandle export;
 } NoiseApp;
 
@@ -51,12 +52,12 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 
     NoiseApp* p_noise = (NoiseApp*)p_engine->p_ext;
 
-    smdReadFile("../../smd/noise-parameters.smd", &p_noise->import);
-    smdParseMemory(&p_noise->import);
-    smdAccessVarByName(&p_noise->import, "s", NULL, &p_noise->parameters.s);
-    smdAccessVarByName(&p_noise->import, "a", NULL, &p_noise->parameters.a);
-    smdAccessVarByName(&p_noise->import, "b", NULL, &p_noise->parameters.b);
-    smdFileHandleRelease(&p_noise->import);
+    smdReadFile("../../smd/noise-recovery.smd", &p_noise->recovery);
+    smdParseMemory(&p_noise->recovery);
+    smdAccessVarByName(&p_noise->recovery, "s", NULL, &p_noise->parameters.s);
+    smdAccessVarByName(&p_noise->recovery, "a", NULL, &p_noise->parameters.a);
+    smdAccessVarByName(&p_noise->recovery, "b", NULL, &p_noise->parameters.b);
+    smdFileHandleRelease(&p_noise->recovery);
     
 
     p_engine->p_pipeline_pool = shAllocatePipelinePool();
@@ -84,13 +85,13 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
     shPipelinePoolUpdateDescriptorSets(device, NOISE_PARAMETERS_SET, swapchain_image_count, p_pool);
 
     shPipelineSetVertexInputState (p_pipeline);
-	shPipelineCreateInputAssembly (VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, 0, p_pipeline);
+	shPipelineCreateInputAssembly (VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, SH_FALSE, p_pipeline);
 
-	shPipelineCreateRasterizer    (VK_POLYGON_MODE_FILL, 0, p_pipeline);
+	shPipelineCreateRasterizer    (VK_POLYGON_MODE_FILL, SH_FALSE, p_pipeline);
 	shPipelineSetMultisampleState (p_engine->core.sample_count, 0.0f, p_pipeline);
 	shPipelineSetViewport         (0, 0, p_engine->window.width, p_engine->window.height, 
 	                               0, 0, p_engine->window.width, p_engine->window.height, p_pipeline);
-	shPipelineColorBlendSettings  (p_pipeline);
+	shPipelineColorBlendSettings  (SH_FALSE, SH_FALSE, SH_ENGINE_SUBASS_COLOR_ATTACHMENT_COUNT, p_pipeline);
 
 	uint32_t shader_size = 0;
 	char* shader_code = (char*)shReadCode(
@@ -170,7 +171,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
     VkCommandBuffer   cmd_buffer            = p_engine->core.graphics_cmd_buffers[swapchain_image_idx];
 	VkQueue           queue                 = p_engine->core.graphics_queue;
 
-    shOnTick(p_engine->time, 2.0, 0,//write to interface file
+    float fps = 1.0f / (float)p_engine->time.delta_time;
+
+    shOnTick(p_engine->time, 1.0, 0,//write to interface file
+        smdWriteLine(&p_noise->export, 1, "FPS", SMD_VAR_TYPE_FLOAT32, &fps);
         smdWriteLine(&p_noise->export, 1, "info", SMD_VAR_TYPE_STR1024, "@github.com/mrsinho");
         smdWriteLine(&p_noise->export, 1, "s", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
         smdWriteLine(&p_noise->export, 1, "a", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
@@ -179,13 +183,22 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
         smdExportHandleRelease(&p_noise->export);//this does not free the memory
     )
 
-    if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_E)) {//copy interface data
+    if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_E)) {//save interface data
         smdWriteLine(&p_noise->export, 1, "info", SMD_VAR_TYPE_STR1024, "@github.com/mrsinho");
-        smdWriteLine(&p_noise->export, 1, "s", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
-        smdWriteLine(&p_noise->export, 1, "a", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
-        smdWriteLine(&p_noise->export, 1, "b", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);
-        smdWriteFile(&p_noise->export, "../../smd/noise-parameters.smd");
+        smdWriteLine(&p_noise->export, 1, "s",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
+        smdWriteLine(&p_noise->export, 1, "a",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
+        smdWriteLine(&p_noise->export, 1, "b",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);
+        smdWriteFile(&p_noise->export, "../../smd/noise-saved.smd");
         smdExportHandleRelease(&p_noise->export);//this does not free the memory
+    }
+
+    if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_L)) {//load saved data
+        smdReadFile("../../smd/noise-saved.smd", &p_noise->saved);
+        smdParseMemory(&p_noise->saved);
+        smdAccessVarByName(&p_noise->saved, "s", NULL, &p_noise->parameters.s);
+        smdAccessVarByName(&p_noise->saved, "a", NULL, &p_noise->parameters.a);
+        smdAccessVarByName(&p_noise->saved, "b", NULL, &p_noise->parameters.b);
+        smdFileHandleRelease(&p_noise->saved);
     }
 
          if (shIsKeyDown(p_engine->window, SH_KEY_W)) { p_noise->parameters.s += 1.0f * dtime; }
