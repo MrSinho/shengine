@@ -37,13 +37,13 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(
 	shPipelineSetVertexBinding    (PER_VERTEX_BINDING, VERTEX_STRIDE, VK_VERTEX_INPUT_RATE_VERTEX, p_pipeline);
 	shPipelineSetVertexAttribute  (VERTEX_LOCATION, PER_VERTEX_BINDING, VK_FORMAT_R32G32_SFLOAT, 0, p_pipeline);
 	shPipelineSetVertexInputState (p_pipeline);
-	shPipelineCreateInputAssembly (VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, 0, p_pipeline);
+	shPipelineCreateInputAssembly (VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, SH_FALSE, p_pipeline);
 								  
-	shPipelineCreateRasterizer    (VK_POLYGON_MODE_FILL, 0, p_pipeline);
+	shPipelineCreateRasterizer    (VK_POLYGON_MODE_FILL, SH_FALSE, p_pipeline);
 	shPipelineSetMultisampleState (p_engine->core.sample_count, 0.0f, p_pipeline);
 	shPipelineSetViewport         (0, 0, p_engine->window.width, p_engine->window.height, 
 	                               0, 0, p_engine->window.width, p_engine->window.height, p_pipeline);
-	shPipelineColorBlendSettings  (p_pipeline);
+	shPipelineColorBlendSettings  (SH_FALSE, SH_FALSE, SH_ENGINE_SUBASS_COLOR_ATTACHMENT_COUNT, p_pipeline);
 
 	uint32_t shader_size = 0;
 	char* shader_code = (char*)shReadCode(

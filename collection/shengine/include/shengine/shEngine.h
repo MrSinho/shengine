@@ -22,9 +22,27 @@ extern "C" {
 
 
 
-#define SH_ENGINE_SWAPCHAIN_IMAGE_COUNT       2
-#define SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT   6
-#define SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT 3
+#define SH_ENGINE_SWAPCHAIN_IMAGE_COUNT         2
+#define SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT     6
+#define SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT   3
+#define SH_ENGINE_SUBASS_COLOR_ATTACHMENT_COUNT 1
+
+
+#ifndef SH_TRUE
+#ifndef __cplusplus
+#define SH_TRUE 1
+#else
+#define SH_TRUE true
+#endif//__cplusplus
+#endif//SH_TRUE
+
+#ifndef SH_FALSE
+#ifndef __cplusplus
+#define SH_FALSE 0
+#else
+#define SH_FALSE false
+#endif//__cplusplus
+#endif//SH_FALSE
 
 
 
@@ -42,15 +60,29 @@ typedef struct ShEngineVkCore {
 	VkPhysicalDeviceProperties       physical_device_properties;            
 	VkPhysicalDeviceFeatures         physical_device_features;            
 	VkPhysicalDeviceMemoryProperties physical_device_memory_properties;
-																	              
-	uint32_t                         graphics_queue_family_index;
-	uint32_t                         present_queue_family_index;
-																	              
+	
+	uint32_t                         graphics_queue_family_count;
+	uint32_t                         present_queue_family_count;
+	uint32_t                         compute_queue_family_count;
+	uint32_t                         transfer_queue_family_count;
+
+	uint32_t                         graphics_queue_family_indices [SH_MAX_STACK_QUEUE_FAMILY_COUNT];
+	uint32_t                         present_queue_family_indices  [SH_MAX_STACK_QUEUE_FAMILY_COUNT];
+	uint32_t                         compute_queue_family_indices  [SH_MAX_STACK_QUEUE_FAMILY_COUNT];
+	uint32_t                         transfer_queue_family_indices [SH_MAX_STACK_QUEUE_FAMILY_COUNT];
+
+	uint32_t                         default_graphics_queue_family_index;
+	uint32_t                         default_present_queue_family_index;
+	uint32_t                         default_compute_queue_family_index;
+	uint32_t                         default_transfer_queue_family_index;
+
 	VkDevice                         device;
 	uint32_t                         device_extension_count;
 															                      
 	VkQueue                          graphics_queue;
 	VkQueue                          present_queue;
+	VkQueue                          compute_queue;
+	VkQueue                          transfer_queue;
 					           						                              
 	VkCommandPool                    graphics_cmd_pool;                            
 	VkCommandPool                    present_cmd_pool;

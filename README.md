@@ -42,6 +42,7 @@ The engine is frequently being tested on Windows 11, Linux Mint (virtual machine
 # Features
  - By default double buffering.
  - Depth buffer and MSAA support by default.
+ - Color and alpha blending optional support
  - Native scripting in C (see [`docs/native-scripting`](./docs/native-scripting.md)).
  - Multithreading using [`shthreads`](https://github.com/mrsinho/shthreads) (see [`docs/native-scripting`](./docs/native-scripting.md)).
  - Serial communication with [`shserial`](https://github.com/mrsinho/shserial).
