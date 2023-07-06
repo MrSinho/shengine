@@ -47,6 +47,7 @@ The engine is frequently being tested on Windows 11, Linux Mint (virtual machine
  - Multithreading using [`shthreads`](https://github.com/mrsinho/shthreads) (see [`docs/native-scripting`](./docs/native-scripting.md)).
  - Serial communication with [`shserial`](https://github.com/mrsinho/shserial).
  - Ply mesh loader using [`plyimporter`](https://github.com/mrsinho/plyimporter).
+ - Compute queues and pipelines (need to make an example).
  - CMake project generation by running the `export-application.py` program (see [`docs/project-guide`](./docs/project-guide.md#generate-projects)).
 - Serialization and parsing of [`.smd`](https://github.com/mrsinho/smd) files (see [`docs/project-guide`](./docs/project-guide.md#smd-files))
 - Vulkan API implementation using [`shvulkan`](https://github.com/mrsinho/shvulkan). The responsibility of the developer stands on creating a pipeline building system and GPU calls. Command buffer synchronization for swapchain images and presentation is automatically handled by the engine.
