@@ -305,7 +305,7 @@ uint8_t shEngineUpdateState(
             
             glfwCreateWindowSurface(p_core->instance, p_window->window, VK_NULL_HANDLE, &p_core->surface);
             uint8_t graphics_supported = 0;
-            shGetPhysicalDeviceSurfaceSupport(p_core->physical_device, p_core->graphics_queue_family_index, p_core->surface, &graphics_supported);//always true
+            shGetPhysicalDeviceSurfaceSupport(p_core->physical_device, p_core->default_graphics_queue_family_index, p_core->surface, &graphics_supported);//always true
             shGetPhysicalDeviceSurfaceCapabilities(p_core->physical_device, p_core->surface, &p_core->surface_capabilities);
             shCreateSwapchain(
             	p_core->device, p_core->physical_device, p_core->surface,
@@ -313,7 +313,7 @@ uint8_t shEngineUpdateState(
             	&p_core->swapchain_image_format,
             	SH_ENGINE_SWAPCHAIN_IMAGE_COUNT,
             	p_core->swapchain_image_sharing_mode,
-            	0, 
+            	SH_FALSE,
             	&p_core->swapchain_image_count,
             	&p_core->swapchain
             );
@@ -572,7 +572,7 @@ uint8_t shEngineVulkanRelease(
     shDestroyCommandBuffers(p_engine->core.device, p_engine->core.present_cmd_pool,  1,                                    &p_engine->core.present_cmd_buffer);
 
     shDestroyCommandPool(p_engine->core.device, p_engine->core.graphics_cmd_pool);
-    if (p_engine->core.graphics_queue_family_index != p_engine->core.present_queue_family_index) {
+    if (p_engine->core.default_graphics_queue_family_index != p_engine->core.default_present_queue_family_index) {
         shDestroyCommandPool(p_engine->core.device, p_engine->core.present_cmd_pool);
     }
 

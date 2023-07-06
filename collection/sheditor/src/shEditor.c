@@ -60,84 +60,85 @@ uint8_t shEditorSetupVulkan(
 		&p_engine->core.physical_device_memory_properties//p_physical_device_memory_properties
 	);
 
-	uint32_t graphics_queue_families_indices[SH_MAX_STACK_QUEUE_FAMILY_COUNT] = { 0 };
-	uint32_t present_queue_families_indices [SH_MAX_STACK_QUEUE_FAMILY_COUNT] = { 0 };
 	shGetPhysicalDeviceQueueFamilies(
 		p_engine->core.physical_device,//physical_device
 		p_engine->core.surface,//surface
 		VK_NULL_HANDLE,//p_queue_family_count
-		VK_NULL_HANDLE,//p_graphics_queue_family_count
-		VK_NULL_HANDLE,//p_surface_queue_family_count
-		VK_NULL_HANDLE,//p_compute_queue_family_count
-		VK_NULL_HANDLE,//p_transfer_queue_family_count
-		graphics_queue_families_indices,//p_graphics_queue_family_indices
-		present_queue_families_indices,//p_surface_queue_family_indices
-		VK_NULL_HANDLE,//p_compute_queue_family_indices
-		VK_NULL_HANDLE,//p_transfer_queue_family_indices
+		&p_engine->core.graphics_queue_family_count,//p_graphics_queue_family_count
+		&p_engine->core.present_queue_family_count,//p_surface_queue_family_count
+		&p_engine->core.compute_queue_family_count,//p_compute_queue_family_count
+		&p_engine->core.transfer_queue_family_count,//p_transfer_queue_family_count
+		p_engine->core.graphics_queue_family_indices,//p_graphics_queue_family_indices
+		p_engine->core.present_queue_family_indices,//p_surface_queue_family_indices
+		p_engine->core.compute_queue_family_indices,//p_compute_queue_family_indices
+		p_engine->core.transfer_queue_family_indices,//p_transfer_queue_family_indices
 		VK_NULL_HANDLE//p_queue_families_properties
 	);
-	p_engine->core.graphics_queue_family_index = graphics_queue_families_indices[0];
-	p_engine->core.present_queue_family_index  = present_queue_families_indices [0];
+	p_engine->core.default_graphics_queue_family_index = p_engine->core.graphics_queue_family_indices[0];
+	p_engine->core.default_present_queue_family_index  = p_engine->core.present_queue_family_indices[0];
+	p_engine->core.default_compute_queue_family_index  = p_engine->core.compute_queue_family_indices[0];
+	p_engine->core.default_transfer_queue_family_index = p_engine->core.transfer_queue_family_indices[0];
 
 	shGetPhysicalDeviceSurfaceCapabilities(
 		p_engine->core.physical_device, p_engine->core.surface, &p_engine->core.surface_capabilities
 	);
 
-	float default_queue_priority = 1.0f;
-	VkDeviceQueueCreateInfo graphics_device_queue_info = { 0 };
+	float                   default_queue_priority     = 1.0f;
+	VkDeviceQueueCreateInfo default_graphics_device_queue_info = { 0 };
+	VkDeviceQueueCreateInfo default_present_device_queue_info  = { 0 };
+	//no need to query for default 
+
 	shQueryForDeviceQueueInfo(
-		p_engine->core.graphics_queue_family_index,//queue_family_index
+		p_engine->core.default_graphics_queue_family_index,//queue_family_index
 		1,//queue_count
 		&default_queue_priority,//p_queue_priorities
-		0,//protected
-		&graphics_device_queue_info//p_device_queue_info
+		SH_FALSE,//protected
+		&default_graphics_device_queue_info//p_device_queue_info
 	);
 
-	VkDeviceQueueCreateInfo present_device_queue_info = { 0 };
 	shQueryForDeviceQueueInfo(
-		p_engine->core.present_queue_family_index,//queue_family_index
-		1,//queue_count
-		&default_queue_priority,//p_queue_priorities
-		0,//protected
-		&present_device_queue_info//p_device_queue_info
+		p_engine->core.default_present_queue_family_index,
+		1,
+		&default_queue_priority,
+		SH_FALSE,
+		&default_present_device_queue_info
 	);
 
-	VkDeviceQueueCreateInfo device_queue_infos[2] = {
-		graphics_device_queue_info,
-		present_device_queue_info
+
+	VkDeviceQueueCreateInfo default_device_queue_infos[2] = {
+		default_graphics_device_queue_info,
+		default_graphics_device_queue_info
 	};
 	char* device_extensions[2]  = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-	uint32_t device_queue_count = (p_engine->core.graphics_queue_family_index == p_engine->core.present_queue_family_index) ? 1 : 2;
+	uint32_t default_device_queue_count = (p_engine->core.default_graphics_queue_family_index == p_engine->core.default_present_queue_family_index) ? 1 : 2;
 	shSetLogicalDevice(
 		p_engine->core.physical_device,//physical_device
 		&p_engine->core.device,//p_device
 		1,//extension_count
 		device_extensions,//pp_extension_names
-		device_queue_count,//device_queue_count
-		device_queue_infos//p_device_queue_infos
+		default_device_queue_count,//device_queue_count
+		default_device_queue_infos//p_device_queue_infos
 	);
 
 	shGetDeviceQueues(
 		p_engine->core.device,//device
 		1,//queue_count
-		&p_engine->core.graphics_queue_family_index,//p_queue_family_indices
+		&p_engine->core.default_graphics_queue_family_index,//p_queue_family_indices
 		&p_engine->core.graphics_queue//p_queues
 	);
 
-	if (p_engine->core.graphics_queue_family_index != p_engine->core.present_queue_family_index) {
-		shGetDeviceQueues(
-			p_engine->core.device,//device
-			1,//queue_count
-			&p_engine->core.present_queue_family_index,//p_queue_family_indices
-			&p_engine->core.present_queue//p_queues
-		);
-	}
-	else {
-		p_engine->core.present_queue = p_engine->core.graphics_queue;
-	}
+	shGetDeviceQueues(
+		p_engine->core.device,//device
+		1,//queue_count
+		&p_engine->core.default_present_queue_family_index,//p_queue_family_indices
+		&p_engine->core.present_queue//p_queues
+	);
+	
+	p_engine->core.default_compute_queue_family_index  = p_engine->core.default_graphics_queue_family_index;
+	p_engine->core.default_transfer_queue_family_index = p_engine->core.default_graphics_queue_family_index;
 
 	VkSharingMode swapchain_image_sharing_mode = VK_SHARING_MODE_EXCLUSIVE;
-	if (p_engine->core.graphics_queue_family_index != p_engine->core.present_queue_family_index) {
+	if (p_engine->core.default_graphics_queue_family_index != p_engine->core.default_present_queue_family_index) {
 		swapchain_image_sharing_mode = VK_SHARING_MODE_CONCURRENT;
 	}
 	shCreateSwapchain(
@@ -148,14 +149,14 @@ uint8_t shEditorSetupVulkan(
 		&p_engine->core.swapchain_image_format,//p_image_format
 		SH_ENGINE_SWAPCHAIN_IMAGE_COUNT,//swapchain_image_count
 		swapchain_image_sharing_mode,//image_sharing_mode
-		0,//vsync
+		SH_FALSE,//vsync
 		&p_engine->core.swapchain_image_count,
 		&p_engine->core.swapchain//p_swapchain
 	);//need p_swapchain_image_count
 
 	shCreateCommandPool(
 		p_engine->core.device,//device
-		p_engine->core.graphics_queue_family_index,//queue_family_index
+		p_engine->core.default_graphics_queue_family_index,//queue_family_index
 		&p_engine->core.graphics_cmd_pool//p_cmd_pool
 	);
 
@@ -166,10 +167,10 @@ uint8_t shEditorSetupVulkan(
 		p_engine->core.graphics_cmd_buffers//p_cmd_buffer
 	);
 
-	if (p_engine->core.graphics_queue_family_index != p_engine->core.present_queue_family_index) {
+	if (p_engine->core.default_graphics_queue_family_index != p_engine->core.default_present_queue_family_index) {
 		shCreateCommandPool(
 			p_engine->core.device,//device
-			p_engine->core.present_queue_family_index,//queue_family_index
+			p_engine->core.default_present_queue_family_index,//queue_family_index
 			&p_engine->core.present_cmd_pool//p_cmd_pool
 		);
 	}
@@ -269,7 +270,7 @@ uint8_t shEditorSetupVulkan(
 		VK_PIPELINE_BIND_POINT_GRAPHICS,//bind_point
 		0,//input_attachment_count
 		VK_NULL_HANDLE,//p_input_attachments_reference
-		1,//color_attachment_count
+		SH_ENGINE_SUBASS_COLOR_ATTACHMENT_COUNT,//color_attachment_count
 		&p_engine->core.input_color_attachment_reference,//p_color_attachments_reference
 		&p_engine->core.depth_attachment_reference,//p_depth_stencil_attachment_reference
 		&p_engine->core.resolve_attachment_reference,//p_resolve_attachment_reference
