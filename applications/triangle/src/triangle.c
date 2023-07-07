@@ -140,8 +140,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_cmd_buffer(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_renderpass(ShEngine* p_engine) {
-	shApplicationError(p_engine                  == NULL, "triangle_frame_update: invalid engine memory",        return 0);
-	shApplicationError(p_engine->p_pipeline_pool == NULL, "triangle_frame_update: invalid pipeline pool memory", return 0);
+	shApplicationError(p_engine                  == NULL, "triangle_main_renderpass: invalid engine memory", return 0);
+	shApplicationError(p_engine->p_pipeline_pool == NULL, "triangle_main_renderpass: invalid pipeline pool memory", return 0);
 
 	VkCommandBuffer cmd_buffer   =  p_engine->core.graphics_cmd_buffers[p_engine->core.swapchain_image_idx];
 	ShVkPipeline*   p_pipeline   = &p_engine->p_pipeline_pool->pipelines[0];
@@ -160,8 +160,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_renderpass(ShEngine* p_engine) {
 
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_frame_resize(ShEngine* p_engine) {
-	shApplicationError(p_engine                  == NULL, "triangle_frame_update: invalid engine memory",        return 0);
-	shApplicationError(p_engine->p_pipeline_pool == NULL, "triangle_frame_update: invalid pipeline pool memory", return 0);
+	shApplicationError(p_engine->p_pipeline_pool == NULL, "triangle_frame_resize: invalid pipeline pool memory", return 0);
 
 	ShVkPipeline* p_pipeline = &p_engine->p_pipeline_pool->pipelines[0];
 	VkDevice      device     =  p_engine->core.device;
@@ -180,7 +179,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_frame_resize(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_close(ShEngine* p_engine) {
-	shApplicationError(p_engine == NULL, "triangle_frame_update: invalid engine memory", return 0);
+	shApplicationError(p_engine == NULL, "triangle_close: invalid engine memory", return 0);
 
 	VkDevice          device          = p_engine->core.device;
 					   			      
