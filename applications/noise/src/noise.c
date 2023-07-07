@@ -152,9 +152,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_after_thread(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_t entity) {
-    shApplicationError(p_engine        == NULL, "noise_start: invalid engine memory",           return 0);
-    shApplicationError(p_engine->p_ext == NULL, "noise_start: invalid engine extension memory", return 0);
-    shApplicationError(p_engine->p_pipeline_pool == NULL, "noise_main_renderpass: invalid pipeline pool memory", return 0);
+    shApplicationError(p_engine                  == NULL, "noise_update: invalid engine memory",           return 0);
+    shApplicationError(p_engine->p_ext           == NULL, "noise_update: invalid engine extension memory", return 0);
+    shApplicationError(p_engine->p_pipeline_pool == NULL, "noise_update: invalid pipeline pool memory",    return 0);
 
     NoiseApp*         p_noise               = (NoiseApp*)p_engine->p_ext;
     float             dtime                 = (float)p_engine->time.delta_time;
@@ -163,24 +163,23 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
 	ShVkPipeline*     p_pipeline            = &p_pool->pipelines[0];
     uint32_t          swapchain_image_idx   = p_engine->core.swapchain_image_idx;
 
+    VkDevice          device                = p_engine->core.device;
     VkBuffer          staging_buffer        = p_engine->vulkan_memory_properties.buffers[0];
 	VkDeviceMemory    staging_memory        = p_engine->vulkan_memory_properties.buffers_memory[0];
-    VkBuffer          dst_buffer            = p_engine->vulkan_memory_properties.buffers[1];
 
-    VkDevice          device                = p_engine->core.device;
-    VkCommandBuffer   cmd_buffer            = p_engine->core.graphics_cmd_buffers[swapchain_image_idx];
-	VkQueue           queue                 = p_engine->core.graphics_queue;
+    VkCommandBuffer   transfer_cmd_buffer   = p_engine->core.transfer_cmd_buffer;
+	VkQueue           transfer_queue        = p_engine->core.transfer_queue;
 
     float fps = 1.0f / (float)p_engine->time.delta_time;
 
     shOnTick(p_engine->time, 1.0, 0,//write to interface file
-        smdWriteLine(&p_noise->export, 1, "FPS", SMD_VAR_TYPE_FLOAT32, &fps);
+        smdWriteLine(&p_noise->export, 1, "FPS",  SMD_VAR_TYPE_FLOAT32, &fps);
         smdWriteLine(&p_noise->export, 1, "info", SMD_VAR_TYPE_STR1024, "@github.com/mrsinho");
-        smdWriteLine(&p_noise->export, 1, "s", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
-        smdWriteLine(&p_noise->export, 1, "a", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
-        smdWriteLine(&p_noise->export, 1, "b", SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);
+        smdWriteLine(&p_noise->export, 1, "s",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
+        smdWriteLine(&p_noise->export, 1, "a",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
+        smdWriteLine(&p_noise->export, 1, "b",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);
         smdWriteFile(&p_noise->export, "../../smd/noise-interface.smd");
-        smdExportHandleRelease(&p_noise->export);//this does not free the memory
+        smdExportHandleRelease(&p_noise->export);
     )
 
     if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_E)) {//save interface data
@@ -189,7 +188,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
         smdWriteLine(&p_noise->export, 1, "a",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
         smdWriteLine(&p_noise->export, 1, "b",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);
         smdWriteFile(&p_noise->export, "../../smd/noise-saved.smd");
-        smdExportHandleRelease(&p_noise->export);//this does not free the memory
+        smdExportHandleRelease(&p_noise->export);
     }
 
     if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_L)) {//load saved data
@@ -212,20 +211,30 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
 
     shWriteMemory  (device, staging_memory, 0, NOISE_PARAMETERS_SIZE, p_noise);
     shWaitForFences(device, 1, &p_noise->copy_fence, 1, UINT64_MAX);
-	shResetFences  (device, 1, &p_noise->copy_fence);
-    
-	shBeginCommandBuffer(cmd_buffer);
-	shCopyBuffer(cmd_buffer, staging_buffer, 0, 0, NOISE_PARAMETERS_SIZE, dst_buffer);
-    shEndCommandBuffer(cmd_buffer);
-
-	shQueueSubmit(1, &cmd_buffer, queue, p_noise->copy_fence, 0, NULL, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, NULL);
-	shWaitForFences(device, 1, &p_noise->copy_fence, 1, UINT64_MAX);
-
+	
     return 1;
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_main_cmd_buffer(ShEngine* p_engine) {
     
+    NoiseApp* p_noise = (NoiseApp*)p_engine->p_ext;
+
+    VkDevice          device              = p_engine->core.device;
+    VkCommandBuffer   transfer_cmd_buffer = p_engine->core.transfer_cmd_buffer;
+	VkQueue           transfer_queue      = p_engine->core.transfer_queue;
+
+    VkBuffer          staging_buffer      = p_engine->vulkan_memory_properties.buffers[0];
+    VkBuffer          dst_buffer          = p_engine->vulkan_memory_properties.buffers[1];
+
+    shResetFences(device, 1, &p_noise->copy_fence);
+
+    shBeginCommandBuffer(transfer_cmd_buffer);
+    shCopyBuffer        (transfer_cmd_buffer, staging_buffer, 0, 0, NOISE_PARAMETERS_SIZE, dst_buffer);
+    shEndCommandBuffer  (transfer_cmd_buffer);
+
+    shQueueSubmit(1, &transfer_cmd_buffer, transfer_queue, p_noise->copy_fence, 0, NULL, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, NULL);
+    shWaitForFences(device, 1, &p_noise->copy_fence, 1, UINT64_MAX);
+
 	return 1;
 }
 
@@ -235,7 +244,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_main_renderpass(ShEngine* p_engine) {
     shApplicationError(p_engine->p_pipeline_pool == NULL, "noise_main_renderpass: invalid pipeline pool memory",    return 0);
 
     uint32_t          swapchain_image_idx = p_engine->core.swapchain_image_idx;
-    VkCommandBuffer   cmd_buffer          =  p_engine->core.graphics_cmd_buffers[swapchain_image_idx];
+    VkCommandBuffer   cmd_buffer          = p_engine->core.graphics_cmd_buffers[swapchain_image_idx];
     ShVkPipelinePool* p_pool              = p_engine->p_pipeline_pool; 
     ShVkPipeline*     p_pipeline          = &p_pool->pipelines[0];
     NoiseApp*         p_noise             = (NoiseApp*)p_engine->p_ext;
