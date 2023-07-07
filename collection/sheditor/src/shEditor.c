@@ -136,6 +136,8 @@ uint8_t shEditorSetupVulkan(
 	
 	p_engine->core.default_compute_queue_family_index  = p_engine->core.default_graphics_queue_family_index;
 	p_engine->core.default_transfer_queue_family_index = p_engine->core.default_graphics_queue_family_index;
+	p_engine->core.compute_queue                       = p_engine->core.graphics_queue;
+	p_engine->core.transfer_queue                      = p_engine->core.graphics_queue;
 
 	VkSharingMode swapchain_image_sharing_mode = VK_SHARING_MODE_EXCLUSIVE;
 	if (p_engine->core.default_graphics_queue_family_index != p_engine->core.default_present_queue_family_index) {
@@ -179,9 +181,23 @@ uint8_t shEditorSetupVulkan(
 	}
 	shAllocateCommandBuffers(
 		p_engine->core.device,//device
-		p_engine->core.present_cmd_pool,//cmd_pool
+		p_engine->core.graphics_cmd_pool,//cmd_pool
 		1,//cmd_buffer_count
 		&p_engine->core.present_cmd_buffer//p_cmd_buffer
+	);
+
+	shAllocateCommandBuffers(
+		p_engine->core.device,//device
+		p_engine->core.graphics_cmd_pool,//cmd_pool
+		1,//cmd_buffer_count
+		&p_engine->core.compute_cmd_buffer//p_cmd_buffer
+	);
+
+	shAllocateCommandBuffers(
+		p_engine->core.device,//device
+		p_engine->core.graphics_cmd_pool,//cmd_pool
+		1,//cmd_buffer_count
+		&p_engine->core.transfer_cmd_buffer//p_cmd_buffer
 	);
 
 	shCreateFences(
