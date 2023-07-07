@@ -568,14 +568,16 @@ uint8_t shEngineVulkanRelease(
 
     shDestroyFences(p_engine->core.device, p_engine->core.swapchain_image_count, p_engine->core.graphics_cmd_fences);
 
-    shDestroyCommandBuffers(p_engine->core.device, p_engine->core.graphics_cmd_pool, p_engine->core.swapchain_image_count,  p_engine->core.graphics_cmd_buffers);
-    shDestroyCommandBuffers(p_engine->core.device, p_engine->core.present_cmd_pool,  1,                                    &p_engine->core.present_cmd_buffer);
+    shDestroyCommandBuffers(p_engine->core.device, p_engine->core.graphics_cmd_pool,  p_engine->core.swapchain_image_count,  p_engine->core.graphics_cmd_buffers);
+    shDestroyCommandBuffers(p_engine->core.device, p_engine->core.present_cmd_pool,   1, &p_engine->core.present_cmd_buffer);
+    shDestroyCommandBuffers(p_engine->core.device, p_engine->core.graphics_cmd_pool,  1, &p_engine->core.compute_cmd_buffer);
+    shDestroyCommandBuffers(p_engine->core.device, p_engine->core.graphics_cmd_pool,  1, &p_engine->core.transfer_cmd_buffer);
 
     shDestroyCommandPool(p_engine->core.device, p_engine->core.graphics_cmd_pool);
     if (p_engine->core.default_graphics_queue_family_index != p_engine->core.default_present_queue_family_index) {
         shDestroyCommandPool(p_engine->core.device, p_engine->core.present_cmd_pool);
     }
-
+    
     shClearImageMemory(p_engine->core.device, p_engine->core.depth_image,       p_engine->core.depth_image_memory);
 	shClearImageMemory(p_engine->core.device, p_engine->core.input_color_image, p_engine->core.input_color_image_memory);
 
