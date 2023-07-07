@@ -89,7 +89,9 @@ typedef struct ShEngineVkCore {
 															                      
 	VkCommandBuffer                  graphics_cmd_buffers [SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
 	VkCommandBuffer                  present_cmd_buffer;
-															                      
+	VkCommandBuffer                  compute_cmd_buffer;
+	VkCommandBuffer                  transfer_cmd_buffer;
+
 	VkFence                          graphics_cmd_fences  [SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
 															                      
 	VkSemaphore                      current_image_acquired_semaphore;    
