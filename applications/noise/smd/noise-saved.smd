@@ -1,4 +1,5 @@
 STR1024    ^^ 1    !! info    --> @github.com/mrsinho     *
-FLOAT32    ^^ 1    !! s    --> 25     *
-FLOAT32    ^^ 1    !! a    --> 10     *
-FLOAT32    ^^ 1    !! b    --> 10     *
+
+FLOAT32    ^^ 1    !! s    --> 4.000000     *
+FLOAT32    ^^ 1    !! a    --> 5.000000     *
+FLOAT32    ^^ 1    !! b    --> 7.000000     *

@@ -174,7 +174,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
 
     shOnTick(p_engine->time, 1.0, 0,//write to interface file
         smdWriteLine(&p_noise->export, 1, "FPS",  SMD_VAR_TYPE_FLOAT32, &fps);
+        smdCommentLine(&p_noise->export, "\n");
         smdWriteLine(&p_noise->export, 1, "info", SMD_VAR_TYPE_STR1024, "@github.com/mrsinho");
+        smdCommentLine(&p_noise->export, "\n");
         smdWriteLine(&p_noise->export, 1, "s",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
         smdWriteLine(&p_noise->export, 1, "a",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
         smdWriteLine(&p_noise->export, 1, "b",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);
@@ -184,6 +186,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
 
     if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_E)) {//save interface data
         smdWriteLine(&p_noise->export, 1, "info", SMD_VAR_TYPE_STR1024, "@github.com/mrsinho");
+        smdCommentLine(&p_noise->export, "\n");
         smdWriteLine(&p_noise->export, 1, "s",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
         smdWriteLine(&p_noise->export, 1, "a",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
         smdWriteLine(&p_noise->export, 1, "b",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);

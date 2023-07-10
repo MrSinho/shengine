@@ -1,5 +1,7 @@
-FLOAT32    ^^ 1    !! FPS    --> 740.192444     *
+FLOAT32    ^^ 1    !! FPS    --> 474.721069     *
+
 STR1024    ^^ 1    !! info    --> @github.com/mrsinho     *
+
 FLOAT32    ^^ 1    !! s    --> 4.000000     *
 FLOAT32    ^^ 1    !! a    --> 5.000000     *
 FLOAT32    ^^ 1    !! b    --> 7.000000     *
