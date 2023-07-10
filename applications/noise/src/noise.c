@@ -142,7 +142,7 @@ uint64_t SH_ENGINE_EXPORT_FUNCTION noise_thread(NoiseApp* p_noise) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update_pending(ShEngine* p_engine) {
-
+    
     return 1;
 }
 

@@ -421,7 +421,7 @@ uint8_t shEngineUpdateState(
                 }
                 p_engine->application_host.after_thread_called++;
             }
-            if (shSharedSceneRun(p_engine, p_engine->application_host.p_main_cmd_buffer) == 0) {
+            if (shSharedSceneRun(p_engine, p_engine->application_host.p_update) == 0) {
                 shEngineManageState(p_engine, 0, load_shared, 1);
             }
         }
@@ -429,10 +429,6 @@ uint8_t shEngineUpdateState(
             if (shSharedSceneRun(p_engine, p_shared_host->p_update_pending) == 0) {
                 shEngineManageState(p_engine, 0, load_shared, 1);
             }
-        }
-
-        if (shSharedSceneRun(p_engine, p_engine->application_host.p_update) == 0) {
-            shEngineManageState(p_engine, 0, load_shared, 1);
         }
 		
         if (_width != 0 && _height != 0) {
