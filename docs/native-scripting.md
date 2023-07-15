@@ -17,22 +17,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(ShEngine* p_engine) {
     return 1;
 }
 
-uint64_t SH_ENGINE_EXPORT_FUNCTION triangle_thread(void* p_ext) {
-    // Runs after ShEngine::application_host.p_start and runs in parallel with the engine environment, without conflicting with the engine data (mutexes are not required). p_ext is an extension memory pointer (it comes from ShEngine::p_ext) which can be allocated at any time and it won't be read by engine api. While the ShEngine::application_host.p_thread function is running all the other functions are waiting to be called (except for ShEngine::application_host.p_update_pending) at the end of this function.
-    return 1;
-}
-
-uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_update_pending(ShEngine* p_engine) {
-    // Until the triangle_thread function stops executing, this function will be called once per frame.
-    return 1;
-}
-
-
-uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_after_thread(ShEngine* p_engine) {
-    // When the ShEngine::application_host.p_thread returns, this function will be called only once.
-    return 1;
-}
-
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_update(ShEngine* p_engine) {
     // This function is called once per frame.
 	return 1;
@@ -74,9 +58,6 @@ int main() {
     );
 
     p_engine->application_host.p_start           = (ShApplicationFunc*)      &triangle_start;
-    p_engine->application_host.p_thread          = (ShApplicationThreadFunc*)&triangle_thread;
-    p_engine->application_host.p_update_pending  = (ShApplicationFunc*)      &triangle_update_pending;
-    p_engine->application_host.p_after_thread    = (ShApplicationFunc*)      &triangle_after_thread;
     p_engine->application_host.p_update          = (ShApplicationFunc*)      &triangle_update;
     p_engine->application_host.p_main_cmd_buffer = (ShApplicationFunc*)      &triangle_main_cmd_buffer;
     p_engine->application_host.p_main_renderpass = (ShApplicationFunc*)      &triangle_main_renderpass;

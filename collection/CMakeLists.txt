@@ -36,7 +36,7 @@ target_link_libraries(shengine PUBLIC
     glfw
     shvulkan
     cglm
-    shsharedhost
+    shapplicationhost
     shenvironment
     shserial
     shthreads
@@ -83,21 +83,21 @@ endfunction()
 
 
 
-function(build_shshared_host)
-add_library(shsharedhost 
-shsharedhost/src/shSharedHost.c
+function(build_shapplication_host)
+add_library(shapplicationhost 
+shapplicationhost/src/shApplicationHost.c
 )
-target_include_directories(shsharedhost PUBLIC
-${CMAKE_CURRENT_SOURCE_DIR}/shsharedhost/include
+target_include_directories(shapplicationhost PUBLIC
+${CMAKE_CURRENT_SOURCE_DIR}/shapplicationhost/include
 ${CMAKE_CURRENT_SOURCE_DIR}/externals
 )
-target_link_libraries(shsharedhost PUBLIC shenvironment)
+target_link_libraries(shapplicationhost PUBLIC shenvironment shthreads)
 endfunction()
 
 
 function(main)
 build_shenvironment()
-build_shshared_host()
+build_shapplication_host()
 build_shengine()
 
 if(SH_ENGINE_BUILD_EDITOR)

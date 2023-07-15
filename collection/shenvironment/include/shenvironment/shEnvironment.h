@@ -42,17 +42,14 @@ typedef struct ShIniProperties {
 
 
 typedef struct ShApplicationProperties {
-	uint8_t                  run;
-	char                     shared_path       [SH_ENVIRONMENT_STR512_LENGTH];
-	char                     s_start           [SH_ENVIRONMENT_STR512_LENGTH];
-	char                     s_thread          [SH_ENVIRONMENT_STR512_LENGTH];
-	char                     s_update_pending  [SH_ENVIRONMENT_STR512_LENGTH];
-	char                     s_after_thread    [SH_ENVIRONMENT_STR512_LENGTH];
-	char                     s_update          [SH_ENVIRONMENT_STR512_LENGTH];
-	char                     s_main_cmd_buffer [SH_ENVIRONMENT_STR512_LENGTH];
-	char                     s_main_renderpass [SH_ENVIRONMENT_STR512_LENGTH];
-	char                     s_frame_resize    [SH_ENVIRONMENT_STR512_LENGTH];
-	char                     s_close           [SH_ENVIRONMENT_STR512_LENGTH];
+	char                     shared_name             [SH_ENVIRONMENT_STR512_LENGTH];
+	char                     s_start                 [SH_ENVIRONMENT_STR512_LENGTH];
+	char                     s_update                [SH_ENVIRONMENT_STR512_LENGTH];
+	char                     s_main_cmd_buffer       [SH_ENVIRONMENT_STR512_LENGTH];
+	char                     s_main_renderpass       [SH_ENVIRONMENT_STR512_LENGTH];
+	char                     s_frame_resize          [SH_ENVIRONMENT_STR512_LENGTH];
+	char                     s_close                 [SH_ENVIRONMENT_STR512_LENGTH];
+	uint32_t                 additional_thread_count;
 } ShApplicationProperties;
 
 

@@ -111,38 +111,14 @@ uint8_t shGetApplicationProperties(
     );
 
     shEnvironmentError(
-        smdAccessVarByName(p_application_smd, "ShEngine::application_properties.run", NULL, &p_application_properties->run) == 0,
-        "shGetApplicationProperties: failed accessing ShEngine::application_properties.run",
-        return 0
-    );
-
-    shEnvironmentError(
-        smdAccessVarByName(p_application_smd, "ShEngine::application_properties.shared_path", NULL, p_application_properties->shared_path) == 0,
-        "shGetApplicationProperties: failed accessing ShEngine::application_properties.shared_path",
+        smdAccessVarByName(p_application_smd, "ShEngine::application_properties.shared_name", NULL, p_application_properties->shared_name) == 0,
+        "shGetApplicationProperties: failed accessing ShEngine::application_properties.shared_name",
         return 0
     );
     
     shEnvironmentError(
         smdAccessVarByName(p_application_smd, "ShEngine::application_properties.s_start", NULL, p_application_properties->s_start) == 0,
         "shGetApplicationProperties: failed accessing ShEngine::application_properties.s_start",
-        return 0
-    );
-
-    shEnvironmentError(
-        smdAccessVarByName(p_application_smd, "ShEngine::application_properties.s_thread", NULL, p_application_properties->s_thread) == 0,
-        "shGetApplicationProperties: failed accessing ShEngine::application_properties.s_thread",
-        return 0
-    );
-
-    shEnvironmentError(
-        smdAccessVarByName(p_application_smd, "ShEngine::application_properties.s_update_pending", NULL, p_application_properties->s_update_pending) == 0,
-        "shGetApplicationProperties: failed accessing ShEngine::application_properties.s_update_pending",
-        return 0
-    );
-
-    shEnvironmentError(
-        smdAccessVarByName(p_application_smd, "ShEngine::application_properties.s_after_thread", NULL, p_application_properties->s_after_thread) == 0,
-        "shGetApplicationProperties: failed accessing ShEngine::application_properties.s_after_thread",
         return 0
     );
 
@@ -173,6 +149,12 @@ uint8_t shGetApplicationProperties(
     shEnvironmentError(
         smdAccessVarByName(p_application_smd, "ShEngine::application_properties.s_close", NULL, p_application_properties->s_close) == 0,
         "shGetApplicationProperties: failed accessing ShEngine::application_properties.s_close",
+        return 0
+    );
+
+    shEnvironmentError(
+        smdAccessVarByName(p_application_smd, "ShEngine::application_properties.additional_thread_count", NULL, &p_application_properties->additional_thread_count) == 0,
+        "shGetApplicationProperties: failed accessing ShEngine::application_properties.additional_thread_count",
         return 0
     );
 

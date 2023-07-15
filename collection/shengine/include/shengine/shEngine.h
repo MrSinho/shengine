@@ -12,7 +12,7 @@ extern "C" {
 #include "shengine/shInput.h"
 #include "shengine/shScene.h"
 
-#include "shsharedhost/shSharedHost.h"
+#include "shapplicationhost/shApplicationHost.h"
 
 #include "shenvironment/shEnvironment.h"
 #include "shenvironment/shFileUtilities.h"
@@ -126,6 +126,7 @@ typedef struct ShEngineVkCore {
 	VkFramebuffer                    framebuffers              [SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
 
 	uint32_t                         swapchain_image_idx;
+	uint8_t                          swapchain_suboptimal;//not used
 
 } ShEngineVkCore;
 
@@ -136,7 +137,6 @@ typedef struct ShEngine {
 						     
     ShWindow                 window;
     ShTime                   time;
-    //ShGui*                   p_gui;
                              
     SmdFileHandle*           p_ini_smd;
 	SmdFileHandle*           p_application_smd;
@@ -152,10 +152,12 @@ typedef struct ShEngine {
 	ShSerialProperties       serial_properties;
 	ShSceneProperties        scene_properties;
 
-    ShApplicationHandle      application_host;
+	uint8_t                  load_shared;
+
+    ShApplicationHost        application_host;
+	
 	ShThreadPool             thread_pool;
-	ShThreadState            app_thread_state;
-							 
+
 	ShVkPipelinePool*        p_pipeline_pool;
 	uint32_t                 pipeline_count;
 							 
@@ -164,10 +166,8 @@ typedef struct ShEngine {
 
 } ShEngine;
 
-#define shAllocateEngine() calloc(1, sizeof(ShEngine));
+#define shAllocateEngine() (ShEngine*)calloc(1, sizeof(ShEngine));
 #define shFreeEngine(p_engine) free(p_engine); (p_engine) = NULL
-
-#define SH_APPLICATION_THREAD_IDX 0
 
 
 
@@ -184,32 +184,41 @@ static uint8_t shEngineWarning(int condition, const char* msg) {
 
 
 
+#define SH_ENGINE_READY     1
+#define SH_ENGINE_NOT_READY 0
+
+
+extern uint8_t shEngineSetupVulkan(
+	ShEngine* p_engine
+);
+
 extern uint8_t shSetEngineState(
-	ShEngine* p_engine,
-	uint8_t   load_shared
+	ShEngine* p_engine
 );
 
 extern uint8_t shResetEngineState(
-	ShEngine* p_engine,
-	uint8_t   load_shared,
-	uint8_t   release_shared_on_failure
+	ShEngine* p_engine
 );
 
 extern uint8_t shEngineSafeState(
-	ShEngine* p_engine,
-	uint8_t   load_shared
+	ShEngine* p_engine
+);
+
+extern uint8_t shEngineFrameResize(
+	ShEngine* p_engine
+);
+
+extern uint8_t shEngineVulkanUpdate(
+	ShEngine* p_engine
 );
 
 extern uint8_t shEngineUpdateState(
-	ShEngine* p_engine,
-	uint8_t   load_shared
+	ShEngine* p_engine
 );
 
 extern uint8_t shEngineManageState(
 	ShEngine* p_engine,
-	uint8_t   ready,
-	uint8_t   load_shared,
-	uint8_t   release_shared_on_failure
+	uint8_t   ready
 );
 
 extern uint8_t shEngineVulkanRelease(
@@ -217,8 +226,7 @@ extern uint8_t shEngineVulkanRelease(
 );
 
 extern uint8_t shEngineRelease(
-	ShEngine* p_engine,
-	uint8_t   release_shared
+	ShEngine* p_engine
 );
 
 extern void shEngineShutdown(

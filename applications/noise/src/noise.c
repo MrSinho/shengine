@@ -136,21 +136,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
     return 1;
 }
 
-uint64_t SH_ENGINE_EXPORT_FUNCTION noise_thread(NoiseApp* p_noise) {
-    
-    return 1;
-}
-
-uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update_pending(ShEngine* p_engine) {
-    
-    return 1;
-}
-
-uint8_t SH_ENGINE_EXPORT_FUNCTION noise_after_thread(ShEngine* p_engine) {
-    
-    return 1;
-}
-
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_t entity) {
     shApplicationError(p_engine                  == NULL, "noise_update: invalid engine memory",           return 0);
     shApplicationError(p_engine->p_ext           == NULL, "noise_update: invalid engine extension memory", return 0);
@@ -319,9 +304,6 @@ int main() {
     );
 
     p_engine->application_host.p_start           = (ShApplicationFunc*)      &noise_start;
-    p_engine->application_host.p_thread          = (ShApplicationThreadFunc*)&noise_thread;
-    p_engine->application_host.p_update_pending  = (ShApplicationFunc*)      &noise_update_pending;
-    p_engine->application_host.p_after_thread    = (ShApplicationFunc*)      &noise_after_thread;
     p_engine->application_host.p_update          = (ShApplicationFunc*)      &noise_update;
     p_engine->application_host.p_main_cmd_buffer = (ShApplicationFunc*)      &noise_main_cmd_buffer;
     p_engine->application_host.p_main_renderpass = (ShApplicationFunc*)      &noise_main_renderpass;

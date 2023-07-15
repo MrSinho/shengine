@@ -113,22 +113,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(
     return 1;
 }
 
-uint64_t SH_ENGINE_EXPORT_FUNCTION triangle_thread(void* p_ext) {
-
-    return 1;
-}
-
-uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_update_pending(ShEngine* p_engine) {
-
-    return 1;
-}
-
-
-uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_after_thread(ShEngine* p_engine) {
-    
-    return 1;
-}
-
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_update(ShEngine* p_engine) {
 
 	return 1;
@@ -222,9 +206,6 @@ int main() {
     );
 
 	p_engine->application_host.p_start           = (ShApplicationFunc*)      &triangle_start;
-    p_engine->application_host.p_thread          = (ShApplicationThreadFunc*)&triangle_thread;
-    p_engine->application_host.p_update_pending  = (ShApplicationFunc*)      &triangle_update_pending;
-    p_engine->application_host.p_after_thread    = (ShApplicationFunc*)      &triangle_after_thread;
     p_engine->application_host.p_update          = (ShApplicationFunc*)      &triangle_update;
     p_engine->application_host.p_main_cmd_buffer = (ShApplicationFunc*)      &triangle_main_cmd_buffer;
     p_engine->application_host.p_main_renderpass = (ShApplicationFunc*)      &triangle_main_renderpass;

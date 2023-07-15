@@ -7,6 +7,10 @@ extern "C" {
 
 
 
+typedef struct ShEngine ShEngine;
+
+
+
 extern int shEditorMain(ShEngine* p_engine);
 
 
