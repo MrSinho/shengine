@@ -13,20 +13,20 @@ extern "C" {
 
 
 
-#define SH_PROFILING_TIMERS_MAX_EXT_TIMER_COUNT 1024
+#define SH_PROFILING_TIMER_MAX_EXT_COUNT 1024
 
 typedef enum ShProfilingTimerType {
 	SH_PROFILING_TIMER_MAIN_THREAD                 = 0,
 	SH_PROFILING_TIMER_APPLICATION_UPDATE          = 1,
 	SH_PROFILING_TIMER_APPLICATION_MAIN_CMD_BUFFER = 2,
 	SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS,
-	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0,
-	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_1,
-	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_2,
-	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_3,
-	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_4,
-	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_5,
-	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_6,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_0,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_1,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_2,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_3,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_4,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_5,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_6,
 	SH_PROFILING_TIMER_EXT,
 	SH_PROFILING_TIMER_MAX_ENUM
 } ShProfilingTimerType;
@@ -54,15 +54,15 @@ typedef struct ShProfilingTimer {
 	double          application_main_renderpass_end_s;
 	double          application_main_renderpass_dtime_ms;
 
-	double          main_cmd_buffer_submissions_start_s[SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
-	double          main_cmd_buffer_submissions_end_s  [SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
-	double          main_cmd_buffer_submissions_dtime_s[SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
+	double          main_cmd_buffer_wait_start_s[SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
+	double          main_cmd_buffer_wait_end_s  [SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
+	double          main_cmd_buffer_wait_dtime_s[SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
 
 	uint32_t        ext_count;
-	double          ext_start_s [SH_PROFILING_TIMERS_MAX_EXT_TIMER_COUNT];
-	double          ext_end_s   [SH_PROFILING_TIMERS_MAX_EXT_TIMER_COUNT];
-	double          ext_dtime_ms[SH_PROFILING_TIMERS_MAX_EXT_TIMER_COUNT];
-	SmdVarName      ext_names   [SH_PROFILING_TIMERS_MAX_EXT_TIMER_COUNT];
+	double          ext_start_s [SH_PROFILING_TIMER_MAX_EXT_COUNT];
+	double          ext_end_s   [SH_PROFILING_TIMER_MAX_EXT_COUNT];
+	double          ext_dtime_ms[SH_PROFILING_TIMER_MAX_EXT_COUNT];
+	SmdVarName      ext_names   [SH_PROFILING_TIMER_MAX_EXT_COUNT];
 
 	SmdExportHandle export;
 } ShProfilingTimer;
@@ -77,6 +77,11 @@ extern uint8_t shProfilingTimerStart(
 extern uint8_t shProfilingTimerEnd(
 	ShProfilingTimer*    p_timer,
 	ShProfilingTimerType type
+);
+
+extern uint8_t shProfilingTimerSetExtCount(
+	ShProfilingTimer* p_timer,
+	uint32_t          ext_count
 );
 
 extern uint8_t shProfilingTimerStartExt(

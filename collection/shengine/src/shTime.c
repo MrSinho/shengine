@@ -14,6 +14,10 @@ extern "C" {
 #include <unistd.h>
 #endif // UNIX
 
+#ifdef _MSC_VER
+#pragma warning (disable: 6385 6386)
+#endif//_MSC_VER
+
 
 
 uint8_t shProfilingTimerStart(
@@ -43,8 +47,8 @@ uint8_t shProfilingTimerStart(
 		break;
 	}
 
-	if (type >= SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0 && ((type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0) < SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT)) {
-		p_timer->main_cmd_buffer_submissions_start_s[type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0] = glfwGetTime();
+	if (type >= SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_0 && ((type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_0) < SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT)) {
+		p_timer->main_cmd_buffer_wait_start_s[type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_0] = glfwGetTime();
 	}
 
 	return 1;
@@ -81,11 +85,28 @@ uint8_t shProfilingTimerEnd(
 		break;
 	}
 
-	if (type >= SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0 && ((type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0) < SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT)) {
-		uint32_t submission = type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0;
-		p_timer->main_cmd_buffer_submissions_end_s  [submission] = glfwGetTime();
-		p_timer->main_cmd_buffer_submissions_dtime_s[submission] = (p_timer->main_cmd_buffer_submissions_end_s[submission] - p_timer->main_cmd_buffer_submissions_start_s[submission]) * 1000;
+	if (type >= SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_0 && ((type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_0) < SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT)) {
+		uint32_t submission = type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_WAIT_0;
+		p_timer->main_cmd_buffer_wait_end_s  [submission] = glfwGetTime();
+		p_timer->main_cmd_buffer_wait_dtime_s[submission] = (p_timer->main_cmd_buffer_wait_end_s[submission] - p_timer->main_cmd_buffer_wait_start_s[submission]) * 1000;
 	}
+
+	return 1;
+}
+
+uint8_t shProfilingTimerSetExtCount(
+	ShProfilingTimer* p_timer,
+	uint32_t          ext_count
+) {
+	shEngineError(p_timer == NULL, "shProfilingTimerSetExtCount: invalid timer memory", return 0);
+
+	shEngineError(
+		ext_count > SH_PROFILING_TIMER_MAX_EXT_COUNT,
+		"shProfilingTimerSetExtCount: invalid ext count",
+		return 0
+	);
+
+	p_timer->ext_count = ext_count;
 
 	return 1;
 }
@@ -98,7 +119,7 @@ uint8_t shProfilingTimerStartExt(
 	shEngineError(p_timer == NULL, "shProfilingTimerStartExt: invalid timer memory", return 0);
 	
 	shEngineError(
-		timer_idx >= SH_PROFILING_TIMERS_MAX_EXT_TIMER_COUNT,
+		timer_idx >= SH_PROFILING_TIMER_MAX_EXT_COUNT,
 		"shProfilingTimerStartExt: invalid timer idx",
 		return 0
 	);
@@ -112,11 +133,11 @@ uint8_t shProfilingTimerStartExt(
 uint8_t shProfilingTimerEndExt(
 	ShProfilingTimer* p_timer,
 	uint32_t          timer_idx
-)  {
+) {
 	shEngineError(p_timer == NULL, "shProfilingTimerEndExt: invalid timer memory", return 0);
-	
+
 	shEngineError(
-		timer_idx >= SH_PROFILING_TIMERS_MAX_EXT_TIMER_COUNT,
+		timer_idx >= SH_PROFILING_TIMER_MAX_EXT_COUNT,
 		"shProfilingTimerStartExt: invalid timer idx",
 		return 0
 	);

@@ -21,6 +21,7 @@ extern "C" {
                                          
 #define NOISE_PARAMETERS_DESCRIPTOR_POOL 0
 
+#define MEMORY_WRITE_COPY_IDX            0
 
 
 typedef struct NoiseParameters {
@@ -133,6 +134,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 
 	shCreateFences(device, 1, 1, &p_noise->copy_fence);
 
+    shProfilingTimerSetExtCount(&p_engine->profiling_timer, 1);
+
     return 1;
 }
 
@@ -193,6 +196,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
     VkCommandBuffer   transfer_cmd_buffer   = p_engine->core.transfer_cmd_buffer;
 	VkQueue           transfer_queue        = p_engine->core.transfer_queue;
 
+    shProfilingTimerStartExt(&p_engine->profiling_timer, "MEMORY_WRITE_COPY___ms", MEMORY_WRITE_COPY_IDX);
+
     shWriteMemory  (device, staging_memory, 0, NOISE_PARAMETERS_SIZE, p_noise);
     shWaitForFences(device, 1, &p_noise->copy_fence, 1, UINT64_MAX);
 
@@ -204,6 +209,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
 
     shQueueSubmit(1, &transfer_cmd_buffer, transfer_queue, p_noise->copy_fence, 0, NULL, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, NULL);
     shWaitForFences(device, 1, &p_noise->copy_fence, 1, UINT64_MAX);
+
+    shProfilingTimerEndExt(&p_engine->profiling_timer, MEMORY_WRITE_COPY_IDX);
 
     return 1;
 }
