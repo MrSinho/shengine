@@ -780,6 +780,7 @@ uint8_t shEngineVulkanUpdate(
 
     clear_values[1].depthStencil.depth = 1.0f;
 
+    shProfilingTimerStart(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
     shBeginRenderpass(
         cmd_buffer,//graphics_cmd_buffer
         p_core->renderpass,//renderpass
@@ -792,13 +793,12 @@ uint8_t shEngineVulkanUpdate(
         p_core->framebuffers[p_core->swapchain_image_idx]//framebuffer
     );
 
-    shProfilingTimerStart(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
     if (shApplicationRun(p_engine, p_engine->application_host.p_main_renderpass) == 0) {
         shEngineManageState(p_engine, SH_ENGINE_NOT_READY);
     }
-    shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
 
     shEndRenderpass(cmd_buffer);
+    shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
 
     shEndCommandBuffer(cmd_buffer);
 
