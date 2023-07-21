@@ -10,6 +10,7 @@ extern "C" {
 
 #include "shengine/shWindow.h"
 #include "shengine/shTime.h"
+#include "shengine/shProfiling.h"
 #include "shengine/shInput.h"
 #include "shengine/shScene.h"
 

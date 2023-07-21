@@ -24,6 +24,7 @@ add_library(shengine
     shengine/src/shEngine.c
     shengine/src/shInput.c
     shengine/src/shTime.c
+    shengine/src/shProfiling.c
     shengine/src/shWindow.c
     shengine/src/shLinearAlgebra.c
     shengine/src/shScene.c
