@@ -5,7 +5,13 @@
 extern "C" {
 #endif//__cplusplus
 
+
+
+#include "shengine/shEngineVkCore.h"
+
 #include <smd/smd.h>
+
+
 
 #define SH_PROFILING_TIMERS_MAX_EXT_TIMER_COUNT 1024
 
@@ -13,8 +19,15 @@ typedef enum ShProfilingTimerType {
 	SH_PROFILING_TIMER_MAIN_THREAD                 = 0,
 	SH_PROFILING_TIMER_APPLICATION_UPDATE          = 1,
 	SH_PROFILING_TIMER_APPLICATION_MAIN_CMD_BUFFER = 2,
-	SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS = 3,
-	SH_PROFILING_TIMER_EXT                         = 4,
+	SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_1,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_2,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_3,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_4,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_5,
+	SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_6,
+	SH_PROFILING_TIMER_EXT,
 	SH_PROFILING_TIMER_MAX_ENUM
 } ShProfilingTimerType;
 
@@ -40,6 +53,10 @@ typedef struct ShProfilingTimer {
 	double          application_main_renderpass_start_s;
 	double          application_main_renderpass_end_s;
 	double          application_main_renderpass_dtime_ms;
+
+	double          main_cmd_buffer_submissions_start_s[SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
+	double          main_cmd_buffer_submissions_end_s  [SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
+	double          main_cmd_buffer_submissions_dtime_s[SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT];
 
 	uint32_t        ext_count;
 	double          ext_start_s [SH_PROFILING_TIMERS_MAX_EXT_TIMER_COUNT];

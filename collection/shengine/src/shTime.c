@@ -43,6 +43,10 @@ uint8_t shProfilingTimerStart(
 		break;
 	}
 
+	if (type >= SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0 && ((type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0) < SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT)) {
+		p_timer->main_cmd_buffer_submissions_start_s[type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0] = glfwGetTime();
+	}
+
 	return 1;
 }
 
@@ -75,6 +79,12 @@ uint8_t shProfilingTimerEnd(
 		p_timer->application_main_renderpass_end_s    = glfwGetTime();
 		p_timer->application_main_renderpass_dtime_ms = (p_timer->application_main_renderpass_end_s - p_timer->application_main_renderpass_start_s) * 1000.0;
 		break;
+	}
+
+	if (type >= SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0 && ((type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0) < SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT)) {
+		uint32_t submission = type - SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0;
+		p_timer->main_cmd_buffer_submissions_end_s  [submission] = glfwGetTime();
+		p_timer->main_cmd_buffer_submissions_dtime_s[submission] = (p_timer->main_cmd_buffer_submissions_end_s[submission] - p_timer->main_cmd_buffer_submissions_start_s[submission]) * 1000;
 	}
 
 	return 1;

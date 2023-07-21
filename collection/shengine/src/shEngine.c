@@ -6,6 +6,7 @@ extern "C" {
 
 #include <stdlib.h>
 #include <memory.h>
+#include <inttypes.h>
 
 #ifdef _MSC_VER
 #pragma warning (disable: 6011)
@@ -713,6 +714,13 @@ uint8_t shEngineProfilingUpdate(
         smdWriteLine  (&p_timer->export, 1, "APPLICATION_UPDATE______________ms", SMD_VAR_TYPE_DOUBLE64, &p_timer->application_update_dtime_ms);
         smdWriteLine  (&p_timer->export, 1, "APPLICATION_MAIN_CMD_BUFFER_____ms", SMD_VAR_TYPE_DOUBLE64, &p_timer->application_main_cmd_buffer_dtime_ms);
         smdWriteLine  (&p_timer->export, 1, "APPLICATION_MAIN_RENDERPASS_____ms", SMD_VAR_TYPE_DOUBLE64, &p_timer->application_main_renderpass_dtime_ms);
+        for (uint32_t submission = 0; submission < SH_ENGINE_MAX_SWAPCHAIN_IMAGE_COUNT; submission++) {
+            if (p_timer->main_cmd_buffer_submissions_dtime_s[submission] != 0.0) {
+                SmdLine submission_msg = { 0 };
+                snprintf(submission_msg, SMD_VAR_NAME_MAX_SIZE, "MAIN_CMD_BUFFER_SUBMISSION_%" PRIu32 "____ms", submission);
+                smdWriteLine(&p_timer->export, 1, submission_msg, SMD_VAR_TYPE_DOUBLE64, &p_timer->main_cmd_buffer_submissions_dtime_s[submission]);
+            }
+        }
         if (p_timer->ext_count) {
             smdCommentLine(&p_timer->export, "\n\n\tDEVELOPER PROFILING TIMERS\n\n");
         }
@@ -755,6 +763,7 @@ uint8_t shEngineVulkanUpdate(
         1,//wait_for_all
         UINT64_MAX//timeout_ns
     );
+    shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0 + p_core->swapchain_image_idx);
 
     shResetFences(
         p_core->device,//device
@@ -780,7 +789,6 @@ uint8_t shEngineVulkanUpdate(
 
     clear_values[1].depthStencil.depth = 1.0f;
 
-    shProfilingTimerStart(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
     shBeginRenderpass(
         cmd_buffer,//graphics_cmd_buffer
         p_core->renderpass,//renderpass
@@ -793,12 +801,13 @@ uint8_t shEngineVulkanUpdate(
         p_core->framebuffers[p_core->swapchain_image_idx]//framebuffer
     );
 
+    shProfilingTimerStart(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
     if (shApplicationRun(p_engine, p_engine->application_host.p_main_renderpass) == 0) {
         shEngineManageState(p_engine, SH_ENGINE_NOT_READY);
     }
+    shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
 
     shEndRenderpass(cmd_buffer);
-    shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
 
     shEndCommandBuffer(cmd_buffer);
 
@@ -813,6 +822,7 @@ uint8_t shEngineVulkanUpdate(
         1,//signal_semaphore_count
         &p_core->current_graphics_queue_finished_semaphore//p_signal_semaphores
     );
+    shProfilingTimerStart(&p_engine->profiling_timer, SH_PROFILING_TIMER_MAIN_CMD_BUFFER_SUBMISSION_0 + p_core->swapchain_image_idx);
 
     shQueuePresentSwapchainImage(
         p_core->present_queue,//present_queue
