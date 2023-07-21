@@ -36,7 +36,6 @@ int shEditorMain(ShEngine* p_engine) {
 
 	shEngineManageState(p_engine, shSetEngineState(p_engine));
 
-
 	return 0;
 }
 

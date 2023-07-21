@@ -698,6 +698,34 @@ uint8_t shEngineFrameResize(
     return 1;
 }
 
+uint8_t shEngineProfilingUpdate(
+    ShEngine* p_engine
+) {
+    shEngineError(p_engine == NULL, "shEngineProfilingUpdate: invalid engine memory", return 0);
+
+    ShProfilingTimer* p_timer = &p_engine->profiling_timer;
+
+    if (p_engine->time.now - p_timer->main_profiling_tool_last_time >= 1.0f) {
+        p_timer->main_profiling_tool_last_time = p_engine->time.now;
+        
+        smdCommentLine(&p_timer->export, "\n\n\tENGINE PROFILING TIMERS\n\n");
+        smdWriteLine  (&p_timer->export, 1, "MAIN_THREAD_____________________ms", SMD_VAR_TYPE_DOUBLE64, &p_timer->main_thread_dtime_ms);
+        smdWriteLine  (&p_timer->export, 1, "APPLICATION_UPDATE______________ms", SMD_VAR_TYPE_DOUBLE64, &p_timer->application_update_dtime_ms);
+        smdWriteLine  (&p_timer->export, 1, "APPLICATION_MAIN_CMD_BUFFER_____ms", SMD_VAR_TYPE_DOUBLE64, &p_timer->application_main_cmd_buffer_dtime_ms);
+        smdWriteLine  (&p_timer->export, 1, "APPLICATION_MAIN_RENDERPASS_____ms", SMD_VAR_TYPE_DOUBLE64, &p_timer->application_main_renderpass_dtime_ms);
+        if (p_timer->ext_count) {
+            smdCommentLine(&p_timer->export, "\n\n\tDEVELOPER PROFILING TIMERS\n\n");
+        }
+        for (uint32_t ext_idx = 0; ext_idx < p_timer->ext_count; ext_idx++) {
+            smdWriteLine(&p_timer->export, 1, p_timer->ext_names[ext_idx], SMD_VAR_TYPE_DOUBLE64, &p_timer->ext_dtime_ms[ext_idx]);
+        }
+        smdWriteFile(&p_timer->export, "profiling.smd");
+        smdExportHandleRelease(&p_timer->export);
+    }
+
+    return 1;
+}
+
 uint8_t shEngineVulkanUpdate(
     ShEngine* p_engine
 ) {
@@ -738,9 +766,11 @@ uint8_t shEngineVulkanUpdate(
 
     shBeginCommandBuffer(cmd_buffer);
 
+    shProfilingTimerStart(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_CMD_BUFFER);
     if (shApplicationRun(p_engine, p_engine->application_host.p_main_cmd_buffer) == 0) {
         shEngineManageState(p_engine, SH_ENGINE_NOT_READY);
     }
+    shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_CMD_BUFFER);
 
     VkClearValue clear_values[2] = { 0 };
     float* p_colors = clear_values[0].color.float32;
@@ -762,9 +792,11 @@ uint8_t shEngineVulkanUpdate(
         p_core->framebuffers[p_core->swapchain_image_idx]//framebuffer
     );
 
+    shProfilingTimerStart(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
     if (shApplicationRun(p_engine, p_engine->application_host.p_main_renderpass) == 0) {
         shEngineManageState(p_engine, SH_ENGINE_NOT_READY);
     }
+    shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
 
     shEndRenderpass(cmd_buffer);
 
@@ -798,14 +830,16 @@ uint8_t shEngineVulkanUpdate(
 uint8_t shEngineUpdateState(
     ShEngine* p_engine
 ) {
-    ShEngineVkCore*    p_core              = &p_engine->core;
-    ShWindow*          p_window            = &p_engine->window;
-    ShApplicationHost* p_application_host  = &p_engine->application_host;
+    ShEngineVkCore*    p_core             = &p_engine->core;
+    ShWindow*          p_window           = &p_engine->window;
+    ShApplicationHost* p_application_host = &p_engine->application_host;
 
     while (shIsWindowActive(*p_window)) {
         shUpdateWindow(p_engine);
 
         shEngineFrameResize(p_engine);
+
+        shProfilingTimerStart(&p_engine->profiling_timer, SH_PROFILING_TIMER_MAIN_THREAD);
 
         if (
              shIsKeyDown(*p_window,    SH_KEY_LEFT_CONTROL) && 
@@ -815,12 +849,18 @@ uint8_t shEngineUpdateState(
                 break;
         }
 
+
+        shProfilingTimerStart(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_UPDATE);
         if (shApplicationRun(p_engine, p_application_host->p_update) == 0) {
             shEngineManageState(p_engine, SH_ENGINE_NOT_READY);
         }
+        shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_UPDATE);
 
         shEngineVulkanUpdate(p_engine);
-	}
+        shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_MAIN_THREAD);
+
+        shEngineProfilingUpdate(p_engine);
+    }
 
     shEngineRelease      (p_engine);
     shEngineVulkanRelease(p_engine);
@@ -939,11 +979,11 @@ uint8_t shEngineRelease(
         }
     }
 
-    free(p_engine->p_ini_smd          );
-    free(p_engine->p_application_smd  );
-    free(p_engine->p_host_memory_smd  );
-    free(p_engine->p_vulkan_memory_smd);
-    free(p_engine->p_scene_smd        );
+    free(p_engine->p_ini_smd             );
+    free(p_engine->p_application_smd     );
+    free(p_engine->p_host_memory_smd     );
+    free(p_engine->p_vulkan_memory_smd   );
+    free(p_engine->p_scene_smd           );
 
 
 

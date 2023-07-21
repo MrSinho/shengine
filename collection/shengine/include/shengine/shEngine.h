@@ -137,14 +137,16 @@ typedef struct ShEngine {
 						     
     ShWindow                 window;
     ShTime                   time;
-                             
+	
+	ShProfilingTimer         profiling_timer;
+
     SmdFileHandle*           p_ini_smd;
 	SmdFileHandle*           p_application_smd;
 	SmdFileHandle*           p_host_memory_smd;
 	SmdFileHandle*           p_vulkan_memory_smd;
 	SmdFileHandle*           p_serial_smd;
 	SmdFileHandle*           p_scene_smd;
-	                    
+	
 	ShIniProperties          ini_properties;
 	ShApplicationProperties  application_properties;
 	ShHostMemoryProperties   host_memory_properties;
@@ -153,17 +155,14 @@ typedef struct ShEngine {
 	ShSceneProperties        scene_properties;
 
 	uint8_t                  load_shared;
-
     ShApplicationHost        application_host;
 	
 	ShThreadPool             thread_pool;
 
 	ShVkPipelinePool*        p_pipeline_pool;
 	uint32_t                 pipeline_count;
-							 
-                        	 
+							 	 
     void*                    p_ext;
-
 } ShEngine;
 
 #define shAllocateEngine() (ShEngine*)calloc(1, sizeof(ShEngine));
@@ -192,6 +191,10 @@ extern uint8_t shEngineSetupVulkan(
 	ShEngine* p_engine
 );
 
+extern uint8_t shAllocateProfilingHandle(
+	ShEngine* p_engine
+);
+
 extern uint8_t shSetEngineState(
 	ShEngine* p_engine
 );
@@ -205,6 +208,10 @@ extern uint8_t shEngineSafeState(
 );
 
 extern uint8_t shEngineFrameResize(
+	ShEngine* p_engine
+);
+
+extern uint8_t shEngineProfilingUpdate(
 	ShEngine* p_engine
 );
 
