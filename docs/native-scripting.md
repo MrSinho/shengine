@@ -28,7 +28,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_cmd_buffer(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_renderpass(ShEngine* p_engine) {
-    // This function is called once per frame inside the main engine renderpass (you can setup your own of course using direcly the Vulkan API or the shvulkan library).
+    // This function is called once per frame inside the main engine renderpass (you can setup your own of course using direcly the Vulkan API or the shvulkan library, by running on the triangle_update function).
     return 1;
 }
 
@@ -57,12 +57,12 @@ int main() {
         return -1
     );
 
-    p_engine->application_host.p_start           = (ShApplicationFunc*)      &triangle_start;
-    p_engine->application_host.p_update          = (ShApplicationFunc*)      &triangle_update;
-    p_engine->application_host.p_main_cmd_buffer = (ShApplicationFunc*)      &triangle_main_cmd_buffer;
-    p_engine->application_host.p_main_renderpass = (ShApplicationFunc*)      &triangle_main_renderpass;
-    p_engine->application_host.p_frame_resize    = (ShApplicationFunc*)      &triangle_frame_resize;
-    p_engine->application_host.p_close           = (ShApplicationFunc*)      &triangle_close;
+    p_engine->application_host.p_start           = (ShApplicationFunc*) &triangle_start;
+    p_engine->application_host.p_update          = (ShApplicationFunc*) &triangle_update;
+    p_engine->application_host.p_main_cmd_buffer = (ShApplicationFunc*) &triangle_main_cmd_buffer;
+    p_engine->application_host.p_main_renderpass = (ShApplicationFunc*) &triangle_main_renderpass;
+    p_engine->application_host.p_frame_resize    = (ShApplicationFunc*) &triangle_frame_resize;
+    p_engine->application_host.p_close           = (ShApplicationFunc*) &triangle_close;
     p_engine->window.title                       = "triangle";
     
     shEditorMain(p_engine);
