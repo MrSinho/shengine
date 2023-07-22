@@ -9,13 +9,13 @@ extern "C" {
 
 typedef struct ShTransform {
 	float   model[4][4];
-	float   position[3];
-	float   rotation[3];
-	float   euler[3];
-	float   scale[3];
-	float   front[3];
-	float   left[3];
-	float   up[3];
+	float   position[4];
+	float   rotation[4];
+	float   euler[4];
+	float   scale[4];
+	float   front[4];
+	float   left[4];
+	float   up[4];
 	uint8_t active;
 } ShTransform;
 
