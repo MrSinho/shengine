@@ -43,7 +43,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(
 	shPipelineSetMultisampleState (p_engine->core.sample_count, 0.0f, p_pipeline);
 	shPipelineSetViewport         (0, 0, p_engine->window.width, p_engine->window.height, 
 	                               0, 0, p_engine->window.width, p_engine->window.height, p_pipeline);
-	shPipelineColorBlendSettings  (SH_FALSE, SH_FALSE, SH_ENGINE_SUBASS_COLOR_ATTACHMENT_COUNT, p_pipeline);
+	shPipelineColorBlendSettings  (SH_FALSE, SH_FALSE, SH_ENGINE_SUBPASS_COLOR_ATTACHMENT_COUNT, p_pipeline);
 
 	uint32_t shader_size = 0;
 	char* shader_code = (char*)shReadCode(
