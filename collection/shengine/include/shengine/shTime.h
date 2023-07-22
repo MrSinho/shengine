@@ -51,13 +51,13 @@ extern uint8_t shCallOnTick(
 	uint64_t*   p_return_value
 );
 
-#define shOnTick(time, seconds, tick_idx, expression)\
+#define shOnTick(time, seconds_d, tick_idx, expression)\
 	if ((time).ticks_status[tick_idx] == SH_TICK_UNDEFINED) {\
 		(time).ticks_status[tick_idx] = SH_TICK_INITIALIZED;\
 	}\
 	if (\
 		(\
-			((time).now - (time).ticks_last_time[tick_idx]) >= (double)(seconds)\
+			((time).now - (time).ticks_last_time[tick_idx]) >= (double)(seconds_d)\
 		) &&\
 		(tick_idx < SH_TIME_MAX_TICK_COUNT) &&\
 		(\
