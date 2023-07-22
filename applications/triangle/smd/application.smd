@@ -5,6 +5,3 @@ STR256    ^^ 1    !! ShEngine::application_properties.s_main_cmd_buffer       --
 STR256    ^^ 1    !! ShEngine::application_properties.s_main_renderpass       --> triangle_main_renderpass    ***
 STR256    ^^ 1    !! ShEngine::application_properties.s_frame_resize          --> triangle_frame_resize       ***
 STR256    ^^ 1    !! ShEngine::application_properties.s_close                 --> triangle_close              ***
-
-
-UINT32    ^^ 1    !! ShEngine::application_properties.additional_thread_count --> 1    ****
