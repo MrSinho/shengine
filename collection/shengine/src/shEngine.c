@@ -416,11 +416,11 @@ uint8_t shSetEngineState(
         return 0
     );
 
-    shEngineError(p_engine->ini_properties.application_smd_path  [0] == '\0', "shSetEngineState: could not detect application smd path",   return 0);
-    shEngineError(p_engine->ini_properties.host_memory_smd_path  [0] == '\0', "shSetEngineState: could not detect host memory smd path",   return 0);
-    shEngineError(p_engine->ini_properties.vulkan_memory_smd_path[0] == '\0', "shSetEngineState: could not detect vulkan memory smd path", return 0);
-    shEngineError(p_engine->ini_properties.serial_smd_path       [0] == '\0', "shSetEngineState: could not detect serial smd path",        return 0);
-    shEngineError(p_engine->ini_properties.scene_smd_path        [0] == '\0', "shSetEngineState: could not detect scene smd path",         return 0);
+    shEngineError(
+        p_engine->ini_properties.application_smd_path[0] == '\0', 
+        "shSetEngineState: could not detect application smd path",
+        return 0
+    );
 
     shEngineError(
         shGetApplicationProperties(p_engine->ini_properties.application_smd_path, p_engine->p_application_smd, &p_engine->application_properties) == 0,
