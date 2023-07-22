@@ -34,7 +34,7 @@ uint8_t shSceneInit(
 			p_transform->position[1] *= -1.0f;
 			shUpdateTransform(p_transform);
 		}
-
+		
 	}
 
 	return 1;
