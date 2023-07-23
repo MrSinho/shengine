@@ -16,7 +16,6 @@ typedef struct ShTransform {
 	float   front[4];
 	float   left[4];
 	float   up[4];
-	uint8_t active;
 } ShTransform;
 
 
