@@ -17,7 +17,6 @@ extern "C" {
 
 typedef struct ShHostMemoryLinker {
 	uint32_t host_memory_indices[SH_MAX_HOST_MEMORY_COUNT];
-	uint8_t  active;
 } ShHostMemoryLinker;
 
 
