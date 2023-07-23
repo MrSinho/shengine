@@ -783,10 +783,6 @@ uint8_t shEngineVulkanUpdate(
     shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_CMD_BUFFER);
 
     VkClearValue clear_values[2] = { 0 };
-    float* p_colors = clear_values[0].color.float32;
-    p_colors[0] = 0.1f;
-    p_colors[1] = 0.1f;
-    p_colors[2] = 0.1f;
 
     clear_values[1].depthStencil.depth = 1.0f;
 
