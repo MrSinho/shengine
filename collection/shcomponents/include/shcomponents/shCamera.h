@@ -24,7 +24,6 @@ typedef struct ShCamera {
 	float	projection[4][4];
 	float	view[4][4];
 	uint8_t free_flight;
-	uint8_t active;
 } ShCamera;
 
 
