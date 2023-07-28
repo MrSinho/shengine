@@ -385,7 +385,7 @@ uint8_t shEngineSafeState(
         shUpdateWindow(p_engine);
 
         if (
-             shIsKeyDown    (*p_window, SH_KEY_LEFT_ALT) &&
+             shIsKeyDown    (*p_window, SH_KEY_LEFT_CONTROL) &&
              shIsKeyPressed (*p_window, SH_KEY_R)
             ) {
 
@@ -848,7 +848,7 @@ uint8_t shEngineUpdateState(
         shEngineFrameResize(p_engine);
         
         if (
-             shIsKeyDown(*p_window,    SH_KEY_LEFT_ALT) && 
+             shIsKeyDown(*p_window, SH_KEY_LEFT_CONTROL) &&
              shIsKeyPressed(*p_window, SH_KEY_R)
             ) {
                 shEngineManageState(p_engine, shResetEngineState(p_engine));

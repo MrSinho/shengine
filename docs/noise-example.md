@@ -45,7 +45,7 @@ RGB_{raw} = \begin{bmatrix}
 \end{bmatrix}
 $$
 
-Every 2 seconds the parameters values get saved at [`noise-interface.smd`](../applications/noise/smd/noise-interface.smd), which is a text-based interface written in an [`smd`](https://github.com/mrsinho/smd) format, from which you can read the parameters values in runtime. You can export these values to [`noise-saved.smd`](../applications/noise/smd/noise-saved.smd) by pressing `LEFT_CTRL` + `E`. When the application is reloaded (`LEFT_ALT` + `R`) the default parameters written at [`noise-recovery.smd`](../applications/noise/smd/noise-recovery.smd) will be read. You can load the exported values by pressing `LEFT_CTRL` + `R`.
+Every 2 seconds the parameters values get saved at [`noise-interface.smd`](../applications/noise/smd/noise-interface.smd), which is a text-based interface written in an [`smd`](https://github.com/mrsinho/smd) format, from which you can read the parameters values in runtime. You can export these values to [`noise-saved.smd`](../applications/noise/smd/noise-saved.smd) by pressing `LEFT_CTRL` + `E`. When the application is reloaded (`LEFT_CTRL` + `R`) the default parameters written at [`noise-recovery.smd`](../applications/noise/smd/noise-recovery.smd) will be read. You can load the exported values by pressing `LEFT_CTRL` + `L`.
 
 ---
 
