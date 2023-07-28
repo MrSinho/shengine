@@ -170,7 +170,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
         smdExportHandleRelease(&p_noise->export);
     }
 
-    if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_L)) {//load saved data
+    if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_R)) {//load saved data
         smdReadFile("../../smd/noise-saved.smd", &p_noise->saved);
         smdParseMemory(&p_noise->saved);
         smdAccessVarByName(&p_noise->saved, "s", NULL, &p_noise->parameters.s);

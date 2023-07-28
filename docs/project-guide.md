@@ -203,4 +203,4 @@ STR1024    ^^ 1    ShEngine::ini_properties.pipelines_smd_path      --> ../../..
 
 ## Reloading application
 
-If one of your application's functions returned with an error (non `1` value) or if you missed some information on your `.smd` files, the engine will move to a safe mode. To free al resources and reload the engine press `LEFT_CTRL` + `R` to restart the program. You can restart the application at any time by pressing the same key sequence.
+If one of your application's functions returned with an error (non `1` value) or if you missed some information on your `.smd` files, the engine will move to a safe mode. To free al resources and reload the engine press `LEFT_ALT` + `R` to restart the program. You can restart the application at any time by pressing the same key sequence.
