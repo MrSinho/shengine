@@ -66,6 +66,7 @@ extern uint8_t shCallOnTick(
 		)\
 	) {\
 		(time).ticks_status[tick_idx] = SH_TICK_EXECUTING;\
+		expression;\
 		(time).ticks_last_time[tick_idx] = (time).now;\
 		(time).ticks_status[tick_idx] = SH_TICK_FINISHED_EXECUTING;\
 	}\

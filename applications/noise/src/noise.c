@@ -10,18 +10,9 @@ extern "C" {
 #include <stdio.h>
 #include <memory.h>
 
-#define CANVAS_VERTEX_COUNT 6
-
-
-#define NOISE_PARAMETERS_SET             0
-#define NOISE_PARAMETERS_SIZE            sizeof(NoiseParameters)             
-
-#define NOISE_PARAMETERS_SET_LAYOUT      0
-#define NOISE_PARAMETERS_BINDING         0
-                                         
-#define NOISE_PARAMETERS_DESCRIPTOR_POOL 0
-
-#define MEMORY_WRITE_COPY_IDX            0
+#define CANVAS_VERTEX_COUNT   6
+#define NOISE_PARAMETERS_SIZE sizeof(NoiseParameters)             
+#define MEMORY_WRITE_COPY_IDX 0
 
 
 typedef struct NoiseParameters {
@@ -76,14 +67,14 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
     VkCommandBuffer   cmd_buffer            = p_engine->core.graphics_cmd_buffers[0];
 	VkQueue           queue                 = p_engine->core.graphics_queue;
 
-    shPipelinePoolSetDescriptorSetBufferInfos(NOISE_PARAMETERS_SET, swapchain_image_count, dst_buffer, 0, sizeof(NoiseParameters), p_pool);
-    shPipelinePoolCreateDescriptorSetLayoutBinding(NOISE_PARAMETERS_BINDING, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, p_pool);
-    shPipelinePoolCreateDescriptorSetLayout(device, NOISE_PARAMETERS_BINDING, 1, NOISE_PARAMETERS_SET_LAYOUT, p_pool);
-    shPipelinePoolCopyDescriptorSetLayout(NOISE_PARAMETERS_SET_LAYOUT, NOISE_PARAMETERS_SET_LAYOUT, swapchain_image_count, p_pool);
+    shPipelinePoolSetDescriptorBufferInfos(0, swapchain_image_count, dst_buffer, 0, sizeof(NoiseParameters), p_pool);
+    shPipelinePoolCreateDescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, p_pool);
+    shPipelinePoolCreateDescriptorSetLayout(device, 0, 1, 0, p_pool);
+    shPipelinePoolCopyDescriptorSetLayout(0, 0, swapchain_image_count, p_pool);
 
-    shPipelinePoolCreateDescriptorPool(device, NOISE_PARAMETERS_DESCRIPTOR_POOL, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, swapchain_image_count, p_pool);
-    shPipelinePoolAllocateDescriptorSets(device, NOISE_PARAMETERS_BINDING, NOISE_PARAMETERS_DESCRIPTOR_POOL, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, NOISE_PARAMETERS_SET, swapchain_image_count, p_pool);
-    shPipelinePoolUpdateDescriptorSets(device, NOISE_PARAMETERS_SET, swapchain_image_count, p_pool);
+    shPipelinePoolCreateDescriptorPool(device, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, swapchain_image_count, p_pool);
+    shPipelinePoolAllocateDescriptorSetUnits(device, 0, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 0, swapchain_image_count, p_pool);
+    shPipelinePoolUpdateDescriptorSetUnits(device, 0, swapchain_image_count, p_pool);
 
     shPipelineSetVertexInputState (p_pipeline);
 	shPipelineCreateInputAssembly (VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, SH_FALSE, p_pipeline);
@@ -120,7 +111,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 
 
 	shApplicationError(
-		shPipelineCreateLayout(device, NOISE_PARAMETERS_SET, swapchain_image_count, p_engine->p_pipeline_pool, p_pipeline) == 0,
+		shPipelineCreateLayout(device, 0, swapchain_image_count, p_engine->p_pipeline_pool, p_pipeline) == 0,
 		"noise_start: failed creating pipeline layout",
 		return 0
 	);
@@ -231,7 +222,17 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_main_renderpass(ShEngine* p_engine) {
     ShVkPipeline*     p_pipeline          = &p_pool->pipelines[0];
     NoiseApp*         p_noise             = (NoiseApp*)p_engine->p_ext;
 
-    shPipelineBindDescriptorSets(cmd_buffer, swapchain_image_idx, 1, VK_PIPELINE_BIND_POINT_GRAPHICS, 0, NULL, p_pool, p_pipeline);
+    shPipelineBindDescriptorSetUnits(
+        cmd_buffer, 
+        0, 
+        swapchain_image_idx, 
+        1, 
+        VK_PIPELINE_BIND_POINT_GRAPHICS, 
+        0, 
+        NULL, 
+        p_pool, 
+        p_pipeline
+    );
 
 	shBindPipeline(cmd_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, p_pipeline);
 
@@ -280,8 +281,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_close(ShEngine* p_engine) {
     
     shDestroyFences(device, 1, &p_noise->copy_fence);
 
-    shPipelinePoolDestroyDescriptorPools     (device, NOISE_PARAMETERS_DESCRIPTOR_POOL, 1, p_pool);
-    shPipelinePoolDestroyDescriptorSetLayouts(device, NOISE_PARAMETERS_SET_LAYOUT, 1, p_pool);
+    shPipelinePoolDestroyDescriptorPools     (device, 0, 1, p_pool);
+    shPipelinePoolDestroyDescriptorSetLayouts(device, 0, 1, p_pool);
 
 	shPipelineDestroyShaderModules(device, 0, 2, p_pipeline);
 	shPipelineDestroyLayout       (device, p_pipeline);
