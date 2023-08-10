@@ -26,9 +26,12 @@ The engine is frequently being tested on Windows 11, Linux Mint (virtual machine
  - Python 3.9 is required to generate the project files
  - It's better for me to stick with a few and simple examples: `triangle` and `noise` 
  - Dismissed `flappy-circle`, `application-sample`, `serial-sample`
- - UI is on active development, shgui needs to be rewritten with a different approach
+ - UI is on active development, shgui needs to be rewritten with a different approach (cries)
+    - define chars from text file and render quads
  - Texture examples to do
- - Audio to do
+ - Audio manipulation library to do (for gaia-universe-model soundtrack)
+ - ply export (to export gaia-universe-model data to something like blender)
+ - speed up shCopyBuffer, avoid mapping and unmapping memory every time
 
 ---
 
