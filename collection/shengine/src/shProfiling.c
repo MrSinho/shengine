@@ -8,6 +8,9 @@ extern "C" {
 #include "shengine/shEngine.h"
 #include "shengine/shProfiling.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #ifdef _MSC_VER
 #pragma warning (disable: 6385 6386)
 #endif//_MSC_VER
