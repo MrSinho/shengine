@@ -16,7 +16,7 @@ extern "C" {
 uint8_t shSceneInit(
 	ShEngine* p_engine
 ) {
-	shEngineError(p_engine == NULL, "shSceneInit: invalid engine memory",            return 0);
+	shEngineError(p_engine == NULL, "shSceneInit: invalid engine memory", return 0);
 
 	for (uint32_t entity = 0; entity < p_engine->scene_properties.entity_count; entity++) {
 
@@ -161,10 +161,10 @@ uint8_t shEndScene(
 ) {
 	shEngineError(p_engine == NULL, "shEndScene: invalid engine memory", return 0);
 	
-	free(p_engine->scene_properties.p_identities         );
-	free(p_engine->scene_properties.p_cameras            );
-	free(p_engine->scene_properties.p_transforms         );
-	free(p_engine->scene_properties.p_host_memory_linkers);
+	if (p_engine->scene_properties.p_identities          != NULL) { free(p_engine->scene_properties.p_identities         ); }
+	if (p_engine->scene_properties.p_cameras             != NULL) { free(p_engine->scene_properties.p_cameras            ); }
+	if (p_engine->scene_properties.p_transforms          != NULL) { free(p_engine->scene_properties.p_transforms         ); }
+	if (p_engine->scene_properties.p_host_memory_linkers != NULL) { free(p_engine->scene_properties.p_host_memory_linkers); }
 
 	memset(&p_engine->scene_properties, 0, sizeof(ShSceneProperties));
 
