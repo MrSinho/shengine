@@ -93,31 +93,29 @@ def shlauncher_generate_files(info:shInfo) -> None:
 
     app_path:str = os.path.abspath(info.application_path.get())
 
-
-    shlauncher_ui_command(info, "mkdir " + os.path.abspath("applications/" + info.application_name.get()), False)
-
-    shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/smd"), False)
-    shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/shaders"), False)
-    shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/src"), False)
-
-    shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/shaders/bin"), False)
-    shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/shaders/src"), False)
-
-    shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/source-files.txt"), False)
-    shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/libs.txt"), False)
-    shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/ini.smd"), False)
-
-    shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/source-files.txt"), False)
-    shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/application.smd"), False)
-    shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/host-memory.smd"), False)
-    shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/vulkan-memory.smd"), False)
-    shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/scene.smd"), False)
-    shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/serial.smd"), False)
-
-
     #Write files for new projects
     if (info.new_project.get() == True):
         shlauncher_ui_msg(info, "writing files for new project")
+
+        shlauncher_ui_command(info, "mkdir " + os.path.abspath("applications/" + info.application_name.get()), False)
+
+        shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/smd"), False)
+        shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/shaders"), False)
+        shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/src"), False)
+    
+        shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/shaders/bin"), False)
+        shlauncher_ui_command(info, f"mkdir " + os.path.abspath(app_path + "/shaders/src"), False)
+    
+        shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/source-files.txt"), False)
+        shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/libs.txt"), False)
+        shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/ini.smd"), False)
+    
+        shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/source-files.txt"), False)
+        shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/application.smd"), False)
+        shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/host-memory.smd"), False)
+        shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/vulkan-memory.smd"), False)
+        shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/scene.smd"), False)
+        shlauncher_ui_command(info, f"echo. 2>> " + os.path.abspath(app_path + "/smd/serial.smd"), False)
 
         #Write ini
         shlauncher_ui_msg(info, "writing ini file")

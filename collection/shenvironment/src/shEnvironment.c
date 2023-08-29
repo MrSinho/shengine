@@ -25,13 +25,6 @@ uint8_t shGetIniProperties(
     shEnvironmentError(ini_file_path    == NULL, "shGetIniProperties: invalid ini file path",         return 0);
     shEnvironmentError(p_ini_properties == NULL, "shGetIniProperties: invalid ini properties memory", return 0);
 
-    p_ini_smd = smdAllocateFileHandle();
-    shEnvironmentError(
-        p_ini_smd == NULL,
-        "shGetIniProperties: invalid ini smd memory",
-        return 0
-    );
-
     shEnvironmentError(
         smdReadFile(ini_file_path, p_ini_smd) == 0,
         "shGetIniProperties: failed reading ini file",
@@ -91,13 +84,6 @@ uint8_t shGetApplicationProperties(
     shEnvironmentError(application_file_path    == NULL, "shGetApplicationProperties: invalid ini file path",         return 0);
     shEnvironmentError(p_application_properties == NULL, "shGetApplicationProperties: invalid ini properties memory", return 0);
     
-    p_application_smd = smdAllocateFileHandle();
-    shEnvironmentError(
-        p_application_smd == NULL,
-        "shGetApplicationProperties: invalid application smd memory",
-        return 0
-    );
-
     shEnvironmentError(
         smdReadFile(application_file_path, p_application_smd) == 0,
         "shGetApplicationProperties: failed reading application file",
@@ -168,13 +154,6 @@ uint8_t shGetHostMemoryProperties(
 ) {
     shEnvironmentError(host_memory_file_path    == NULL, "shGetHostMemoryProperties: invalid host memory file path",         return 0);
     shEnvironmentError(p_host_memory_properties == NULL, "shGetHostMemoryProperties: invalid host memory properties memory", return 0);
-
-    p_host_memory_smd = smdAllocateFileHandle();
-    shEnvironmentError(
-        p_host_memory_smd == NULL,
-        "shGetHostMemoryProperties: invalid host memory smd memory",
-        return 0
-    );
 
     shEnvironmentError(
         smdReadFile(host_memory_file_path, p_host_memory_smd) == 0,
@@ -264,13 +243,6 @@ uint8_t shGetVulkanMemoryProperties(
 ) {
     shEnvironmentError(vulkan_memory_file_path    == NULL, "shGetVulkanMemoryProperties: invalid vulkan memory file path",         return 0);
     shEnvironmentError(p_vulkan_memory_properties == NULL, "shGetVulkanMemoryProperties: invalid vulkan memory properties memory", return 0);
-
-    p_vulkan_memory_smd = smdAllocateFileHandle();
-    shEnvironmentError(
-        p_vulkan_memory_smd == NULL,
-        "shGetVulkanMemoryProperties: invalid vulkan memory smd memory",
-        return 0
-    );
 
     shEnvironmentError(
         smdReadFile(vulkan_memory_file_path, p_vulkan_memory_smd) == 0,
@@ -433,13 +405,6 @@ uint8_t shGetSerialProperties(
     shEnvironmentError(serial_file_path    == NULL, "shGetSerialProperties: invalid serial file path",         return 0);
     shEnvironmentError(p_serial_properties == NULL, "shGetSerialProperties: invalid serial properties memory", return 0);
 
-    p_serial_smd = smdAllocateFileHandle();
-    shEnvironmentError(
-        p_serial_smd == NULL,
-        "shGetSerialProperties: invalid serial smd memory",
-        return 0
-    );
-
     shEnvironmentError(
         smdReadFile(serial_file_path, p_serial_smd) == 0,
         "shGetSerialProperties: failed reading serial file",
@@ -498,13 +463,6 @@ uint8_t shGetSceneProperties(
 ) {
     shEnvironmentError(scene_file_path    == NULL, "shGetSceneProperties: invalid scene file path",         return 0);
     shEnvironmentError(p_scene_properties == NULL, "shGetSceneProperties: invalid scene properties memory", return 0);
-
-    p_scene_smd = smdAllocateFileHandle();
-    shEnvironmentError(
-        p_scene_smd == NULL,
-        "shGetSceneProperties: invalid scene smd memory",
-        return 0
-    );
 
     shEnvironmentError(
         smdReadFile(scene_file_path, p_scene_smd) == 0,

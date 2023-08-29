@@ -56,12 +56,12 @@ typedef struct ShEngine {
 	
 	ShProfilingTimer         profiling_timer;
 
-    SmdFileHandle*           p_ini_smd;
-	SmdFileHandle*           p_application_smd;
-	SmdFileHandle*           p_host_memory_smd;
-	SmdFileHandle*           p_vulkan_memory_smd;
-	SmdFileHandle*           p_serial_smd;
-	SmdFileHandle*           p_scene_smd;
+    SmdFileHandle            ini_smd;
+	SmdFileHandle            application_smd;
+	SmdFileHandle            host_memory_smd;
+	SmdFileHandle            vulkan_memory_smd;
+	SmdFileHandle            serial_smd;
+	SmdFileHandle            scene_smd;
 	
 	ShIniProperties          ini_properties;
 	ShApplicationProperties  application_properties;
@@ -75,8 +75,7 @@ typedef struct ShEngine {
 	
 	ShThreadPool             thread_pool;
 
-	ShVkPipelinePool*        p_pipeline_pool;
-	uint32_t                 pipeline_count;
+	ShVkPipelinePool         pipeline_pool;
 							 	 
     void*                    p_ext;
 } ShEngine;

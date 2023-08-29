@@ -24,14 +24,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(
 
 	VkDevice device = p_engine->core.device;
 
-    p_engine->p_pipeline_pool = shAllocatePipelinePool();
-	shApplicationError(
-		p_engine->p_pipeline_pool == NULL, 
-		"triangle_start: invalid pipeline pool memory", 
-		return 0
-	);
-
-	ShVkPipelinePool* p_pool     = p_engine->p_pipeline_pool; 
+	ShVkPipelinePool* p_pool     = &p_engine->pipeline_pool; 
 	ShVkPipeline*     p_pipeline = &p_pool->pipelines[0];
 
 	shPipelineSetVertexBinding    (PER_VERTEX_BINDING, VERTEX_STRIDE, VK_VERTEX_INPUT_RATE_VERTEX, p_pipeline);
@@ -67,7 +60,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(
 	free(shader_code);
 
 	shApplicationError(
-		shPipelineCreateLayout(device, 0, 0, p_engine->p_pipeline_pool, p_pipeline) == 0,
+		shPipelineCreateLayout(device, 0, 0, p_pool, p_pipeline) == 0,
 		"triangle_start: failed creating pipeline layout",
 		return 0
 	);
@@ -129,11 +122,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_cmd_buffer(ShEngine* p_engine) {
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_renderpass(ShEngine* p_engine) {
-	shApplicationError(p_engine                  == NULL, "triangle_main_renderpass: invalid engine memory", return 0);
-	shApplicationError(p_engine->p_pipeline_pool == NULL, "triangle_main_renderpass: invalid pipeline pool memory", return 0);
+	shApplicationError(p_engine == NULL, "triangle_main_renderpass: invalid engine memory", return 0);
 
 	VkCommandBuffer cmd_buffer   =  p_engine->core.graphics_cmd_buffers[p_engine->core.swapchain_image_idx];
-	ShVkPipeline*   p_pipeline   = &p_engine->p_pipeline_pool->pipelines[0];
+	ShVkPipeline*   p_pipeline   = &p_engine->pipeline_pool.pipelines[0];
 
 	VkBuffer       vertex_buffer = p_engine->vulkan_memory_properties.buffers[1];
 	VkDeviceSize   vertex_offset = 0;
@@ -149,9 +141,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_main_renderpass(ShEngine* p_engine) {
 
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_frame_resize(ShEngine* p_engine) {
-	shApplicationError(p_engine->p_pipeline_pool == NULL, "triangle_frame_resize: invalid pipeline pool memory", return 0);
+	shApplicationError(p_engine == NULL, "triangle_main_renderpass: invalid engine memory", return 0);
 
-	ShVkPipeline* p_pipeline = &p_engine->p_pipeline_pool->pipelines[0];
+	ShVkPipeline* p_pipeline = &p_engine->pipeline_pool.pipelines[0];
 	VkDevice      device     =  p_engine->core.device;
 
 	shDestroyPipeline(device, p_pipeline->pipeline);
@@ -178,8 +170,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_close(ShEngine* p_engine) {
 	VkDeviceMemory    staging_memory  = p_engine->vulkan_memory_properties.buffers_memory[0];
 	VkDeviceMemory    dst_memory      = p_engine->vulkan_memory_properties.buffers_memory[1];
 
-	ShVkPipelinePool* p_pipeline_pool =  p_engine->p_pipeline_pool;
-	ShVkPipeline*     p_pipeline      = &p_engine->p_pipeline_pool->pipelines[0];
+	ShVkPipelinePool* p_pool          = &p_engine->pipeline_pool;
+	ShVkPipeline*     p_pipeline      = &p_pool->pipelines[0];
 
 	shEngineError(p_pipeline == NULL, "triangle_close: invalid pipeline memory", return 0);
 
@@ -190,8 +182,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_close(ShEngine* p_engine) {
 	shDestroyPipeline             (device, p_pipeline->pipeline);
 	
 	shClearPipeline(p_pipeline);
-
-	shFreePipelinePool(p_pipeline_pool);
 
     return 1;
 }

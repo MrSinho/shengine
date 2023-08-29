@@ -52,10 +52,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
     smdFileHandleRelease(&p_noise->recovery);
     
 
-    p_engine->p_pipeline_pool = shAllocatePipelinePool();
-    shApplicationError(p_engine->p_pipeline_pool == NULL, "invalid pipeline pool memory", return 0);
-    
-    ShVkPipelinePool* p_pool                = p_engine->p_pipeline_pool; 
+    ShVkPipelinePool* p_pool                = &p_engine->pipeline_pool; 
 	ShVkPipeline*     p_pipeline            = &p_pool->pipelines[0];
     uint32_t          swapchain_image_count = p_engine->core.swapchain_image_count;
 
@@ -111,7 +108,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 
 
 	shApplicationError(
-		shPipelineCreateLayout(device, 0, swapchain_image_count, p_engine->p_pipeline_pool, p_pipeline) == 0,
+		shPipelineCreateLayout(device, 0, swapchain_image_count, p_pool, p_pipeline) == 0,
 		"noise_start: failed creating pipeline layout",
 		return 0
 	);
@@ -133,7 +130,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_t entity) {
     shApplicationError(p_engine                  == NULL, "noise_update: invalid engine memory",           return 0);
     shApplicationError(p_engine->p_ext           == NULL, "noise_update: invalid engine extension memory", return 0);
-    shApplicationError(p_engine->p_pipeline_pool == NULL, "noise_update: invalid pipeline pool memory",    return 0);
 
     NoiseApp*         p_noise = (NoiseApp*)p_engine->p_ext;
     float             dtime   = (float)p_engine->time.delta_time;
@@ -214,11 +210,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_main_cmd_buffer(ShEngine* p_engine) {
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_main_renderpass(ShEngine* p_engine) {                              
     shApplicationError(p_engine                  == NULL, "noise_main_renderpass: invalid engine memory",           return 0);
     shApplicationError(p_engine->p_ext           == NULL, "noise_main_renderpass: invalid engine extension memory", return 0);
-    shApplicationError(p_engine->p_pipeline_pool == NULL, "noise_main_renderpass: invalid pipeline pool memory",    return 0);
 
     uint32_t          swapchain_image_idx = p_engine->core.swapchain_image_idx;
     VkCommandBuffer   cmd_buffer          = p_engine->core.graphics_cmd_buffers[swapchain_image_idx];
-    ShVkPipelinePool* p_pool              = p_engine->p_pipeline_pool; 
+    ShVkPipelinePool* p_pool              = &p_engine->pipeline_pool; 
     ShVkPipeline*     p_pipeline          = &p_pool->pipelines[0];
     NoiseApp*         p_noise             = (NoiseApp*)p_engine->p_ext;
 
@@ -244,9 +239,8 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_main_renderpass(ShEngine* p_engine) {
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_frame_resize(ShEngine* p_engine) {
     shApplicationError(p_engine                  == NULL, "noise_frame_resize: invalid engine memory", return 0);
-    shApplicationError(p_engine->p_pipeline_pool == NULL, "noise_frame_resize: invalid pipeline pool memory", return 0);
 
-	ShVkPipeline* p_pipeline = &p_engine->p_pipeline_pool->pipelines[0];
+	ShVkPipeline* p_pipeline = &p_engine->pipeline_pool.pipelines[0];
 	VkDevice      device     =  p_engine->core.device;
 
 	shDestroyPipeline(device, p_pipeline->pipeline);
@@ -268,11 +262,10 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_frame_resize(ShEngine* p_engine) {
 uint8_t SH_ENGINE_EXPORT_FUNCTION noise_close(ShEngine* p_engine) {
     shApplicationError(p_engine                  == NULL, "noise_close: invalid engine memory",           return 0);
     shApplicationError(p_engine->p_ext           == NULL, "noise_close: invalid engine extension memory", return 0);
-    shApplicationError(p_engine->p_pipeline_pool == NULL, "noise_close: invalid pipeline pool memory", return 0);
 
     
     VkDevice          device      =  p_engine->core.device;
-    ShVkPipelinePool* p_pool      =  p_engine->p_pipeline_pool;
+    ShVkPipelinePool* p_pool      = &p_engine->pipeline_pool;
     ShVkPipeline*     p_pipeline  = &p_pool->pipelines[0];
     NoiseApp*         p_noise     = (NoiseApp*)p_engine->p_ext;
 
@@ -290,8 +283,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_close(ShEngine* p_engine) {
 	
     
 	shClearPipeline(p_pipeline);
-
-    shFreePipelinePool(p_pool);
 
 
     if (p_engine->p_ext != NULL) {

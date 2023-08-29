@@ -411,7 +411,7 @@ uint8_t shSetEngineState(
     shEngineError(p_engine == NULL, "shSetEngineState: invalid engine memory", return 0);
 
     shEngineError(
-        shGetIniProperties("ini.smd", p_engine->p_ini_smd, &p_engine->ini_properties) == 0,
+        shGetIniProperties("ini.smd", &p_engine->ini_smd, &p_engine->ini_properties) == 0,
         "shSetEngineState: failed getting ini properties",
         return 0
     );
@@ -423,14 +423,14 @@ uint8_t shSetEngineState(
     );
 
     shEngineError(
-        shGetApplicationProperties(p_engine->ini_properties.application_smd_path, p_engine->p_application_smd, &p_engine->application_properties) == 0,
+        shGetApplicationProperties(p_engine->ini_properties.application_smd_path, &p_engine->application_smd, &p_engine->application_properties) == 0,
         "shSetEngineState: failed getting application properties",
         return 0
     );
 
     if (p_engine->ini_properties.host_memory_smd_path[0] != '\0') {
         shEngineError(
-            shGetHostMemoryProperties(p_engine->ini_properties.host_memory_smd_path, p_engine->p_host_memory_smd, &p_engine->host_memory_properties) == 0,
+            shGetHostMemoryProperties(p_engine->ini_properties.host_memory_smd_path, &p_engine->host_memory_smd, &p_engine->host_memory_properties) == 0,
             "shSetEngineState: failed getting host memory properties",
             return 0
         );
@@ -438,7 +438,7 @@ uint8_t shSetEngineState(
 
     if (p_engine->ini_properties.vulkan_memory_smd_path[0] != '\0') {
         shEngineError(
-            shGetVulkanMemoryProperties(p_engine->ini_properties.vulkan_memory_smd_path, p_engine->p_vulkan_memory_smd, &p_engine->vulkan_memory_properties) == 0,
+            shGetVulkanMemoryProperties(p_engine->ini_properties.vulkan_memory_smd_path, &p_engine->vulkan_memory_smd, &p_engine->vulkan_memory_properties) == 0,
             "shSetEngineState: failed loading vulkan memory",
             return 0
         );
@@ -446,7 +446,7 @@ uint8_t shSetEngineState(
     
     if (p_engine->ini_properties.serial_smd_path[0] != '\0') {
         shEngineError(
-            shGetSerialProperties(p_engine->ini_properties.serial_smd_path, p_engine->p_serial_smd, &p_engine->serial_properties) == 0,
+            shGetSerialProperties(p_engine->ini_properties.serial_smd_path, &p_engine->serial_smd, &p_engine->serial_properties) == 0,
             "shSetEngineState: failed getting serial properties",
             return 0
         );
@@ -454,7 +454,7 @@ uint8_t shSetEngineState(
 
     if (p_engine->ini_properties.scene_smd_path[0] != '\0') {
         shEngineError(
-            shGetSceneProperties(p_engine->ini_properties.scene_smd_path, p_engine->p_scene_smd, &p_engine->scene_properties) == 0,
+            shGetSceneProperties(p_engine->ini_properties.scene_smd_path, &p_engine->scene_smd, &p_engine->scene_properties) == 0,
             "shSetEngineState: failed getting scene properties",
             return 0
         );
@@ -985,11 +985,11 @@ uint8_t shEngineRelease(
         }
     }
 
-    free(p_engine->p_ini_smd             );
-    free(p_engine->p_application_smd     );
-    free(p_engine->p_host_memory_smd     );
-    free(p_engine->p_vulkan_memory_smd   );
-    free(p_engine->p_scene_smd           );
+    memset(&p_engine->ini_smd,           0, sizeof(SmdFileHandle));
+    memset(&p_engine->application_smd,   0, sizeof(SmdFileHandle));
+    memset(&p_engine->host_memory_smd,   0, sizeof(SmdFileHandle));
+    memset(&p_engine->vulkan_memory_smd, 0, sizeof(SmdFileHandle));
+    memset(&p_engine->scene_smd,         0, sizeof(SmdFileHandle));
 
 
 
@@ -1001,10 +1001,8 @@ uint8_t shEngineRelease(
 
 
     //memset(&p_engine->application_host, 0, sizeof(ShApplicationHandle));//we need to keep the functions information
-    memset(&p_engine->thread_pool, 0, sizeof(ShThreadPool));
-
-    //user should release pipeline pool
-    memset(&p_engine->pipeline_count, 0, sizeof(uint32_t));
+    memset(&p_engine->thread_pool,    0, sizeof(ShThreadPool));
+    memset(&p_engine->pipeline_pool,  0, sizeof(ShVkPipelinePool));
 
     
     shEndScene(p_engine);
