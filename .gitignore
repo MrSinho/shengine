@@ -53,6 +53,8 @@ dkms.conf
 
 bin/*
 build/*
+docs/html
+docs/latex
 
 applications/triangle/windows/*
 applications/noise/windows/*
