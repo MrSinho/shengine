@@ -2,7 +2,7 @@
  * @file shWindow.h
  * @brief Handling window-related functionalities in the `shengine` framework.
  *
- * The shwindow.h file contains structures and functions related to handling windows in the `shengine` framework.
+ * The shWindow.h file contains structures and functions related to handling windows in the `shengine` framework.
  */
 
 #ifndef SH_WINDOW_H
