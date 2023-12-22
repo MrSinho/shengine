@@ -21,7 +21,7 @@ void shGetCursorPosition(ShWindow* p_window) {
 	
 	p_window->input.d_cursor_pos_x = old_x - p_window->input.cursor_pos_x;
 	p_window->input.d_cursor_pos_y = old_y - p_window->input.cursor_pos_y;
-}		
+}
 
 
 

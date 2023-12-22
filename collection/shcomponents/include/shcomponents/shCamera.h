@@ -1,3 +1,10 @@
+/**
+ * @file
+ * @brief Defines the ShCamera structure and related constants and functions.
+ *
+ * The ShCamera structure represents a camera component for an entity, along with its properties and transformation matrices.
+ */
+
 #ifndef SH_CAMERA_H
 #define SH_CAMERA_H
 
@@ -5,25 +12,23 @@
 extern "C" {
 #endif//__cplusplus
 
-
 #include <stdint.h>
 
 
 
-#define SH_IDENTITY_STR256_LENGTH 32
-#define SH_CAMERA_FLAG_COUNT      2
-
-
-
+/**
+ * @struct ShCamera
+ * @brief Represents a camera component in scene.
+ */
 typedef struct ShCamera {
-	float	fov;
-	float	nc;
-	float	fc;
-	float 	speed;
-	float 	mouse_speed;
-	float	projection[4][4];
-	float	view[4][4];
-	uint8_t free_flight;
+    float   fov;                  /**< Field of view. */
+    float   nc;                   /**< Near clipping plane. */
+    float   fc;                   /**< Far clipping plane. */
+    float   speed;                /**< Camera movement speed. */
+    float   mouse_speed;          /**< Mouse sensitivity for camera rotation. */
+    float   projection[4][4];     /**< Projection matrix. */
+    float   view[4][4];           /**< View matrix. */
+    uint8_t free_flight;          /**< Flag indicating free flight mode. */
 } ShCamera;
 
 

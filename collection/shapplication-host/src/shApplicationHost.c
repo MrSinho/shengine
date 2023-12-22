@@ -4,7 +4,7 @@ extern "C" {
 
 
 
-#include <shapplicationhost/shApplicationHost.h>
+#include <shapplication-host/shApplicationHost.h>
 #include <string.h>
 #include <stdio.h>
 

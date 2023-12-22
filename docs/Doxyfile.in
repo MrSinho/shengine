@@ -1,0 +1,35 @@
+PROJECT_NAME           = "shengine"
+PROJECT_BRIEF          = A cross-platform Vulkan engine written completely in C.
+PROJECT_NUMBER         = ${SH_ENGINE_VERSION}
+PROJECT_LOGO           = 
+
+PROJECT_BRIEF          = "shengine by mrsinho"
+USE_MDFILE_AS_MAINPAGE = ${SH_ENGINE_ROOT_DIR}/README.md
+
+OUTPUT_DIRECTORY       = docs
+INPUT                  = ${SH_ENGINE_ROOT_DIR}/collection/shapplication-host ${SH_ENGINE_ROOT_DIR}/collection/shcomponents ${SH_ENGINE_ROOT_DIR}/collection/sheditor ${SH_ENGINE_ROOT_DIR}/collection/shengine ${SH_ENGINE_ROOT_DIR}/collection/shenvironment ${SH_ENGINE_ROOT_DIR}/collection/shterminal ${SH_ENGINE_ROOT_DIR}/README.md ${SH_ENGINE_ROOT_DIR}/docs/src/project-guide.md ${SH_ENGINE_ROOT_DIR}/docs/src/native-scripting.md ${SH_ENGINE_ROOT_DIR}/docs/src/noise-example.md ${SH_ENGINE_ROOT_DIR}/.shci/linux/log.md ${SH_ENGINE_ROOT_DIR}/.shci/windows/log.md 
+RECURSIVE              = YES
+EXTRACT_ALL            = YES
+HAVE_DOT               = NO
+HIDE_UNDOC_MEMBERS     = YES
+GENERATE_HTML          = YES
+GENERATE_XML           = YES
+GENERATE_LATEX         = YES
+USE_MATHJAX            = YES
+GENERATE_TREEVIEW      = YES
+DISABLE_INDEX          = NO
+FULL_SIDEBAR           = NO
+OPTIMIZE_OUTPUT_FOR_C  = YES
+STRIP_CODE_COMMENTS    = NO
+
+IMAGE_PATH             = ${SH_ENGINE_ROOT_DIR}/docs/media ${SH_ENGINE_ROOT_DIR}/.shci/linux ${SH_ENGINE_ROOT_DIR}/.shci/windows
+
+HTML_COLORSTYLE        = LIGHT
+HTML_EXTRA_STYLESHEET  = ${SH_ENGINE_ROOT_DIR}/docs/doxygen-awesome-css/doxygen-awesome.css ${SH_ENGINE_ROOT_DIR}/docs/custom.css
+HTML_EXTRA_FILES       = ${SH_ENGINE_ROOT_DIR}/docs/doxygen-awesome-css/doxygen-awesome-fragment-copy-button.js ${SH_ENGINE_ROOT_DIR}/docs/doxygen-awesome-css/doxygen-awesome-interactive-toc.js ${SH_ENGINE_ROOT_DIR}/docs/doxygen-awesome-css/doxygen-awesome-paragraph-link.js ${SH_ENGINE_ROOT_DIR}/docs/doxygen-awesome-css/doxygen-awesome-tabs.js ${SH_ENGINE_ROOT_DIR}/docs/doxygen-awesome-css/doxygen-awesome-darkmode-toggle.js
+
+HTML_HEADER            = ${SH_ENGINE_ROOT_DIR}/docs/header.html
+
+HTML_COLORSTYLE_HUE    = 209
+HTML_COLORSTYLE_SAT    = 255
+HTML_COLORSTYLE_GAMMA  = 113

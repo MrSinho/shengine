@@ -374,7 +374,7 @@ uint8_t shEngineSetupVulkan(
 uint8_t shEngineSafeState(
     ShEngine* p_engine
 ) {
-    shEngineWarning(1, "running safe window");
+    shEngineError(1, "running safe window", ;);
 
     ShEngineVkCore* p_core      = &p_engine->core;
     ShWindow*       p_window    = &p_engine->window;

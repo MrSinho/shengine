@@ -23,12 +23,12 @@ uint8_t shSceneInit(
 		ShIdentity*         p_identity           = &p_engine->scene_properties.p_identities          [entity];
 		ShCamera*           p_camera             = &p_engine->scene_properties.p_cameras             [entity];
 		ShTransform*        p_transform          = &p_engine->scene_properties.p_transforms          [entity];
-		ShHostMemoryLinker* p_host_memory_linker = &p_engine->scene_properties.p_host_memory_linkers [entity];
+		//ShHostMemoryLinker* p_host_memory_linker = &p_engine->scene_properties.p_host_memory_linkers [entity];
 									       
 		shEngineError(p_identity           == NULL, "shSceneInit: invalid identity memory",           return 0);
 		shEngineError(p_camera             == NULL, "shSceneInit: invalid camera memory",             return 0);
 		shEngineError(p_transform          == NULL, "shSceneInit: invalid transform memory",          return 0);
-		shEngineError(p_host_memory_linker == NULL, "shSceneInit: invalid host memory linker memory", return 0);
+		//shEngineError(p_host_memory_linker == NULL, "shSceneInit: invalid host memory linker memory", return 0);
 
 		p_transform->position[1] *= -1.0f;
 		shUpdateTransform(p_transform);
@@ -140,12 +140,12 @@ uint8_t shSceneUpdate(
 		ShIdentity*         p_identity           = &p_engine->scene_properties.p_identities          [entity];
 		ShCamera*           p_camera             = &p_engine->scene_properties.p_cameras             [entity];
 		ShTransform*        p_transform          = &p_engine->scene_properties.p_transforms          [entity];
-		ShHostMemoryLinker* p_host_memory_linker = &p_engine->scene_properties.p_host_memory_linkers [entity];
+		//ShHostMemoryLinker* p_host_memory_linker = &p_engine->scene_properties.p_host_memory_linkers [entity];
 									       
 		shEngineError(p_identity           == NULL, "shSceneInit: invalid identity memory",           return 0);
 		shEngineError(p_camera             == NULL, "shSceneInit: invalid camera memory",             return 0);
 		shEngineError(p_transform          == NULL, "shSceneInit: invalid transform memory",          return 0);
-		shEngineError(p_host_memory_linker == NULL, "shSceneInit: invalid host memory linker memory", return 0);
+		//shEngineError(p_host_memory_linker == NULL, "shSceneInit: invalid host memory linker memory", return 0);
 
 		shUpdateCamera(p_engine, p_transform, p_camera);
 
@@ -164,7 +164,7 @@ uint8_t shEndScene(
 	if (p_engine->scene_properties.p_identities          != NULL) { free(p_engine->scene_properties.p_identities         ); }
 	if (p_engine->scene_properties.p_cameras             != NULL) { free(p_engine->scene_properties.p_cameras            ); }
 	if (p_engine->scene_properties.p_transforms          != NULL) { free(p_engine->scene_properties.p_transforms         ); }
-	if (p_engine->scene_properties.p_host_memory_linkers != NULL) { free(p_engine->scene_properties.p_host_memory_linkers); }
+	//if (p_engine->scene_properties.p_host_memory_linkers != NULL) { free(p_engine->scene_properties.p_host_memory_linkers); }
 
 	memset(&p_engine->scene_properties, 0, sizeof(ShSceneProperties));
 

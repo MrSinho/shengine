@@ -490,7 +490,7 @@ uint8_t shGetSceneProperties(
     p_scene_properties->p_identities          = calloc(p_scene_properties->entity_count, sizeof(ShIdentity));
     p_scene_properties->p_cameras             = calloc(p_scene_properties->entity_count, sizeof(ShCamera));
     p_scene_properties->p_transforms          = calloc(p_scene_properties->entity_count, sizeof(ShTransform));
-    p_scene_properties->p_host_memory_linkers = calloc(p_scene_properties->entity_count, sizeof(ShHostMemoryLinker));
+    //p_scene_properties->p_host_memory_linkers = calloc(p_scene_properties->entity_count, sizeof(ShHostMemoryLinker));
 
     shEnvironmentError(
         p_scene_properties->p_identities == NULL,
@@ -510,11 +510,11 @@ uint8_t shGetSceneProperties(
         return 0
     );
 
-    shEnvironmentError(
-        p_scene_properties->p_host_memory_linkers == NULL,
-        "shGetSceneProperties: invalid host memory linkers memory",
-        return 0
-    );
+    //shEnvironmentError(
+    //    p_scene_properties->p_host_memory_linkers == NULL,
+    //    "shGetSceneProperties: invalid host memory linkers memory",
+    //    return 0
+    //);
 
     
     for (uint32_t entity = 0; entity < p_scene_properties->entity_count; entity++) {
@@ -663,17 +663,17 @@ uint8_t shGetSceneProperties(
         //
         //HOST MEMORY LINKER
         //
-        char s_host_memory_linker_indices[SMD_VAR_NAME_MAX_SIZE] = "ShEngine::scene_properties.host_memory_linkers[";
-
-        strcat(s_host_memory_linker_indices, s_entity);
-
-        strcat(s_host_memory_linker_indices, "].host_memory_indices");
-
-        shEnvironmentError(
-            smdAccessVarByName(p_scene_smd, s_host_memory_linker_indices, NULL, p_scene_properties->p_host_memory_linkers[entity].host_memory_indices) == 0,
-            "shGetSceneProperties: failed accessing ShEngine::scene_properties.host_memory_linkers[x].host_memory_indices",
-            return 0
-        );
+        //char s_host_memory_linker_indices[SMD_VAR_NAME_MAX_SIZE] = "ShEngine::scene_properties.host_memory_linkers[";
+        //
+        //strcat(s_host_memory_linker_indices, s_entity);
+        //
+        //strcat(s_host_memory_linker_indices, "].host_memory_indices");
+        //
+        //shEnvironmentError(
+        //    smdAccessVarByName(p_scene_smd, s_host_memory_linker_indices, NULL, p_scene_properties->p_host_memory_linkers[entity].host_memory_indices) == 0,
+        //    "shGetSceneProperties: failed accessing ShEngine::scene_properties.host_memory_linkers[x].host_memory_indices",
+        //    return 0
+        //);
 
     }
     

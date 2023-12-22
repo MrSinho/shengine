@@ -55,6 +55,7 @@ bin/*
 build/*
 docs/html
 docs/latex
+docs/xml
 
 applications/triangle/windows/*
 applications/noise/windows/*

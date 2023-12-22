@@ -8,8 +8,6 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <shengine/shInput.h>
-
 
 
 uint8_t shWindowSetup(

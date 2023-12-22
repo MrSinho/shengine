@@ -5,16 +5,25 @@
 extern "C" {
 #endif//__cplusplus
 
+
+
+#define GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
+
+
 typedef struct ShWindow ShWindow;
 
 extern void shGetCursorPosition(ShWindow* p_window);
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+
 
 #define SH_RELEASE	GLFW_RELEASE
 #define SH_PRESS	GLFW_PRESS  
 #define SH_REPEAT	GLFW_REPEAT 
+
+
 
 /* Printable keys */
 #define SH_KEY_SPACE              32
@@ -206,6 +215,8 @@ typedef int8_t shMouseEvents[SH_MOUSE_BUTTON_8 + 1];
 #define SH_GAMEPAD_AXIS_LEFT_TRIGGER  4
 #define SH_GAMEPAD_AXIS_RIGHT_TRIGGER 5
 #define SH_GAMEPAD_AXIS_LAST          SH_GAMEPAD_AXIS_RIGHT_TRIGGER
+
+
 
 #ifdef __cplusplus
 }
