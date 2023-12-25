@@ -4,20 +4,22 @@
 
 ![](../media/noise-3.png)
 
+## Build
+
 Using Windows (run as admin):
 ```bash
 python export-application.py name=noise target=EXECUTABLE path=applications/noise
-cd applications/noise/windows/build
+cd applications/noise/build/windows
 cmake --build .
-cp ../../ini.smd ../bin/ini.smd
+cp ../../ini.smd ../../bin/windows/ini.smd
 ```
 
 Using Linux:
 ```bash
 sudo python3.9 export-application.py name=noise target=EXECUTABLE path=applications/noise
-cd applications/noise/linux/build
+cd applications/noise/build/linux
 sudo cmake --build .
-sudo cp ../../ini.smd ../bin/ini.smd
+cp ../../ini.smd ../../bin/linux/ini.smd
 ```
 
 ## Application tour
@@ -29,6 +31,8 @@ To change the values of the parameters `S` `A` and `B`:
 | `S`         |       _W_      |       _Q_      |
 | `A`         |       _S_      |       _A_      |
 | `B`         |       _X_      |       _Z_      |
+
+To see the parameters values, or to enable/disable the UI, press `H`. 
 
 Fragment shader algorithm:
 
@@ -43,9 +47,9 @@ RGB_{raw} = \begin{bmatrix}
 \end{bmatrix}
 \f$
 
-Every 2 seconds the parameters values get saved at `applications/noise/smd/noise-interface.smd`, which is a text-based interface written in an [`smd`](https://github.com/mrsinho/smd) format, from which you can read the parameters values in runtime. You can export these values to `applications/noise/smd/noise-saved.smd` by pressing `LEFT_CTRL` + `E`. When the application is reloaded (`LEFT_CTRL` + `R`) the default parameters written at `applications/noise/smd/noise-recovery.smd` will be read. You can load the exported values by pressing `LEFT_CTRL` + `L`.
+You can export these values to `applications/noise/smd/noise-saved.smd` by pressing `LEFT_CTRL` + `E`. When the application is reloaded (`LEFT_CTRL` + `R`) the default parameters written at `applications/noise/smd/noise-recovery.smd` will be read. You can load the exported values by pressing `LEFT_CTRL` + `L`.
 
----
+## Example parameters
 
 \f$  s = {1 \over 2} \f$  
 
