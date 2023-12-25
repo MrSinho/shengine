@@ -102,16 +102,24 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_start(
 	shWaitForFences(device, 1, &copy_fence, 1, UINT64_MAX);
 
 	shDestroyFences(device, 1, &copy_fence);
-
-	shSleep(1000);
-	shOnTick(
-		p_engine->time, 1, 0, printf("Waiting...\n")
-	)
 		
+	shEngineGuiSetup(p_engine);
+
     return 1;
 }
 
 uint8_t SH_ENGINE_EXPORT_FUNCTION triangle_update(ShEngine* p_engine) {
+
+	ShGui* p_gui = &p_engine->gui;
+
+	shGuiText(
+		p_gui,
+		(shguivec2){ 0.0f, -20.0f },
+		SH_GUI_COLOR_WHITE,
+		20.0f,
+		"@github.com/mrsinho",
+		SH_GUI_CENTER_WIDTH | SH_GUI_EDGE_TOP
+	);
 
 	return 1;
 }
