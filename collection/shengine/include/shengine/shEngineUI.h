@@ -11,7 +11,15 @@
 extern "C" {
 #endif//__cplusplus
 
-#include "shengine/shEngine.h"
+
+
+#include <shgui/shgui.h>
+
+
+
+typedef struct ShEngine ShEngine;
+
+
 
 /**
  * @brief Sets up the graphical user interface for the `shengine` module.
@@ -22,6 +30,18 @@ extern "C" {
 extern uint8_t shEngineGuiSetup(
     ShEngine* p_engine
 );
+
+/**
+ * @brief Releases the graphical user interface and frees gui-related memory.
+ *
+ * @param p_engine Valid pointer to a @ref ShEngine structure.
+ * @return Integer status code indicating the success or failure of the operation.
+ */
+extern uint8_t shEngineGuiRelease(
+    ShEngine* p_engine
+);
+
+
 
 #ifdef __cplusplus
 }

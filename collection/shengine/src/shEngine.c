@@ -592,6 +592,17 @@ uint8_t shEngineFrameResize(
         return 1;
     }
 
+    if (p_engine->gui.core.swapchain_image_count != 0) {//is initialized
+       
+        shGuiResizeInterface(
+            &p_engine->gui,
+            p_window->width,
+            p_window->height,
+            _width,
+            _height
+        );
+    }
+    
     p_window->width  = _width;
     p_window->height = _height;
 
@@ -690,6 +701,27 @@ uint8_t shEngineFrameResize(
         shCreateFramebuffer(p_core->device, p_core->renderpass, SH_ENGINE_RENDERPASS_ATTACHMENT_COUNT, image_views, _width, _height, 1, &p_core->framebuffers[i]);
     }
     
+    if (p_engine->gui.core.swapchain_image_count != 0) {//is initialized
+
+        ShGui* p_gui = &p_engine->gui;
+
+        shGuiDestroyPipelines(p_gui);
+        shGuiSetSurface(p_gui, p_engine->core.surface);
+
+        shGuiSetRenderpass(p_gui, p_engine->core.renderpass);
+
+        shGuiBuildRegionPipeline(
+            p_gui,
+            NULL,
+            NULL
+        );
+        shGuiBuildCharPipeline(
+            p_gui,
+            NULL,
+            NULL
+        );
+    }
+
     if (shApplicationRun(p_engine, p_engine->application_host.p_frame_resize) == 0) {
         shEngineManageState(p_engine, SH_ENGINE_NOT_READY);
     }
@@ -782,6 +814,12 @@ uint8_t shEngineVulkanUpdate(
     }
     shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_CMD_BUFFER);
 
+    shGuiWriteMemory(
+        &p_engine->gui,
+        cmd_buffer,
+        0
+    );
+
     VkClearValue clear_values[2] = { 0 };
 
     clear_values[1].depthStencil.depth = 1.0f;
@@ -803,6 +841,14 @@ uint8_t shEngineVulkanUpdate(
         shEngineManageState(p_engine, SH_ENGINE_NOT_READY);
     }
     shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
+
+    shGuiRender(
+        &p_engine->gui,
+        cmd_buffer,
+        p_core->swapchain_image_idx
+    );
+
+    shGuiResetWidgetCount(&p_engine->gui);
 
     shEndRenderpass(cmd_buffer);
 
@@ -960,6 +1006,7 @@ uint8_t shEngineRelease(
         );
     }
 
+    shEngineGuiRelease(p_engine);
 
     if (p_engine->application_host.shared) {
         shSharedRelease(&p_engine->application_host.shared);

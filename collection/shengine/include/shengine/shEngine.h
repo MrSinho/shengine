@@ -19,11 +19,15 @@ extern "C" {
 #include "shengine/shProfiling.h"
 #include "shengine/shInput.h"
 #include "shengine/shScene.h"
+#include "shengine/shEngineUI.h"
 #include "shapplication-host/shApplicationHost.h"
 #include "shenvironment/shEnvironment.h"
 #include "shenvironment/shFileUtilities.h"
+
 #include <shthreads/shthreads.h>
 #include <smd/smd.h>
+
+
 
 /**
  * @brief Number of swapchain images in the engine.
@@ -92,6 +96,7 @@ typedef struct ShEngine {
     ShApplicationHost        application_host;         /**< Application host information. */
     ShThreadPool             thread_pool;              /**< Thread pool for parallel processing. */
     ShVkPipelinePool         pipeline_pool;            /**< Vulkan pipeline pool. */
+    ShGui                    gui;                      /**< Main gui structure. */
     void*                    p_ext;                    /**< Additional extension pointer. */
 } ShEngine;
 

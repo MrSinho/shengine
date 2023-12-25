@@ -28,6 +28,7 @@ add_library(shengine
     shengine/src/shWindow.c
     shengine/src/shLinearAlgebra.c
     shengine/src/shScene.c
+    shengine/src/shEngineUI.c
 )
 target_include_directories(shengine PUBLIC 
     ${SH_ENGINE_ROOT_DIR}/collection/shengine/include
@@ -42,13 +43,14 @@ target_link_libraries(shengine PUBLIC
     shenvironment
     shserial
     shthreads
+    shgui
 )
 if (WIN32)
-set_target_properties(shengine glfw cglm shvulkan plyimporter PROPERTIES 
+set_target_properties(shengine glfw cglm shvulkan plyimporter shgui PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/windows
 )
 else()
-set_target_properties(shengine glfw cglm shvulkan plyimporter PROPERTIES 
+set_target_properties(shengine glfw cglm shvulkan plyimporter shgui PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/linux
 )
 endif(WIN32)

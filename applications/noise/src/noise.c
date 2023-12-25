@@ -9,6 +9,7 @@ extern "C" {
 #include <math.h>
 #include <stdio.h>
 #include <memory.h>
+#include <string.h>
 
 #define CANVAS_VERTEX_COUNT   6
 #define NOISE_PARAMETERS_SIZE sizeof(NoiseParameters)             
@@ -28,6 +29,7 @@ typedef struct NoiseApp {
     SmdFileHandle   recovery;
     SmdFileHandle   saved;
     SmdExportHandle export;
+    uint8_t         display_ui;
 } NoiseApp;
 
 
@@ -124,6 +126,9 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_start(ShEngine* p_engine) {
 
     shProfilingTimerSetExtCount(&p_engine->profiling_timer, 1);
 
+    shEngineGuiSetup(p_engine);
+    p_noise->display_ui = 1;
+
     return 1;
 }
 
@@ -134,18 +139,6 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
     NoiseApp*         p_noise = (NoiseApp*)p_engine->p_ext;
     float             dtime   = (float)p_engine->time.delta_time;
     float             fps     = 1.0f / (float)p_engine->time.delta_time;
-
-    shOnTick(p_engine->time, 1.0, 0,//write to interface file
-        smdWriteLine(&p_noise->export, 1, "FPS",  SMD_VAR_TYPE_FLOAT32, &fps);
-        smdCommentLine(&p_noise->export, "\n");
-        smdWriteLine(&p_noise->export, 1, "info", SMD_VAR_TYPE_STR1024, "@github.com/mrsinho");
-        smdCommentLine(&p_noise->export, "\n");
-        smdWriteLine(&p_noise->export, 1, "s",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.s);
-        smdWriteLine(&p_noise->export, 1, "a",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.a);
-        smdWriteLine(&p_noise->export, 1, "b",    SMD_VAR_TYPE_FLOAT32, &p_noise->parameters.b);
-        smdWriteFile(&p_noise->export, "../../smd/noise-interface.smd");
-        smdExportHandleRelease(&p_noise->export);
-    )
 
     if (shIsKeyDown(p_engine->window, SH_KEY_LEFT_CONTROL) && shIsKeyPressed(p_engine->window, SH_KEY_E)) {//save interface data
         smdWriteLine(&p_noise->export, 1, "info", SMD_VAR_TYPE_STR1024, "@github.com/mrsinho");
@@ -198,6 +191,53 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_update(ShEngine* p_engine, const uint32_
     shWaitForFences(device, 1, &p_noise->copy_fence, 1, UINT64_MAX);
 
     shProfilingTimerEndExt(&p_engine->profiling_timer, MEMORY_WRITE_COPY_IDX);
+
+    if (shIsKeyPressed(p_engine->window, SH_KEY_H)) { p_noise->display_ui = !p_noise->display_ui; }
+
+    if (p_noise->display_ui) {
+
+        ShGui* p_gui = &p_engine->gui;
+
+        shGuiRegion(
+            p_gui,
+            SH_GUI_VEC2_ZERO,
+            (shguivec2){ 200.0f, 105.0f },
+            SH_GUI_COLOR_BLACK,
+            SH_GUI_COLOR_BLACK,
+            SH_GUI_PIXELS | SH_GUI_EDGE_LEFT | SH_GUI_EDGE_TOP
+        );
+
+        char s_params[64] = { 0 };
+        snprintf(s_params, 64, "fps: %.2f\ns  : %.2f\na  : %.2f\nb  : %.2f", fps, p_noise->parameters.s, p_noise->parameters.a, p_noise->parameters.b);
+        shGuiText(
+            p_gui,
+            (shguivec2) { 20.0f, -20.0f },
+            SH_GUI_COLOR_WHITE,
+            20.0f,
+            s_params,
+            SH_GUI_EDGE_LEFT | SH_GUI_EDGE_TOP
+        );
+
+        shGuiRegion(
+            p_gui,
+            SH_GUI_VEC2_ZERO,
+            (shguivec2){ 150.0f, 30.0f },
+            SH_GUI_COLOR_BLACK,
+            SH_GUI_COLOR_BLACK,
+            SH_GUI_PIXELS | SH_GUI_CENTER_WIDTH | SH_GUI_EDGE_TOP
+        );
+
+        shGuiText(
+            p_gui,
+            (shguivec2) { 0.0f, -20.0f },
+            SH_GUI_COLOR_WHITE,
+            10.0f,
+            "press H to hide",
+            SH_GUI_CENTER_WIDTH | SH_GUI_EDGE_TOP
+        );
+    }
+
+   
 
     return 1;
 }
@@ -288,6 +328,7 @@ uint8_t SH_ENGINE_EXPORT_FUNCTION noise_close(ShEngine* p_engine) {
     if (p_engine->p_ext != NULL) {
         free(p_engine->p_ext);
     }
+
     return 1;
 }
 
