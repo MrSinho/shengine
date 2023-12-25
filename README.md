@@ -39,10 +39,11 @@ See the `Related pages` for some basic documentation and tutorials. The engine c
 ## Features
  - By default double buffering.
  - Depth buffer and multisample anti-aliasing support by default.
- - Color and alpha blending optional support
+ - Color and alpha blending optional support.
  - Native scripting in C (see `Related pages`).
  - Multithreading using [`shthreads`](https://github.com/mrsinho/shthreads) (not tested with new features).
- - Immediate mode simple UI creation using [`shgui`](https://mrsinho.github.io/shgui-docs) 
+ - Immediate mode simple UI creation using [`shgui`](https://mrsinho.github.io/shgui-docs).
+ - Timing features, ticks, and profiling.
  - Serial communication with [`shserial`](https://github.com/mrsinho/shserial).
  - Ply mesh loader using [`plyimporter`](https://github.com/mrsinho/plyimporter).
  - Compute queues and pipelines (need to make an example).
