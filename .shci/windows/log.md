@@ -13,7 +13,7 @@ max frequency : 3500.0 MHz
 cores         : 4
 ```
 
-build ran for `71.30 s` and terminated with exit code `0`
+build ran for `137.58 s` and terminated with exit code `0`
 
 ---
 
@@ -72,9 +72,9 @@ Warnings:
 > .shci/windows/build-output.txt (
     python export-application.py name=triangle target=EXECUTABLE path=applications/triangle
     python export-application.py name=noise target=EXECUTABLE path=applications/noise
-    cd applications/triangle/windows/build
+    cd applications/triangle/build/windows
     cmake --build .
-    cd ../../../noise/windows/build
+    cd ../../../noise/build/windows
     cmake --build .
 )
 
@@ -83,16 +83,16 @@ Warnings:
 ```bash
 -- Selecting Windows SDK version 10.0.22000.0 to target Windows 10.0.22621.
 -- shvulkan message: found Vulkan
--- shvulkan message: Vulkan_INCLUDE_DIR: D:/lib/VulkanSDK/1.3.250.0/Include
--- shvulkan message: Vulkan_LIBRARY:     D:/lib/VulkanSDK/1.3.250.0/Lib/vulkan-1.lib
+-- shvulkan message: Vulkan_INCLUDE_DIR: D:/lib/vulkan-sdk-1.3.261.1/Include
+-- shvulkan message: Vulkan_LIBRARY:     D:/lib/vulkan-sdk-1.3.261.1/Lib/vulkan-1.lib
 -- Found Doxygen: D:/bin/doxygen/bin/doxygen.exe (found version "1.9.8") found components: doxygen 
 -- Including Win32 support
 -- Found Doxygen: D:/bin/doxygen/bin/doxygen.exe (found version "1.9.8") found components: doxygen missing components: dot
 -- Configuring D:/home/desktop/github/shengine/docs/Doxyfile from D:/home/desktop/github/shengine/docs/Doxyfile.in
 -- Creating custom docs command: D:/bin/doxygen/bin/doxygen.exe D:/home/desktop/github/shengine/docs/Doxyfile
--- Configuring done (0.7s)
--- Generating done (5.9s)
--- Build files have been written to: D:/home/desktop/github/shengine/applications/triangle/windows/build
+-- Configuring done (1.6s)
+-- Generating done (4.7s)
+-- Build files have been written to: D:/home/desktop/github/shengine/applications/triangle/build/windows
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
 EXAMPLE CALL: python export-application.py name=noise target=STATIC path=applications/noise
@@ -152,9 +152,9 @@ elseif("${SH_APPLICATION_BINARY_TYPE}" STREQUAL "SHARED")
     )
     target_compile_definitions(shengine PUBLIC SH_APPLICATION_TARGET_TYPE_SHARED=1)
     set_target_properties(${SH_APPLICATION_NAME} sheditor PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/ 
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/
-        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows/ 
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows/
+        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows/
     )
 elseif("${SH_APPLICATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
     add_executable(${SH_APPLICATION_NAME}  
@@ -165,9 +165,9 @@ elseif("${SH_APPLICATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
     target_include_directories(${SH_APPLICATION_NAME} PUBLIC D:/home/desktop/github/shengine/collection/sheditor/include)
     target_compile_definitions(${SH_APPLICATION_NAME} PUBLIC SH_APPLICATION_TARGET_TYPE_EXECUTABLE=1)
     set_target_properties(${SH_APPLICATION_NAME} PROPERTIES 
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/ 
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/
-        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows 
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows
+        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows/
     )
 endif()
 
@@ -186,17 +186,17 @@ writing to CMake file: D:/home/desktop/github/shengine/applications/triangle/CMa
 
 --------------------------------------------------------------------------------
 Os path: D:/home/desktop/github/shengine/applications/triangle/windows
-Build path: D:/home/desktop/github/shengine/applications/triangle/windows/build
+Build path: D:/home/desktop/github/shengine/applications/triangle/build/windows
 
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
-creating build directory: D:/home/desktop/github/shengine/applications/triangle/windows/build
+creating build directory: D:/home/desktop/github/shengine/applications/triangle/build/windows
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 running command:
-	cd D:/home/desktop/github/shengine/applications/triangle/windows/build && cmake D:/home/desktop/github/shengine -DSH_ENGINE_BUILD_EDITOR=ON -DSH_APPLICATION_PATH=D:/home/desktop/github/shengine/applications/triangle -DSH_APPLICATION_NAME=triangle -DSH_APPLICATION_BINARY_TYPE=EXECUTABLE 
+	cd D:/home/desktop/github/shengine/applications/triangle/build/windows && cmake D:/home/desktop/github/shengine -DSH_ENGINE_BUILD_EDITOR=ON -DSH_APPLICATION_PATH=D:/home/desktop/github/shengine/applications/triangle -DSH_APPLICATION_NAME=triangle -DSH_APPLICATION_BINARY_TYPE=EXECUTABLE 
 --------------------------------------------------------------------------------
 
 -- Selecting Windows SDK version 10.0.22000.0 to target Windows 10.0.22621.
@@ -209,8 +209,8 @@ running command:
 -- Configuring D:/home/desktop/github/shengine/docs/Doxyfile from D:/home/desktop/github/shengine/docs/Doxyfile.in
 -- Creating custom docs command: D:/bin/doxygen/bin/doxygen.exe D:/home/desktop/github/shengine/docs/Doxyfile
 -- Configuring done (0.7s)
--- Generating done (4.5s)
--- Build files have been written to: D:/home/desktop/github/shengine/applications/noise/windows/build
+-- Generating done (2.8s)
+-- Build files have been written to: D:/home/desktop/github/shengine/applications/noise/build/windows
 --------------------------------------------------------------------------------
 EXAMPLE CALL: python export-application.py name=noise target=SHARED
 EXAMPLE CALL: python export-application.py name=noise target=STATIC path=applications/noise
@@ -270,9 +270,9 @@ elseif("${SH_APPLICATION_BINARY_TYPE}" STREQUAL "SHARED")
     )
     target_compile_definitions(shengine PUBLIC SH_APPLICATION_TARGET_TYPE_SHARED=1)
     set_target_properties(${SH_APPLICATION_NAME} sheditor PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/ 
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/
-        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows/ 
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows/
+        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows/
     )
 elseif("${SH_APPLICATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
     add_executable(${SH_APPLICATION_NAME}  
@@ -283,9 +283,9 @@ elseif("${SH_APPLICATION_BINARY_TYPE}" STREQUAL "EXECUTABLE")
     target_include_directories(${SH_APPLICATION_NAME} PUBLIC D:/home/desktop/github/shengine/collection/sheditor/include)
     target_compile_definitions(${SH_APPLICATION_NAME} PUBLIC SH_APPLICATION_TARGET_TYPE_EXECUTABLE=1)
     set_target_properties(${SH_APPLICATION_NAME} PROPERTIES 
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/ 
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/
-        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/windows/bin/
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows 
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows
+        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/windows/
     )
 endif()
 
@@ -304,63 +304,217 @@ writing to CMake file: D:/home/desktop/github/shengine/applications/noise/CMakeL
 
 --------------------------------------------------------------------------------
 Os path: D:/home/desktop/github/shengine/applications/noise/windows
-Build path: D:/home/desktop/github/shengine/applications/noise/windows/build
+Build path: D:/home/desktop/github/shengine/applications/noise/build/windows
 
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
-creating build directory: D:/home/desktop/github/shengine/applications/noise/windows/build
+creating build directory: D:/home/desktop/github/shengine/applications/noise/build/windows
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 running command:
-	cd D:/home/desktop/github/shengine/applications/noise/windows/build && cmake D:/home/desktop/github/shengine -DSH_ENGINE_BUILD_EDITOR=ON -DSH_APPLICATION_PATH=D:/home/desktop/github/shengine/applications/noise -DSH_APPLICATION_NAME=noise -DSH_APPLICATION_BINARY_TYPE=EXECUTABLE 
+	cd D:/home/desktop/github/shengine/applications/noise/build/windows && cmake D:/home/desktop/github/shengine -DSH_ENGINE_BUILD_EDITOR=ON -DSH_APPLICATION_PATH=D:/home/desktop/github/shengine/applications/noise -DSH_APPLICATION_NAME=noise -DSH_APPLICATION_BINARY_TYPE=EXECUTABLE 
 --------------------------------------------------------------------------------
 
 Versione di MSBuild L17.7.2+d6990bcfa per .NET Framework
 
-  cglm.vcxproj -> D:\home\desktop\github\shengine\applications\triangle\windows\build\collection\externals\cglm\Debug\cglm.lib
-  glfw.vcxproj -> D:\home\desktop\github\shengine\applications\triangle\windows\build\collection\externals\glfw\src\Debug\glfw3.lib
-  plyimporter.vcxproj -> D:\home\desktop\github\shengine\bin\Debug\plyimporter.lib
+  Checking Build System
+  Generating HTML documentation
+  Building Custom Rule D:/home/desktop/github/shengine/collection/externals/glfw/docs/CMakeLists.txt
+  Building Custom Rule D:/home/desktop/github/shengine/collection/externals/cglm/CMakeLists.txt
+  euler.c
+  affine.c
+  io.c
+  quat.c
+  cam.c
+  vec2.c
+  ivec2.c
+  vec3.c
+  ivec3.c
+  vec4.c
+  ivec4.c
+  mat2.c
+  mat2x3.c
+  mat2x4.c
+  mat3.c
+  mat3x2.c
+  mat3x4.c
+  mat4.c
+  mat4x2.c
+  mat4x3.c
+  Generazione del codice in corso...
+  Compilazione in corso...
+  plane.c
+  frustum.c
+  box.c
+  project.c
+  sphere.c
+  ease.c
+  curve.c
+  bezier.c
+  ray.c
+  affine2d.c
+  ortho_lh_no.c
+  ortho_lh_zo.c
+  ortho_rh_no.c
+  ortho_rh_zo.c
+  persp_lh_no.c
+  persp_lh_zo.c
+  persp_rh_no.c
+  persp_rh_zo.c
+  view_lh_no.c
+  view_lh_zo.c
+  Generazione del codice in corso...
+  Compilazione in corso...
+  view_rh_no.c
+  view_rh_zo.c
+  project_no.c
+  project_zo.c
+  Generazione del codice in corso...
+  cglm.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\cglm.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/externals/glfw/src/CMakeLists.txt
+  context.c
+  init.c
+  input.c
+  monitor.c
+  platform.c
+  vulkan.c
+  window.c
+  egl_context.c
+  osmesa_context.c
+  null_init.c
+  null_monitor.c
+  null_window.c
+  null_joystick.c
+  win32_module.c
+  win32_time.c
+  win32_thread.c
+  win32_init.c
+  win32_joystick.c
+  win32_monitor.c
+  win32_window.c
+  Generazione del codice in corso...
+  Compilazione in corso...
+  wgl_context.c
+  Generazione del codice in corso...
+  glfw.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\glfw3.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/externals/plyimporter/CMakeLists.txt
+  plyImporter.c
+  plyimporter.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\plyimporter.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/externals/shvulkan/CMakeLists.txt
   shVulkan.c
-D:\home\desktop\github\shengine\collection\externals\shvulkan\shvulkan\include\shvulkan/shVulkan.h(10,10): fatal  error C1083: Non Š possibile aprire il file inclusione: 'vulkan/vulkan.h': No such file or directory [D:\home\desktop\github\shengine\applications\triangle\windows\build\collection\externals\shvulkan\shvulkan.vcxproj]
-  smd.vcxproj -> D:\home\desktop\github\shengine\bin\Debug\smd.lib
-  shthreads.vcxproj -> D:\home\desktop\github\shengine\bin\Debug\shthreads.lib
-  shserial.vcxproj -> D:\home\desktop\github\shengine\collection\externals\shserial\bin\Debug\shserial.lib
-Versione di MSBuild L17.7.2+d6990bcfa per .NET Framework
-
-  cglm.vcxproj -> D:\home\desktop\github\shengine\applications\noise\windows\build\collection\externals\cglm\Debug\cglm.lib
-  glfw.vcxproj -> D:\home\desktop\github\shengine\applications\noise\windows\build\collection\externals\glfw\src\Debug\glfw3.lib
-  shvulkan.vcxproj -> D:\home\desktop\github\shengine\bin\Debug\shvulkan.lib
-  smd.vcxproj -> D:\home\desktop\github\shengine\bin\Debug\smd.lib
+  shvulkan.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shvulkan.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/externals/smd/CMakeLists.txt
+  smd.c
+  smd.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\smd.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/CMakeLists.txt
   shEnvironment.c
-  shenvironment.vcxproj -> D:\home\desktop\github\shengine\applications\noise\windows\build\collection\OFF\windows\Debug\shenvironment.lib
-  shthreads.vcxproj -> D:\home\desktop\github\shengine\bin\Debug\shthreads.lib
+  shFileUtilities.c
+  Generazione del codice in corso...
+  shenvironment.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shenvironment.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/externals/shthreads/CMakeLists.txt
+  shthreads.c
+  shthreads.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shthreads.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/CMakeLists.txt
   shApplicationHost.c
-  shapplication-host.vcxproj -> D:\home\desktop\github\shengine\applications\noise\windows\build\collection\OFF\windows\Debug\shapplication-host.lib
+  shapplication-host.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shapplication-host.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/externals/shserial/CMakeLists.txt
+  shSerial.c
   shserial.vcxproj -> D:\home\desktop\github\shengine\collection\externals\shserial\bin\Debug\shserial.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/CMakeLists.txt
   shEngine.c
   shInput.c
-  shLinearAlgebra.c
-  shProfiling.c
-  shScene.c
   shTime.c
+  shProfiling.c
   shWindow.c
+  shLinearAlgebra.c
+  shScene.c
   Generazione del codice in corso...
-  shengine.vcxproj -> D:\home\desktop\github\shengine\applications\noise\windows\build\collection\OFF\windows\Debug\shengine.lib
-  noise.c
+  shengine.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shengine.lib
+  Building Custom Rule D:/home/desktop/github/shengine/collection/CMakeLists.txt
+  shEditor.c
+  sheditor.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\sheditor.exe
+  Building Custom Rule D:/home/desktop/github/shengine/applications/triangle/CMakeLists.txt
+  triangle.c
   shEditor.c
   Generazione del codice in corso...
-  noise.vcxproj -> D:\home\desktop\github\shengine\applications\noise\windows\bin\Debug\noise.exe
-  plyimporter.vcxproj -> D:\home\desktop\github\shengine\bin\Debug\plyimporter.lib
-  shEditor.c
-  sheditor.vcxproj -> D:\home\desktop\github\shengine\applications\noise\windows\build\collection\OFF\windows\Debug\sheditor.exe
+     Creazione della libreria D:/home/desktop/github/shengine/applications/triangle/bin/windows/Debug/triangle.lib e dell'oggetto D:/home/desktop/github/shengine/applications/triangle/bin/windows/Debug/triangle.exp
+  triangle.vcxproj -> D:\home\desktop\github\shengine\applications\triangle\bin\windows\Debug\triangle.exe
+  Building Custom Rule D:/home/desktop/github/shengine/CMakeLists.txt
+Versione di MSBuild L17.7.2+d6990bcfa per .NET Framework
+
+  Checking Build System
+  euler.c
+  affine.c
+  io.c
+  quat.c
+  cam.c
+  vec2.c
+  ivec2.c
+  vec3.c
+  ivec3.c
+  vec4.c
+  ivec4.c
+  mat2.c
+  mat2x3.c
+  mat2x4.c
+  mat3.c
+  mat3x2.c
+  mat3x4.c
+  mat4.c
+  mat4x2.c
+  mat4x3.c
+  Generazione del codice in corso...
+  Compilazione in corso...
+  plane.c
+  frustum.c
+  box.c
+  project.c
+  sphere.c
+  ease.c
+  curve.c
+  bezier.c
+  ray.c
+  affine2d.c
+  ortho_lh_no.c
+  ortho_lh_zo.c
+  ortho_rh_no.c
+  ortho_rh_zo.c
+  persp_lh_no.c
+  persp_lh_zo.c
+  persp_rh_no.c
+  persp_rh_zo.c
+  view_lh_no.c
+  view_lh_zo.c
+  Generazione del codice in corso...
+  Compilazione in corso...
+  view_rh_no.c
+  view_rh_zo.c
+  project_no.c
+  project_zo.c
+  Generazione del codice in corso...
+  cglm.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\cglm.lib
+  glfw.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\glfw3.lib
+  plyimporter.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\plyimporter.lib
+  shvulkan.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shvulkan.lib
+  smd.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\smd.lib
+  shenvironment.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shenvironment.lib
+  shthreads.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shthreads.lib
+  shapplication-host.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shapplication-host.lib
+  shserial.vcxproj -> D:\home\desktop\github\shengine\collection\externals\shserial\bin\Debug\shserial.lib
+  shengine.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\shengine.lib
+     Creazione della libreria D:/home/desktop/github/shengine/applications/noise/bin/windows/Debug/noise.lib e dell'oggetto D:/home/desktop/github/shengine/applications/noise/bin/windows/Debug/noise.exp
+  noise.vcxproj -> D:\home\desktop\github\shengine\applications\noise\bin\windows\Debug\noise.exe
+  LINK : D:\home\desktop\github\shengine\bin\windows\Debug\sheditor.exe non trovato o non compilato dall'ultimo collegamento incrementale; verr… eseguito il collegamento completo
+  sheditor.vcxproj -> D:\home\desktop\github\shengine\bin\windows\Debug\sheditor.exe
+  Building Custom Rule D:/home/desktop/github/shengine/CMakeLists.txt
 
 ```
 
 ---
     
-build ran for `71.30 s` and terminated with exit code `0`
+build ran for `137.58 s` and terminated with exit code `0`
 
 ---
 

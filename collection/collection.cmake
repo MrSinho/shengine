@@ -37,17 +37,18 @@ target_link_libraries(shengine PUBLIC
     glfw
     shvulkan
     cglm
+    plyimporter
     shapplication-host
     shenvironment
     shserial
     shthreads
 )
 if (WIN32)
-set_target_properties(shengine PROPERTIES 
+set_target_properties(shengine glfw cglm shvulkan plyimporter PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/windows
 )
 else()
-set_target_properties(shengine PROPERTIES 
+set_target_properties(shengine glfw cglm shvulkan plyimporter PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/linux
 )
 endif(WIN32)
@@ -68,7 +69,7 @@ target_include_directories(shenvironment PUBLIC
 )
 target_link_libraries(shenvironment PUBLIC smd shvulkan)
 if (WIN32)
-set_target_properties(shenvironment PROPERTIES 
+set_target_properties(shenvironment smd shvulkan PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/windows
 )
 else()
@@ -117,11 +118,11 @@ target_link_libraries(shapplication-host PUBLIC
     shthreads
 )
 if (WIN32)
-set_target_properties(shapplication-host PROPERTIES 
+set_target_properties(shapplication-host shthreads PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/windows
 )
 else()
-set_target_properties(shapplication-host PROPERTIES 
+set_target_properties(shapplication-host shthreads PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/linux
 )
 endif(WIN32)

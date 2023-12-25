@@ -57,11 +57,11 @@ docs/html
 docs/latex
 docs/xml
 
-applications/triangle/windows/*
-applications/noise/windows/*
+applications/triangle/build/*
+applications/triangle/bin/*
 
-applications/triangle/linux/*
-applications/noise/linux/*
+applications/noise/build/*
+applications/noise/bin/*
 
 applications/triangle/CMakeLists.txt
 applications/noise/CMakeLists.txt

@@ -121,9 +121,9 @@ elseif("${{SH_APPLICATION_BINARY_TYPE}}" STREQUAL "SHARED")
     )
     target_compile_definitions(shengine PUBLIC SH_APPLICATION_TARGET_TYPE_SHARED=1)
     set_target_properties(${{SH_APPLICATION_NAME}} sheditor PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/{os_name}/bin/ 
-        RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/{os_name}/bin/
-        VS_DEBUGGER_WORKING_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/{os_name}/bin/
+        ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/bin/{os_name}/ 
+        RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/bin/{os_name}/
+        VS_DEBUGGER_WORKING_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/bin/{os_name}/
     )
 elseif("${{SH_APPLICATION_BINARY_TYPE}}" STREQUAL "EXECUTABLE")
     add_executable(${{SH_APPLICATION_NAME}}  
@@ -133,9 +133,9 @@ elseif("${{SH_APPLICATION_BINARY_TYPE}}" STREQUAL "EXECUTABLE")
     target_include_directories(${{SH_APPLICATION_NAME}} PUBLIC {python_src_dir}/collection/sheditor/include)
     target_compile_definitions(${{SH_APPLICATION_NAME}} PUBLIC SH_APPLICATION_TARGET_TYPE_EXECUTABLE=1)
     set_target_properties(${{SH_APPLICATION_NAME}} PROPERTIES 
-        ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/{os_name}/bin/ 
-        RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/{os_name}/bin/
-        VS_DEBUGGER_WORKING_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/{os_name}/bin/
+        ARCHIVE_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/bin/{os_name} 
+        RUNTIME_OUTPUT_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/bin/{os_name}
+        VS_DEBUGGER_WORKING_DIRECTORY ${{CMAKE_CURRENT_SOURCE_DIR}}/bin/{os_name}/
     )
 endif()
 
@@ -158,15 +158,14 @@ target_link_libraries(
     dst_stream.close()
     print("--------------------------------------------------------------------------------\n")
 
-    os_path:str    = f"{application.path}/{os_name}"
-    build_path:str = f"{application.path}/{os_name}/build"
+    build_path:str = f"{application.path}/build/{os_name}"
     print("--------------------------------------------------------------------------------")
-    print(f"Os path: {os_path}\nBuild path: {build_path}\n")
+    print(f"Build path: {build_path}\n")
     print("--------------------------------------------------------------------------------\n")
     
     print("--------------------------------------------------------------------------------")
     print(f"creating build directory: {build_path}")
-    os.system(f"mkdir \"{os_path}\"")
+    os.system(f"mkdir \"{application.path}/build\"")
     os.system(f"mkdir \"{build_path}\"")
     cmd  = f"cd {build_path} "
     print("--------------------------------------------------------------------------------\n")
