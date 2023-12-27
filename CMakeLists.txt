@@ -7,7 +7,7 @@ project(${SH_APPLICATION_NAME} C)
 
 
 
-set(SH_ENGINE_VERSION  "v1.0.0")
+set(SH_ENGINE_VERSION  "pre-release")
 set(SH_ENGINE_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 
