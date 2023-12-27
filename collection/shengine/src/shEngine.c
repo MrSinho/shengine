@@ -4,9 +4,15 @@ extern "C" {
 
 #include <shengine/shEngine.h>
 
+
+
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <memory.h>
 #include <inttypes.h>
+
+
 
 #ifdef _MSC_VER
 #pragma warning (disable: 6011)

@@ -5,4 +5,4 @@ STR1024    ^^ 1    !! ShEngine::ini_properties.vulkan_memory_smd_path  --> ../..
 STR1024    ^^ 1    !! ShEngine::ini_properties.serial_smd_path         --> ../../smd/serial.smd         ***
 STR1024    ^^ 1    !! ShEngine::ini_properties.scene_smd_path          --> ../../smd/scene.smd          ***
 
-copy_to_windows/bin_or_linux/bin
+copy to bin/windows or bin/linux
