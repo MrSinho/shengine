@@ -1,10 +1,3 @@
-owner=mrsinho
-access_token=None
-repo_name=shengine
-recursive=True
-repo_dir=./
-push=True
-
 prerequisites=.shci/linux/prerequisites.sh
 prerequisites_output=.shci/linux/prerequisites-output.txt
 
