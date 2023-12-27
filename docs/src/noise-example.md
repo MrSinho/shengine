@@ -2,7 +2,7 @@
 
 [TOC]
 
-![](../media/noise-3.png)
+![](media/noise-3.png)
 
 ## Build
 
@@ -59,7 +59,7 @@ You can export these values to `applications/noise/smd/noise-saved.smd` by press
 
 ![](media/noise-1.png)
 
----
+
 
 \f$  s = {1 \over 2} \f$  
 
@@ -69,7 +69,7 @@ You can export these values to `applications/noise/smd/noise-saved.smd` by press
 
 ![](media/noise-2.png)
 
----
+
 
 \f$  s = 4\f$  
 
@@ -79,7 +79,7 @@ You can export these values to `applications/noise/smd/noise-saved.smd` by press
 
 ![](media/noise-3.png)
 
----
+
 
 \f$  s = 4\f$  
 
@@ -89,5 +89,5 @@ You can export these values to `applications/noise/smd/noise-saved.smd` by press
 
 ![](media/noise-5.png)
 
----
+
 
