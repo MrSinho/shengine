@@ -848,8 +848,6 @@ uint8_t shEngineVulkanUpdate(
         p_core->swapchain_image_idx
     );
 
-    shGuiResetWidgetCount(&p_engine->gui);
-
     shEndRenderpass(cmd_buffer);
 
     shEndCommandBuffer(cmd_buffer);
@@ -909,7 +907,9 @@ uint8_t shEngineUpdateState(
         shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_UPDATE);
 
         shEngineVulkanUpdate(p_engine);
-        
+        if (p_engine->gui.core.swapchain_image_count != 0) {//is initialized
+            shGuiResetWidgetCount(&p_engine->gui);
+        }
         shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_MAIN_THREAD);
         shEngineProfilingUpdate(p_engine);
     }
