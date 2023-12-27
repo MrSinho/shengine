@@ -66,7 +66,7 @@ html.light-mode {
 
     --content-maxwidth: 1200px;
 
-    --tablehead-background: rgb(255, 250, 255);
+    --tablehead-background: rgb(255, 255, 255);
     --tablehead-foreground: var(--page-foreground-color);
 
     --toc-background: var(--tablehead-background);
