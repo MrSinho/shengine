@@ -820,11 +820,13 @@ uint8_t shEngineVulkanUpdate(
     }
     shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_CMD_BUFFER);
 
-    shGuiWriteMemory(
-        &p_engine->gui,
-        cmd_buffer,
-        0
-    );
+    if (p_engine->gui.core.swapchain_image_count != 0) {
+        shGuiWriteMemory(
+            &p_engine->gui,
+            cmd_buffer,
+            0
+        );
+    }
 
     VkClearValue clear_values[2] = { 0 };
 
@@ -848,12 +850,14 @@ uint8_t shEngineVulkanUpdate(
     }
     shProfilingTimerEnd(&p_engine->profiling_timer, SH_PROFILING_TIMER_APPLICATION_MAIN_RENDERPASS);
 
-    shGuiRender(
-        &p_engine->gui,
-        cmd_buffer,
-        p_core->swapchain_image_idx
-    );
-
+    if (p_engine->gui.core.swapchain_image_count != 0) {
+        shGuiRender(
+            &p_engine->gui,
+            cmd_buffer,
+            p_core->swapchain_image_idx
+        );
+    }
+    
     shEndRenderpass(cmd_buffer);
 
     shEndCommandBuffer(cmd_buffer);
@@ -1012,7 +1016,9 @@ uint8_t shEngineRelease(
         );
     }
 
-    shEngineGuiRelease(p_engine);
+    if (p_engine->gui.core.swapchain_image_count != 0) {
+        shEngineGuiRelease(p_engine);
+    }
 
     if (p_engine->application_host.shared) {
         shSharedRelease(&p_engine->application_host.shared);
