@@ -12,6 +12,10 @@ extern "C" {
 
 
 
+#include <string.h>
+
+
+
 uint8_t shEngineGuiSetup(
 	ShEngine* p_engine
 ) {
