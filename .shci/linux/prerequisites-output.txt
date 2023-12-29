@@ -1,7 +1,7 @@
 Hit:1 http://security.debian.org/debian-security bullseye-security InRelease
-Hit:2 http://ftp.debian.org/debian bullseye-backports InRelease
-Hit:3 http://deb.debian.org/debian bullseye InRelease
-Hit:4 http://deb.debian.org/debian bullseye-updates InRelease
+Hit:2 http://deb.debian.org/debian bullseye InRelease
+Hit:3 http://deb.debian.org/debian bullseye-updates InRelease
+Hit:4 http://ftp.debian.org/debian bullseye-backports InRelease
 Reading package lists...
 Building dependency tree...
 Reading state information...
