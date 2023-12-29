@@ -46,11 +46,31 @@ target_link_libraries(shengine PUBLIC
     shgui
 )
 if (WIN32)
-set_target_properties(shengine glfw cglm shvulkan plyimporter shgui PROPERTIES 
+set_target_properties(
+    glfw
+    shvulkan
+    cglm
+    plyimporter
+    shapplication-host
+    shenvironment
+    shserial
+    shthreads
+    shgui
+    PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/windows
 )
 else()
-set_target_properties(shengine glfw cglm shvulkan plyimporter shgui PROPERTIES 
+set_target_properties(
+    glfw
+    shvulkan
+    cglm
+    plyimporter
+    shapplication-host
+    shenvironment
+    shserial
+    shthreads
+    shgui
+    PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/linux
 )
 endif(WIN32)
