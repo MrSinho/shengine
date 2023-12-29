@@ -56,6 +56,7 @@ set_target_properties(
     shserial
     shthreads
     shgui
+    native-export
     PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/windows
 )
@@ -70,6 +71,7 @@ set_target_properties(
     shserial
     shthreads
     shgui
+    native-export
     PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY ${SH_ENGINE_BINARIES_DIR}/linux
 )

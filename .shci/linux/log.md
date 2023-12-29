@@ -13,7 +13,7 @@ max frequency : 0.0 MHz
 cores         : 4
 ```
 
-build ran for `56.06 s` and terminated with exit code `0`
+build ran for `60.80 s` and terminated with exit code `0`
 
 ---
 
@@ -354,9 +354,10 @@ running command:
 [ 88%] Built target shengine
 [ 90%] Built target sheditor
 [ 92%] Built target shgui-app
+[ 93%] Linking C static library ../../../../../../../../../../bin/linux/libnative-export.a
 [ 94%] Built target native-export
+[ 95%] Linking C executable ../../../../../../../collection/externals/shgui/bin/linux/shgui-export-shaders
 [ 96%] Built target shgui-export-shaders
-[ 97%] Linking C executable ../../../bin/linux/triangle
 [100%] Built target triangle
 [  2%] Built target smd
 [  4%] Built target shvulkan
@@ -379,7 +380,7 @@ running command:
 
 ---
     
-build ran for `56.06 s` and terminated with exit code `0`
+build ran for `60.80 s` and terminated with exit code `0`
 
 ---
 
