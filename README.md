@@ -41,7 +41,6 @@ See the `Related pages` for some basic documentation and tutorials. The engine c
  - Depth buffer and multisample anti-aliasing support by default.
  - Color and alpha blending optional support.
  - Native scripting in C (see `Related pages`).
- - Multithreading using [`shthreads`](https://github.com/mrsinho/shthreads) (not tested with new features).
  - Immediate mode simple UI creation using [`shgui`](https://mrsinho.github.io/shgui-docs).
  - Timing features, ticks, and profiling.
  - Serial communication with [`shserial`](https://github.com/mrsinho/shserial).

@@ -13,7 +13,6 @@ set(SH_ENGINE_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 option(SH_ENGINE_BINARIES_DIR CACHE OFF)
-option(SH_APPLICATION_PATH    CACHE OFF)
 
 
 
@@ -23,40 +22,28 @@ endif()
 
 
 
-if (NOT DEFINED SH_APPLICATION_PATH)
-set (SH_APPLICATION_PATH undefined)
-endif()
-
-
-
-if (NOT DEFINED SH_APPLICATION_NAME)
-set (SH_APPLICATION_NAME shprojects)
-endif()
-
-
-
 message(STATUS "SH_ENGINE_VERSION       : ${SH_ENGINE_VERSION}")
 message(STATUS "SH_ENGINE_ROOT_DIR      : ${SH_ENGINE_ROOT_DIR}")
 message(STATUS "SH_ENGINE_BINARIES_DIR  : ${SH_ENGINE_BINARIES_DIR}")
-message(STATUS "SH_APPLICATION_PATH     : ${SH_APPLICATION_PATH}")
-message(STATUS "SH_APPLICATION_NAME     : ${SH_APPLICATION_NAME}")
 
 
 
-add_subdirectory(collection)
-
-if (SH_APPLICATION_PATH)
-add_subdirectory(${SH_APPLICATION_PATH} [EXCLUDE_FROM_ALL])
+if (NOT TARGET externals)
+set(CGLM_USE_C99 ON)
+set(CGLM_STATIC  ON)
+add_subdirectory(${SH_ENGINE_ROOT_DIR}/collection/externals)
 endif()
 
 
 
-include(docs/shengine-docs.cmake)
+include(${SH_ENGINE_ROOT_DIR}/collection/collection.cmake)
+include(${SH_ENGINE_ROOT_DIR}/docs/shengine-docs.cmake)
 
 
 
 function(main)
 build_shengine_docs()
+build_shengine_collection()
 endfunction()
 
 

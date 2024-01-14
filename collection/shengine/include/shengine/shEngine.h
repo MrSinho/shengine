@@ -24,7 +24,7 @@ extern "C" {
 #include "shenvironment/shEnvironment.h"
 #include "shenvironment/shFileUtilities.h"
 
-#include <shthreads/shthreads.h>
+//#include <shthreads/shthreads.h>
 #include <smd/smd.h>
 
 
@@ -94,7 +94,7 @@ typedef struct ShEngine {
     ShSceneProperties        scene_properties;         /**< Scene properties. */
     uint8_t                  load_shared;              /**< Flag indicating whether to load shared resources. */
     ShApplicationHost        application_host;         /**< Application host information. */
-    ShThreadPool             thread_pool;              /**< Thread pool for parallel processing. */
+    //ShThreadPool             thread_pool;              /**< Thread pool for parallel processing. */
     ShVkPipelinePool         pipeline_pool;            /**< Vulkan pipeline pool. */
     ShGui                    gui;                      /**< Main gui structure. */
     void*                    p_ext;                    /**< Additional extension pointer. */

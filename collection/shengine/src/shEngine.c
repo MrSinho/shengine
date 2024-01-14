@@ -483,12 +483,12 @@ uint8_t shSetEngineState(
         );
     }
 
-    if (p_engine->application_properties.additional_thread_count) {
-        shAllocateThreads(
-            p_engine->application_properties.additional_thread_count,
-            &p_engine->thread_pool
-        );
-    }
+    //if (p_engine->application_properties.additional_thread_count) {
+    //    shAllocateThreads(
+    //        p_engine->application_properties.additional_thread_count,
+    //        &p_engine->thread_pool
+    //    );
+    //}
 
     //host memory already loaded
     
@@ -1008,13 +1008,13 @@ uint8_t shEngineRelease(
         );
     }
 
-    if (p_engine->thread_pool.p_handles != NULL) {
-        shEngineError(
-            shReleaseThreads(&p_engine->thread_pool) != SH_THREADS_SUCCESS,
-            "shEngineRelease: failed releasing threads",
-            return 0
-        );
-    }
+    //if (p_engine->thread_pool.p_handles != NULL) {
+    //    shEngineError(
+    //        shReleaseThreads(&p_engine->thread_pool) != SH_THREADS_SUCCESS,
+    //        "shEngineRelease: failed releasing threads",
+    //        return 0
+    //    );
+    //}
 
     if (p_engine->gui.core.swapchain_image_count != 0) {
         shEngineGuiRelease(p_engine);
@@ -1060,7 +1060,7 @@ uint8_t shEngineRelease(
 
 
     //memset(&p_engine->application_host, 0, sizeof(ShApplicationHandle));//we need to keep the functions information
-    memset(&p_engine->thread_pool,    0, sizeof(ShThreadPool));
+    //memset(&p_engine->thread_pool,    0, sizeof(ShThreadPool));
     memset(&p_engine->pipeline_pool,  0, sizeof(ShVkPipelinePool));
 
     

@@ -8,18 +8,29 @@
 
 Using Windows (run as admin):
 ```bash
-python export-application.py name=noise target=EXECUTABLE path=applications/noise
-cd applications/noise/build/windows
+python export-application.py name=noise path=applications/noise
+cd applications/noise
+
+mkdir build
+cd    build
+mkdir windows
+cd    windows 
+cmake ../../ -DNOISE_BINARY_TYPE=EXECUTABLE -DSH_ENGINE_ROOT_DIR="path/to/shengine"
 cmake --build .
-cp ../../ini.smd ../../bin/windows/ini.smd
+
 ```
 
 Using Linux:
 ```bash
-sudo python3.9 export-application.py name=noise target=EXECUTABLE path=applications/noise
-cd applications/noise/build/linux
-sudo cmake --build .
-cp ../../ini.smd ../../bin/linux/ini.smd
+python3.9 export-application.py name=noise path=applications/noise
+cd applications/noise
+
+mkdir build
+cd    build
+mkdir linux
+cd    linux 
+cmake ../../ -DNOISE_BINARY_TYPE=EXECUTABLE -DSH_ENGINE_ROOT_DIR="path/to/shengine"
+cmake --build .
 ```
 
 ## Application tour

@@ -64,8 +64,6 @@ applications/triangle/bin/*
 applications/noise/build/*
 applications/noise/bin/*
 
-applications/triangle/CMakeLists.txt
-applications/noise/CMakeLists.txt
 
 
 .vscode/*
