@@ -70,6 +70,8 @@ project({application.name} C)
 
 
 # YOU CAN MODIFY
+set({application_caps_cmake_name}_VERSION pre-release)
+
 set({application_caps_cmake_name}_ROOT_DIR     ${{CMAKE_CURRENT_SOURCE_DIR}})
 set({application_caps_cmake_name}_BINARIES_DIR ${{CMAKE_CURRENT_SOURCE_DIR}}/bin)
 
