@@ -14,19 +14,25 @@ extern "C" {
 
 
 
+typedef float  shvec3[3];
+typedef float  shvec4[4];
+typedef shvec4 shmat4[4];
+
+
+
 /**
  * @struct ShTransform
  * @brief Represents a transformation in the engine.
  */
 typedef struct ShTransform {
-    float model[4][4];  /**< Model matrix. */
-    float position[4];  /**< Position vector. */
-    float rotation[4];  /**< Rotation vector. */
-    float euler[4];     /**< Euler vector. */
-    float scale[4];     /**< Scale vector. */
-    float front[4];     /**< Front vector. */
-    float left[4];      /**< Left vector. */
-    float up[4];        /**< Up vector. */
+    shmat4 model;     /**< Model matrix. */
+    shvec4 position;  /**< Position vector. */
+    shvec4 rotation;  /**< Rotation vector. */
+    shvec4 euler;     /**< Euler vector. */
+    shvec4 scale;     /**< Scale vector. */
+    shvec4 front;     /**< Front vector. */
+    shvec4 left;      /**< Left vector. */
+    shvec4 up;        /**< Up vector. */
 } ShTransform;
 
 
