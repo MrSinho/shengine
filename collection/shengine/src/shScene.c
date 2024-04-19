@@ -42,23 +42,29 @@ uint8_t shUpdateTransform(
 	ShTransform* p_transform
 ) {
 	shEngineError(p_transform == NULL, "shUpdateTransform: invalid transform memory", return 0);
+    
+    shmat4 model = { 0 };
+    memcpy(model, &p_transform->model[0], sizeof(shmat4));
 
-	glm_mat4_identity(p_transform->model);
-	glm_translate(p_transform->model, p_transform->position);
-	glm_scale(p_transform->model, p_transform->scale);
-	glm_rotate_x(p_transform->model, p_transform->rotation[0], p_transform->model);
-	glm_rotate_y(p_transform->model, p_transform->rotation[1], p_transform->model);
-	glm_rotate_z(p_transform->model, p_transform->rotation[2], p_transform->model);
+	glm_mat4_identity(model);
+    glm_translate(model, &p_transform->position[0]);
+    glm_scale(model, &p_transform->scale[0]);
+	glm_rotate_x(model, p_transform->rotation[0], model);
+	glm_rotate_y(model, p_transform->rotation[1], model);
+	glm_rotate_z(model, p_transform->rotation[2], model);
 	
-	shEulerToVector(p_transform->rotation, p_transform->front);
-	
-	glm_vec3_cross((vec3) { 0.0f, 1.0f, 0.0f }, p_transform->front, p_transform->left);
-	glm_vec3_normalize(p_transform->left);
-	
-	glm_vec3_cross(p_transform->front, p_transform->left, p_transform->up);
-	glm_vec3_normalize(p_transform->up);
+    memcpy(&p_transform->model[0], model, sizeof(shmat4));
 
-	for (uint32_t i = 0; i < sizeof(p_transform->rotation) / sizeof(p_transform->rotation[0]); i++) {
+	shEulerToVector(&p_transform->rotation[0], &p_transform->front[0]);
+	
+    shvec3 p = { 0.0f, 1.0f, 0.0f };
+	glm_vec3_cross(p, &p_transform->front[0], &p_transform->left[0]);
+	glm_vec3_normalize(&p_transform->left[0]);
+	
+	glm_vec3_cross(&p_transform->front[0], &p_transform->left[0], &p_transform->up[0]);
+	glm_vec3_normalize(&p_transform->up[0]);
+
+	for (uint32_t i = 0; i < 4; i++) {
 		p_transform->rotation[i] -= (float)((int)p_transform->rotation[i] / (int)(SH_DEGREES_TO_RADIANS(360.0f))) * SH_DEGREES_TO_RADIANS(360.0f);
 	}
 	p_transform->euler[0] = SH_RADIANS_TO_DEGREES(p_transform->rotation[0]);
@@ -123,9 +129,15 @@ uint8_t shUpdateCamera(
 			glfwSetInputMode(p_engine->window.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 	}
+    
+    shmat4 projection = { 0 };
+    shmat4 view       = { 0 };
 
-	shSetProjection(p_engine->window, p_camera->fov, p_camera->nc, p_camera->fc, p_camera->projection);
-	shSetView(p_transform->position, p_transform->front, p_transform->up, p_camera->view);
+	shSetProjection(p_engine->window, p_camera->fov, p_camera->nc, p_camera->fc, projection);
+	shSetView(&p_transform->position[0], &p_transform->front[0], &p_transform->up[0], view);
+
+    memcpy(p_camera->projection, projection, sizeof(shmat4));
+    memcpy(p_camera->view      , view,       sizeof(shmat4));
 
 	return 1;
 }
@@ -170,6 +182,8 @@ uint8_t shEndScene(
 
 	return 1;
 }
+
+
 
 #ifdef __cplusplus
 }
