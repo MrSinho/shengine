@@ -2,7 +2,6 @@ import sys
 import os
 import pathlib
 import platform
-import curses
 
 
 class Application:
