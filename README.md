@@ -3,6 +3,8 @@
 ![](https://img.shields.io/badge/Sinho_softworks-0080FF?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
 [![](https://img.shields.io/badge/GitHub_repository-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mrsinho/shengine)
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/MrSinho/shengine?utm_source=oss&utm_medium=github&utm_campaign=MrSinho%2Fshengine&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 [TOC]
 
 
@@ -57,4 +59,5 @@ Should you encounter any issues with the library and tools or wish to introduce 
 Should you find value in the provided resources or have enjoyed using the project, your support in the form of a tip would be greatly appreciated. It goes a long way in sustaining and enhancing the development efforts. Thank you for considering!
 
 [![](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/mrsinho)
+
 ![](https://img.shields.io/badge/Sinho_softworks-0080FF?style=for-the-badge&logo=&logoColor=white&labelColor=990042)
